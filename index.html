@@ -295,6 +295,86 @@
 
 
   
+    <article id="post-JAVA˼ά" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="JAVA思维（上）"><a href="#JAVA思维（上）" class="headerlink" title="JAVA思维（上）"></a>JAVA思维（上）</h1><h2 id="1面向对象"><a href="#1面向对象" class="headerlink" title="1面向对象"></a>1面向对象</h2><p>强调目标，不强调过程，设计的大众化普遍化——面向对象 OOP——明确目标，设计计划，完成计划就可以达到目标</p>
+<p><strong>对象就是目标，目标就是对象（王阿姨家的狗）</strong></p>
+<p>设计时先考虑每个人的相同特性，</p>
+<p>目标完成后，让不同用户来填写信息即可。用户填写信息的主体就叫做<strong>对象，实例</strong>（对象&gt;&#x3D;实例）；把抽象的目标变成实体的目标，现实生活中存在的;</p>
+<p>实际上使用时大部分时间都是在操作某个对象</p>
+<p>而c语言是走一步看一步，目标不明确，强调的是过程——面向过程 POP</p>
+<h2 id="2快捷键"><a href="#2快捷键" class="headerlink" title="2快捷键"></a>2快捷键</h2><p>alt+insert 创建类的快捷键</p>
+<h2 id="3类"><a href="#3类" class="headerlink" title="3类"></a>3类</h2><p>类当中的变量和方法称为<strong>属性</strong>：是由共性和特性共同组成；对象名.属性，属性包括成员和行为</p>
+<p><strong>成员变量</strong>构成了类，是类的重要组成部分；<strong>行为</strong>即类中的方法动作</p>
+<p>在行为中可以使用成员变量，使之更具体化——可以使用**this.**来指示具体调用对象</p>
+<h3 id="删除某个实例信息时出现问题"><a href="#删除某个实例信息时出现问题" class="headerlink" title="删除某个实例信息时出现问题"></a>删除某个实例信息时出现问题</h3><p>空指针异常——实例对象可以视作一个指针，不空时指向一片内存，存有实例信息；空时指向null，再次调用时就空指针异常了。</p>
+<h2 id="4-OOP封装"><a href="#4-OOP封装" class="headerlink" title="4 OOP封装"></a>4 OOP封装</h2><p>Public 公有的，用户可以为所欲为；Private给一个用户能设置能获取<strong>（set get）</strong>但不能为所欲为——因为我们可以在<em>Set方法中设置条件来限制</em>，而public直接调用的，无法设置限制条件。</p>
+<p><strong>对每一个私有的成员变量，都要设置一对Set Get方法</strong> ；alt+insert会自动地一次性创建这对方法，从中选取需要的</p>
+<p>从public改成private，提高安全性。</p>
+<h2 id="5-架包"><a href="#5-架包" class="headerlink" title="5 架包"></a>5 架包</h2><p>引入一些JAVA本身没有的别人写的包 去Maven库里面搜索</p>
+<h2 id="6toString"><a href="#6toString" class="headerlink" title="6toString()"></a>6toString()</h2><p>可以将方法中的成员放在一起全部输出，不需要每个都要用get输出，与get set一样都是alt + insert 可以生成</p>
+<h2 id="7构造方法"><a href="#7构造方法" class="headerlink" title="7构造方法"></a>7构造方法</h2><p>为什么要有构造方法——想象一下创建对象的时候，一般都先new，再去后面set get 即先定义后使用；而如果要定义和使用一起进行，比如创建新用户时要先输入手机号，则需要构造器，可以在new()中直接输入信息，类似于数组直接把内部具体值写好了</p>
+<p>构造方法前面<strong>不要加方法类型</strong>，分为一个空的和一个有内容的；而这种空的方法，只要创建一个类，Java就会在类里面默认创建这种空的——即无参数构造方法。</p>
+<p>而自己一旦写了一个有内容的构造器，<strong>就一定得把空的构造器对应地写出来</strong>，快捷键中选择Constructor</p>
+<p>并且，有内容构造器可以写多个，有一个参数的，两个参数的，等等——这些构造器即重载——方法名相同，但是参数不同</p>
+<p>其中的 this.name 代表着某个具体对象的name属性的域值，<strong>this指代具体的某个对象</strong></p>
+<p>可以在某个方法中调用其他方法，使用this即可</p>
+<h2 id="8垃圾回收机制"><a href="#8垃圾回收机制" class="headerlink" title="8垃圾回收机制"></a>8垃圾回收机制</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.gc();</span><br></pre></td></tr></table></figure>
+
+<h2 id="9静态变量静态方法"><a href="#9静态变量静态方法" class="headerlink" title="9静态变量静态方法"></a>9静态变量静态方法</h2><p>属于整个类的，即使没有具体的对象，也能够输出。类名.静态变量</p>
+<p>使用 <strong>public static</strong>来定义；但是写成public会被用户自己轻易更改，<strong>故写成private，但是得对应写一个静态方法</strong>来使用private值，因为静态的private无法使用Get Set</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> plot;<span class="comment">//直接返回静态变量即可，不用this</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同理，静态方法是对整个类的，所有对象都有，都得满足。直接可以类名.方法</p>
+<h2 id="10-单例设计模式"><a href="#10-单例设计模式" class="headerlink" title="10 单例设计模式"></a>10 单例设计模式</h2><p>当一个类很独特，不能让某些对象去new出两个时，使用单例模式</p>
+<p>ps：一个类中只能有一个公共的类即一个public</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Earth</span>()&#123;</span><br><span class="line"><span class="comment">//在类中新建自己</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="type">Earth</span> <span class="variable">earthInstance</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Earth</span>();</span><br><span class="line"><span class="comment">//私有静态变量设计，静态方法设计</span></span><br><span class="line">	<span class="keyword">private</span> <span class="title function_">Earth</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//给一个开放的方法去让对象申请此类</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> Earth <span class="title function_">getEarthInstance</span><span class="params">()</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> earthInstance;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="11内部类"><a href="#11内部类" class="headerlink" title="11内部类"></a>11内部类</h2><p>在类里面再写一个类，注意第二个类不能以public开头；通常情况下类要显而易见，</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/01/08/JAVA%CB%BC%CE%B1%CC%81/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
 
 
