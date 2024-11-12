@@ -1,0 +1,171 @@
+baseURL: "https://LTXWorld.github.io/" # 主站的 URL
+title: LTX's Blog # 站点标题
+copyright: "[©2024 LTX's Blog](https://LTXWorld.github.io/)" # 网站的版权声明，通常显示在页脚
+theme: PaperMod # 主题
+languageCode: zh-cn # 语言 
+enableInlineShortcodes: true # shortcode，类似于模板变量，可以在写 markdown 的时候便捷地插入，官方文档中有一个视频讲的很通俗
+hasCJKLanguage: true # 是否有 CJK 的字符
+enableRobotsTXT: true # 允许生成 robots.txt
+buildDrafts: false # 构建时是否包括草稿
+buildFuture: false # 构建未来发布的内容
+buildExpired: false # 构建过期的内容
+enableEmoji: true # 允许 emoji
+pygmentsUseClasses: true
+defaultContentLanguage: zh # 顶部首先展示的语言界面
+defaultContentLanguageInSubdir: false # 是否要在地址栏加上默认的语言代码
+
+languages:
+  zh:
+    languageName: "中文" # 展示的语言名
+    weight: 1 # 权重
+    taxonomies: # 分类系统
+      category: categories
+      tag: tags
+
+    # https://gohugo.io/content-management/menus/#define-in-site-configuration=
+    menus:
+      main:
+        - name: 首页
+          pageRef: /
+          weight: 4 # 控制在页面上展示的前后顺序
+        - name: 归档
+          pageRef: archives/
+          weight: 5
+        - name: 分类
+          pageRef: categories/
+
+          weight: 10
+
+        - name: 标签
+
+          pageRef: tags/
+
+          weight: 10
+
+        - name: 搜索
+
+          pageRef: search/
+
+          weight: 20
+
+        - name: 关于
+
+          pageRef: about/
+
+          weight: 21
+
+paginate: 8
+
+params:
+  env: production # to enable google analytics, opengraph, twitter-cards and schema.
+  description: "Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"
+  author: fkblog
+  # author: ["Me", "You"] # multiple authors
+
+  defaultTheme: dark
+  # disableThemeToggle: true
+  ShowShareButtons: false
+  ShowReadingTime: true
+  # disableSpecial1stPost: true
+  displayFullLangName: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: false
+  ShowCodeCopyButtons: true
+  ShowRssButtonInSectionTermList: true
+  ShowAllPagesInArchive: true
+  ShowPageNums: true
+  ShowToc: true
+  comments: true
+  images: ["images/papermod-cover.png"]
+
+  homeInfoParams:
+  Title: "你好"
+  Content: >
+      👋 Welcome to demo page of Hugo's theme PaperMod!
+
+      - **PaperMod**  is designed to be clean and simple but fast and responsive theme with useful feature-set that enhances UX.
+
+      - Feel free to show your support by giving us a star 🌟 on GitHub and sharing with your friends and social media .
+
+      - PaperMod is based on theme [Paper](https://github.com/nanxiaobei/hugo-paper/tree/4330c8b12aa48bfdecbcad6ad66145f679a430b3).
+
+  socialIcons:
+    - name: github
+      title: View Source on Github
+      url: "https://github.com/LTXWorld"
+    - name: Bilibili
+      title: 欢迎来我的B站了解我
+      url: "https://space.bilibili.com/16194735?spm_id_from=333.1007.0.0"
+    - name: X
+      title: Share PaperMod on X/Twitter
+      url: "https://x.com/intent/tweet/?text=Checkout%20Hugo%20PaperMod%20%E2%9C%A8%0AA%20fast,%20clean,%20responsive%20Hugo%20theme.&url=https://github.com/adityatelange/hugo-PaperMod&hashtags=Hugo,PaperMod"
+    - name: KoFi
+      title: Buy me a Ko-Fi :)
+      url: "https://ko-fi.com/adityatelange"
+    # 搜索
+
+  fuseOpts:
+
+      isCaseSensitive: false # 是否大小写敏感
+
+      shouldSort: true # 是否排序
+
+      location: 0
+
+      distance: 1000
+
+      threshold: 0.4
+
+      minMatchCharLength: 0
+
+      # limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
+
+      keys: ["title", "permalink", "summary", "content"]
+
+      includeMatches: true
+
+  # 设置网站的标签页的图标，即 favicon
+  assets:
+      favicon: "favicon.png"
+
+      favicon16x16: "favicon.png"
+
+      favicon32x32: "favicon.png"
+
+      apple_touch_icon: "favicon.png"
+
+      safari_pinned_tab: "favicon.png"
+  
+  giscus:
+    repo: "LTXWorld/LTXWorld.github.io"
+
+    repoId: "R_kgDONODUuA"
+
+    category: "Announcements"
+
+    categoryId: "DIC_kwDONODUuM4CkMUw"
+
+    mapping: "pathname"
+
+    strict: "0"
+
+    reactionsEnabled: "1"
+
+    emitMetadata: "0"
+
+    inputPosition: "bottom"
+
+    lightTheme: "light"
+
+    darkTheme: "dark"
+
+    lang: "zh-CN"
+
+    crossorigin: "anonymous"
+
+
+outputs:
+  home:
+    - HTML # 生成的静态页面
+    - RSS # 这个其实无所谓
+    - JSON # necessary for search, 这里的配置修改好之后，一定要重新生成一下

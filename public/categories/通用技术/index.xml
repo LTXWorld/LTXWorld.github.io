@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>通用技术 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/categories/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/</link>
+    <description>Recent content in 通用技术 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.138.0</generator>
+    <language>zh</language>
+    <copyright>©2024 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Tue, 12 Nov 2024 16:22:39 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My First Post</title>
+      <link>http://localhost:1313/posts/my-first-post/</link>
+      <pubDate>Tue, 12 Nov 2024 16:22:39 +0800</pubDate>
+      <guid>http://localhost:1313/posts/my-first-post/</guid>
+      <description>&lt;p&gt;这是测试&lt;/p&gt;
+&lt;p&gt;行内数学公式：$a^2 + b^2 = c^2$。&lt;/p&gt;
+&lt;p&gt;块公式，&lt;/p&gt;
+&lt;p&gt;$$
+a^2 + b^2 = c^2
+$$&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;p&gt;$$
+\boldsymbol{x}&lt;em&gt;{i+1}+\boldsymbol{x}&lt;/em&gt;{i+2}=\boldsymbol{x}_{i+3}
+$$&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;</description>
+    </item>
+  </channel>
+</rss>
