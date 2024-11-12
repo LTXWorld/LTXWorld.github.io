@@ -78,30 +78,40 @@ params:
   comments: true
   images: ["images/papermod-cover.png"]
 
+    # 首页的文章上方的一些信息
   homeInfoParams:
-  Title: "你好"
-  Content: >
-      👋 Welcome to demo page of Hugo's theme PaperMod!
-
-      - **PaperMod**  is designed to be clean and simple but fast and responsive theme with useful feature-set that enhances UX.
-
-      - Feel free to show your support by giving us a star 🌟 on GitHub and sharing with your friends and social media .
-
-      - PaperMod is based on theme [Paper](https://github.com/nanxiaobei/hugo-paper/tree/4330c8b12aa48bfdecbcad6ad66145f679a430b3).
-
+    # 首页的 profile 内容
+    Title: "Hey Guys 👋"
+    # 首页的 profile 内容
+    Content: >
+      Welcome to my Blog! 这里主要记录了我的视频创作的一些补充说明材料。博客因为是托管在 Github 上面。
+      <br>
+      也可以在其他地方访问我的文字材料，如下：
+      <br>
+      <div>
+      ● [SonnyCalcr's Notion](https://www.notion.so/luflyan/b5ee8643e563498b96c6b7ab0f27343b)
+      <br>
+      ● [博客园](https://www.cnblogs.com/fanlumaster)
+      <br>
+      ● My personal username of Discord is sonnycalcr, and, welcome to my [Discord Group/Server](https://discord.gg/HCebZMrfhE), maybe just to talk about some simple problems.
+      </div>
+  # 社交帐号的按钮
   socialIcons:
     - name: github
-      title: View Source on Github
-      url: "https://github.com/LTXWorld"
-    - name: Bilibili
-      title: 欢迎来我的B站了解我
-      url: "https://space.bilibili.com/16194735?spm_id_from=333.1007.0.0"
+      title: Follow my Github
+      url: "https://github.com/sonnycalcr"
     - name: X
-      title: Share PaperMod on X/Twitter
-      url: "https://x.com/intent/tweet/?text=Checkout%20Hugo%20PaperMod%20%E2%9C%A8%0AA%20fast,%20clean,%20responsive%20Hugo%20theme.&url=https://github.com/adityatelange/hugo-PaperMod&hashtags=Hugo,PaperMod"
-    - name: KoFi
-      title: Buy me a Ko-Fi :)
-      url: "https://ko-fi.com/adityatelange"
+      title: Follow my Twitter
+      url: "https://x.com/sonnycalcr"
+    - name: Bilibili
+      title: 关注我的 B 站帐号
+      url: "https://space.bilibili.com/3493138859559908"
+    - name: Youtube
+      title: Follow my Youtube Channel
+      url: "https://youtube.com/@sonnycalcr"
+    - name: Telegram
+      title: Contact Me
+      url: "https://t.me/sonnycalcr"
     # 搜索
 
   fuseOpts:
