@@ -1,55 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>LTX&#39;s Blog</title>
     <link>http://localhost:1313/</link>
     <description>Recent content on LTX&#39;s Blog</description>
-    <image>
-      <title>LTX&#39;s Blog</title>
-      <url>http://localhost:1313/images/papermod-cover.png</url>
-      <link>http://localhost:1313/images/papermod-cover.png</link>
-    </image>
-    <generator>Hugo -- 0.138.0</generator>
+    <generator>Hugo</generator>
     <language>zh</language>
-    <copyright>©2024 LTX&amp;rsquo;s Blog</copyright>
-    <lastBuildDate>Tue, 12 Nov 2024 19:09:56 +0800</lastBuildDate>
+    <copyright>[©2024 LTX&#39;s Blog](https://LTXWorld.github.io/)</copyright>
+    <lastBuildDate>Sun, 17 Nov 2024 13:00:48 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Check_check_check</title>
-      <link>http://localhost:1313/posts/check_check_check/</link>
-      <pubDate>Tue, 12 Nov 2024 19:09:56 +0800</pubDate>
-      <guid>http://localhost:1313/posts/check_check_check/</guid>
-      <description>&lt;h1 id=&#34;标题1&#34;&gt;标题1&lt;/h1&gt;
-&lt;h2 id=&#34;标题2&#34;&gt;标题2&lt;/h2&gt;
-&lt;h3 id=&#34;标题3&#34;&gt;标题3&lt;/h3&gt;
-&lt;p&gt;测试代码&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;package&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;main&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s&#34;&gt;&amp;#34;fmt&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;main&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+      <title>AIThought</title>
+      <link>http://localhost:1313/posts/aithought/</link>
+      <pubDate>Sun, 17 Nov 2024 13:00:48 +0800</pubDate>
+      <guid>http://localhost:1313/posts/aithought/</guid>
+      <description>&lt;h1 id=&#34;why&#34;&gt;Why&lt;/h1&gt;&#xA;&lt;p&gt;在上周四下午，我的导师给了我一个小任务，开发一个简单地安卓App调用相关的天气，地图API以显示当前位置的温度，由于我的安卓开发水平并不是那么出色并且当晚就要交付，所以我使用AI来帮我完成这个任务。&lt;/p&gt;</description>
     </item>
     <item>
       <title>My First Post</title>
       <link>http://localhost:1313/posts/my-first-post/</link>
       <pubDate>Tue, 12 Nov 2024 16:22:39 +0800</pubDate>
       <guid>http://localhost:1313/posts/my-first-post/</guid>
-      <description>&lt;p&gt;这是测试&lt;/p&gt;
-&lt;p&gt;行内数学公式：$a^2 + b^2 = c^2$。&lt;/p&gt;
-&lt;p&gt;块公式，&lt;/p&gt;
-&lt;p&gt;$$
-a^2 + b^2 = c^2
-$$&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;$$
-\boldsymbol{x}&lt;em&gt;{i+1}+\boldsymbol{x}&lt;/em&gt;{i+2}=\boldsymbol{x}_{i+3}
-$$&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;</description>
+      <description>&lt;p&gt;这是测试&lt;/p&gt;&#xA;&lt;p&gt;行内数学公式：$a^2 + b^2 = c^2$。&lt;/p&gt;&#xA;&lt;p&gt;块公式，&lt;/p&gt;&#xA;&lt;p&gt;$$&#xA;a^2 + b^2 = c^2&#xA;$$&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;&#xA;&lt;p&gt;$$&#xA;\boldsymbol{x}&lt;em&gt;{i+1}+\boldsymbol{x}&lt;/em&gt;{i+2}=\boldsymbol{x}_{i+3}&#xA;$$&lt;/p&gt;&#xA;&lt;!-- raw HTML omitted --&gt;</description>
     </item>
     <item>
       <title>关于</title>
@@ -57,6 +29,20 @@ $$&lt;/p&gt;
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/about/</guid>
       <description>about</description>
+    </item>
+    <item>
+      <title>归档</title>
+      <link>http://localhost:1313/archives/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/archives/</guid>
+      <description>archives</description>
+    </item>
+    <item>
+      <title>搜索</title>
+      <link>http://localhost:1313/search/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/search/</guid>
+      <description>search</description>
     </item>
   </channel>
 </rss>
