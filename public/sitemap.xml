@@ -2,22 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>http://localhost:1313/categories/</loc>
+    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/docker/</loc>
+    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/</loc>
+    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/%E5%AE%B9%E5%99%A8/</loc>
+    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/docker_volume/</loc>
+    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/tags/ai/</loc>
     <lastmod>2024-11-17T13:00:48+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/aithought/</loc>
-    <lastmod>2024-11-17T13:00:48+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/categories/</loc>
-    <lastmod>2024-11-17T13:00:48+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/</loc>
-    <lastmod>2024-11-17T13:00:48+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2024-11-17T13:00:48+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/</loc>
     <lastmod>2024-11-17T13:00:48+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/%E9%97%B2%E6%9A%87%E6%80%9D%E8%80%83/</loc>
