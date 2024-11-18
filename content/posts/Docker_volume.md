@@ -1,6 +1,5 @@
 +++
 date = '2024-11-18T18:49:09+08:00'
-draft = true
 title = '玩转Docker系列——volume'
 categories = ["核心技术"]
 tags = ["容器","docker"]
