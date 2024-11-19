@@ -112,7 +112,7 @@ params:
       url: "https://www.youtube.com/@jimmyluvideo6725"
     - name: Telegram
       title: Contact Me
-      url: 
+      url: "https://web.telegram.org/k/"
     # 搜索
 
   fuseOpts:
