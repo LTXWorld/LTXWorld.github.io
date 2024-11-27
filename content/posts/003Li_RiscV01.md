@@ -1,6 +1,8 @@
 +++
 date = '2024-11-21T14:42:19+08:00'
 title = '玩转RISCV开发板01-烧录OpenEuler国产镜像'
+categories = ["硬核技术"]
+tags = ["RISC-V","OpenEuler","镜像烧录"]
 +++
 
 # 本次实验环境
