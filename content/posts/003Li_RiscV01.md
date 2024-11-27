@@ -1,6 +1,5 @@
 +++
 date = '2024-11-21T14:42:19+08:00'
-draft = true
 title = '玩转RISCV开发板01-烧录OpenEuler国产镜像'
 +++
 
