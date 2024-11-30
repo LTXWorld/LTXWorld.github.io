@@ -7,8 +7,29 @@
     <generator>Hugo</generator>
     <language>zh</language>
     <copyright>[©2024 LTX&#39;s Blog](https://LTXWorld.github.io/)</copyright>
-    <lastBuildDate>Mon, 18 Nov 2024 18:49:09 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 21 Nov 2024 14:42:19 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OpenEuler</title>
+      <link>http://localhost:1313/tags/openeuler/</link>
+      <pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate>
+      <guid>http://localhost:1313/tags/openeuler/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>RISC-V</title>
+      <link>http://localhost:1313/tags/risc-v/</link>
+      <pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate>
+      <guid>http://localhost:1313/tags/risc-v/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>镜像烧录</title>
+      <link>http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/</link>
+      <pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate>
+      <guid>http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Docker</title>
       <link>http://localhost:1313/tags/docker/</link>

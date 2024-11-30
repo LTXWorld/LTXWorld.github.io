@@ -2,19 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/categories/</loc>
-    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/docker/</loc>
-    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/</loc>
-    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+    <lastmod>2024-11-29T21:07:21+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2024-11-18T18:49:09+08:00</lastmod>
+    <lastmod>2024-11-29T21:07:21+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/</loc>
+    <lastmod>2024-11-21T14:42:19+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/openeuler/</loc>
+    <lastmod>2024-11-21T14:42:19+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/risc-v/</loc>
+    <lastmod>2024-11-21T14:42:19+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2024-11-21T14:42:19+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/</loc>
+    <lastmod>2024-11-21T14:42:19+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/003li_riscv01/</loc>
+    <lastmod>2024-11-21T14:42:19+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/%E7%A1%AC%E6%A0%B8%E6%8A%80%E6%9C%AF/</loc>
+    <lastmod>2024-11-21T14:42:19+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/docker/</loc>
     <lastmod>2024-11-18T18:49:09+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/</loc>
@@ -23,13 +38,13 @@
     <loc>http://localhost:1313/tags/%E5%AE%B9%E5%99%A8/</loc>
     <lastmod>2024-11-18T18:49:09+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/docker_volume/</loc>
+    <loc>http://localhost:1313/posts/002docker_volume/</loc>
     <lastmod>2024-11-18T18:49:09+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/ai/</loc>
     <lastmod>2024-11-17T13:00:48+08:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/aithought/</loc>
+    <loc>http://localhost:1313/posts/001aithought/</loc>
     <lastmod>2024-11-17T13:00:48+08:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/%E9%97%B2%E6%9A%87%E6%80%9D%E8%80%83/</loc>

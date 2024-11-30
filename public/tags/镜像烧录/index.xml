@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>镜像烧录 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/</link>
+    <description>Recent content in 镜像烧录 on LTX&#39;s Blog</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <copyright>[©2024 LTX&#39;s Blog](https://LTXWorld.github.io/)</copyright>
+    <lastBuildDate>Thu, 21 Nov 2024 14:42:19 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>玩转RISCV开发板01-烧录OpenEuler国产镜像</title>
+      <link>http://localhost:1313/posts/003li_riscv01/</link>
+      <pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate>
+      <guid>http://localhost:1313/posts/003li_riscv01/</guid>
+      <description>&lt;h1 id=&#34;本次实验环境&#34;&gt;本次实验环境&lt;/h1&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;宿主机:macbook air M2&lt;/li&gt;&#xA;&lt;li&gt;LiCheePi开发板，配置为16+128&lt;/li&gt;&#xA;&lt;li&gt;一根USB-C线&lt;/li&gt;&#xA;&lt;li&gt;一个拓展坞，键鼠，显示器&lt;/li&gt;&#xA;&lt;li&gt;烧录镜像为openEuler/embedded_img/riscv64/lpi4a/&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h1 id=&#34;实验步骤&#34;&gt;实验步骤&lt;/h1&gt;&#xA;&lt;h2 id=&#34;1下载fastboot&#34;&gt;1.下载fastboot&lt;/h2&gt;&#xA;&lt;p&gt;这里使用homebrew快捷安装&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
