@@ -202,7 +202,7 @@ sudo dnf install k3s
 
 那么下载过后如何执行呢？按道理来说，得`systemctl status k3s`这样的命令（与docker类似）来操作，但是你直接操作时会发现报错`unit k3s service not found`并不存在。这该怎么办呢？
 
-![](/img/ys你说什么.webp)
+![](/img/ys/你说什么.webp)
 
 在我Google了一圈发现这位大佬的[适配工作](https://github.com/carlosedp/riscv-bringup)后，我发现刚才下载的k3s是不是在`/usr/local/bin/k3s`这个路径下啊？
 
@@ -215,6 +215,7 @@ sudo dnf install k3s
 # 总结与展望
 
 没什么好总结的了，下一章进行k3s在riscv架构上的初步尝试，写几个golang小程序部署成节点试着管理一下。
-可真是Life's struggle啊
+
+可真是Life's struggle啊。
 
 ![](/img/shu/躺平.webp)
