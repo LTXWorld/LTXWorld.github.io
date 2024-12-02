@@ -1,6 +1,8 @@
 +++
 date = '2024-12-01T12:00:57+08:00'
-title = '005Golang并发01_context'
+title = 'Golang源码小试牛刀:Golang并发01_context'
+categories = ["核心技术"]
+tags = ["Golang","源码","Context"]
 +++
 
 # 前言
@@ -40,6 +42,7 @@ type Context interface {
 * cancleCtx
 * timerCtx
 * valueCtx
+* 以及cancleCtx下的一系列衍生体
 
 
 定义完了接口，接下来是两个变量:
@@ -120,7 +123,7 @@ func TODO() Context {
 ```
 
 
-## cancelCtx支持显示取消的结构
+## cancelCtx:支持显示取消的结构
 
 ```go
 type cancelCtx struct {
@@ -455,10 +458,128 @@ func WithDeadlineCause(parent Context, d time.Time, cause error) (Context, Cance
 }
 ```
 
+### afterFuncCtx
+
+在cancelCtx的基础上实现回调。
+
+```go
+type afterFuncCtx struct {
+	cancelCtx
+	once sync.Once // 确保 f 只被执行一次
+	f    func()    // 要在上下文完成时调用的回调函数
+}
+```
+
+AfterFunc传入回调函数，并将afterFuncCtx关联到父上下文
+```go
+func AfterFunc(ctx Context, f func()) (stop func() bool) {
+	a := &afterFuncCtx{
+		f: f,
+	}
+	// 将 afterFuncCtx 作为子上下文，关联到父上下文 ctx
+	a.cancelCtx.propagateCancel(ctx, a)
+
+	// 返回的 stop 函数用于停止回调的执行
+	return func() bool {
+		stopped := false
+		a.once.Do(func() {
+			stopped = true
+		})
+		if stopped {
+			a.cancel(true, Canceled, nil)
+		}
+		return stopped
+	}
+}
+```
+
+
 ## valueCtx
 
+实现键值对存储功能的一种上下文类型,适合携带少量元数据。
 
-# Go Context 类型对比
+```go
+type valueCtx struct {
+	Context
+	key, val any
+}
+```
+
+Value:如果当前上下文没有匹配的键，则调用 value 函数继续在父上下文中查找。
+
+value:递归辅助方法，用于在上下文链中查找指定key对应的值
+
+```go
+func (c *valueCtx) String() string {
+	return contextName(c.Context) + ".WithValue(" +
+		stringify(c.key) + ", " +
+		stringify(c.val) + ")"
+}
+
+func (c *valueCtx) Value(key any) any {
+	if c.key == key {
+		return c.val
+	}
+	return value(c.Context, key)
+}
+
+func value(c Context, key any) any {
+	for {
+		switch ctx := c.(type) {
+            // 如果是valueCtx类型
+		case *valueCtx:
+			if key == ctx.key {
+				return ctx.val
+			}
+			c = ctx.Context //向父上下文继续找
+            // 如果是cancelCtx类型
+		case *cancelCtx:
+			if key == &cancelCtxKey {
+				return c
+			}
+			c = ctx.Context
+            // 如果是withoutCancelCtx类型
+		case withoutCancelCtx:
+			if key == &cancelCtxKey {
+				// This implements Cause(ctx) == nil
+				// when ctx is created using WithoutCancel.
+				return nil
+			}
+			c = ctx.c
+            // 如果是timerCtx类型
+		case *timerCtx:
+			if key == &cancelCtxKey {
+				return &ctx.cancelCtx
+			}
+			c = ctx.Context
+            // 如果是backgroundCtx，todoCtx类型即根上下文
+		case backgroundCtx, todoCtx:
+			return nil
+		default:
+			return c.Value(key)
+		}
+	}
+}
+```
+
+### withValue方法
+
+```go
+func WithValue(parent Context, key, val any) Context {
+	if parent == nil {
+		panic("cannot create context from nil parent")
+	}
+	if key == nil {
+		panic("nil key")
+	}
+	if !reflectlite.TypeOf(key).Comparable() {
+		panic("key is not comparable")
+	}
+	return &valueCtx{parent, key, val}
+}
+```
+
+# 常用的Go Context 类型对比
 
 | **类型**         | **功能描述**                                                                 | **支持取消** | **支持超时/截止时间** | **支持键值对存储** |
 |------------------|-----------------------------------------------------------------------------|-------------|-----------------------|-------------------|
