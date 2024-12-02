@@ -368,6 +368,42 @@ func Cause(c Context) error {
 }
 ```
 
+### afterFuncCtx
+
+在cancelCtx的基础上实现回调。
+
+```go
+type afterFuncCtx struct {
+	cancelCtx
+	once sync.Once // 确保 f 只被执行一次
+	f    func()    // 要在上下文完成时调用的回调函数
+}
+```
+
+AfterFunc传入回调函数，并将afterFuncCtx关联到父上下文
+```go
+func AfterFunc(ctx Context, f func()) (stop func() bool) {
+	a := &afterFuncCtx{
+		f: f,
+	}
+	// 将 afterFuncCtx 作为子上下文，关联到父上下文 ctx
+	a.cancelCtx.propagateCancel(ctx, a)
+
+	// 返回的 stop 函数用于停止回调的执行
+	return func() bool {
+		stopped := false
+		a.once.Do(func() {
+			stopped = true
+		})
+		if stopped {
+			a.cancel(true, Canceled, nil)
+		}
+		return stopped
+	}
+}
+```
+
+
 ## timerCtx
 
 这是cancelCtx的扩展，支持设置截止时间的上下文类型，多了timer和deadline字段。
@@ -457,42 +493,6 @@ func WithDeadlineCause(parent Context, d time.Time, cause error) (Context, Cance
 	return c, func() { c.cancel(true, Canceled, nil) }
 }
 ```
-
-### afterFuncCtx
-
-在cancelCtx的基础上实现回调。
-
-```go
-type afterFuncCtx struct {
-	cancelCtx
-	once sync.Once // 确保 f 只被执行一次
-	f    func()    // 要在上下文完成时调用的回调函数
-}
-```
-
-AfterFunc传入回调函数，并将afterFuncCtx关联到父上下文
-```go
-func AfterFunc(ctx Context, f func()) (stop func() bool) {
-	a := &afterFuncCtx{
-		f: f,
-	}
-	// 将 afterFuncCtx 作为子上下文，关联到父上下文 ctx
-	a.cancelCtx.propagateCancel(ctx, a)
-
-	// 返回的 stop 函数用于停止回调的执行
-	return func() bool {
-		stopped := false
-		a.once.Do(func() {
-			stopped = true
-		})
-		if stopped {
-			a.cancel(true, Canceled, nil)
-		}
-		return stopped
-	}
-}
-```
-
 
 ## valueCtx
 
