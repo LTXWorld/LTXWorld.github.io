@@ -218,4 +218,6 @@ sudo dnf install k3s
 
 可真是Life's struggle啊。
 
+**这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。**
+
 ![](/img/shu/躺平.webp)

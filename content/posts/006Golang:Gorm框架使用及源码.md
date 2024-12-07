@@ -1,7 +1,7 @@
 +++
 date = '2024-12-03T16:34:41+08:00'
 draft = true
-title = '006Golang:Gorm框架源码小探01'
+title = 'Golang源码小试牛刀:Gorm框架源码小探01'
 +++
 
 # 前言

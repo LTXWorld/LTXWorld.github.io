@@ -1,6 +1,6 @@
 +++
 date = '2024-12-05T15:40:56+08:00'
-title = '007Golang并发02Chan'
+title = 'Golang源码小试牛刀:Golang并发02_Chan'
 +++
 
 # 前言
@@ -85,7 +85,7 @@ type waitq struct {
 管理等待发送或接受的goroutine队列——存储阻塞在通道上的 goroutine 信息。
 可以实现快速插入last和删除first，如果通道阻塞，goroutine会封装为sudog并挂入waitq队列中。
 
-### sundog结构体
+### sudog结构体
 
 ```go
 type sudog struct {
