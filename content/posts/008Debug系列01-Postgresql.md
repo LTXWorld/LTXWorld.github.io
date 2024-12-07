@@ -33,7 +33,7 @@ lanch_postgres:
 
 命令的含义是运行一个名为postgres_urls的容器，特权用户为LTX（这里直接使用特权用户操作数据库了），密码为Lutaol123,数据库名称为urldb,端口映射主机的5432映射到容器中的5432端口，-d使容器在后台持续运行——以postgres这个镜像为基础的容器。
 
-执行`make lanch_postgres`后成功启动了这个容器，接着来到数据库迁移（*使数据库操作变得可以回滚，变得像Git一样的可以进行版本控制*）具体如何迁移见[官方链接]()，**最终效果就是在容器中的数据库执行了一条建表的语句**。
+执行`make lanch_postgres`后成功启动了这个容器，接着来到数据库迁移（*使数据库操作变得可以回滚，变得像Git一样的可以进行版本控制*）具体如何迁移见[官方链接](https://github.com/golang-migrate/migrate/tree/master/database/postgres)，**最终效果就是在容器中的数据库执行了一条建表的语句**。
 
 这一阶段的makefile如下:
 
