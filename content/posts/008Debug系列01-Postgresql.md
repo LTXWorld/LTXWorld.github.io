@@ -65,7 +65,7 @@ make: *** [migrate_up] Error 1
 
 但是上面我们使用docker创建这个Postgresql容器时不是成功了吗？这里怎么又不存在了呢？
 
-![](/shu/开枪.webp)
+![](/img/shu/开枪.webp)
 
 ### 尝试解决
 
@@ -110,7 +110,7 @@ psql postgres
 \dt
 ```
 
-![](/img/pq3.png)
+![](/img/debug/pq3.png)
 
 这里Owner变成了ltx_urldb是因为后来我改了一次用户名（因为当初我还以为是用户名的问题）
 
@@ -142,7 +142,7 @@ brew services stop postgresql
 * PostgreSQL 默认在 /var/run/postgresql/.s.PGSQL.<port> 路径监听 Unix 套接字,**如果 PostgreSQL 客户端检测到本地套接字文件，就会优先通过它连接。**
 * 如果本地套接字不可用，则尝试通过 localhost:5432 使用 TCP/IP 连接。并使用端口映射到容器中的5432端口。
 
-![](/img/pq5.png)
+![](/img/debug/pq5.png)
 
 好的到这里我们的这次Postgresql的容器连接问题就到这里结束了。
 
