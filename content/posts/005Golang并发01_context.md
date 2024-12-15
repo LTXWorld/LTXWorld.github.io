@@ -593,3 +593,30 @@ func WithValue(parent Context, key, val any) Context {
 
 # 平时是如何使用的
 
+这里举例说明context以及其中的常见方法在代码中是如何使用的。
+
+## WithTimeout&WithDeadline
+
+在这段代码中，`context.WithTimeout`起到了控制数据库操作是否超时的作用
+
+```go
+func (m MovieModel) Insert(movie *Movie) error {
+	// 插入一条新记录的SQL语句，并返回信息（Postgresql专有)
+	query := `
+			INSERT INTO movies (title, year, runtime, genres)
+			VALUES ($1, $2, $3, $4)
+			RETURNING id, created_at, version`
+
+	// 创建一个代表着占位符的movie中的属性切片
+	args := []interface{}{movie.Title, movie.Year, movie.Runtime, pq.Array(movie.Genres)}
+
+	// Create a context with a 3-second timeout
+	// 如果数据库操作在3s内没有完成，操作自动取消，返回超时错误
+	ctx, cancle := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancle()
+
+	// 使用QueryRowContext方法执行,利用传入的ctx进行SQL查询，并使用Scan方法将返回值注入到movie的三个属性中
+	return m.DB.QueryRowContext(ctx, query, args...).Scan(&movie.ID, &movie.CreatedAt, &movie.Version)
+}
+```
+

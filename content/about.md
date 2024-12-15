@@ -1,8 +1,8 @@
 ---
-title: "关于"
+title: "后花园"
 layout: "about"
 url: "/about/"
 summary: about
 ---
 
-这里就可以写一些关于的相关信息了。
+注定孤独娱乐。
