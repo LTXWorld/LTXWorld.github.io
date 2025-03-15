@@ -59,7 +59,7 @@ paginate: 8
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   description: "Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"
-  author: fkblog
+  author: LTX
   # author: ["Me", "You"] # multiple authors
 
   defaultTheme: dark
