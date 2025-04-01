@@ -231,8 +231,10 @@ cp ./pause-riscv.tar /var/lib/rancher/k3s/agent/images
 **8.将此镜像打标签以适应原本拉取时所要的镜像名称**
 
 ```bash
-# 后面的名称是之前k3s拉取时拉取失败的镜像名称
-ctr -n k8s.io images tag pause-riscv docker.io/rancher/mirrored-pause:3.6
+# 先查看当前我们制作的镜像名称
+ctr images ls
+# 重新打标签 后面的名称是之前k3s拉取时拉取失败的镜像名称 
+ctr -n k8s.io images tag <上一条命令的名称> docker.io/rancher/mirrored-pause:3.6
 ```
 
 **9.再使用crictl,ctr命令检查镜像**
@@ -240,7 +242,7 @@ ctr -n k8s.io images tag pause-riscv docker.io/rancher/mirrored-pause:3.6
 将这两个命令理解为docker命令即可，用来管理镜像。
 
 ```bash
-ctr --namespace=k8s.io container list | grep pause
+ctr --namespace=k8s.io images list | grep pause
 crictl images | grep pause
 ```
 
@@ -263,12 +265,12 @@ kubectl get pods -o wide
 回到源码之中，在`cli/cmds/agent.go`源码中，关于pause-image命令的代码如下
 
 ```go
-	PauseImageFlag = &cli.StringFlag{
-		Name:        "pause-image",
-		Usage:       "(agent/runtime) Customized pause image for containerd or docker sandbox",
-		Destination: &AgentConfig.PauseImage,
-		Value:       "rancher/mirrored-pause:3.6",
-	}
+PauseImageFlag = &cli.StringFlag{
+	Name:        "pause-image",
+	Usage:       "(agent/runtime) Customized pause image for containerd or docker sandbox",
+	Destination: &AgentConfig.PauseImage,
+	Value:       "rancher/mirrored-pause:3.6",
+}
 ```
 
 所以在启动agent节点时可以直接在命令行中指定
