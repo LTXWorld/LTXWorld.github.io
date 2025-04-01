@@ -41,6 +41,8 @@ ssh openeuler@IP
 
 如果遇到从开发板下载github上的东西特别慢的情况，可以使用这个网站`https://doget.nocsdn.com/#/`托管的国内地址来下载，速度不错。
 
+也可以使用这个代理地址`git config --global url."https://gh-proxy.com/github.com/" .insteadOf "https://github.com/"`
+
 ## tmux分屏
 
 这个软件如果你是一个linux或者macos的“老玩家”，相信你并不陌生。有了他我们就可以不再打开一个又一个的终端窗口，而是优雅的进行分屏操作。

@@ -135,6 +135,8 @@ NAME                STATUS   ROLES                  AGE     VERSION
 openeuler-riscv64   Ready    control-plane,master   3m37s   v1.24.2+k3s-
 ```
 
+这个过程中跳过了k3s的下载和架构验证，创建了系统kubectl, crictl,ctr三个命令的系统链接到k3s,创建了kill all，uninstall脚本，创建了环境变量，服务文件。
+
 需要提醒的是，此时我们只有一个节点一个开发板，而在K3s的源码中默认**Server既是Server又是Agent**，这样才能在单机的情况下运行。
 
 之后我们验证其关于pod,容器等具体功能是否支持。
@@ -158,17 +160,19 @@ Pause在K8s的源码位置 /kubernetes/build/pause/linux/pause.c，其作用就�
 
 如果没有安装编译工具链，请先安装`dnf install -y gcc`
 
-将上述 pause.c文件下载或传输到开发板上。
+将上述 pause.c文件下载或传输到开发板上。这里使用ssh相关命令
+
+`scp -r 本机文件路径 目标主机名@IP:目标路径 `
 
 以下步骤参考整合于 Deepseek与ChatGpt的回答。
 
-1.直接编译现有代码
+**1.直接编译现有代码**
 
 ```bash
 gcc -static -Os -o pause pause.c
 ```
 
-2.检查并测试
+**2.检查并测试**
 
 ```bash
 ldd ./pause
@@ -176,7 +180,7 @@ ldd ./pause
 ./pause -v
 ```
 
-3.容器化使用
+**3.容器化使用**
 
 ```dockerfile
 FROM scratch
@@ -184,7 +188,7 @@ COPY pause /pause
 ENTRYPOINT ["/pause"]
 ```
 
-4.测试容器
+**4.测试容器**
 
 ```bash
 # 构建镜像
@@ -197,13 +201,13 @@ docker run --rm -it --name test-pause my-pause
 docker stop test-pause  # 应看到正常退出
 ```
 
-5.docker保存镜像为tar文件
+**5.docker保存镜像为tar文件**
 
 ```bash
 docker save my-pause > pause-riscv.tar
 ```
 
-6.在k3s节点上加载镜像
+**6.在k3s节点上加载镜像**
 
 ```bash
 # 先查看当前k3s使用的containerd命名空间,我的结果是k8s.io
@@ -214,7 +218,7 @@ k3s ctr images import pause-riscv.tar
 k3s ctr -n k8s.io images import pause-riscv.tar
 ```
 
-7.将此镜像作为**本地镜像**
+**7.将此镜像作为本地镜像**
 
 ```bash
 # 如果没有这个文件夹，自行创建
@@ -224,14 +228,14 @@ mkdir -p /var/lib/rancher/k3s/agent/images
 cp ./pause-riscv.tar /var/lib/rancher/k3s/agent/images
 ```
 
-8.将此镜像**打标签**以适应原本拉取时所要的镜像名称
+**8.将此镜像打标签以适应原本拉取时所要的镜像名称**
 
 ```bash
 # 后面的名称是之前k3s拉取时拉取失败的镜像名称
 ctr -n k8s.io images tag pause-riscv docker.io/rancher/mirrored-pause:3.6
 ```
 
-9.再使用crictl,ctr命令检查镜像
+**9.再使用crictl,ctr命令检查镜像**
 
 将这两个命令理解为docker命令即可，用来管理镜像。
 
@@ -240,7 +244,7 @@ ctr --namespace=k8s.io container list | grep pause
 crictl images | grep pause
 ```
 
-10.重新尝试busybox镜像
+**10.重新尝试busybox镜像**
 
 ```bash
 kubectl apply-f b1.yaml
@@ -253,6 +257,41 @@ kubectl get pods -o wide
 最终发现busybox和alpine镜像均可以成功拉取，不会再出现pause镜像不适配的问题。
 
 其他镜像可能会因为网络问题，适配问题无法拉取成功，这是我们后续需要进行的工作。
+
+## 回到源码
+
+回到源码之中，在`cli/cmds/agent.go`源码中，关于pause-image命令的代码如下
+
+```go
+	PauseImageFlag = &cli.StringFlag{
+		Name:        "pause-image",
+		Usage:       "(agent/runtime) Customized pause image for containerd or docker sandbox",
+		Destination: &AgentConfig.PauseImage,
+		Value:       "rancher/mirrored-pause:3.6",
+	}
+```
+
+所以在启动agent节点时可以直接在命令行中指定
+
+```bash
+sudo k3s agent \
+  --pause-image=your-repo/your-pause:3.6-riscv64 \
+  --server=https://<K3s-Server-IP>:6443 \
+  --token=<Your-Token>
+```
+
+源码中关于pause的构建Dockefile如下：
+
+```dockefile
+ARG BASE
+FROM ${BASE}
+ARG ARCH
+ADD bin/pause-linux-${ARCH} /pause
+USER 65535:65535
+ENTRYPOINT ["/pause"]
+```
+
+可供我们构建时参考。
 
 ## 总结
 
