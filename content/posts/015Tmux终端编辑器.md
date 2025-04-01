@@ -1,7 +1,8 @@
 +++
 date = '2025-04-01T08:36:54+08:00'
-draft = true
 title = 'Tmux终端窗口器'
+categories = ["实用工具"]
+tags = ["tmux","终端"]
 +++
 
 ## 引子
