@@ -1,6 +1,6 @@
 +++
 date = '2024-12-07T09:06:52+08:00'
-title = 'Debug系列01 Postgresql'
+title = 'DebugEP01——Postgresql'
 categories = ["通用技术"]
 tags = ["Debug","Postgresql","Docker"]
 +++

@@ -54,7 +54,7 @@ languages:
 
           weight: 21
 
-paginate: 8
+paginate.pagerSize: 8
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
