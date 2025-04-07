@@ -87,6 +87,8 @@ be632cf9bbb6: Pushed
 
 这样我们就做到了从私有仓库拉取了一个我们在开发板上拉取不到的镜像到开发板上，这对于我们日后的集群搭建工作起到了关键的作用。
 
+![](/img/jb/coffee.webp)
+
 ### 常用操作
 
 检查私有仓库中有哪些镜像。
@@ -96,3 +98,128 @@ curl -X GET http://192.168.173.76:6000/v2/_catalog
 # 结果如下
 {"repositories":["busybox","mac_riscv64/alpine","riscv64/busybox"]}
 ```
+
+## 多平台构建适配的镜像
+
+首先我们先抛开k3s,使用docker来进行移植适配操作，毕竟二者没有太大的差异，而docker可以提供更强大的性能。操作流程来自于[Docker官方文档](https://docs.docker.com/build/building/multi-platform/#simple-multi-platform-build-using-emulation)中的使用QEMU进行多平台镜像构建方法，这是官方文档中三种方法之一，希望后面我们可以尝试另外两种方法。
+
+这次我们要适配的镜像是redis和nginx，操作的主机是Macbook M2,使用Docker Desktop方便操作。
+
+### 提前配置
+
+根据文档中的说法，我们需要先从classic镜像模式转换为containerd镜像模式，这在Docker Desktop上很好操作。
+
+### 操作流程
+
+1.新建目录保存redis等中间件的源码，为其编写的Dockerfile，以及可能自定义的配置文件等文件。
+
+```bash
+mkdir -p multi-platform
+```
+
+2.为了防止容器内部下载速度过慢，提前下载好redis的源码文件并解压到本机。
+
+```bash
+wget https://download.redis.io/releases/redis-7.2.4.tar.gz
+tar -xzvf redis-7.2.4.tar.gz
+```
+
+3.编写Dockerfile文件，这里要注意我们使用`alpine:latest`作为基础镜像，这个镜像是我尝试的几个基础镜像中适配riscv最好的；同时需要替换默认的apk包镜像源，否则会遇到`could not connect server`问题；为了设置密码等一些自定义配置，我们自行编写一个配置文件到当前目录中`redis.conf`
+
+```conf
+# 允许所有 IP 连接（不要绑定 127.0.0.1）
+bind 0.0.0.0
+
+# 关闭 protected mode，否则外部无法连接
+protected-mode no
+
+# 设置访问密码
+requirepass password
+
+# 设置持久化 RDB 保存策略
+save 900 1
+save 300 10
+save 60 10000
+
+# RDB 文件名
+dbfilename dump.rdb
+
+# RDB 文件保存路径
+dir ./
+
+# 日志级别
+loglevel notice
+
+# 日志输出到标准输出（容器中建议这样）
+logfile ""
+
+# 后台运行，容器中不能开启
+daemonize no
+
+# 最大连接数（可选）
+maxclients 10000
+
+# 设置内存上限（可选）
+# maxmemory 256mb
+# maxmemory-policy allkeys-lru
+
+```
+
+这是Dockerfile:
+
+```dockerfile
+FROM alpine:latest
+
+# 替换默认 apk 源为镜像源
+RUN sed -i 's#https\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories
+
+# 安装 Redis 构建依赖
+RUN apk update && apk add --no-cache build-base jemalloc-dev linux-headers
+
+# 拷贝 Redis 源码（假设 redis-7.2.4 文件夹和 Dockerfile 同目录）
+COPY redis-7.2.4 /redis
+WORKDIR /redis
+
+# 编译 Redis
+RUN make
+
+# 拷贝配置文件
+COPY redis.conf /etc/redis.conf
+
+# 设置默认启动命令
+CMD ["src/redis-server", "/etc/redis.conf"]
+```
+
+4.构建跨平台镜像。这一步本质上用到了buildx和QEMU，但是Docker Desktop为我们把这些底层都封装了起来，所以如果你是用Docker Desktop启动的Docker就不用在意;构建的同时如果遇到网络问题，请在参数中添加`--network host`命令，这会将宿主机网络作为容器内部网络，绕过网络限制。这个解决思路来自于[stackoverflow](https://stackoverflow.com/questions/53710206/docker-cant-build-because-of-alpine-error)
+
+```bash
+# 这里我们直接-t打好了标签，不用再tag了
+docker build --network host --platform=linux/riscv64 -f Dockerfile.redis -t 192.168.173.76:6000/riscv64/redis:1.1 .
+```
+
+5.推送到本地私有镜像仓库中，再从RiscV开发板中拉取该镜像,这一步和上面私有镜像仓库构建相同。
+
+```bash
+docker push 192.168.173.76:6000/riscv64/redis:1.1
+# riscv下
+docker pull 192.168.173.76:6000/riscv64/redis:1.1
+```
+
+6.运行redis-server容器，并在主机上运行redis-cli来测试
+
+```bash
+docker run -d --name redis-test -p 6379:6379 192.168.173.76:6000/riscv64/redis:1.1
+# 主机运行
+redis-cli -h <riscvIP> -p 6379
+> AUTH password
+> set foo bar
+> get foo
+```
+
+得到最终结果"bar",证明我们成功了！
+
+## 总结
+
+搭建了一个简易的私有镜像仓库和移植了redis-server镜像到RiscV机器上，算是迈出了不错的一步，后面的工作主要围绕着如何将其融入到k3s中以及深入探究docker的多平台构建其底层原理展开。
+
+**这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。**
