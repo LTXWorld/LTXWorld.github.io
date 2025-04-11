@@ -89,6 +89,24 @@ be632cf9bbb6: Pushed
 
 ![](/img/jb/coffee.webp)
 
+### 融入k3s
+
+由于k3s的容器运行时采用containerd这个轻量化的原生工具而不建议使用docker，所以我们需要针对k3s的`registries.yaml`文件进行修改,将镜像地址全部修改为我们上面搭建的私有仓库地址。
+
+```yaml
+mirrors:
+  docker.io:
+    endpoint:
+      - "http://192.168.173.76:6000"
+    rewrite:
+      "^riscv64/(.*)": "riscv64/$1"
+  "192.168.173.76:6000":
+    endpoint:
+      - "http://192.168.173.76:6000"
+```
+
+之后再使用crictl命令进行拉取时就可以直接`crictl pull <镜像名称>`,注意，由于我们的镜像前面都是标有仓库地址的，所以在`crictl pull`时直接使用镜像名称即可。
+
 ### 常用操作
 
 检查私有仓库中有哪些镜像。
@@ -218,8 +236,158 @@ redis-cli -h <riscvIP> -p 6379
 
 得到最终结果"bar",证明我们成功了！
 
+同理我们也可以测试一下nginx镜像，下面是其简单的dockerfile
+
+```dockerfile
+FROM alpine:latest
+
+# 替换源（可选，也可以用清华源）
+RUN sed -i 's#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g' /etc/apk/repositories \
+    && apk update && apk add --no-cache nginx
+
+# 拷贝配置文件和静态资源
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY html/ /usr/share/nginx/html/
+
+# 暴露端口
+EXPOSE 80
+
+# 启动 Nginx
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+其中的nginx.conf
+
+```bash
+worker_processes 1;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    server {
+        listen       80;
+        server_name  localhost;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+    }
+}
+```
+
+对应的html文件内容:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to RISC-V Nginx!</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding-top: 100px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #777;
+        }
+        .tag {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 16px;
+            background-color: #007acc;
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Hello from RISC-V Nginx!</h1>
+    <p>Your nginx server is up and running.</p>
+    <div class="tag">riscv64 / alpine / nginx</div>
+</body>
+</html>
+```
+
+同理打包推送拉取。运行容器后，在我的mac主机上访问`http://<riscvIP>:8080`可以看到上述html文件的效果
+
+![](/img/riscv/nginx01.png)
+
+### 优化镜像
+
+当前redis镜像大小为146MB
+
+```bash
+(base) lutao@MagicTech multi-platform % docker images | grep redis
+192.168.173.76:6000/riscv64/redis     1.1       e8e1336c3ccf   13 hours ago    146MB
+```
+
+我们可以采用多阶段构建以精简最终镜像，使其不包含构建工具和源代码。
+
+```dockerfile
+# ---------- 构建阶段 ----------
+FROM alpine:latest AS builder
+
+# 使用阿里源加速
+RUN sed -i 's#http.*/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories
+
+# 安装构建依赖
+RUN apk update && apk add --no-cache build-base jemalloc-dev linux-headers
+
+# 拷贝源码
+COPY redis-7.2.4 /redis
+WORKDIR /redis
+
+# 编译 Redis
+RUN make
+
+# ---------- 运行阶段 ----------
+FROM alpine:latest
+
+# 使用阿里源（可选）
+RUN sed -i 's#http.*/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories
+
+# 安装运行所需的 jemalloc
+RUN apk add --no-cache jemalloc
+
+# 拷贝 redis-server 和 redis-cli（如果你需要 CLI 工具）
+COPY --from=builder /redis/src/redis-server /usr/local/bin/
+COPY --from=builder /redis/src/redis-cli /usr/local/bin/
+
+# 拷贝配置文件
+COPY redis.conf /etc/redis.conf
+
+# 设置默认启动命令
+CMD ["redis-server", "/etc/redis.conf"]
+```
+
+最终构建过程花费293.4s
+
+![](/img/riscv/redis01.png)
+
+最终镜像大小只有10.2MB，相较于之前的146MB缩小了许多。
+
+![](/img/riscv/redis02.png)
+
+同时我们也可以构建一个只有redis-cli的镜像，对于融合进k3s集群中或许可以在server节点上使用redis-server镜像，然后在其他agent节点的pod中部署redis-cli对其进行访问。
+
 ## 总结
 
-搭建了一个简易的私有镜像仓库和移植了redis-server镜像到RiscV机器上，算是迈出了不错的一步，后面的工作主要围绕着如何将其融入到k3s中以及深入探究docker的多平台构建其底层原理展开。
+搭建了一个简易的私有镜像仓库和移植了redis-server镜像到RiscV机器上，算是迈出了不错的一步，后面的工作主要围绕着如何将其更深入地融入到k3s中以及深入探究docker的多平台构建其底层原理展开。
 
 **这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。**
