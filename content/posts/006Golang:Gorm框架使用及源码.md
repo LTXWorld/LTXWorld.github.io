@@ -2,6 +2,8 @@
 date = '2024-12-03T16:34:41+08:00'
 draft = true
 title = 'Golang源码小试牛刀:Gorm框架源码小探01'
+categories = ["核心技术"]
+tags = ["Golang","源码","Gorm"]
 +++
 
 # 前言

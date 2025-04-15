@@ -1,6 +1,8 @@
 +++
 date = '2024-12-05T15:40:56+08:00'
 title = 'Golang源码小试牛刀:Golang并发02_Chan'
+categories = ["核心技术"]
+tags = ["Golang","源码","Chan"]
 +++
 
 # 前言
