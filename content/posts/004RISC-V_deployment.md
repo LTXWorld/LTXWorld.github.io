@@ -43,6 +43,15 @@ ssh openeuler@IP
 
 也可以使用这个代理地址`git config --global url."https://gh-proxy.com/github.com/" .insteadOf "https://github.com/"`
 
+得到结果如下:
+
+```bash
+cat .gitconfig
+[url "https://gh-proxy.com/github.com/"]
+        insteadOf = https://github.com/
+
+```
+
 ## tmux分屏
 
 这个软件如果你是一个linux或者macos的“老玩家”，相信你并不陌生。有了他我们就可以不再打开一个又一个的终端窗口，而是优雅的进行分屏操作。
@@ -213,6 +222,12 @@ sudo dnf install k3s
 ![](/img/riscv/k3srun.png)
 
 关于k3s的具体操作我们以后的文章再说。
+
+## 卸载k3s
+
+```bash
+/usr/local/bin/k3s-uninstall.sh
+```
 
 # 总结与展望
 
