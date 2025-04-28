@@ -97,7 +97,8 @@ be632cf9bbb6: Pushed
 mirrors:
   docker.io:
     endpoint:
-      - "http://192.168.173.76:6000"
+      - "http://192.168.173.76:6000" # 这里后续我们要思考如何将静态的IP地址写成动态或者如何面对IP变化的情况
+      - "docker.1ms.run" # 保险起见设置一个其他的镜像仓库
     rewrite:
       "^riscv64/(.*)": "riscv64/$1"
   "192.168.173.76:6000":

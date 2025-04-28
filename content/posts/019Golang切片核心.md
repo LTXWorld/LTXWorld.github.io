@@ -90,7 +90,23 @@ s2 := s1[1:2]
 s3 := append(s2, 10)
 ```
 
-可以思考这段代码三者的结果是什么，看似没有修改s1,其实其值已经被修改了。这也是后面回溯的题目我们为什么要克隆path的原因，
+可以思考这段代码三者的结果是什么，看似没有修改s1,其实其值已经被修改了；这也是后面回溯的题目我们为什么要克隆path的原因。
+
+4. append(arr, arr ...)
+
+这里的省略号代表着什么？回到 append 的最初底层定义`func append(slice []Type, elems ...Type)`
+
+第二个参数是可变参数，但是类型需要与 slice 切片中**元素的类型相同**
+
+```go
+arr := []int{1, 2, 3}
+newArr := append(arr, arr...) // 如果不写...则会报错，因为后面的arr是切片，而前面的Type是int
+fmt.Println(newArr)          // 输出: [1 2 3 1 2 3]
+```
+
+这样写的含义是使用 ... **展开切片** arr， 从而等效于`append(arr, 1, 2, 3)`。
+
+省略号仅适用于展开切片和表示可变参数。
 
 #### len与cap
 
@@ -419,7 +435,7 @@ func subsets(nums []int) [][]int {
 
 ### 与Java简单比较
 
-Java中通常使用`ArrayList<T>`，其底层也有一个数组，提供了add,remove,get,set等方法。
+Java中通常使用`ArrayList<T>`动态数组，可以做到随机访问，其底层也有一个数组，提供了add,remove,get,set等方法。
 
 ```java
 public class ArrayList<E> {
@@ -436,6 +452,12 @@ public class ArrayList<E> {
 也会发生扩容，使用`Arrays.copyOf`重新分配新数组。
 
 与切片不同的是，ArrayList是一个类，是一个引用类型，故传入参数是引用传递，不是Go中的值传递，所以对于上面那个`*res`,Java是不需要的，直接修改的原对象。
+
+```java
+List<Integer> arrayList = new ArrayList<>();
+arrayList.add(1); // golang中得用append
+int val = arrayList.get(0);
+```
 
 ### 补充Slices包的用法
 

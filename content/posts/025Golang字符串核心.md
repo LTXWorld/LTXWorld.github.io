@@ -1,6 +1,6 @@
 +++
 date = '2025-04-25T13:49:43+08:00'
-title = '025Golang字符串核心'
+title = 'Golang字符串核心'
 categories = ["核心技术"]
 tags = ["Golang","源码","string字符串"]
 +++
@@ -37,7 +37,11 @@ func isPalindrome(s string) bool {
 
 那么我们就来研究一下为什么要多次一举将字符串转换，并且还新开辟了一片空间专门保存，这看起来是有损性能的不是吗？如果换成其他语言例如Java，Python，会怎么处理呢？
 
+本篇文章将梳理 Golang 关于字符串的各种常见知识点，并且在每个知识点后都会与 Java 进行对比学习（以 JDK8 为准）。
+
 ## string底层
+
+Go:
 
 ```go
 type stringStruct struct {
@@ -46,7 +50,22 @@ type stringStruct struct {
 }
 ```
 
-首先要注意的是string的不可变性，只读。在Golang的底层，字符串是由一个字节数组构成的，就像切片指向底层数组那样。说到字节数组，我们就不得不考虑，什么是字节？
+首先要注意的是string的不可变性，只读。在Golang的底层，字符串是由一个**字节数组**构成的，就像切片指向底层数组那样。
+
+Java:
+
+```java
+public final class String implements java.io.Serializable, Comparable<String>, CharSequence {
+    private final char value[];   // 存储字符
+    private final int offset;     // 起始位置（早期为了 String.substring() 设计的）
+    private final int count;      // 字符串长度（同样是为了 substring）
+    private int hash;             // 缓存hashCode，提高效率
+}
+```
+
+底层是一个 `char[]` **字符数组**，这一点与 Golang 不同
+
+说到字节数组，我们就不得不考虑，什么是字节？
 
 ### Unicode/UTF-8
 
@@ -64,6 +83,14 @@ Go 语言使用的是更通用的 Unicode 字符集，它不仅兼容 ASCII，�
 关于编码方式，其关心的就是如何将字符集中的Code Point转换为二进制的形式供硬件理解使用，UTF-8是Golang在标准库中采取的编码方式，其一般使用1~4字节来编码；例如如果是一个汉字，他会用3字节编码。
 
 用一个例子来总结上面两个概念，'汉'这个字符的字符集是 Unicode ,其 Code Point 是 U+6C49 ,要将其转换为二进制形式我们需要使用UTF-8编码方式，并需要3个字节进行编码：0xE6, 0xB1, 0x89，最终形成一个二进制。
+
+*那么Java呢？*
+
+在早期， Unicode 还没有那么多的字符的时候，16位两字节恰好可以表示所有的字符，所以 Java 采用16bit来表示 char 类型，**一个 Java 字符 = 一个 Unicode 字符。**
+
+并且对这些字符的编码采用 UTF-16 的方式，**即2字节编码**，而不是1～4字节编码，（但是后续例如 emojy 表情的出现，使得 Java 对这些特殊字符采取了4字节编码的方式）
+
+那么 UTF-8 与 UTF-16 的区别就在于8的灵活性1～4字节，和16的死板性全部2字节，当英文字母多的时候8所占的字节就少，但当汉字多的时候16所占变少。所以相对而言， Golang 的编码方式更加适合网络传输，节省空间。
 
 ### rune类型
 
@@ -93,6 +120,16 @@ r[4] = 111 (char: o, code point: U+006F)
 
 当然我们也可以粗略地将 rune 看作字符串中的每一个字符。（有点像 Python 中的 Str？）
 
+*那么Java呢？*
+
+Java 中的 code point 是通过 **1个char 或2个char**组合而成的一个 int 型整数（之所为会有2个上面说过了，为了应付新出现的字符）
+
+```java
+String s = "𝄞a"; // U+1D11E
+System.out.println(s.length());         // 3，因为 "𝄞" 占 2个char + "a" 1个char
+System.out.println(s.codePointCount(0, s.length()));  // 2个code point
+```
+
 ### rune与byte
 
 最早我们提到过，Go 中字符串指向字节数组，那么这里就引出来一个致命问题，为什么 Go 的设计者要引入 rune 这个概念，到底有什么作用呢？
@@ -101,6 +138,20 @@ r[4] = 111 (char: o, code point: U+006F)
 - 所以如果只用字节操作多字节字符，就需要手动处理，容易出错。
 - 而有了rune,其可以直接单独表示某多字节字符，我不需要考虑编码问题，不关心这个多字节字符由几个字节编码。
 - 有效区分了字符和编码
+
+*那么 Java 呢？*
+
+JDK9也意识到了2字节的编码方式太浪费内存了，毕竟大部分还是以英文字母形式出现的，所以将底层的字符数组改为了字节数组,并且设置不同的编码器按情况编码，不再拘泥于 UTF-16。（但只要 coder 为1，整体都要用 UTF16编码）
+
+```java
+public final class String implements java.io.Serializable, Comparable<String>, CharSequence {
+    private final byte[] value;   // 存储字节数组
+    private final byte coder;     // 编码器 0=LATIN1(单字节)，1=UTF16(双字节)
+    private int hash;             // 缓存hashCode
+}
+```
+
+但是 Java 的向后兼容性很强，平常用的方法还是继续使用就好，作为开发者就好像无事发生，透明的。`s.charAt(i)`
 
 概念理清楚后，就会遇到可能的坑了。
 
@@ -112,6 +163,8 @@ fmt.Println(len(s))
 ```
 
 猜猜这里会输出1还是3？显然，字符串的底层还是字节数组，这是逃不掉的命运，所以`len`函数输出的是一个字符串的字节数组长度，而不是 rune 的长度。
+
+同样的，在 Java 中 `s.length()` 返回的不是字符数，而是底层的 char 单元的数量，比如我们上面提到过的音符字符，它会占两个 char 单元，所以整体长度为3而不是2。
 
 ## 常见问题
 
@@ -174,6 +227,29 @@ position 3: l
 position 4: o
 ```
 
+*那么 Java 呢？*
+
+```java
+String s = "Go语言";
+for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    System.out.println(c);
+}
+```
+
+上面我们说到的 char 单元的概念你应该还记得，没错就是那个音符，`charAt(i)`会按照 char 序号，第几个就是第几个 char。
+
+但是遇到音符我们的 charAt 就不能解决了，因为音符一定是由多个 char 组成的，`charAt(i)` 时我们会将这个音符“撕裂”,推荐使用提供的 API `codePointAt` 会识别 code Point 是一个 char 还是两个 char。
+
+```java
+String s = "A😊B";
+for (int i = 0; i < s.length(); ) {
+    int cp = s.codePointAt(i);
+    System.out.println(Integer.toHexString(cp));
+    i += Character.charCount(cp); // 注意步长是1或2
+}
+```
+
 ### Trim方法
 
 Go 的 [strings 包](https://pkg.go.dev/strings#pkg-functions)下包含了多种操作字符串的方法，其中容易出问题的是 trim 类的方法。
@@ -188,7 +264,7 @@ Go 的 [strings 包](https://pkg.go.dev/strings#pkg-functions)下包含了多种
 
 ### 连接字符串
 
-由于 string 是不可变的，所以我们如果简单地用 '+' 来连接那岂不是不断地声明新的底层字节数组然后将内容复制进去。
+由于 string 是不可变的，所以我们如果简单地用 '+' 来连接那岂不是不断开辟新的底层字节数组然后将内容复制进去。
 
 他不会像切片那样共享底层数组，因为其不可变性。
 
@@ -212,6 +288,26 @@ func concat(values []string) string {
 
 最后，平时开发中（也是我在百度代码中见的最多的）还是使用 `fmt.Sprintf()` 来格式化连接字符串较为常见。
 
+*那么 Java 呢？*
+
+我们平时好像也用+号，例如`String s = "Hello" + "World";`但实际上 javac会在编译时直接优化成 `String s = "HelloWorld";`；如果是 a+b,底层会优化为 **StringBuilder**
+
+所以 Java 官方还是推荐我们使用 StringBuilder（当然 StringBuffer也可以，线程安全）
+
+> String concatenation is implemented through the StringBuilder(or StringBuffer) class and its append method
+
+```java
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 100; i++) {
+    sb.append("data" + i);
+}
+String result = sb.toString();
+```
+
+和 Golang 有点类似对吧。也可以使用 **join** `String result = String.join(",", listOfStrings);`
+
+其实这么看来 JVM 已经为我们自动优化了，而 Golang 则需要我们自己注意一下。
+
 ### 截取字符串
 
 ```go
@@ -228,9 +324,13 @@ sub := s[0:5] // sub == "hello"
 - `sub = s[0:5] subCopy := strings.Clone(sub)` 显示复制，会将这部分字节数组复制到一片新的空间中从而避免共享。
 - `sub := string([]byte(s[0:5]))` 先转换为[]byte,再转换回string——Go 会 重新分配新的只读内存，拷贝 byte 数组内容，得到另外一个独立的字符串，不再共享。
 
+Java 中使用 **substring** `String sub = s.substring(0, 5);`并且在 JDK8 以后它不会带来上面的问题，他会直接创建一个新的字符串和它的 char 数组（JDK7 以前会）
+
 ## 总结
 
 Go 中的 string 我们要注意 rune 和 byte 的区别；注意 len 返回的是什么；注意如何遍历，连接，截取字符串。
+
+Java中就三类 String, StringBuilder, StringBuffer；由 `char[]` 转向 `byte[]`，但还是 `char[]` 更常用， JDK8 的功劳。
 
 **这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。**
 
