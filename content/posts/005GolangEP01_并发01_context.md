@@ -1,31 +1,35 @@
 +++
 date = '2024-12-01T12:00:57+08:00'
-title = 'Golang源码小试牛刀:Golang并发01_context'
+title = 'GolangEP01_并发之绕不过的context'
 categories = ["核心技术"]
 tags = ["Golang","源码","Context"]
 +++
 
-# 前言
+## 引子
 
 今天心血来潮，给自己梳理梳理golang中这个十分重要的东东——context，毕竟也是在面试中考察到，但是反问自己的时候却感觉一点也说不出来什么有价值的东西，所以今天我来一次刨根究底。
 
 ![](/img/jb/coffee.webp)
 
-# 源码解析
+## 源码解析
 
 > Package context defines the Context type, which carries deadlines, cancellation signals, and other request-scoped values across API boundaries and between processes.
 
-这是来自于官方的最新说明，意味着context携带终止期限，取消信号，以及跨API，进程之间通信等信息。即context设计的核心目标是
+这是来自于官方的最新说明，意味着 context **携带终止期限，取消信号，以及跨API，进程之间通信**等信息。
 
-* 任务取消机制：跨API和Goroutine的任务取消信号传播机制
-* 超时控制：超时或截止时间控制任务生命周期
-* 数据共享：在不同函数调用间共享元数据
+即context设计的核心目标是
+
+- 任务取消机制：跨API和Goroutine的任务取消信号传播机制
+- 超时控制：超时或截止时间控制任务生命周期
+- 数据共享：在不同函数调用间共享元数据
 
 明确了这些，我们进入到[源码](https://cs.opensource.google/go/go/+/refs/tags/go1.23.3:src/context/context.go;l=227)中。
 
-## Context接口及错误变量
+### Context接口及错误变量
 
-下面这段是来自于Chatgpt的精简版（去掉了长长的英文注释），可以发现Context是一个接口，其中包含了四个方法等待实现，第二个比较特殊，返回的是一个channel。
+下面这段是来自于Chatgpt的精简版（去掉了长长的英文注释），可以发现Context是一个接口，其中包含了四个方法等待实现。`context.Context`
+
+其中第二个比较特殊，返回的是一个channel。
 
 ```go
 type Context interface {
@@ -36,21 +40,26 @@ type Context interface {
 }
 ```
 
-说到这里我们先暂停一下，提前告知整个context包中一共有多少种上下文类型,接下来就会根据这几种类型分别阐述。
+- Done 返回一个仅接收的**内部通道**，当取消信号发到通道后，此通道得关闭，同时context取消；
+  - *关闭通道是唯一一个所有消费者 goroutine 都能够感知到的通道操作*
+  - `case <-ctx.Done()`
+- 如果 Done 通道还未关闭，Err 返回 nil；如果关闭了，就会返回其关闭原因，具体见下面的两个错误类型变量
+  - `ctx.Err()`
 
-* emptyCtx
-* cancleCtx
-* timerCtx
-* valueCtx
-* 以及cancleCtx下的一系列衍生体
+说到这里我们需要补充一下，整个context包中一共有以下这些上下文类型,接下来就会根据这几种类型分别阐述。
 
+- emptyCtx
+- cancleCtx
+- timerCtx
+- valueCtx
+- 以及cancleCtx下的一系列衍生体
 
-定义完了接口，接下来是两个变量:
+定义完了接口，接下来是两个错误类型变量:
 
 ```go
 var Canceled = errors.New("context canceled")
 var DeadlineExceeded error = deadlineExceededError{}
-
+//
 type deadlineExceededError struct{}
 
 func (deadlineExceededError) Error() string   { return "context deadline exceeded" }
@@ -60,13 +69,13 @@ func (deadlineExceededError) Temporary() bool { return true }
 
 根据源码中的注释可以得知
 
-* Canceld是**上下文被取消时**的错误类型，是一个简单的 error 对象，由 errors.New 创建。
-* DealineExceeded表示**上下文超出截止时间**的错误类型，具体实现是 deadlineExceededError，一个实现了 error 接口的结构体，可以为这个错误类型提供更加丰富的信息。
-* 下面三个实现的来自于error的接口表示这是由于超时而引起的错误，暂时性的。
+- Canceld是**上下文被取消时**的错误类型，是一个简单的 error 对象，由 errors.New 创建。
+- DealineExceeded表示**上下文超出截止时间**的错误类型，具体实现是 deadlineExceededError，一个实现了 error 接口的结构体，可以为这个错误类型提供更加丰富的信息。
+- 下面三个实现的来自于error的接口表示这是由于超时而引起的错误，暂时性的。
 
-看到这里，我想你已经猜出为什么要定义这两个变量了，正是能够适配context接口中的Err()方法，至于到底怎么具体实现的Err()方法我们后面再说。
+看到这里，我想你已经猜出为什么要定义这两个变量了，正是能够适配 context 接口中的 Err() 方法，至于到底怎么具体实现的 Err() 方法我们后面再说。
 
-## emptyCtx结构
+### emptyCtx结构
 
 ```go
 type emptyCtx struct{}
@@ -88,9 +97,10 @@ func (emptyCtx) Value(key any) any {
 }
 ```
 
-显而易见，这是一个空的上下文实现，通常用作上下文链的根节点或者占位符。注释中也提到，**这是一个没有任何状态信息，不包含取消、截止时间、或值存储功能，不能通过取消函数手动取消的上下文。**
+显而易见，这是一个空的上下文实现，通常用作上下文链的根节点或者占位符。
+注释中也提到，**这是一个没有任何状态信息，不包含取消、截止时间、或值存储功能，不能通过取消函数手动取消的上下文。**
 
-### BackgroundCtx & todoCtx结构
+#### BackgroundCtx & todoCtx结构
 
 ```go
 type backgroundCtx struct{ emptyCtx }
@@ -106,12 +116,14 @@ func (todoCtx) String() string {
 }
 ```
 
-立马这两个接口就用到了emptyCtx,提供了最基础的上下文功能，为开发中的代码提供一个临时的上下文对象，避免为空。
+这两个接口就用到了emptyCtx,提供了最基础的上下文功能，为开发中的代码提供一个临时的上下文对象，避免为空。
 
-* Background通常用于上下文链的根节点。
-* todo通常用作占位符（见名知意嘛）
+- Background 通常用于上下文链的**根节点**。
+- todo 通常用作占位符
+- 推荐使用 todo，二者在行为上是一致的，但是 todo 的语义更加明确，让人们知道到这是一个待确定的地方；而 background 更常见在顶层的调用上，是根。
 
 对应的还有两个方法来生成二者。
+
 ```go
 func Background() Context {
 	return backgroundCtx{}
@@ -122,8 +134,7 @@ func TODO() Context {
 }
 ```
 
-
-## cancelCtx:支持显示取消的结构
+### cancelCtx:支持显示取消的结构
 
 ```go
 type cancelCtx struct {
@@ -168,25 +179,25 @@ func (c *cancelCtx) Err() error {
 
 哦，原来你小子嵌套了Context祖宗，你是儿子啊！然后你还多定义了什么：
 
-* mu，很常见的保护并发访问
-* done 存储一个懒加载的通道，上下文被取消时关闭此通道；这里的atomic.Value暂且不表。😂
-* children,存储派生于该上下文的子上下文，形成一个上下文链（取消时通知他们）
-* err，错误，通常用上面那两个错误变量
-* casuse，错误原因。
+- mu，很常见的保护并发访问
+- done 存储一个**懒加载的通道**，上下文被取消时关闭此通道；（这里的atomic.Value先放放）
+- children,存储派生于该上下文的子上下文，形成一个**上下文链**（取消时通知他们）
+- err，错误，通常用上面那两个错误变量
+- casuse，错误原因。
 
 后面的这几个就是实现Context接口中的方法
 
-* value:如果键是cancelCtxKey，直接返回cancelCtx本身；否则交给父上下文处理
-* Done:先从done.Load获取已有通道，如果有了，直接返回；如果没有，创建一个新通道并存储（注意加锁后又尝试加载了一次，防止其他协程创建了通道）；**相同上下文返回唯一通道**
-  * 这是一种双检查锁的模式
-* Err:保证线程安全地返回错误状态
+- value:如果键是 cancelCtxKey，直接返回 cancelCtx 本身；否则交给父上下文处理
+- Done:先从 done.Load 获取已有通道，如果有了，直接返回；如果没有，创建一个新通道并存储（注意加锁后又尝试加载了一次，防止其他协程创建了通道）；**相同上下文返回唯一通道**
+  - 这是一种双检查锁的模式
+- Err:保证线程安全地返回错误状态
 
-接下来是此结构中最重要的cancel方法，用于取消当前上下文，并传播取消信号到所有的子上下文，整个流程大致总结如下：
+接下来是此结构中最重要的 cancel 方法，用于**取消当前上下文，并传播取消信号到所有的子上下文**，整个流程大致总结如下：
 
-* 设置err和cause表示上下文已经被取消
-* 关闭Done通道以通知所有监听者
-* 遍历递归取消所有子上下文（链条）
-* 最后清理资源
+- 设置 err 和 cause 表示上下文已经被取消
+- 关闭 Done 通道以通知所有监听者
+- 遍历递归取消所有子上下文（链条）
+- 最后清理资源
 
 ```go
 // 是否需要将当前上下文从其父上下文的 children 集合中移除，取消的错误信息，取消的原因
@@ -227,7 +238,7 @@ func (c *cancelCtx) cancel(removeFromParent bool, err, cause error) {
 }
 ```
 
-### CancelFunc函数类型
+#### CancelFunc函数类型
 
 ```go
 // A CancelFunc tells an operation to abandon its work.
@@ -241,7 +252,7 @@ type CancelFunc func()
 
 之所以这里定义为函数类型，就是为了让其他需要使用到CancelFunc的方法通过**闭包**来绑定具体的逻辑。稍后我们在一些具体方法中就能看到。
 
-###  WithCancel & WithCancelCause
+#### WithCancel & WithCancelCause
 
 ```go
 func WithCancel(parent Context) (ctx Context, cancel CancelFunc) {
@@ -260,13 +271,13 @@ func WithCancelCause(parent Context) (ctx Context, cancel CancelCauseFunc) {
 
 1. WithCancel
 
-* 传入父上下文，创建一个取消上下文，返回此上下文和一个取消函数
-* 可以发现正如我们上面所说，利用闭包，直接返回了一个取消函数cancel来触发上下文的取消
+- 传入父上下文，创建一个取消上下文，返回此上下文和一个取消函数
+- 可以发现正如我们上面所说，利用闭包，直接返回了一个取消函数cancel来触发上下文的取消
 
 2. WithCancelCause
 
-* 将WithCancel中的CancelFunc换为CancelCasuseFunc，带有取消原因。
-* 下面的闭包函数中可以传入一个取消原因`cause error`
+- 将WithCancel中的CancelFunc换为CancelCasuseFunc，带有取消原因。
+- 下面的闭包函数中可以传入一个取消原因`cause error`
 
 ```go
 func withCancel(parent Context) *cancelCtx {
@@ -283,13 +294,13 @@ func withCancel(parent Context) *cancelCtx {
 
 先判断父上下文是否为空（上下文链必须有一个根），**随后创建一个cancelCtx上下文实例，调用propagateCancel关联父子并监听父上下文的取消事件**。
 
-说到这里可能有些懵逼了，那我们就来看看这个propagateCancel是怎么个事！
+说到这里可能有些懵逼了，那我们就来看看这个 propagateCancel 是怎么个事！
 
 ![](/img/ys/ye.webp)
 
-### propagateCancel
+#### propagateCancel
 
-用于将子取消逻辑与父取消逻辑联系起来形成一个链。具体代码逻辑的解释见注释。
+顾名思义，传播，用于将**子取消逻辑与父取消逻辑联系起来形成一个链**。具体代码逻辑的解释见注释。
 
 ```go
 // propagateCancel arranges for child to be canceled when parent is.
@@ -351,9 +362,9 @@ func (c *cancelCtx) propagateCancel(parent Context, child canceler) {
 }
 ```
 
-所以，回到最开始的withCancel中，构建了一个取消传播链，可以调用CancelFunc来触发取消逻辑，释放资源。
+所以，回到最开始的 withCancel 中，构建了一个取消传播链，可以调用 CancelFunc 来触发取消逻辑，释放资源。
 
-### Cause
+#### Cause
 
 从Context中提取取消原因(cause)
 
@@ -368,7 +379,7 @@ func Cause(c Context) error {
 }
 ```
 
-### afterFuncCtx
+#### afterFuncCtx
 
 在cancelCtx的基础上实现回调。
 
@@ -380,7 +391,8 @@ type afterFuncCtx struct {
 }
 ```
 
-AfterFunc传入回调函数，并将afterFuncCtx关联到父上下文
+AfterFunc传入**回调函数f**，并将afterFuncCtx关联到父上下文
+
 ```go
 func AfterFunc(ctx Context, f func()) (stop func() bool) {
 	a := &afterFuncCtx{
@@ -403,10 +415,9 @@ func AfterFunc(ctx Context, f func()) (stop func() bool) {
 }
 ```
 
+### timerCtx
 
-## timerCtx
-
-这是cancelCtx的扩展，支持设置截止时间的上下文类型，多了timer和deadline字段。
+这是cancelCtx的扩展，支持设置截止时间的上下文类型，多了 timer 和 deadline 字段。
 
 ```go
 type timerCtx struct {
@@ -441,7 +452,7 @@ func (c *timerCtx) cancel(removeFromParent bool, err, cause error) {
 }
 ```
 
-### WithTimeout & WithDeadline
+#### WithTimeout & WithDeadline
 
 基于超时持续时间创建上下文；基于指定的截止时间创建上下文
 
@@ -455,13 +466,13 @@ func WithDeadline(parent Context, d time.Time) (Context, CancelFunc) {
 }
 ```
 
-可以发现最终还是调用的是WithDeadlineCause这个方法
+可以发现最终还是调用的是 **WithDeadlineCause** 这个方法
 
-* 检查父上下文是否有更早的截止时间
-* 创建timerCtx
-* 计算剩余时间
-* 设置定时器
-* 返回上下文和取消函数
+1.检查父上下文是否有更早的截止时间
+2.创建timerCtx
+3.计算剩余时间
+4.设置定时器
+5.返回上下文和取消函数
 
 ```go
 func WithDeadlineCause(parent Context, d time.Time, cause error) (Context, CancelFunc) {
@@ -494,9 +505,9 @@ func WithDeadlineCause(parent Context, d time.Time, cause error) (Context, Cance
 }
 ```
 
-## valueCtx
+### valueCtx
 
-实现键值对存储功能的一种上下文类型,适合携带少量元数据。
+实现**键值对存储功能**的一种上下文类型,适合携带少量元数据。
 
 ```go
 type valueCtx struct {
@@ -562,7 +573,7 @@ func value(c Context, key any) any {
 }
 ```
 
-### withValue方法
+#### withValue方法
 
 ```go
 func WithValue(parent Context, key, val any) Context {
@@ -579,7 +590,7 @@ func WithValue(parent Context, key, val any) Context {
 }
 ```
 
-# 常用的Go Context 类型对比
+## 常用的Go Context 类型对比
 
 | **类型**         | **功能描述**                                                                 | **支持取消** | **支持超时/截止时间** | **支持键值对存储** |
 |------------------|-----------------------------------------------------------------------------|-------------|-----------------------|-------------------|
@@ -590,14 +601,13 @@ func WithValue(parent Context, key, val any) Context {
 
 ---
 
-
-# 平时是如何使用的
+## 平时是如何使用的
 
 这里举例说明context以及其中的常见方法在代码中是如何使用的。
 
-## WithTimeout&WithDeadline
+### WithTimeout&WithDeadline
 
-在这段代码中，`context.WithTimeout`起到了控制数据库操作是否超时的作用
+在这段代码中，`context.WithTimeout` 起到了控制数据库操作是否超时的作用
 
 ```go
 func (m MovieModel) Insert(movie *Movie) error {
@@ -620,3 +630,10 @@ func (m MovieModel) Insert(movie *Movie) error {
 }
 ```
 
+## 总结
+
+Golang中经常使用 Context，以上四种 Context 类型各有其作用，通常利用其自带的函数例如`WithTimeout()`,`Background()`来进行控制操作。
+
+其中值得注意的是 cancleCtx 的取消机制中的传播链，存在回调机制，值得我多去思考。
+
+**这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。**

@@ -1,6 +1,6 @@
 +++
 date = '2025-04-25T13:49:43+08:00'
-title = 'Golang字符串核心'
+title = 'GolangEP04_string底层原理及注意事项'
 categories = ["核心技术"]
 tags = ["Golang","源码","string字符串"]
 +++

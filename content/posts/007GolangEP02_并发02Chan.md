@@ -1,15 +1,15 @@
 +++
 date = '2024-12-05T15:40:56+08:00'
-title = 'Golang源码小试牛刀:Golang并发02_Chan'
+title = 'GolangEP02_并发02Chan'
 categories = ["核心技术"]
 tags = ["Golang","源码","Chan"]
 +++
 
-# 前言
+## 前言
 
-# 使用示例
+让我们看看关于 chan 有哪些常见的操作。
 
-## 创建channel
+### 创建channel
 
 ```go
 ch1 := make(chan int)
@@ -18,7 +18,7 @@ ch2 := make(chan int, 2)
 
 底层实际上调用的是[makechan](#makechan函数)方法
 
-## 发送数据到channel
+### 发送数据到channel
 
 ```go
 ch <- 1
@@ -26,7 +26,7 @@ ch <- 1
 
 底层实际调用的是chansend1,而chansend1最终也是调用[chansend](#chansend函数),将block参数设置为true——当前发送操作是**阻塞的**
 
-## 从channel中读取数据
+### 从channel中读取数据
 
 ```go
 i <- ch
@@ -35,12 +35,11 @@ i, ok <- ch
 
 底层实际调用的是chanrecv1和chanrecv2，最终都去调用了chanrecv。
 
-# 源码
-
+## 源码
 
 ## 常量
 
-## hchan结构体
+### hchan结构体
 
 ```go
 type hchan struct {
@@ -73,9 +72,9 @@ type hchan struct {
 * sendx,recvx:发收操作的队列位置
 * recvq,sendq:等待队列
 
-可以发现，hchan使用环形队列表示缓冲区并且采用lock确保并发访问的安全性。
+可以发现，hchan 使用**环形队列表示缓冲区**并且采用 **lock 确保并发访问的安全性**。
 
-## waitq队列
+### waitq队列
 
 ```go
 type waitq struct {
@@ -84,10 +83,10 @@ type waitq struct {
 }
 ```
 
-管理等待发送或接受的goroutine队列——存储阻塞在通道上的 goroutine 信息。
-可以实现快速插入last和删除first，如果通道阻塞，goroutine会封装为sudog并挂入waitq队列中。
+管理等待发送或接受的 goroutine 队列——存储阻塞在通道上的 goroutine 信息。
+可以实现快速插入last和删除first，*如果通道阻塞，goroutine会封装为 sudog 并挂入 waitq 队列中*。
 
-### sudog结构体
+#### sudog结构体
 
 ```go
 type sudog struct {
@@ -114,17 +113,17 @@ type sudog struct {
 }
 ```
 
-用于管理Goroutine在通道操作时的阻塞与唤醒操作,**sudog 充当连接 Goroutine 和通道的桥梁**
+用于管理 Goroutine 在通道操作时的阻塞与唤醒操作,**sudog 充当连接 Goroutine 和通道的桥梁**
 
-* c *hchan:表示当前阻塞的通道
-* elem:指向与通道操作相关的元素，例如保存发送数据
-* next,prev:waitq的双向链表中的sudog节点
-* waitlink,waittail:用于 semaRoot（信号量队列）的队列链接。
-* parent:用于semaRoot的二叉树链接
-* g:当前阻塞的Goroutine对象
-* isSelect:当前sudog是否参与了select操作，可能存在唤醒竞争问题
-* success:当前通道操作是否完成
-* acquiretime,releasetime:sudog被加入的时间和被唤醒的时间
+* `c *hchan`:表示当前阻塞的通道
+* `elem`:指向与通道操作相关的元素，例如保存发送数据
+* `next,prev`:waitq 的双向链表中的 sudog 节点
+* `waitlink,waittail`:用于 semaRoot（信号量队列）的队列链接。
+* `parent`:用于 semaRoot 的二叉树链接
+* `g`:当前阻塞的 Goroutine 对象
+* `isSelect`:当前 sudog 是否参与了 select 操作，可能存在唤醒竞争问题
+* `success`:当前通道操作是否完成
+* `acquiretime,releasetime`:sudog 被加入的时间和被唤醒的时间
 
 可以发现有一些是跟信号量有关的操作semaRoot，是同步操作，与本节关系不太大。
 
@@ -133,7 +132,7 @@ type sudog struct {
 * 作为发送方，检查缓冲区是否未满，如果没满就写入缓冲；如果满了就阻塞到waitq中；如果由接收方等待，则唤醒接收方
 * 作为接收方，检查缓冲区是否非空，如果非空直接读取数据，如果为空阻塞waitq；如果有发送者，唤醒发送方。
 
-### enqueue
+#### enqueue
 
 ```go
 func (q *waitq) enqueue(sgp *sudog) {
@@ -151,12 +150,12 @@ func (q *waitq) enqueue(sgp *sudog) {
 }
 ```
 
-将一个sudog（阻塞的goroutine结构）添加到waitq队列中——通道在运行时实现发送和接受阻塞的核心机制：
+入队操作，将一个 sudog（阻塞的 goroutine 结构）添加到 waitq 队列中——通道在运行时实现发送和接受阻塞的核心机制：
 
 * 获取当前队列尾节点，如果为空意味着队列为空，将sudog作为第一个节点同时也是最后一个节点
 * 如果队列非空，改变prev为当前尾节点并将sudog作为新的队尾。
 
-### dequeue
+#### dequeue
 
 ```go
 func (q *waitq) dequeue() *sudog {
@@ -186,14 +185,14 @@ func (q *waitq) dequeue() *sudog {
 }
 ```
 
-出队操作，返回被移除的sudog
+出队操作，返回被移除的 sudog
 
 * 如果队列头为空，意味着队列为空
 * 如果只有一个结点，移除后队列设置为空
 * 如果有多个节点，移除头结点并更新队列（这里的核心逻辑都是找到第二个节点）
-* 如果该goroutine是由于`select`放入队列，则需要检查是否有竞争条件——看是否有其他的Goroutine先一步唤醒了该sgp，如果是则不能将其移除，继续尝试出队下一个结点。
+* 如果该 goroutine 是由于`select`放入队列，则需要检查是否有竞争条件——看是否有其他的 goroutine 先一步唤醒了该 sgp，如果是则不能将其移除，继续尝试出队下一个结点。
 
-## makechan()函数
+### makechan()函数
 
 ```go
 func makechan(t *chantype, size int) *hchan {
@@ -243,7 +242,7 @@ func makechan(t *chantype, size int) *hchan {
 }
 ```
 
-**根据给定的通道类型和大小，初始化一个通道的底层结构体hchan并分配必要的内存.**
+**根据给定的通道类型和大小，初始化一个通道的底层结构体 hchan 并分配必要的内存.**
 
 * 1 验证通道中的元素类型和通道对齐
 * 2 计算缓冲区大小:元素大小 × 容量，检查是否溢出或超出允许的最大分配值
@@ -254,7 +253,7 @@ func makechan(t *chantype, size int) *hchan {
 * 4 初始化通道，设置元素大小，类型，通道容量，初始化锁
 * 5 最终返回通道hchan指针
 
-## send()函数
+### send()函数
 
 ```go
 func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
@@ -300,7 +299,7 @@ func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
 * 3 调用`sendDirect`*将发送者sudog的数据直接复制到接收者Gorontine的sudog结构中*
 * 4 标记发送成功，记录性能追踪的释放时间，调用`goready`唤醒接收者Goroutine
 
-## chansend()函数
+### chansend()函数
 
 ```go
 func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
@@ -435,9 +434,9 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
 * 异步发送（写入缓存）
 * 阻塞发送（放入wait队列中）
 
-## chanrecv()函数
+### chanrecv()函数
 
-### 异常检查
+#### 异常检查
 
 ```go
 func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool) {
@@ -486,7 +485,7 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 * 同步组校验与定时器检查
 * 进行快速路径检查（这里有些模糊）
 
-### 同步接收
+#### 同步接收
 
 ```go
 	var t0 int64
@@ -521,7 +520,7 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 * 如果通道关闭且缓冲区为空，如不符合接收recv请求的状态，直接返回。
 * 如果sendq中有sudog等待的发送者，调用recv函数完成同步接收
 
-### 异步接收
+#### 异步接收
 
 ```go
 	if c.qcount > 0 {
@@ -548,7 +547,7 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 * 更新通道的信息（索引，缓冲区数据数量）
 * 返回true，表示接收成功
 
-### 阻塞接收
+#### 阻塞接收
 
 ```go
 	if !block {
@@ -608,6 +607,10 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 ```
 
 被调度器唤醒后完成阻塞接收，进行参数检查，解除通道的绑定并释放创建的这个sudog。
+
+## 总结
+
+
 
 ## 参考资料
 

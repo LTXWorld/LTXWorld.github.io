@@ -1,6 +1,6 @@
 +++
 date = '2025-04-11T09:44:17+08:00'
-title = 'Golang进阶之切片核心'
+title = 'GolangEP03_slice底层原理及注意事项'
 categories = ["核心技术"]
 tags = ["Golang","源码","Slice切片"]
 +++ 
