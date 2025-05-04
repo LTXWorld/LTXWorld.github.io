@@ -1,6 +1,6 @@
 +++
 date = '2024-12-05T15:40:56+08:00'
-title = 'GolangEP02_并发02Chan'
+title = 'GolangEP02_并发中的Channel'
 categories = ["核心技术"]
 tags = ["Golang","源码","Chan"]
 +++
@@ -24,7 +24,7 @@ ch2 := make(chan int, 2)
 ch <- 1
 ```
 
-底层实际调用的是chansend1,而chansend1最终也是调用[chansend](#chansend函数),将block参数设置为true——当前发送操作是**阻塞的**
+底层实际调用的是[chansend1](#chansend函数),而chansend1最终也是调用[chansend](#chansend函数),将block参数设置为true——当前发送操作是**阻塞的**
 
 ### 从channel中读取数据
 
@@ -33,11 +33,11 @@ i <- ch
 i, ok <- ch
 ```
 
-底层实际调用的是chanrecv1和chanrecv2，最终都去调用了chanrecv。
+底层实际调用的是[chanrecv1](#chanrecv函数)和chanrecv2，最终都去调用了chanrecv。
 
 ## 源码
 
-## 常量
+接下来我们进入源码中一探究竟。
 
 ### hchan结构体
 
