@@ -1,7 +1,7 @@
 +++
 date = '2025-04-19T19:13:50+08:00'
 draft = true
-title = '023K3sEP05目前工作总结'
+title = '023K3sEP05_issues上得到的可能尝试'
 +++
 
 ## 引子
@@ -472,7 +472,7 @@ done
 
 ### package-cli
 
-此脚本
+此脚本用来构建有关于k3s的相关命令。
 
 ## 汇总
 
@@ -540,4 +540,17 @@ k3s.service - Lightweight Kubernetes
 k3s kubectl get node
 NAME                STATUS   ROLES                  AGE   VERSION
 openeuler-riscv64   Ready    control-plane,master   40m   v1.32.3+k3s-76c5c770-dirty
+```
+
+设置软链接，可以省去前面的 k3s 标识。
+
+```bash
+ln -sf /usr/local/bin/k3s /usr/local/bin/kubectl
+```
+
+最终将上述操作汇总为`k3s-init.sh`,与 k3s-riscv64 和 golang 的tar文件在同一目录下,执行
+
+```bash
+chmod +x k3s-init.sh
+sudo ./k3s-init.sh
 ```
