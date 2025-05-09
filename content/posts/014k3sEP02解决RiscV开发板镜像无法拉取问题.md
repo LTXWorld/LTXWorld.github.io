@@ -1,7 +1,7 @@
 +++
 date = '2025-03-28T14:19:09+08:00'
 title = 'K3sEP02——解决RiscV开发板镜像无法拉取问题'
-categories = ["硬核技术"]
+categories = ["云计算"]
 tags = ["RISC-V","k3s","pod","适配"]
 +++
 
