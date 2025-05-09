@@ -1,6 +1,6 @@
 +++
 date = '2025-03-26T18:51:27+08:00'
-title = 'K3sEP01模拟Kine集群部署'
+title = 'K3sEP01——模拟Kine集群部署'
 categories = ["核心技术"]
 tags = ["RiscV","实验"]
 +++

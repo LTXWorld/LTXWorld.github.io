@@ -1,7 +1,6 @@
 +++
 date = '2025-04-19T19:13:50+08:00'
-draft = true
-title = '023K3sEP05_issues上得到的可能尝试'
+title = 'K3sEP06——从issues上得到的可能尝试'
 +++
 
 ## 引子

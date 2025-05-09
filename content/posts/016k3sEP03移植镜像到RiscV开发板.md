@@ -1,6 +1,6 @@
 +++
 date = '2025-04-02T19:10:13+08:00'
-title = 'K3sEP03移植镜像到RiscV开发板'
+title = 'K3sEP03——移植镜像到RiscV开发板'
 categories = ["硬核技术"]
 tags = ["Docker","Macos","RiscV"]
 +++
