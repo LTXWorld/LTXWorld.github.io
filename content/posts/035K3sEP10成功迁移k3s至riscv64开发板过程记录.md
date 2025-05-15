@@ -14,7 +14,7 @@ tags = ["K3s","RiscV"]
 
 对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.
 
-![support](./img/riscv/support.png)
+![support](/img/riscv/support.png)
 
 对于第二件事,在操作过程中我们可能会遇到大大小小的问题,其实在之前的文章操作中我们都遇到过,这里汇总一下.
 
