@@ -1,6 +1,8 @@
 +++
 date = '2025-05-03T21:04:26+08:00'
 title = 'GolangEP05_Go中的并发'
+categories = ["核心技术"]
+tags = ["Golang","源码","并发"]
 +++
 
 ## 引子
