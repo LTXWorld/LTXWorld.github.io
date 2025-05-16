@@ -1,7 +1,8 @@
 +++
 date = '2025-05-16T14:08:23+08:00'
-draft = true
-title = '035K3sEP11加入agent节点进行集群测试'
+title = 'K3sEP11——加入agent节点进行集群测试'
+categories = ["云计算"]
+tags = ["K3s","RiscV","Redis"]
 +++
 
 ## 引子
