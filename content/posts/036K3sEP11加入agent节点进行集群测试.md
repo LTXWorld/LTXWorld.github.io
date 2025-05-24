@@ -37,6 +37,7 @@ node-name: agent197
 ```
 
 这里的 SERVER_IP 就是我们的 server 节点的 IP 地址; token 需要在 server 节点中获取
+值得注意的是，如果我们切换了整个集群的网络，这里的 SERVER_IP 需要进行手动更改并重启 agent。
 
 ```bash
 # 来到 server 节点
@@ -55,6 +56,7 @@ mirrors:
       - "https://jimlt.bfsmlt.top"
     # 这里根据上
     rewrite:
+      "^library/(.+)$": "${1}"
       "^library/pause$": "pause"
       "^rancher/mirrored-library-traefik$": "traefik"
       "^rancher/mirrored-metrics-server$": "metrics-server"
