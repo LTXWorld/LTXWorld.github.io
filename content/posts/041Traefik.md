@@ -1,6 +1,6 @@
 +++
 date = '2025-06-03T09:27:10+08:00'
-title = 'K3sEP12——遇到的Traedfik问题'
+title = 'K3sEP13——遇到的Traedfik问题'
 categories = ["云计算"]
 tags = ["K3s","RiscV","Traefik"]
 +++
