@@ -1,7 +1,8 @@
 +++
 date = '2025-07-11T11:40:27+08:00'
-draft = true
 title = '042Golang版本更新'
+categories = ["通用技术"]
+tags = ["Golang","版本管理"]
 +++
 
 ## 引子
