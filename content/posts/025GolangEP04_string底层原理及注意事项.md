@@ -7,7 +7,7 @@ tags = ["Golang","源码","string字符串"]
 
 ## 引子
 
-字符串操作在任何语言中的地位都十分重要，在上篇关于Golang中特殊的切片讲完之后，这一次我准备进入Golang中字符串的底层世界，包括引用总结自<100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)>书籍的注意事项。
+字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自<100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)> 书籍的注意事项。
 
 先拿一段力扣上的代码来说吧，本题是[125验证回文串](https://leetcode.cn/problems/valid-palindrome/),大概要求是这样：如果在将所有大写字符转换为小写字符、并移除所有非字母数字字符之后，短语正着读和反着读都一样。则可以认为该短语是一个 回文串 。字母和数字都属于字母数字字符，s 仅由可打印的 ASCII 字符组成。
 
@@ -33,7 +33,7 @@ func isPalindrome(s string) bool {
 }
 ```
 
-这段代码中有一个在其他语言中没见过的东西`[]rune`，可以看到，我们先将s全部小写化，再遍历判断是字母还是数字最后全部添加回了这个 rune 切片当中（由于不知道长度，所以没有提前声明切片长度），然后使用双指针进行判断回文。
+这段代码中有一个在其他语言中没见过的东西 `[]rune`，可以看到，我们先将 s 全部小写化，再遍历判断是字母还是数字最后全部添加回了这个 rune 切片当中（由于不知道长度，所以没有提前声明切片长度），然后使用双指针进行判断回文。
 
 那么我们就来研究一下为什么要多次一举将字符串转换，并且还新开辟了一片空间专门保存，这看起来是有损性能的不是吗？如果换成其他语言例如Java，Python，会怎么处理呢？
 
@@ -50,7 +50,7 @@ type stringStruct struct {
 }
 ```
 
-首先要注意的是string的不可变性，只读。在Golang的底层，字符串是由一个**字节数组**构成的，就像切片指向底层数组那样。
+首先要注意的是 string 的不可变性，只读。在 Golang 的底层，字符串是由一个**字节数组**构成的，就像切片指向底层数组那样。
 
 Java:
 
@@ -69,7 +69,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 
 ### Unicode/UTF-8
 
-这当然是一个简单的不能再简单的概念，但是为了引出rune的概念，我们得看看Golang是如何利用字节的。在此之前我们需要引出两个基础概念:
+这当然是一个简单的不能再简单的概念，但是为了引出rune的概念，我们得看看 Golang 是如何利用字节的。在此之前我们需要引出两个基础概念:
 
 - charset字符集
 - encoding编码方式
@@ -300,7 +300,11 @@ func concat(values []string) string {
 
 所以 Go 还为我们提供了一个附加方法，如果我们可以知道这个 Builder 的总长度，可以预先声明，利用 `sb.Grow(x)`方法，带来极大的性能提升。
 
-最后，平时开发中（也是我在百度代码中见的最多的）还是使用 `fmt.Sprintf()` 来格式化连接字符串较为常见。
+最后，平时开发中（也是我在百度代码中见的最多的）还是使用 `fmt.Sprintf(),fmt.Sprintf()` 来格式化连接字符串较为常见。
+
+```go
+message := fmt.Sprint(500, "internal server error")
+```
 
 *那么 Java 呢？*
 
@@ -335,7 +339,7 @@ sub := s[0:5] // sub == "hello"
 
 建议的解决方案有两个
 
-- `sub = s[0:5] subCopy := strings.Clone(sub)` 显示复制，会将这部分字节数组复制到一片新的空间中从而避免共享。
+- `sub = s[0:5] subCopy := strings.Clone(sub)` 显式复制，会将这部分字节数组复制到一片新的空间中从而避免共享。
 - `sub := string([]byte(s[0:5]))` 先转换为[]byte,再转换回string——Go 会 重新分配新的只读内存，拷贝 byte 数组内容，得到另外一个独立的字符串，不再共享。
 
 Java 中使用 **substring** `String sub = s.substring(0, 5);`并且在 JDK8 以后它不会带来上面的问题，他会直接创建一个新的字符串和它的 char 数组（JDK7 以前会）
@@ -348,6 +352,20 @@ Java 中使用 **substring** `String sub = s.substring(0, 5);`并且在 JDK8 以
    1. 逐个比较字节，只有长度相同，对应位置字节全部相同时，才相等。
 2. 其他比较(`<,>,<=`)
    1. 直接字典序比较，不论长度；对应位置谁的字典序小谁就小。
+
+### 替换字符串中的字符
+
+在力扣 1410HTML 实体解析器题目中，我们可以直接使用 Golang 的 `NewReplacer()` + `Replace()` 方法进行多个位置上的一次性替换。
+
+```go
+func entityParser(s string) (ans string) { return strings.NewReplacer(`&quot;`, `"`, `&apos;`, `'`, `&gt;`, `>`, `&lt;`, `<`, `&frasl;`, `/`, `&amp;`, `&`).Replace(s)}
+```
+
+原理大概如下：
+
+- `NewReplacer()` 形成了一棵决策树，这会建立起一个高效的搜索引擎。
+- `Replace()` 会执行一次性扫描，将符合决策树中的内容进行替换。
+- 这样的时间复杂度只有一趟，是 $O(n)$的,而如果我们对每个字符都使用 `ReplaceAll()` 的话，时间复杂度就是 $O(n*m)$了。
 
 ## 总结
 
