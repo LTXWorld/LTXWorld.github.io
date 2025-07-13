@@ -1,6 +1,6 @@
 +++
 date = '2025-07-11T11:40:27+08:00'
-title = '042Golang版本更新'
+title = 'Golang版本更新工具'
 categories = ["通用技术"]
 tags = ["Golang","版本管理"]
 +++
