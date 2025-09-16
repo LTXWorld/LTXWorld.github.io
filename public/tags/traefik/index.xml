@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Traefik on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/traefik/</link>
+    <description>Recent content in Traefik on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Tue, 03 Jun 2025 09:27:10 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/traefik/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>K3sEP13——遇到的Traedfik问题</title>
+      <link>http://localhost:1313/posts/041traefik/</link>
+      <pubDate>Tue, 03 Jun 2025 09:27:10 +0800</pubDate>
+      <guid>http://localhost:1313/posts/041traefik/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。&lt;/p&gt;
+&lt;p&gt;恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

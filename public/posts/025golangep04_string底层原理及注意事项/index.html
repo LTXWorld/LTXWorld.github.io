@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>GolangEP04_string底层原理及注意事项 | LTX&#39;s Blog</title>
+<meta name="keywords" content="Golang, 源码, string字符串">
+<meta name="description" content="引子
+字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自&lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)&gt; 书籍的注意事项。">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="GolangEP04_string底层原理及注意事项">
+  <meta property="og:description" content="引子 字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自&lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)&gt; 书籍的注意事项。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-25T13:49:43+08:00">
+    <meta property="article:modified_time" content="2025-04-25T13:49:43+08:00">
+    <meta property="article:tag" content="Golang">
+    <meta property="article:tag" content="源码">
+    <meta property="article:tag" content="String字符串">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="GolangEP04_string底层原理及注意事项">
+<meta name="twitter:description" content="引子
+字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自&lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)&gt; 书籍的注意事项。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "GolangEP04_string底层原理及注意事项",
+      "item": "http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "GolangEP04_string底层原理及注意事项",
+  "name": "GolangEP04_string底层原理及注意事项",
+  "description": "引子 字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自\u0026lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)\u0026gt; 书籍的注意事项。\n",
+  "keywords": [
+    "Golang", "源码", "string字符串"
+  ],
+  "articleBody": "引子 字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自\u003c100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)\u003e 书籍的注意事项。\n先拿一段力扣上的代码来说吧，本题是125验证回文串,大概要求是这样：如果在将所有大写字符转换为小写字符、并移除所有非字母数字字符之后，短语正着读和反着读都一样。则可以认为该短语是一个 回文串 。字母和数字都属于字母数字字符，s 仅由可打印的 ASCII 字符组成。\nfunc isPalindrome(s string) bool { var filtered []rune s = strings.ToLower(s) for _, c := range s { if unicode.IsLetter(c) || unicode.IsDigit(c) { filtered = append(filtered, c) } } // 处理完后判断回文 left, right := 0, len(filtered)-1 for left \u003c right { if filtered[left] != filtered[right] { return false } left++ right-- } return true } 这段代码中有一个在其他语言中没见过的东西 []rune，可以看到，我们先将 s 全部小写化，再遍历判断是字母还是数字最后全部添加回了这个 rune 切片当中（由于不知道长度，所以没有提前声明切片长度），然后使用双指针进行判断回文。\n那么我们就来研究一下为什么要多次一举将字符串转换，并且还新开辟了一片空间专门保存，这看起来是有损性能的不是吗？如果换成其他语言例如Java，Python，会怎么处理呢？\n本篇文章将梳理 Golang 关于字符串的各种常见知识点，并且在每个知识点后都会与 Java 进行对比学习（以 JDK8 为准）。\nstring底层 Go:\ntype stringStruct struct { str *byte // 指向底层字节数组的指针 len int // 字符串的长度 } 首先要注意的是 string 的不可变性，只读。在 Golang 的底层，字符串是由一个字节数组构成的，就像切片指向底层数组那样。\nJava:\npublic final class String implements java.io.Serializable, Comparable\u003cString\u003e, CharSequence { private final char value[]; // 存储字符 private final int offset; // 起始位置（早期为了 String.substring() 设计的） private final int count; // 字符串长度（同样是为了 substring） private int hash; // 缓存hashCode，提高效率 } 底层是一个 char[] 字符数组，这一点与 Golang 不同\n说到字节数组，我们就不得不考虑，什么是字节？\nUnicode/UTF-8 这当然是一个简单的不能再简单的概念，但是为了引出rune的概念，我们得看看 Golang 是如何利用字节的。在此之前我们需要引出两个基础概念:\ncharset字符集 encoding编码方式 看本节标题就知道Unicode是字符集，UTF-8是编码方式\n在讨论字符集时，我们常听到 ASCII，它表示每个字符的 Code Point 的值。 而 Code Point 标志着每个字符在字符集中的编号,即字符的逻辑（抽象）编号。 例如，字符 ‘A’ 的 Code Point 是 U+0041, 对应的 ASCII 是 65。\nGo 语言使用的是更通用的 Unicode 字符集，它不仅兼容 ASCII，还能表示更广泛的字符，如中文、表情符号（如 😊）等，因此更加包容和国际化。\n关于编码方式，其关心的就是如何将字符集中的 Code Point 转换为二进制的形式供硬件理解使用，UTF-8是Golang在标准库中采取的编码方式，其一般使用1~4字节来编码；例如如果是一个汉字，他会用3字节编码。\n用一个例子来总结上面两个概念，‘汉’这个字符的字符集是 Unicode ,其 Code Point 是 U+6C49 ,要将其转换为二进制形式我们需要使用UTF-8编码方式，并需要3个字节进行编码：0xE6, 0xB1, 0x89，最终形成一个二进制。\n那么Java呢？\n在早期， Unicode 还没有那么多的字符的时候，16位两字节恰好可以表示所有的字符，所以 Java 采用 16bit 来表示 char 类型，一个 Java 字符 = 一个 Unicode 字符。\n并且对这些字符的编码采用 UTF-16 的方式，即2字节编码，而不是1～4字节编码，（但是后续例如 emojy 表情的出现，使得 Java 对这些特殊字符采取了4字节编码的方式）\n那么 UTF-8 与 UTF-16 的区别就在于8的灵活性1～4字节，和16的死板性全部2字节，当英文字母多的时候8所占的字节就少，但当汉字多的时候16所占变少。所以相对而言， Golang 的编码方式更加适合网络传输，节省空间。\nrune类型 rune is an alias for int32 and is equivalent to int32 in all ways. It is used, by convention, to distinguish character values from integer values\n在源码中官方注释称 rune 是 int32 类型的别名，相当于 int32 类型，按照惯例用来区分字符值和整数值。\n上面提到过，Go 使用至多4字节进行编码，也就是 32bit；而 rune 就是用于表示 Unicode 字符的内建类型，用来存储 Code point 这个编号的，故本质上是一个 int32 类型\n用一段代码来演示：\nfunc main() { s := \"hello\" r := []rune(s) for i, v := range r { fmt.Printf(\"r[%d] = %d (char: %c, code point: %U)\\n\", i, v, v, v) } } // 输出结果如下 r[0] = 104 (char: h, code point: U+0068) r[1] = 101 (char: e, code point: U+0065) r[2] = 108 (char: l, code point: U+006C) r[3] = 108 (char: l, code point: U+006C) r[4] = 111 (char: o, code point: U+006F) 可以发现 rune 用来表示（or存储）一个 Unicode 字符的 Code Point。 当我们执行 fmt.Println(rune('A')) 的时候，它会输出 65，代表着 ‘A’ 的 Code Point 的值。\n当然我们也可以粗略地将 rune 看作字符串中的每一个字符，即 Go 中字符字面量是 rune.\n那么Java呢？\nJava 中的 code point 是通过 1个char 或2个char组合而成的一个 int 型整数（之所为会有2个上面说过了，为了应付新出现的字符）\nString s = \"𝄞a\"; // U+1D11E System.out.println(s.length()); // 3，因为 \"𝄞\" 占 2个char + \"a\" 1个char System.out.println(s.codePointCount(0, s.length())); // 2个code point rune与byte 最早我们提到过，Go 中字符串指向字节数组，那么这里就引出来一个致命问题，为什么 Go 的设计者要引入 rune 这个概念，到底有什么作用呢？\nbyte 是 uint8 的别名，仅能表示 0-255 的值，所以我们说的’汉’这个字符不能单个表示，得多字节表示。 所以如果只用字节操作多字节字符，就需要手动处理，容易出错。 rune 是 int32 的别名，其可以直接单独表示某多字节字符。从程序员的角度来看，不需要考虑编码问题，不关心这个多字节字符由几个字节编码。 rune 有效区分了字符和编码，并为我们屏蔽了下面的细节。 那么 Java 呢？\nJDK9也意识到了2字节的编码方式太浪费内存了，毕竟大部分还是以英文字母形式出现的，所以将底层的字符数组改为了字节数组,并且设置不同的编码器按情况编码，不再拘泥于 UTF-16。（但只要 coder 为1，整体都要用 UTF16编码）\npublic final class String implements java.io.Serializable, Comparable\u003cString\u003e, CharSequence { private final byte[] value; // 存储字节数组 private final byte coder; // 编码器 0=LATIN1(单字节)，1=UTF16(双字节) private int hash; // 缓存hashCode } 但是 Java 的向后兼容性很强，平常用的方法还是继续使用就好，作为开发者就好像无事发生，透明的。s.charAt(i)\n概念理清楚后，接下来让我们看看可能遇到的坑。\n常见问题 这里引用100 Mistakes 中列举出来的问题加以说明巩固。\nlen(s) s := \"汉\" fmt.Println(len(s)) 猜猜这里会输出1还是3？显然，字符串的底层还是字节数组，这是逃不掉的命运，所以len函数输出的是一个字符串的字节数组长度，而不是 rune 的长度。\n同样的，在 Java 中 s.length() 返回的不是字符数，而是底层的 char 单元的数量，比如我们上面提到过的音符字符，它会占两个 char 单元，所以整体长度为3而不是2。\nrange遍历字符串 s := \"hêllo\" for i := range s { fmt.Printf(\"position %d: %c\\n\", i, s[i]) } fmt.Printf(\"len=%d\\n\", len(s)) // 输出结果如下 position 0: h position 1: Ã position 3: l position 4: l position 5: o len=6 两个问题：\n下标2怎么不见了？ 为什么第二个输出了Ã？ 很明显，ê 并不是一个ASCII字符，其需要不止一个字节表示； 但这并不能回答我们的问题，核心在于：range s 中的 i 指向每个字符底层字节数组中的起始位置，s[i]自然也就输出的是起始位置处的字符。\n那该如何规避这个问题呢？在range的时候不要用下标，直接使用其值。发现下标还是指向的是底层字节切片的起始下标。\nfor i, r := range s { fmt.Printf(\"position %d: %c\\n\", i, r) } // position 0: h position 1: ê position 3: l position 4: l position 5: o 或者更常见的方法，转换为[]rune切片。好处在于下标是对的上的，就表示每个字符在字符串中的位置。\ns := \"hêllo\" runes := []rune(s) for i, r := range runes { fmt.Printf(\"position %d: %c\\n\", i, r) } // position 0: h position 1: ê position 2: l position 3: l position 4: o 这里再补充一下，s[i] 这样的操作会输出第i个字节。\n所以在对于普通的英文字符串进行遍历访问时，s[i] 基本等同于字符访问；而对于多字节字符（中文等）这样访问就很容易出 bug。\n用 range s 遍历字符 转换为 rune 切片 []rune(s)，按照下标进行访问 这也就回答了我们最开始的问题，那段回文代码中为什么要使用 rune,就是为了防止多字节字符的影响。\n那么 Java 呢？\nString s = \"Go语言\"; for (int i = 0; i \u003c s.length(); i++) { char c = s.charAt(i); System.out.println(c); } 上面我们说到的 char 单元的概念你应该还记得，没错就是那个音符，charAt(i)会按照 char 序号，第几个就是第几个 char。\n但是遇到音符我们的 charAt 就不能解决了，因为音符一定是由多个 char 组成的，charAt(i) 时我们会将这个音符“撕裂”,推荐使用提供的 API codePointAt 会识别 code Point 是一个 char 还是两个 char。\nString s = \"A😊B\"; for (int i = 0; i \u003c s.length(); ) { int cp = s.codePointAt(i); System.out.println(Integer.toHexString(cp)); i += Character.charCount(cp); // 注意步长是1或2 } Trim方法 Go 的 strings 包下包含了多种操作字符串的方法，其中容易出问题的是 trim 类的方法。\n‘TrimRight removes all the trailing runes contained in a given set’ ,而 TrimSuffix 是真正移除给定 set TrimLeft 和 TrimPrefix 同理 Trim 是 TrimRight 和 TrimLeft 结合体 需要补充的是，strings包下有很多好用的方法，如果我们想操作字节数组该怎么办呢？ 要把 []byte 转为 string 然后利用 strings 最后再转回去吗？ 其实 Go 的 bytes 包也为我们准备许多类似于 stirngs 包中的方法，可以直接操作字节数组。\n连接字符串 由于 string 是不可变的，所以我们如果简单地用 ‘+’ 来连接那岂不是不断开辟新的底层字节数组然后将内容复制进去。\n他不会像切片那样共享底层数组，因为其不可变性。\n对此，Go 标准库提供了一个好方法 strings.Builder\nfunc concat(values []string) string { sb := strings.Builder{} for _, value := range values { _, _ = sb.WriteString(value) } return sb.String() } 这会一次性分配大内存，避免多次复制。其底层实际上还是一个字节切片，每次 WriteString 时就是给这个切片中 append\n到这里如果你看过之前关于切片底层的文章，你会敏感地发现向这个字节切片进行 append 不是也从0开始的吗？然后不是还会发生扩容吗？感觉效率仍然不是很高。\n所以 Go 还为我们提供了一个附加方法，如果我们可以知道这个 Builder 的总长度，可以预先声明，利用 sb.Grow(x)方法，带来极大的性能提升。\n最后，平时开发中（也是我在百度代码中见的最多的）还是使用 fmt.Sprintf(),fmt.Sprintf() 来格式化连接字符串较为常见。\nmessage := fmt.Sprint(500, \"internal server error\") 那么 Java 呢？\n我们平时好像也用+号，例如String s = \"Hello\" + \"World\";但实际上 javac会在编译时直接优化成 String s = \"HelloWorld\";；如果是 a+b,底层会优化为 StringBuilder\n所以 Java 官方还是推荐我们使用 StringBuilder（当然 StringBuffer也可以，线程安全）\nString concatenation is implemented through the StringBuilder(or StringBuffer) class and its append method\nStringBuilder sb = new StringBuilder(); for (int i = 0; i \u003c 100; i++) { sb.append(\"data\" + i); } String result = sb.toString(); 和 Golang 有点类似对吧。也可以使用 join String result = String.join(\",\", listOfStrings);\n其实这么看来 JVM 已经为我们自动优化了，而 Golang 则需要我们自己注意一下。\n截取字符串 s := \"hello world\" sub := s[0:5] // sub == \"hello\" 如果我们直接用 [:]来截取的话, sub 的底层字节数组并没有改变还是持有着 s 的底层数组，看似没有什么太大的问题，如果这个 s 是一整个很大的 log 呢？\n这就会让内存压力很大，很大的 log 并不能及时地得到 GC 处理，因为我们 sub 还在用它。\n建议的解决方案有两个\nsub = s[0:5] subCopy := strings.Clone(sub) 显式复制，会将这部分字节数组复制到一片新的空间中从而避免共享。 sub := string([]byte(s[0:5])) 先转换为[]byte,再转换回string——Go 会 重新分配新的只读内存，拷贝 byte 数组内容，得到另外一个独立的字符串，不再共享。 Java 中使用 substring String sub = s.substring(0, 5);并且在 JDK8 以后它不会带来上面的问题，他会直接创建一个新的字符串和它的 char 数组（JDK7 以前会）\n比较字符串 在 Golang 中，两个字符串可以直接用运算符号进行比较，其底层执行的是字典序的比较。\n相等性比较 逐个比较字节，只有长度相同，对应位置字节全部相同时，才相等。 其他比较(\u003c,\u003e,\u003c=) 直接字典序比较，不论长度；对应位置谁的字典序小谁就小。 替换字符串中的字符 在力扣 1410HTML 实体解析器题目中，我们可以直接使用 Golang 的 NewReplacer() + Replace() 方法进行多个位置上的一次性替换。\nfunc entityParser(s string) (ans string) { return strings.NewReplacer(`\u0026quot;`, `\"`, `\u0026apos;`, `'`, `\u0026gt;`, `\u003e`, `\u0026lt;`, `\u003c`, `\u0026frasl;`, `/`, `\u0026amp;`, `\u0026`).Replace(s)} 原理大概如下：\nNewReplacer() 形成了一棵决策树，这会建立起一个高效的搜索引擎。 Replace() 会执行一次性扫描，将符合决策树中的内容进行替换。 这样的时间复杂度只有一趟，是 $O(n)$的,而如果我们对每个字符都使用 ReplaceAll() 的话，时间复杂度就是 $O(n*m)$了。 总结 Go 中的 string 我们要注意 rune 和 byte 的区别；注意 len 返回的是什么；注意如何遍历，连接，截取字符串。\nJava中就三类 String, StringBuilder, StringBuffer；由 char[] 转向 byte[]，但还是 char[] 更常用， JDK8 的功劳。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n引用 《100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)》 ChatGPT Leetcode ",
+  "wordCount" : "4833",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-04-25T13:49:43+08:00",
+  "dateModified": "2025-04-25T13:49:43+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      GolangEP04_string底层原理及注意事项
+    </h1>
+    <div class="post-meta"><span title='2025-04-25 13:49:43 +0800 CST'>四月 25, 2025</span>&nbsp;·&nbsp;10 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#string%e5%ba%95%e5%b1%82" aria-label="string底层">string底层</a><ul>
+                        
+                <li>
+                    <a href="#unicodeutf-8" aria-label="Unicode/UTF-8">Unicode/UTF-8</a></li>
+                <li>
+                    <a href="#rune%e7%b1%bb%e5%9e%8b" aria-label="rune类型">rune类型</a></li>
+                <li>
+                    <a href="#rune%e4%b8%8ebyte" aria-label="rune与byte">rune与byte</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98" aria-label="常见问题">常见问题</a><ul>
+                        
+                <li>
+                    <a href="#lens" aria-label="len(s)">len(s)</a></li>
+                <li>
+                    <a href="#range%e9%81%8d%e5%8e%86%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="range遍历字符串">range遍历字符串</a></li>
+                <li>
+                    <a href="#trim%e6%96%b9%e6%b3%95" aria-label="Trim方法">Trim方法</a></li>
+                <li>
+                    <a href="#%e8%bf%9e%e6%8e%a5%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="连接字符串">连接字符串</a></li>
+                <li>
+                    <a href="#%e6%88%aa%e5%8f%96%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="截取字符串">截取字符串</a></li>
+                <li>
+                    <a href="#%e6%af%94%e8%be%83%e5%ad%97%e7%ac%a6%e4%b8%b2" aria-label="比较字符串">比较字符串</a></li>
+                <li>
+                    <a href="#%e6%9b%bf%e6%8d%a2%e5%ad%97%e7%ac%a6%e4%b8%b2%e4%b8%ad%e7%9a%84%e5%ad%97%e7%ac%a6" aria-label="替换字符串中的字符">替换字符串中的字符</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a></li>
+                <li>
+                    <a href="#%e5%bc%95%e7%94%a8" aria-label="引用">引用</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自&lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)&gt; 书籍的注意事项。</p>
+<p>先拿一段力扣上的代码来说吧，本题是<a href="https://leetcode.cn/problems/valid-palindrome/">125验证回文串</a>,大概要求是这样：如果在将所有大写字符转换为小写字符、并移除所有非字母数字字符之后，短语正着读和反着读都一样。则可以认为该短语是一个 回文串 。字母和数字都属于字母数字字符，s 仅由可打印的 ASCII 字符组成。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">isPalindrome</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">filtered</span> <span class="p">[]</span><span class="kt">rune</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">s</span> <span class="p">=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">ToLower</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">c</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">s</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">unicode</span><span class="p">.</span><span class="nf">IsLetter</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="o">||</span> <span class="nx">unicode</span><span class="p">.</span><span class="nf">IsDigit</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">filtered</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">filtered</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 处理完后判断回文</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">filtered</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">left</span> <span class="p">&lt;</span> <span class="nx">right</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">filtered</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span> <span class="o">!=</span> <span class="nx">filtered</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">left</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">--</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这段代码中有一个在其他语言中没见过的东西 <code>[]rune</code>，可以看到，我们先将 s 全部小写化，再遍历判断是字母还是数字最后全部添加回了这个 rune 切片当中（由于不知道长度，所以没有提前声明切片长度），然后使用双指针进行判断回文。</p>
+<p>那么我们就来研究一下为什么要多次一举将字符串转换，并且还新开辟了一片空间专门保存，这看起来是有损性能的不是吗？如果换成其他语言例如Java，Python，会怎么处理呢？</p>
+<p>本篇文章将梳理 Golang 关于字符串的各种常见知识点，并且在每个知识点后都会与 Java 进行对比学习（以 JDK8 为准）。</p>
+<h2 id="string底层">string底层<a hidden class="anchor" aria-hidden="true" href="#string底层">#</a></h2>
+<p>Go:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">stringStruct</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">str</span> <span class="o">*</span><span class="kt">byte</span>  <span class="c1">// 指向底层字节数组的指针</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">len</span> <span class="kt">int</span>    <span class="c1">// 字符串的长度</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>首先要注意的是 string 的不可变性，只读。在 Golang 的底层，字符串是由一个<strong>字节数组</strong>构成的，就像切片指向底层数组那样。</p>
+<p>Java:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">String</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="na">io</span><span class="p">.</span><span class="na">Serializable</span><span class="p">,</span><span class="w"> </span><span class="n">Comparable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">CharSequence</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">value</span><span class="o">[]</span><span class="p">;</span><span class="w">   </span><span class="c1">// 存储字符</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">offset</span><span class="p">;</span><span class="w">     </span><span class="c1">// 起始位置（早期为了 String.substring() 设计的）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w">      </span><span class="c1">// 字符串长度（同样是为了 substring）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">hash</span><span class="p">;</span><span class="w">             </span><span class="c1">// 缓存hashCode，提高效率</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>底层是一个 <code>char[]</code> <strong>字符数组</strong>，这一点与 Golang 不同</p>
+<p>说到字节数组，我们就不得不考虑，什么是字节？</p>
+<h3 id="unicodeutf-8">Unicode/UTF-8<a hidden class="anchor" aria-hidden="true" href="#unicodeutf-8">#</a></h3>
+<p>这当然是一个简单的不能再简单的概念，但是为了引出rune的概念，我们得看看 Golang 是如何利用字节的。在此之前我们需要引出两个基础概念:</p>
+<ul>
+<li>charset字符集</li>
+<li>encoding编码方式</li>
+</ul>
+<p>看本节标题就知道Unicode是字符集，UTF-8是编码方式</p>
+<p>在讨论字符集时，我们常听到 ASCII，它表示每个字符的 Code Point 的<strong>值</strong>。
+而 Code Point 标志着每个<strong>字符在字符集中的编号</strong>,即字符的逻辑（抽象）编号。
+例如，字符 &lsquo;A&rsquo; 的 Code Point 是 U+0041, 对应的 ASCII 是 65。</p>
+<p>Go 语言使用的是更通用的 Unicode 字符集，它不仅兼容 ASCII，还能表示更广泛的字符，如中文、表情符号（如 😊）等，因此更加包容和国际化。</p>
+<p>关于编码方式，其关心的就是如何将字符集中的 Code Point 转换为二进制的形式供硬件理解使用，UTF-8是Golang在标准库中采取的编码方式，其一般使用1~4字节来编码；例如如果是一个汉字，他会用3字节编码。</p>
+<p>用一个例子来总结上面两个概念，&lsquo;汉&rsquo;这个字符的字符集是 Unicode ,其 Code Point 是 U+6C49 ,要将其转换为二进制形式我们需要使用UTF-8编码方式，并需要3个字节进行编码：0xE6, 0xB1, 0x89，最终形成一个二进制。</p>
+<p><em>那么Java呢？</em></p>
+<p>在早期， Unicode 还没有那么多的字符的时候，16位两字节恰好可以表示所有的字符，所以 Java 采用 16bit 来表示 char 类型，<strong>一个 Java 字符 = 一个 Unicode 字符。</strong></p>
+<p>并且对这些字符的编码采用 UTF-16 的方式，<strong>即2字节编码</strong>，而不是1～4字节编码，（但是后续例如 emojy 表情的出现，使得 Java 对这些特殊字符采取了4字节编码的方式）</p>
+<p>那么 UTF-8 与 UTF-16 的区别就在于8的灵活性1～4字节，和16的死板性全部2字节，当英文字母多的时候8所占的字节就少，但当汉字多的时候16所占变少。所以相对而言， Golang 的编码方式<em>更加适合网络传输，节省空间</em>。</p>
+<h3 id="rune类型">rune类型<a hidden class="anchor" aria-hidden="true" href="#rune类型">#</a></h3>
+<blockquote>
+<p>rune is an alias for int32 and is equivalent to int32 in all ways. It is used, by convention, to distinguish character values from integer values</p></blockquote>
+<p>在源码中官方注释称 rune 是 int32 类型的别名，相当于 int32 类型，按照惯例<strong>用来区分字符值和整数值</strong>。</p>
+<p>上面提到过，Go 使用至多4字节进行编码，也就是 32bit；而 rune 就是用于表示 Unicode 字符的内建类型，<strong>用来存储 Code point 这个编号的</strong>，故本质上是一个 int32 类型</p>
+<p>用一段代码来演示：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span> <span class="o">:=</span> <span class="s">&#34;hello&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">r</span> <span class="o">:=</span> <span class="p">[]</span><span class="nb">rune</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">r</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;r[%d] = %d (char: %c, code point: %U)\n&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出结果如下</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="mi">104</span> <span class="p">(</span><span class="nx">char</span><span class="p">:</span> <span class="nx">h</span><span class="p">,</span> <span class="nx">code</span> <span class="nx">point</span><span class="p">:</span> <span class="nx">U</span><span class="o">+</span><span class="mo">006</span><span class="mi">8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="mi">101</span> <span class="p">(</span><span class="nx">char</span><span class="p">:</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">code</span> <span class="nx">point</span><span class="p">:</span> <span class="nx">U</span><span class="o">+</span><span class="mo">0065</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">=</span> <span class="mi">108</span> <span class="p">(</span><span class="nx">char</span><span class="p">:</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">code</span> <span class="nx">point</span><span class="p">:</span> <span class="nx">U</span><span class="o">+</span><span class="mo">006</span><span class="nx">C</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="p">=</span> <span class="mi">108</span> <span class="p">(</span><span class="nx">char</span><span class="p">:</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">code</span> <span class="nx">point</span><span class="p">:</span> <span class="nx">U</span><span class="o">+</span><span class="mo">006</span><span class="nx">C</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">r</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="p">=</span> <span class="mi">111</span> <span class="p">(</span><span class="nx">char</span><span class="p">:</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">code</span> <span class="nx">point</span><span class="p">:</span> <span class="nx">U</span><span class="o">+</span><span class="mo">006</span><span class="nx">F</span><span class="p">)</span>
+</span></span></code></pre></div><p>可以发现 rune 用来表示（or存储）一个 Unicode 字符的 Code Point。
+当我们执行 <code>fmt.Println(rune('A'))</code> 的时候，它会输出 65，代表着 &lsquo;A&rsquo; 的 Code Point 的值。</p>
+<p>当然我们也可以粗略地将 rune 看作字符串中的每一个字符，<em>即 Go 中字符字面量是 rune</em>.</p>
+<p><em>那么Java呢？</em></p>
+<p>Java 中的 code point 是通过 <strong>1个char 或2个char</strong>组合而成的一个 int 型整数（之所为会有2个上面说过了，为了应付新出现的字符）</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;𝄞a&#34;</span><span class="p">;</span><span class="w"> </span><span class="c1">// U+1D11E</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="na">length</span><span class="p">());</span><span class="w">         </span><span class="c1">// 3，因为 &#34;𝄞&#34; 占 2个char + &#34;a&#34; 1个char</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="na">codePointCount</span><span class="p">(</span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="na">length</span><span class="p">()));</span><span class="w">  </span><span class="c1">// 2个code point</span><span class="w">
+</span></span></span></code></pre></div><h3 id="rune与byte">rune与byte<a hidden class="anchor" aria-hidden="true" href="#rune与byte">#</a></h3>
+<p>最早我们提到过，Go 中字符串指向字节数组，那么这里就引出来一个致命问题，为什么 Go 的设计者要引入 rune 这个概念，到底有什么作用呢？</p>
+<ul>
+<li>byte 是 uint8 的别名，仅能表示 0-255 的值，所以我们说的&rsquo;汉&rsquo;这个字符<strong>不能单个表示，得多字节表示</strong>。</li>
+<li>所以如果只用字节操作多字节字符，就需要手动处理，容易出错。</li>
+<li>rune 是 int32 的别名，其可以直接单独表示某多字节字符。从程序员的角度来看，不需要考虑编码问题，不关心这个多字节字符由几个字节编码。</li>
+<li>rune 有效区分了字符和编码，并为我们屏蔽了下面的细节。</li>
+</ul>
+<p><em>那么 Java 呢？</em></p>
+<p>JDK9也意识到了2字节的编码方式太浪费内存了，毕竟大部分还是以英文字母形式出现的，所以将底层的<strong>字符数组改为了字节数组</strong>,并且设置不同的编码器按情况编码，不再拘泥于 UTF-16。（但只要 coder 为1，整体都要用 UTF16编码）</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">String</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">java</span><span class="p">.</span><span class="na">io</span><span class="p">.</span><span class="na">Serializable</span><span class="p">,</span><span class="w"> </span><span class="n">Comparable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">CharSequence</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w">   </span><span class="c1">// 存储字节数组</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">byte</span><span class="w"> </span><span class="n">coder</span><span class="p">;</span><span class="w">     </span><span class="c1">// 编码器 0=LATIN1(单字节)，1=UTF16(双字节)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">hash</span><span class="p">;</span><span class="w">             </span><span class="c1">// 缓存hashCode</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>但是 Java 的向后兼容性很强，平常用的方法还是继续使用就好，作为开发者就好像无事发生，透明的。<code>s.charAt(i)</code></p>
+<p>概念理清楚后，接下来让我们看看可能遇到的坑。</p>
+<h2 id="常见问题">常见问题<a hidden class="anchor" aria-hidden="true" href="#常见问题">#</a></h2>
+<p>这里引用100 Mistakes 中列举出来的问题加以说明巩固。</p>
+<h3 id="lens">len(s)<a hidden class="anchor" aria-hidden="true" href="#lens">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">s</span> <span class="o">:=</span> <span class="s">&#34;汉&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span> 
+</span></span></code></pre></div><p>猜猜这里会输出1还是3？显然，字符串的底层还是字节数组，这是逃不掉的命运，所以<code>len</code>函数输出的是一个字符串的字节数组长度，而不是 rune 的长度。</p>
+<p>同样的，在 Java 中 <code>s.length()</code> 返回的不是字符数，而是底层的 char 单元的数量，比如我们上面提到过的音符字符，它会占两个 char 单元，所以整体长度为3而不是2。</p>
+<h3 id="range遍历字符串">range遍历字符串<a hidden class="anchor" aria-hidden="true" href="#range遍历字符串">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">s</span> <span class="o">:=</span> <span class="s">&#34;hêllo&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">s</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;position %d: %c\n&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;len=%d\n&#34;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出结果如下</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">0</span><span class="p">:</span> <span class="nx">h</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">1</span><span class="p">:</span> <span class="nx">Ã</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">3</span><span class="p">:</span> <span class="nx">l</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">4</span><span class="p">:</span> <span class="nx">l</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">5</span><span class="p">:</span> <span class="nx">o</span>
+</span></span><span class="line"><span class="cl"><span class="nx">len</span><span class="p">=</span><span class="mi">6</span>
+</span></span></code></pre></div><p>两个问题：</p>
+<ul>
+<li>下标2怎么不见了？</li>
+<li>为什么第二个输出了Ã？</li>
+</ul>
+<p>很明显，ê 并不是一个ASCII字符，其需要不止一个字节表示；
+但这并不能回答我们的问题，核心在于：<code>range s</code> 中的 i 指向<strong>每个字符底层字节数组中的起始位置</strong>，s[i]自然也就输出的是起始位置处的字符。</p>
+<p><img alt="1" loading="lazy" src="/img/golangPic/sl01.png"></p>
+<p>那该如何规避这个问题呢？在range的时候不要用下标，直接使用其值。发现下标还是指向的是底层字节切片的起始下标。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">s</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;position %d: %c\n&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">0</span><span class="p">:</span> <span class="nx">h</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">1</span><span class="p">:</span> <span class="nx">ê</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">3</span><span class="p">:</span> <span class="nx">l</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">4</span><span class="p">:</span> <span class="nx">l</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">5</span><span class="p">:</span> <span class="nx">o</span>
+</span></span></code></pre></div><p>或者更常见的方法，转换为<code>[]rune</code>切片。好处在于下标是对的上的，就表示每个字符在字符串中的位置。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">s</span> <span class="o">:=</span> <span class="s">&#34;hêllo&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">runes</span> <span class="o">:=</span> <span class="p">[]</span><span class="nb">rune</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">runes</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;position %d: %c\n&#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">0</span><span class="p">:</span> <span class="nx">h</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">1</span><span class="p">:</span> <span class="nx">ê</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">2</span><span class="p">:</span> <span class="nx">l</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">3</span><span class="p">:</span> <span class="nx">l</span>
+</span></span><span class="line"><span class="cl"><span class="nx">position</span> <span class="mi">4</span><span class="p">:</span> <span class="nx">o</span>
+</span></span></code></pre></div><p>这里再补充一下，<code>s[i]</code> 这样的操作会输出第i个字节。</p>
+<p>所以在对于普通的英文字符串进行遍历访问时，<code>s[i]</code> 基本等同于字符访问；而对于多字节字符（中文等）这样访问就很容易出 bug。</p>
+<ul>
+<li>用 range s 遍历字符</li>
+<li>转换为 rune 切片 <code>[]rune(s)</code>，按照下标进行访问</li>
+</ul>
+<p>这也就回答了我们最开始的问题，那段回文代码中为什么要使用 rune,就是为了防止多字节字符的影响。</p>
+<p><em>那么 Java 呢？</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;Go语言&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="na">length</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="na">charAt</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">c</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>上面我们说到的 char 单元的概念你应该还记得，没错就是那个音符，<code>charAt(i)</code>会按照 char 序号，第几个就是第几个 char。</p>
+<p>但是遇到音符我们的 charAt 就不能解决了，因为音符一定是由多个 char 组成的，<code>charAt(i)</code> 时我们会将这个音符“撕裂”,推荐使用提供的 API <code>codePointAt</code> 会识别 code Point 是一个 char 还是两个 char。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;A😊B&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="na">length</span><span class="p">();</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="na">codePointAt</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="na">toHexString</span><span class="p">(</span><span class="n">cp</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">Character</span><span class="p">.</span><span class="na">charCount</span><span class="p">(</span><span class="n">cp</span><span class="p">);</span><span class="w"> </span><span class="c1">// 注意步长是1或2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="trim方法">Trim方法<a hidden class="anchor" aria-hidden="true" href="#trim方法">#</a></h3>
+<p>Go 的 <a href="https://pkg.go.dev/strings#pkg-functions">strings 包</a>下包含了多种操作字符串的方法，其中容易出问题的是 trim 类的方法。</p>
+<ul>
+<li>‘TrimRight removes all the trailing runes contained in a given set’ ,而 TrimSuffix 是真正移除给定 set</li>
+<li>TrimLeft 和 TrimPrefix 同理</li>
+<li>Trim 是 TrimRight 和 TrimLeft 结合体</li>
+</ul>
+<p>需要补充的是，strings包下有很多好用的方法，如果我们想操作字节数组该怎么办呢？
+要把 <code>[]byte</code> 转为 string 然后利用 strings 最后再转回去吗？
+其实 Go 的 bytes 包也为我们准备许多类似于 stirngs 包中的方法，可以直接操作字节数组。</p>
+<h3 id="连接字符串">连接字符串<a hidden class="anchor" aria-hidden="true" href="#连接字符串">#</a></h3>
+<p>由于 string 是不可变的，所以我们如果简单地用 &lsquo;+&rsquo; 来连接那岂不是不断开辟新的底层字节数组然后将内容复制进去。</p>
+<p>他不会像切片那样共享底层数组，因为其不可变性。</p>
+<p>对此，Go 标准库提供了一个好方法 <code>strings.Builder</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">concat</span><span class="p">(</span><span class="nx">values</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">sb</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">Builder</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">values</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">sb</span><span class="p">.</span><span class="nf">WriteString</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">sb</span><span class="p">.</span><span class="nf">String</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这会一次性分配大内存，避免多次复制。其底层实际上还是一个字节切片，每次 <code>WriteString</code> 时就是给这个切片中 append</p>
+<p>到这里如果你看过之前关于切片底层的文章，你会敏感地发现向这个字节切片进行 append 不是也从0开始的吗？然后不是还会发生扩容吗？感觉效率仍然不是很高。</p>
+<p>所以 Go 还为我们提供了一个附加方法，如果我们可以知道这个 Builder 的总长度，可以预先声明，利用 <code>sb.Grow(x)</code>方法，带来极大的性能提升。</p>
+<p>最后，平时开发中（也是我在百度代码中见的最多的）还是使用 <code>fmt.Sprintf(),fmt.Sprintf()</code> 来格式化连接字符串较为常见。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">message</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Sprint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="s">&#34;internal server error&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p><em>那么 Java 呢？</em></p>
+<p>我们平时好像也用+号，例如<code>String s = &quot;Hello&quot; + &quot;World&quot;;</code>但实际上 javac会在编译时直接优化成 <code>String s = &quot;HelloWorld&quot;;</code>；如果是 a+b,底层会优化为 <strong>StringBuilder</strong></p>
+<p>所以 Java 官方还是推荐我们使用 StringBuilder（当然 StringBuffer也可以，线程安全）</p>
+<blockquote>
+<p>String concatenation is implemented through the StringBuilder(or StringBuffer) class and its append method</p></blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">StringBuilder</span><span class="w"> </span><span class="n">sb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">StringBuilder</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">100</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sb</span><span class="p">.</span><span class="na">append</span><span class="p">(</span><span class="s">&#34;data&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">String</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sb</span><span class="p">.</span><span class="na">toString</span><span class="p">();</span><span class="w">
+</span></span></span></code></pre></div><p>和 Golang 有点类似对吧。也可以使用 <strong>join</strong> <code>String result = String.join(&quot;,&quot;, listOfStrings);</code></p>
+<p>其实这么看来 JVM 已经为我们自动优化了，而 Golang 则需要我们自己注意一下。</p>
+<h3 id="截取字符串">截取字符串<a hidden class="anchor" aria-hidden="true" href="#截取字符串">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">s</span> <span class="o">:=</span> <span class="s">&#34;hello world&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">sub</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="c1">// sub == &#34;hello&#34;</span>
+</span></span></code></pre></div><p>如果我们直接用 <code>[:]</code>来截取的话, sub 的底层字节数组并没有改变还是持有着 s 的底层数组，看似没有什么太大的问题，如果这个 s 是一整个很大的 log 呢？</p>
+<p>这就会让内存压力很大，很大的 log 并不能及时地得到 GC 处理，因为我们 sub 还在用它。</p>
+<p>建议的解决方案有两个</p>
+<ul>
+<li><code>sub = s[0:5] subCopy := strings.Clone(sub)</code> 显式复制，会将这部分字节数组复制到一片新的空间中从而避免共享。</li>
+<li><code>sub := string([]byte(s[0:5]))</code> 先转换为[]byte,再转换回string——Go 会 重新分配新的只读内存，拷贝 byte 数组内容，得到另外一个独立的字符串，不再共享。</li>
+</ul>
+<p>Java 中使用 <strong>substring</strong> <code>String sub = s.substring(0, 5);</code>并且在 JDK8 以后它不会带来上面的问题，他会直接创建一个新的字符串和它的 char 数组（JDK7 以前会）</p>
+<h3 id="比较字符串">比较字符串<a hidden class="anchor" aria-hidden="true" href="#比较字符串">#</a></h3>
+<p>在 Golang 中，两个字符串可以直接用运算符号进行比较，其底层执行的是字典序的比较。</p>
+<ol>
+<li>相等性比较
+<ol>
+<li>逐个比较字节，只有长度相同，对应位置字节全部相同时，才相等。</li>
+</ol>
+</li>
+<li>其他比较(<code>&lt;,&gt;,&lt;=</code>)
+<ol>
+<li>直接字典序比较，不论长度；对应位置谁的字典序小谁就小。</li>
+</ol>
+</li>
+</ol>
+<h3 id="替换字符串中的字符">替换字符串中的字符<a hidden class="anchor" aria-hidden="true" href="#替换字符串中的字符">#</a></h3>
+<p>在力扣 1410HTML 实体解析器题目中，我们可以直接使用 Golang 的 <code>NewReplacer()</code> + <code>Replace()</code> 方法进行多个位置上的一次性替换。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">entityParser</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">ans</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">NewReplacer</span><span class="p">(</span><span class="s">`&amp;quot;`</span><span class="p">,</span> <span class="s">`&#34;`</span><span class="p">,</span> <span class="s">`&amp;apos;`</span><span class="p">,</span> <span class="s">`&#39;`</span><span class="p">,</span> <span class="s">`&amp;gt;`</span><span class="p">,</span> <span class="s">`&gt;`</span><span class="p">,</span> <span class="s">`&amp;lt;`</span><span class="p">,</span> <span class="s">`&lt;`</span><span class="p">,</span> <span class="s">`&amp;frasl;`</span><span class="p">,</span> <span class="s">`/`</span><span class="p">,</span> <span class="s">`&amp;amp;`</span><span class="p">,</span> <span class="s">`&amp;`</span><span class="p">).</span><span class="nf">Replace</span><span class="p">(</span><span class="nx">s</span><span class="p">)}</span>
+</span></span></code></pre></div><p>原理大概如下：</p>
+<ul>
+<li><code>NewReplacer()</code> 形成了一棵决策树，这会建立起一个高效的搜索引擎。</li>
+<li><code>Replace()</code> 会执行一次性扫描，将符合决策树中的内容进行替换。</li>
+<li>这样的时间复杂度只有一趟，是 $O(n)$的,而如果我们对每个字符都使用 <code>ReplaceAll()</code> 的话，时间复杂度就是 $O(n*m)$了。</li>
+</ul>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>Go 中的 string 我们要注意 rune 和 byte 的区别；注意 len 返回的是什么；注意如何遍历，连接，截取字符串。</p>
+<p>Java中就三类 String, StringBuilder, StringBuffer；由 <code>char[]</code> 转向 <code>byte[]</code>，但还是 <code>char[]</code> 更常用， JDK8 的功劳。</p>
+<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+<h2 id="引用">引用<a hidden class="anchor" aria-hidden="true" href="#引用">#</a></h2>
+<ul>
+<li>《100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)》</li>
+<li>ChatGPT</li>
+<li>Leetcode</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/golang/">Golang</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
+      <li><a href="http://localhost:1313/tags/string%E5%AD%97%E7%AC%A6%E4%B8%B2/">String字符串</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>LT的奇思乱想EP03——让人上瘾的APP们</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/024goland%E6%93%8D%E4%BD%9C01_dlv/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>024Goland操作01_dlv</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

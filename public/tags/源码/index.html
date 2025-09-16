@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>源码 | LTX&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/index.xml">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="源码">
+  <meta property="og:description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="源码">
+<meta name="twitter:description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+
+</head>
+
+<body class="list dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    源码
+    <a href="/tags/%E6%BA%90%E7%A0%81/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">GolangEP06:关于map-下
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 上一篇文章中留下了两个问题没有解决
+map 如何扩容 为什么原生的 map 线程不安全 其实这两个问题是有联系的，所以这篇文章来解决这两个问题。
+map 的扩容机制 本节还是需要用到上一篇文章中的底层 hmap 结构
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-07-16 14:44:11 +0800 CST'>七月 16, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to GolangEP06:关于map-下" href="http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">GolangEP06:关于map-上
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 在做两数之和时，操作 map 遇到了问题，可以看我下面的代码。
+func twoSum(nums []int, target int) []int { sMap := make(map[int]int) for i, x := range nums { sMap[x] = i } var ans []int for i, y := range nums { // 如果另一个值在 map 中存在的话即下标大于等于 0;且要保证不能使用两次相同的元素 p := sMap[target-y] if p &gt;= 0 &amp;&amp; p != i { ans = append(ans, i) ans = append(ans, p) break } } return ans } 像极了一个 golang 新手的操作，特别是在判断 key 是否存在于哈希表中时，用值（下标）是否大于 0 来判断。（当然前面的哈希表的定义也有问题）
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-07-16 09:52:36 +0800 CST'>七月 16, 2025</span>&nbsp;·&nbsp;3 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to GolangEP06:关于map-上" href="http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP08——make后会发生什么?从源码解析构建过程
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令
+# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-13 13:55:39 +0800 CST'>五月 13, 2025</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP08——make后会发生什么?从源码解析构建过程" href="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">GolangEP05_Go中的并发
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 之前的两篇文章关于context和channel，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。
+但是我并没有从宏观的角度上来阐述为什么我们需要并发？为什么要设计这两种结构来处理并发，本着做到&#34;what-how-why&#34;的态度，我们今天来深入讨论一下 Go 中的并发。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-03 21:04:26 +0800 CST'>五月 3, 2025</span>&nbsp;·&nbsp;7 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to GolangEP05_Go中的并发" href="http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">GolangEP04_string底层原理及注意事项
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自&lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)&gt; 书籍的注意事项。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-25 13:49:43 +0800 CST'>四月 25, 2025</span>&nbsp;·&nbsp;10 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to GolangEP04_string底层原理及注意事项" href="http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">GolangEP03_slice底层原理及注意事项
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 在做力扣的题目时，特别是遇到递归问题，需要传入参数，遇到切片的时候经常遇到需要克隆切片的情况，而遇到普通的int类型的时候却不需要。
+显而易见，这是一个值传递还是引用传递的问题，所以今天我来总结一下 Golang 中切片的底层原理，为什么在递归中需要克隆它。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-11 09:44:17 +0800 CST'>四月 11, 2025</span>&nbsp;·&nbsp;14 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to GolangEP03_slice底层原理及注意事项" href="http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">GolangEP02_并发中的Channel
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前言 让我们看看关于 chan 有哪些常见的操作。
+创建channel ch1 := make(chan int) ch2 := make(chan int, 2) 底层实际上调用的是makechan方法
+发送数据到channel ch &lt;- 1 底层实际调用的是chansend1,而chansend1最终也是调用chansend,将block参数设置为true——当前发送操作是阻塞的
+从channel中读取数据 i &lt;- ch i, ok &lt;- ch 底层实际调用的是chanrecv1和chanrecv2，最终都去调用了chanrecv。
+源码 接下来我们进入源码中一探究竟。
+hchan结构体 type hchan struct { qcount uint // total data in the queue dataqsiz uint // size of the circular queue buf unsafe.Pointer // points to an array of dataqsiz elements elemsize uint16 synctest bool // true if created in a synctest bubble closed uint32 timer *timer // timer feeding this chan elemtype *_type // element type sendx uint // send index recvx uint // receive index recvq waitq // list of recv waiters sendq waitq // list of send waiters // lock protects all fields in hchan, as well as several // fields in sudogs blocked on this channel. // // Do not change another G&#39;s status while holding this lock // (in particular, do not ready a G), as this can deadlock // with stack shrinking. lock mutex } qcount:通道中存储的数据元素总数 dataqsiz:环形队列大小 buf:执行环形队列的内存缓冲区，存放实际数据——环形缓存区域，本质上是一个带有头尾指针的固定长度的数组 sendx,recvx:发收操作的队列位置 recvq,sendq:等待队列 可以发现，hchan 使用环形队列表示缓冲区并且采用 lock 确保并发访问的安全性。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-05 15:40:56 +0800 CST'>十二月 5, 2024</span>&nbsp;·&nbsp;8 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to GolangEP02_并发中的Channel" href="http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Golang源码小试牛刀:Gorm框架源码小探01
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前言 Gorm框架介绍 日常使用 使用注意事项 方法声明顺序 查询举例：
+db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&amp;tags) db.Select(&#34;id&#34;).Where(&#34;name = ?&#34;, name).First(&amp;tag) 注意这几个方法的调用顺序不能颠倒，因为GORM 按链式调用的顺序逐步构建 SQL 查询。所以在Gorm中查询常见的顺序是——SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-03 16:34:41 +0800 CST'>十二月 3, 2024</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to Golang源码小试牛刀:Gorm框架源码小探01" href="http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">GolangEP01_并发之绕不过的context
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 今天心血来潮，给自己梳理梳理golang中这个十分重要的东东——context，毕竟也是在面试中考察到，但是反问自己的时候却感觉一点也说不出来什么有价值的东西，所以今天我来一次刨根究底。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2024-12-01 12:00:57 +0800 CST'>十二月 1, 2024</span>&nbsp;·&nbsp;10 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to GolangEP01_并发之绕不过的context" href="http://localhost:1313/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

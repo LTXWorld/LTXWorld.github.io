@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Gorm on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/gorm/</link>
+    <description>Recent content in Gorm on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Tue, 03 Dec 2024 16:34:41 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/gorm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang源码小试牛刀:Gorm框架源码小探01</title>
+      <link>http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/</link>
+      <pubDate>Tue, 03 Dec 2024 16:34:41 +0800</pubDate>
+      <guid>http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
+&lt;h2 id=&#34;gorm框架介绍&#34;&gt;Gorm框架介绍&lt;/h2&gt;
+&lt;h1 id=&#34;日常使用&#34;&gt;日常使用&lt;/h1&gt;
+&lt;h2 id=&#34;使用注意事项&#34;&gt;使用注意事项&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;方法声明顺序&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;查询举例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Where&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;maps&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Offset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pageNum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Limit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pageSize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Find&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;tags&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Select&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Where&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;name = ?&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;First&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;tag&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;注意这几个方法的调用顺序不能颠倒，因为GORM 按&lt;strong&gt;链式调用的顺序逐步构建 SQL 查询&lt;/strong&gt;。所以在Gorm中查询常见的顺序是——&lt;em&gt;SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。&lt;/em&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

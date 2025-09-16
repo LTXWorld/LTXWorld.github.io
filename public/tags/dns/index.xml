@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>DNS on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/dns/</link>
+    <description>Recent content in DNS on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Tue, 29 Apr 2025 14:19:24 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/dns/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>兴趣八股之计算机网络EP01——DNS</title>
+      <link>http://localhost:1313/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/</link>
+      <pubDate>Tue, 29 Apr 2025 14:19:24 +0800</pubDate>
+      <guid>http://localhost:1313/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;当我们不挂梯子的时候访问 &lt;code&gt;www.google.com&lt;/code&gt; 会发生什么？ 没错，大概率是访问不到的,我的火狐浏览器会一直显示在连接但是连接不到，那么这是为什么呢？&lt;/p&gt;
+&lt;p&gt;这是因为我们的 DNS 受到了污染，也有可能遭到了劫持，至于这两者是什么意思，就请慢慢往下看吧。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像</title>
+      <link>http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Wed, 09 Apr 2025 16:01:58 +0800</pubDate>
+      <guid>http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;解决一些目前k3s在RiscV开发板上存在的问题。&lt;/p&gt;
+&lt;h2 id=&#34;kubectlcrictl&#34;&gt;kubectl&amp;amp;crictl&lt;/h2&gt;
+&lt;p&gt;kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

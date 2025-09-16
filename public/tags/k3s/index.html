@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>K3s | LTX&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/tags/k3s/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/k3s/index.xml">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/tags/k3s/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/tags/k3s/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="K3s">
+  <meta property="og:description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="K3s">
+<meta name="twitter:description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+
+</head>
+
+<body class="list dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    K3s
+    <a href="/tags/k3s/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP13——遇到的Traedfik问题
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
+恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-06-03 09:27:10 +0800 CST'>六月 3, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP13——遇到的Traedfik问题" href="http://localhost:1313/posts/041traefik/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP12——监控集群的两种方式
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 metric-server; 在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-18 18:29:58 +0800 CST'>五月 18, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP12——监控集群的两种方式" href="http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP11——加入agent节点进行集群测试
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 继上一篇文章中我们成功迁移了 k3s 到 riscv64 上之后,我们使用另外一个 riscv 开发板作为 agent 节点进行集群化测试.
+环境初始化 仍然按照 EP09 中的步骤进行环境的初始化.
+执行到安装时,请按照下面的步骤进行,因为 agent 与 server 的步骤略有不同.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-16 14:08:23 +0800 CST'>五月 16, 2025</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP11——加入agent节点进行集群测试" href="http://localhost:1313/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP10——迁移k3s至riscv64开发板的过程记录
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事
+系统级别的重要镜像进行适配并可以成功拉取到开发板 执行 make 或者 download,build,package-cli 脚本 对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-15 13:43:20 +0800 CST'>五月 15, 2025</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP10——迁移k3s至riscv64开发板的过程记录" href="http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP09——初始化开发板环境操作汇总
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前瞻 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.
+烧录镜像 关于烧录操作,无需多言,请关注这篇文章.本文主要说一下镜像问题.
+在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护; 甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-14 09:37:37 +0800 CST'>五月 14, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP09——初始化开发板环境操作汇总" href="http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP08——make后会发生什么?从源码解析构建过程
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令
+# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-13 13:55:39 +0800 CST'>五月 13, 2025</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP08——make后会发生什么?从源码解析构建过程" href="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP07——配置私有镜像仓库准备构建跨架构镜像
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.
+之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持. 跟随他的足迹,我找到了他已经做出了的适配工作.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-05-09 16:04:29 +0800 CST'>五月 9, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP07——配置私有镜像仓库准备构建跨架构镜像" href="http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP05——开发板上k3s存在的问题02_local-path-provisioner
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。
+kubectl get pods -A -o wide NAMESPACE NAME READY STATUS RESTARTS AGE IP NODE NOMINATED NODE READINESS GATES default redis-696579c6c8-v2wns 1/1 Running 4 (4m10s ago) 7d6h 10.42.0.17 openeuler-riscv64 &lt;none&gt; &lt;none&gt; kube-system helm-install-traefik-pv4hv 0/1 ImagePullBackOff 0 14d 10.42.0.20 openeuler-riscv64 &lt;none&gt; &lt;none&gt; kube-system local-path-provisioner-7b7dc8d6f5-48jjf 0/1 ImagePullBackOff 0 14d 10.42.0.19 openeuler-riscv64 &lt;none&gt; &lt;none&gt; kube-system helm-install-traefik-crd-ktfth 0/1 ImagePullBackOff 0 14d 10.42.0.21 openeuler-riscv64 &lt;none&gt; &lt;none&gt; kube-system metrics-server-668d979685-jthzj 0/1 ImagePullBackOff 0 14d 10.42.0.22 openeuler-riscv64 &lt;none&gt; &lt;none&gt; kube-system coredns-5f8bb7cf9f-5h5kj 0/1 Running 0 11s 10.42.0.36 openeuler-riscv64 &lt;none&gt; &lt;none&gt; 可以发现在 kube-system 命名空间下的这些 Pod 还是处于 ImagePullBackOff 阶段，只有我们上次解决的 CoreDNS 是 Running， 只是还存在网络问题没有解决,所以并没有 Ready.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-15 16:14:08 +0800 CST'>四月 15, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP05——开发板上k3s存在的问题02_local-path-provisioner" href="http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 解决一些目前k3s在RiscV开发板上存在的问题。
+kubectl&amp;crictl kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-09 16:01:58 +0800 CST'>四月 9, 2025</span>&nbsp;·&nbsp;10 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像" href="http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP02——解决RiscV开发板镜像无法拉取问题
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。
+值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-03-28 14:19:09 +0800 CST'>三月 28, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP02——解决RiscV开发板镜像无法拉取问题" href="http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="http://localhost:1313/tags/k3s/page/2/">下一页&nbsp;2/2&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

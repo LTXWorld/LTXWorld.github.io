@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>DebugEP01——Postgresql | LTX&#39;s Blog</title>
+<meta name="keywords" content="Debug, Postgresql, Docker">
+<meta name="description" content="前言
+欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="DebugEP01——Postgresql">
+  <meta property="og:description" content="前言 欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-12-07T09:06:52+08:00">
+    <meta property="article:modified_time" content="2024-12-07T09:06:52+08:00">
+    <meta property="article:tag" content="Debug">
+    <meta property="article:tag" content="Postgresql">
+    <meta property="article:tag" content="Docker">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="DebugEP01——Postgresql">
+<meta name="twitter:description" content="前言
+欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "DebugEP01——Postgresql",
+      "item": "http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DebugEP01——Postgresql",
+  "name": "DebugEP01——Postgresql",
+  "description": "前言 欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。\n",
+  "keywords": [
+    "Debug", "Postgresql", "Docker"
+  ],
+  "articleBody": "前言 欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。\n即使人们常说我们所遇到的bug别人一定都遇到过，去Google一定都能解决，但是如果遇到相同bug的人并没有发表于网络呢？那我们可能真的搜索不到这个bug。并且每个人的操作环境总会有大大小小的差异，所以我还是认为每个人的每个bug都是独一无二的，要说搜索解决方法，不如说是去搜索类似的问题来启发自己。\n所以，让我们来记录这一切，万一哪天能启发到别人呢？让自己感受文字的温暖吧。\nPostgresql的连接问题 问题背景 我在启动一个新的项目时，使用docker启动Postgresql，使用了下方这样一个docker命令写在了我的Makefile中。\nlanch_postgres: docker run --name postgres_urls \\ -e POSTGRES_USER=LTX \\ -e POSTGRES_PASSWORD=Lutaol123 \\ -e POSTGRES_DB=urldb \\ -p 5432:5432 \\ -d postgres 命令的含义是运行一个名为postgres_urls的容器，特权用户为LTX（这里直接使用特权用户操作数据库了），密码为Lutaol123,数据库名称为urldb,端口映射主机的5432映射到容器中的5432端口，-d使容器在后台持续运行——以postgres这个镜像为基础的容器。\n执行make lanch_postgres后成功启动了这个容器，接着来到数据库迁移（使数据库操作变得可以回滚，变得像Git一样的可以进行版本控制）具体如何迁移见官方链接，最终效果就是在容器中的数据库执行了一条建表的语句。\n这一阶段的makefile如下:\ndatabaseURL=\"postgres://LTX:password@localhost:5432/urldb?sslmode=disable\" migrate_up: migrate -path=\"./database/migrate\" -database=${databaseURL} up 可是执行makefile，make migrate_up时报错:\npostgres://LTX:Lutaol123@localhost:5432/urldb?sslmode=disable migrate -path=\"./database/migrate\" -database=postgres://LTX:Lutaol123@localhost:5432/urldb?sslmode=disable up error: failed to open database, \"postgres://LTX:Lutaol123@localhost:5432/urldb?sslmode=disable\": pq: role \"LTX\" does not exist make: *** [migrate_up] Error 1 问题处理过程 错误信息 错误信息是打开数据库失败，“LTX\"这个用户不存在。\n经检查可以发现path是没有问题的，意味着我们写的数据库连接URL是正确的。而最后的pq: role \"LTX\" does not exist才是真正的问题所在。\n但是上面我们使用docker创建这个Postgresql容器时不是成功了吗？这里怎么又不存在了呢？\n尝试解决 检查makefile中的命令有无错误 通过错误信息可以得知，我们的路径信息都是正确的，即迁移命令和docker命令中的信息是吻合的。 所以一定不是这里的问题。 检查Docker容器 这里我们取巧，直接去Dockerdesktop桌面化环境中去检查，打开指定的容器后，输入命令psql -U LTX -d urldb进入到数据库中，发现进入成功了？那用户怎么会不存在呢？ 再执行一系列的Postgresq命令检查当前连接信息\\conninfo显示正常连接, 检查数据库信息\\l显示所有的数据库发现存在urldb; 但是查询数据库中的所有表信息时出现了错误，\\dt显示并没有表？ 所以，很明显迁移命令没有执行成功，因为表都没有。\n看到这里你也许会有疑惑，为什么数据库创建好了呢？\n这和最初的docker命令有关，指定了POSTGRES_DB和POSTGRES_USER之后容器启动时会自动创建我们所指定的数据库和超级用户。 可以使用\\du命令检查用户权限 最终解决 那到底为什么没有连接成功呢？我突然一想，自己之前做过一个项目也是使用的Postgres，并且我是在本地使用的，不会这个迁移命令给我连接到了本地了吧?!\n# 进入本地的数据库 psql postgres # 检查当前数据库信息 \\l 坏啦！怎么本地数据库里面有urldb这个数据库啊!那一定是连接到本地了（因为我之前并没有操作本地Postgres）。再连接这个数据库查查表信息确认一下。\n# 连接urldb数据库并检查表信息 \\c urldb \\dt 这里Owner变成了ltx_urldb是因为后来我改了一次用户名（因为当初我还以为是用户名的问题）\n哦豁，真的是迁移到本地的Postgresql中了，并没有去连容器中的。\n错误原因 那到这里，错误原因也很明显了，就是databaseURL=\"postgres://LTX:password@localhost:5432/urldb?sslmode=disable\"这个数据库链接指向的是localhost，如果本地的运行着，自然就连接到本地了。\n这里做个回调小实验，将本地的关闭然后再次尝试向容器中迁移。\n# 因为我是用homebrew安装的 brew services stop postgresql 再次执行迁移命令发现成功了\n进入容器中也查到了相应的表。\n总结 一个localhost引发的本地数据库和容器数据库之间的冲突。\n其中更底层的原因我询问了GPT:\nPostgreSQL 默认在 /var/run/postgresql/.s.PGSQL. 路径监听 Unix 套接字,如果 PostgreSQL 客户端检测到本地套接字文件，就会优先通过它连接。 如果本地套接字不可用，则尝试通过 localhost:5432 使用 TCP/IP 连接。并使用端口映射到容器中的5432端口。 好的到这里我们的这次Postgresql的容器连接问题就到这里结束了。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
+  "wordCount" : "1982",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2024-12-07T09:06:52+08:00",
+  "dateModified": "2024-12-07T09:06:52+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      DebugEP01——Postgresql
+    </h1>
+    <div class="post-meta"><span title='2024-12-07 09:06:52 +0800 CST'>十二月 7, 2024</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%89%8d%e8%a8%80" aria-label="前言">前言</a></li>
+                <li>
+                    <a href="#postgresql%e7%9a%84%e8%bf%9e%e6%8e%a5%e9%97%ae%e9%a2%98" aria-label="Postgresql的连接问题">Postgresql的连接问题</a><ul>
+                        
+                <li>
+                    <a href="#%e9%97%ae%e9%a2%98%e8%83%8c%e6%99%af" aria-label="问题背景">问题背景</a></li>
+                <li>
+                    <a href="#%e9%97%ae%e9%a2%98%e5%a4%84%e7%90%86%e8%bf%87%e7%a8%8b" aria-label="问题处理过程">问题处理过程</a><ul>
+                        
+                <li>
+                    <a href="#%e9%94%99%e8%af%af%e4%bf%a1%e6%81%af" aria-label="错误信息">错误信息</a></li>
+                <li>
+                    <a href="#%e5%b0%9d%e8%af%95%e8%a7%a3%e5%86%b3" aria-label="尝试解决">尝试解决</a></li>
+                <li>
+                    <a href="#%e6%9c%80%e7%bb%88%e8%a7%a3%e5%86%b3" aria-label="最终解决">最终解决</a></li>
+                <li>
+                    <a href="#%e9%94%99%e8%af%af%e5%8e%9f%e5%9b%a0" aria-label="错误原因">错误原因</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="前言">前言<a hidden class="anchor" aria-hidden="true" href="#前言">#</a></h1>
+<p>欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。</p>
+<p><img loading="lazy" src="/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg"></p>
+<p>即使人们常说我们所遇到的bug别人一定都遇到过，去Google一定都能解决，但是如果遇到相同bug的人并没有发表于网络呢？那我们可能真的搜索不到这个bug。并且每个人的操作环境总会有大大小小的差异，所以我还是认为每个人的每个bug都是独一无二的，要说搜索解决方法，不如说是去搜索类似的问题来启发自己。</p>
+<p>所以，让我们来记录这一切，万一哪天能启发到别人呢？让自己感受文字的温暖吧。</p>
+<h1 id="postgresql的连接问题">Postgresql的连接问题<a hidden class="anchor" aria-hidden="true" href="#postgresql的连接问题">#</a></h1>
+<h2 id="问题背景">问题背景<a hidden class="anchor" aria-hidden="true" href="#问题背景">#</a></h2>
+<p>我在启动一个新的项目时，使用docker启动Postgresql，使用了下方这样一个docker命令写在了我的Makefile中。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nf">lanch_postgres</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	docker run --name postgres_urls <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	-e <span class="nv">POSTGRES_USER</span><span class="o">=</span>LTX <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	-e <span class="nv">POSTGRES_PASSWORD</span><span class="o">=</span>Lutaol123 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	-e <span class="nv">POSTGRES_DB</span><span class="o">=</span>urldb <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	-p 5432:5432 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>	-d postgres
+</span></span></code></pre></div><p>命令的含义是运行一个名为postgres_urls的容器，特权用户为LTX（这里直接使用特权用户操作数据库了），密码为Lutaol123,数据库名称为urldb,端口映射主机的5432映射到容器中的5432端口，-d使容器在后台持续运行——以postgres这个镜像为基础的容器。</p>
+<p>执行<code>make lanch_postgres</code>后成功启动了这个容器，接着来到数据库迁移（<em>使数据库操作变得可以回滚，变得像Git一样的可以进行版本控制</em>）具体如何迁移见<a href="https://github.com/golang-migrate/migrate/tree/master/database/postgres">官方链接</a>，<strong>最终效果就是在容器中的数据库执行了一条建表的语句</strong>。</p>
+<p>这一阶段的makefile如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nv">databaseURL</span><span class="o">=</span><span class="s2">&#34;postgres://LTX:password@localhost:5432/urldb?sslmode=disable&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">migrate_up</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	migrate -path<span class="o">=</span><span class="s2">&#34;./database/migrate&#34;</span> -database<span class="o">=</span><span class="si">${</span><span class="nv">databaseURL</span><span class="si">}</span> up
+</span></span></code></pre></div><p>可是执行makefile，<code>make migrate_up</code>时报错:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">postgres://LTX:Lutaol123@localhost:5432/urldb?sslmode<span class="o">=</span>disable
+</span></span><span class="line"><span class="cl">migrate -path<span class="o">=</span><span class="s2">&#34;./database/migrate&#34;</span> -database<span class="o">=</span>postgres://LTX:Lutaol123@localhost:5432/urldb?sslmode<span class="o">=</span>disable up
+</span></span><span class="line"><span class="cl">error: failed to open database, <span class="s2">&#34;postgres://LTX:Lutaol123@localhost:5432/urldb?sslmode=disable&#34;</span>: pq: role <span class="s2">&#34;LTX&#34;</span> does not exist
+</span></span><span class="line"><span class="cl">make: *** <span class="o">[</span>migrate_up<span class="o">]</span> Error <span class="m">1</span>
+</span></span></code></pre></div><p><img loading="lazy" src="/img/ys/%E8%8D%AF%E6%B0%B4%E6%8C%A5%E6%8B%B3.webp"></p>
+<h2 id="问题处理过程">问题处理过程<a hidden class="anchor" aria-hidden="true" href="#问题处理过程">#</a></h2>
+<h3 id="错误信息">错误信息<a hidden class="anchor" aria-hidden="true" href="#错误信息">#</a></h3>
+<p>错误信息是打开数据库失败，&ldquo;LTX&quot;这个用户不存在。</p>
+<p>经检查可以发现path是没有问题的，意味着我们写的数据库连接URL是正确的。而最后的<code>pq: role &quot;LTX&quot; does not exist</code>才是真正的问题所在。</p>
+<p>但是上面我们使用docker创建这个Postgresql容器时不是成功了吗？这里怎么又不存在了呢？</p>
+<p><img loading="lazy" src="/img/shu/%E5%BC%80%E6%9E%AA.webp"></p>
+<h3 id="尝试解决">尝试解决<a hidden class="anchor" aria-hidden="true" href="#尝试解决">#</a></h3>
+<ol>
+<li>检查makefile中的命令有无错误</li>
+</ol>
+<ul>
+<li>通过错误信息可以得知，我们的路径信息都是正确的，即迁移命令和docker命令中的信息是吻合的。</li>
+<li>所以一定不是这里的问题。</li>
+</ul>
+<ol start="2">
+<li>检查Docker容器</li>
+</ol>
+<ul>
+<li>这里我们取巧，直接去Dockerdesktop桌面化环境中去检查，打开指定的容器后，输入命令<code>psql -U LTX -d urldb</code>进入到数据库中，发现进入成功了？那用户怎么会不存在呢？</li>
+<li>再执行一系列的Postgresq命令检查当前连接信息<code>\conninfo</code>显示正常连接, 检查数据库信息<code>\l</code>显示所有的数据库发现存在urldb;</li>
+<li>但是查询数据库中的所有表信息时出现了错误，<code>\dt</code>显示并没有表？</li>
+</ul>
+<p><img loading="lazy" src="/img/debug/pq1.png"></p>
+<p>所以，很明显迁移命令没有执行成功，因为表都没有。</p>
+<p>看到这里你也许会有疑惑，为什么数据库创建好了呢？</p>
+<ul>
+<li>这和最初的docker命令有关，<strong>指定了POSTGRES_DB和POSTGRES_USER之后容器启动时会自动创建我们所指定的数据库和超级用户</strong>。</li>
+<li>可以使用<code>\du</code>命令检查用户权限</li>
+</ul>
+<p><img loading="lazy" src="/img/debug/pq2.png"></p>
+<h3 id="最终解决">最终解决<a hidden class="anchor" aria-hidden="true" href="#最终解决">#</a></h3>
+<p>那到底为什么没有连接成功呢？我突然一想，自己之前做过一个项目也是使用的Postgres，并且我是在本地使用的，不会这个迁移命令给我连接到了本地了吧?!</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 进入本地的数据库</span>
+</span></span><span class="line"><span class="cl">psql postgres
+</span></span><span class="line"><span class="cl"><span class="c1"># 检查当前数据库信息</span>
+</span></span><span class="line"><span class="cl"><span class="se">\l</span>
+</span></span></code></pre></div><p>坏啦！怎么本地数据库里面有<code>urldb</code>这个数据库啊!那一定是连接到本地了（因为我之前并没有操作本地Postgres）。再连接这个数据库查查表信息确认一下。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 连接urldb数据库并检查表信息</span>
+</span></span><span class="line"><span class="cl"><span class="se">\c</span> urldb
+</span></span><span class="line"><span class="cl"><span class="se">\d</span>t
+</span></span></code></pre></div><p><img loading="lazy" src="/img/debug/pq3.png"></p>
+<p>这里Owner变成了ltx_urldb是因为后来我改了一次用户名（因为当初我还以为是用户名的问题）</p>
+<p>哦豁，真的是迁移到本地的Postgresql中了，并没有去连容器中的。</p>
+<h3 id="错误原因">错误原因<a hidden class="anchor" aria-hidden="true" href="#错误原因">#</a></h3>
+<p>那到这里，错误原因也很明显了，就是<code>databaseURL=&quot;postgres://LTX:password@localhost:5432/urldb?sslmode=disable&quot;</code>这个数据库链接指向的是localhost，如果本地的运行着，自然就连接到本地了。</p>
+<p>这里做个回调小实验，将本地的关闭然后再次尝试向容器中迁移。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 因为我是用homebrew安装的</span>
+</span></span><span class="line"><span class="cl">brew services stop postgresql
+</span></span></code></pre></div><p>再次执行迁移命令发现成功了</p>
+<p><img loading="lazy" src="/img/debug/pq4.png"></p>
+<p>进入容器中也查到了相应的表。</p>
+<h1 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h1>
+<p>一个localhost引发的本地数据库和容器数据库之间的冲突。</p>
+<p>其中更底层的原因我询问了GPT:</p>
+<ul>
+<li>PostgreSQL 默认在 /var/run/postgresql/.s.PGSQL.<!-- raw HTML omitted --> 路径监听 Unix 套接字,<strong>如果 PostgreSQL 客户端检测到本地套接字文件，就会优先通过它连接。</strong></li>
+<li>如果本地套接字不可用，则尝试通过 localhost:5432 使用 TCP/IP 连接。并使用端口映射到容器中的5432端口。</li>
+</ul>
+<p><img loading="lazy" src="/img/debug/pq5.png"></p>
+<p>好的到这里我们的这次Postgresql的容器连接问题就到这里结束了。</p>
+<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/debug/">Debug</a></li>
+      <li><a href="http://localhost:1313/tags/postgresql/">Postgresql</a></li>
+      <li><a href="http://localhost:1313/tags/docker/">Docker</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/009golang%E9%A1%B9%E7%9B%AE%E6%A2%B3%E7%90%86%E7%9F%AD%E9%93%BE%E6%8E%A5%E9%A1%B9%E7%9B%AE01/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>009Golang项目梳理:短链接项目01</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>GolangEP02_并发中的Channel</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

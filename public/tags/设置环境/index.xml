@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>设置环境 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83/</link>
+    <description>Recent content in 设置环境 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Fri, 29 Nov 2024 21:07:21 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>玩转RISCV开发板02-配置好容器化环境</title>
+      <link>http://localhost:1313/posts/004risc-v_deployment/</link>
+      <pubDate>Fri, 29 Nov 2024 21:07:21 +0800</pubDate>
+      <guid>http://localhost:1313/posts/004risc-v_deployment/</guid>
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;这里照例列出所用设备配置&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;macbookair&lt;/li&gt;
+&lt;li&gt;LicheePi4A,16+128&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;基础配置&#34;&gt;基础配置&lt;/h2&gt;
+&lt;p&gt;如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

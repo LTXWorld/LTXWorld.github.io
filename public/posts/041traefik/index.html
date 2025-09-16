@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>K3sEP13——遇到的Traedfik问题 | LTX&#39;s Blog</title>
+<meta name="keywords" content="K3s, RiscV, Traefik">
+<meta name="description" content="引子
+在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
+恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/041traefik/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/041traefik/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/041traefik/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="K3sEP13——遇到的Traedfik问题">
+  <meta property="og:description" content="引子 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
+恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-06-03T09:27:10+08:00">
+    <meta property="article:modified_time" content="2025-06-03T09:27:10+08:00">
+    <meta property="article:tag" content="K3s">
+    <meta property="article:tag" content="RiscV">
+    <meta property="article:tag" content="Traefik">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="K3sEP13——遇到的Traedfik问题">
+<meta name="twitter:description" content="引子
+在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
+恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "K3sEP13——遇到的Traedfik问题",
+      "item": "http://localhost:1313/posts/041traefik/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "K3sEP13——遇到的Traedfik问题",
+  "name": "K3sEP13——遇到的Traedfik问题",
+  "description": "引子 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。\n恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。\n",
+  "keywords": [
+    "K3s", "RiscV", "Traefik"
+  ],
+  "articleBody": "引子 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。\n恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。\n问题描述 集群环境是1 Server 2 Agent 的模式，运行了一个简单地 Nginx 应用，整体结构如下：\nDeployment 中配置3个 Replica Pod,容器是 Nginx，挂载了本地存储内容是一个简单的前端内容。 Deployment 前配置 Service,匹配上面 Pod 的标签，配置为 ClusterIP，暴露 Pod 给集群 Service 前配置 Ingress ，将特定路径映射到 Service，为流量提供路由。 IngressController 是这个结构最前面的部分，在 k3s 中默认是 Traefik 就当我访问 Ingress 中定义好的路径时，返回 404 Pag Not Found,显然这中间有地方出问题了。\n使用 ping 发现这个 url 的 IP 地址就是 Server 的地址且可以 ping 通，说明笔记本与节点的通信没问题。 检查 Deployment, Pod, Service, Ingress 的状态，都是正常运行，没有错误信息。 检查 Traefik 的日志，出现问题，于是检查这个问题。 问题所在 # 获取Traefik Pod 信息 sudo kubectl get pods -o wide -n kube-system -l app.kubernetes.io/name=traefik # 查看日志信息 sudo kubectl logs -n kube-system 查看日志才发现，错误就在这里。\nW0602 12:19:21.743160 1 reflector.go:561] k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243: failed to list *v1.ConfigMap: configmaps is forbidden: User \"system:serviceaccount:kube-system:traefik\" cannot list resource \"configmaps\" in API group \"\" at the cluster scope E0602 12:19:21.743322 1 reflector.go:158] \"Unhandled Error\" err=\"k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243: Failed to watch *v1.ConfigMap: failed to list *v1.ConfigMap: configmaps is forbidden: User \\\"system:serviceaccount:kube-system:traefik\\\" cannot list resource \\\"configmaps\\\" in API group \\\"\\\" at the cluster scope\" logger=\"UnhandledError\" 经过一番 google，发现一个与我遇到相同问题的人,他对于此问题的描述是 traefik 的配置文件中关于某些组件的定义有缺失，需要补充 traefik 的配置文件。\n解决如下：sudo kubectl edit clusterrole traefik-kube-system 在其中添加 discovery.k8s.io,nodes,endpointslices,serverstransporttcps等字段，最终结果如下:\nrules: - apiGroups: - extensions - networking.k8s.io - discovery.k8s.io resources: - ingressclasses - ingresses - endpointslices verbs: - get - list - watch - apiGroups: - \"\" resources: - services - endpoints - secrets - configmaps - nodes verbs: - get - list - watch - apiGroups: - extensions - networking.k8s.io resources: - ingresses/status verbs: - update - apiGroups: - traefik.io resources: - ingressroutes - ingressroutetcps - ingressrouteudps - middlewares - middlewaretcps - tlsoptions - tlsstores - traefikservices - serverstransporttcps - serverstransports verbs: - get - list - watch 删除这个 Pod 之后它会自动重新生成，之后的结果就正常了，可以成功访问定义的路径。\n具体原因 从 forbidden 可以看出，这其实是一个 RABC (Role-Based Access Control) 权限问题.\nRole 会定义有关于资源的操作权限（可以对哪些资源执行哪些操作） RoleBinding 会将这个定义好的权限给某个或某组用户(要注意特定命名空间) ServiceAccount: 集群内部的进程(例如 Pod 中运行的应用) 报错日志告诉我们，User \\\"system:serviceaccount:kube-system:traefik\\\" cannot list resource \\\"configmaps\\\" in API group \\\"\\\" at the cluster scope\"即某个用户的对于某个资源的某个操作失败了。\n即我们的 Traefik 在读取某些资源的时候失败了，权限不够！这会造成什么后果呢，请继续往下看。\nTraefik 在 K8s/K3s 中的应用 Traefik 到底是做什么的呢？(类似于 Nginx,但是又有其特点)\n监视 (Watch) K8s/K3s 集群中的 Ingress、Service、EndpointSlice 等资源的变化 根据这些资源的信息，动态配置其内部的路由规则 将外部传入的流量路由到正确的后端 Service 和 Pod 在官网的这篇文档中可以看到 Traefik 在 K8s 中的应用。 值得一提的是，K3s 内置了 Traefik 作为 Ingress Controller,而 K8s 则是没有内置，默认维护 AWS,nginx 等 Controller，同时也可以采用第三方例如 Traefik.\n在 K8s 中使用 Traefik,我们需要进行以下操作:\n创建 role:ClusterRole 创建 ServiceAccount,将 role 绑定到 account 上； 部署 traefik deployment，设置 traefik 容器端口web 80,dashboard 8080 部署 traefik service,并在其中对应上面两个端口 而 K3s 中，观其源码可以发现，其在 /manifest 目录下定义了使用 Helm Controller 来管理例如 traefik 这样的预装组件，通过 Helm Chart 自动部署。\n接下来我们来验证一下 K3s 集群中的 Traefik 属性:\nrole \u0026 ServiceAccount\n# ServiceAccount,名称为 traefik sudo kubectl get serviceaccount -n kube-system traefik NAME SECRETS AGE traefik 0 18d # ClusterRole,名称为traefik-kube-system sudo kubectl get clusterrole | grep traefik traefik-kube-system 2025-05-15T06:59:41Z # 查看其 Role 信息： sudo kubectl get clusterrole traefik-kube-system -o yaml 这里查看到的信息就是我们上面修改好的“配置文件”,定义了 Traefik 可以访问哪些 apiGroups,groups 中的 resources,可以对这些 resources 进行哪些 verbs\nbinding\n# 查看 clusterrolebinding 绑定信息 sudo kubectl get clusterrolebinding | grep traefik helm-kube-system-traefik ClusterRole/cluster-admin 19d helm-kube-system-traefik-crd ClusterRole/cluster-admin 19d traefik-kube-system ClusterRole/traefik-kube-system 18d # 查看具体的绑定规则 sudo kubectl get clusterrolebinding traefik-kube-system -o yaml apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: annotations: meta.helm.sh/release-name: traefik meta.helm.sh/release-namespace: kube-system creationTimestamp: \"2025-05-15T06:59:41Z\" labels: app.kubernetes.io/instance: traefik-kube-system app.kubernetes.io/managed-by: Helm app.kubernetes.io/name: traefik helm.sh/chart: traefik-27.0.201_up27.0.2 name: traefik-kube-system resourceVersion: \"4041\" uid: 905de4bb-8aab-42c6-a84c-169252444073 roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: traefik-kube-system subjects: - kind: ServiceAccount name: traefik namespace: kube-system 在最后的部分可以发现就是把 traefik-kube-system 绑定到了 traefik 上，这与官网给出的示例几乎一致。\nDeployment \u0026 Service\n# Deployment sudo kubectl get deployment -n kube-system traefik NAME READY UP-TO-DATE AVAILABLE AGE traefik 1/1 1 1 18d # Deployment 内部 Port 信息 ports: - containerPort: 9100 name: metrics protocol: TCP - containerPort: 9000 name: traefik protocol: TCP - containerPort: 80 name: web protocol: TCP - containerPort: 8443 name: websecure protocol: TCP # Service sudo kubectl get service -n kube-system traefik NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE traefik LoadBalancer 10.43.144.33 192.168.31.70 80:32194/TCP,443:31405/TCP 18d # Service 内部 Port 信息，与上面 Deployment 要对应 ports: - name: web nodePort: 32194 port: 80 protocol: TCP targetPort: web - name: websecure nodePort: 31405 port: 443 protocol: TCP targetPort: websecure 其实从这里与之前的集群图片对照，可以看出 Traefik Deployment 作为 Ingress Controller,其 Service 在前面作为 LoadBalancer,让外部的流量可以到达 Traefik Deployment.\n与 Nginx 对比 从前面的介绍可以看出，Traefik 最大的卖点就是实时监测集群内的路由情况并自动进行服务发现并为其动态配置路由。\n而传统的 Nginx 想要完成这样的自动化是不可能的，需要手动更改 nginx.conf文件，向其中添加路由规则，所以其并不适合动态服务。其通常用作静态文件服务和反向代理。\n但是 Nginx 也像 Traefik 一样，提供了动态监听的 Ingress Controller: Nginx Ingress Controller,虽然 K3s 默认嵌入 Traefik,但如果你想，也可以替换成 Nginx.\n总结 Traefik 作为集群中的 Ingress Controller,需要调用集群中的资源来为我们后方 Deployment Pod 中的应用自动构建路由规则，将外部的请求转发过来。\n所以我们需要保证其有访问某些资源的权限，例如 nodes,endpointslices 等资源。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
+  "wordCount" : "2154",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-06-03T09:27:10+08:00",
+  "dateModified": "2025-06-03T09:27:10+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/041traefik/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      K3sEP13——遇到的Traedfik问题
+    </h1>
+    <div class="post-meta"><span title='2025-06-03 09:27:10 +0800 CST'>六月 3, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#%e9%97%ae%e9%a2%98%e6%8f%8f%e8%bf%b0" aria-label="问题描述">问题描述</a></li>
+                <li>
+                    <a href="#%e9%97%ae%e9%a2%98%e6%89%80%e5%9c%a8" aria-label="问题所在">问题所在</a></li>
+                <li>
+                    <a href="#%e5%85%b7%e4%bd%93%e5%8e%9f%e5%9b%a0" aria-label="具体原因">具体原因</a></li>
+                <li>
+                    <a href="#traefik-%e5%9c%a8-k8sk3s-%e4%b8%ad%e7%9a%84%e5%ba%94%e7%94%a8" aria-label="Traefik 在 K8s/K3s 中的应用">Traefik 在 K8s/K3s 中的应用</a></li>
+                <li>
+                    <a href="#%e4%b8%8e-nginx-%e5%af%b9%e6%af%94" aria-label="与 Nginx 对比">与 Nginx 对比</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。</p>
+<p>恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。</p>
+<h2 id="问题描述">问题描述<a hidden class="anchor" aria-hidden="true" href="#问题描述">#</a></h2>
+<p>集群环境是1 Server 2 Agent 的模式，运行了一个简单地 Nginx 应用，整体结构如下：</p>
+<ul>
+<li>Deployment 中配置3个 Replica Pod,容器是 Nginx，挂载了本地存储内容是一个简单的前端内容。</li>
+<li>Deployment 前配置 Service,匹配上面 Pod 的标签，配置为 ClusterIP，暴露 Pod 给集群</li>
+<li>Service 前配置 Ingress ，将特定路径映射到 Service，为流量提供路由。</li>
+<li>IngressController 是这个结构最前面的部分，在 k3s 中默认是 Traefik</li>
+</ul>
+<p><img alt="1" loading="lazy" src="/img/riscv/traefik01.png"></p>
+<p>就当我访问 Ingress 中定义好的路径时，返回 <code>404 Pag Not Found</code>,显然这中间有地方出问题了。</p>
+<ul>
+<li>使用 <code>ping &lt;url&gt;</code> 发现这个 url 的 IP 地址就是 Server 的地址且可以 ping 通，说明笔记本与节点的通信没问题。</li>
+<li>检查 Deployment, Pod, Service, Ingress 的状态，都是正常运行，没有错误信息。</li>
+<li>检查 Traefik 的日志，出现问题，于是检查这个问题。</li>
+</ul>
+<h2 id="问题所在">问题所在<a hidden class="anchor" aria-hidden="true" href="#问题所在">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 获取Traefik Pod 信息</span>
+</span></span><span class="line"><span class="cl">sudo kubectl get pods -o wide -n kube-system -l app.kubernetes.io/name<span class="o">=</span>traefik
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看日志信息</span>
+</span></span><span class="line"><span class="cl">sudo kubectl logs &lt;traefik_pod_name&gt; -n kube-system
+</span></span></code></pre></div><p>查看日志才发现，错误就在这里。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">W0602 12:19:21.743160       <span class="m">1</span> reflector.go:561<span class="o">]</span> k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243: failed to list *v1.ConfigMap: configmaps is forbidden: User <span class="s2">&#34;system:serviceaccount:kube-system:traefik&#34;</span> cannot list resource <span class="s2">&#34;configmaps&#34;</span> in API group <span class="s2">&#34;&#34;</span> at the cluster scope
+</span></span><span class="line"><span class="cl">E0602 12:19:21.743322       <span class="m">1</span> reflector.go:158<span class="o">]</span> <span class="s2">&#34;Unhandled Error&#34;</span> <span class="nv">err</span><span class="o">=</span><span class="s2">&#34;k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243: Failed to watch *v1.ConfigMap: failed to list *v1.ConfigMap: configmaps is forbidden: User \&#34;system:serviceaccount:kube-system:traefik\&#34; cannot list resource \&#34;configmaps\&#34; in API group \&#34;\&#34; at the cluster scope&#34;</span> <span class="nv">logger</span><span class="o">=</span><span class="s2">&#34;UnhandledError&#34;</span>
+</span></span></code></pre></div><p>经过一番 google，发现一个与我遇到<a href="https://forums.suse.com/t/k3s-traefik-3-installation-missing-clusterroles/45128">相同问题</a>的人,他对于此问题的描述是 traefik 的配置文件中关于某些组件的定义有缺失，需要补充 traefik 的配置文件。</p>
+<p>解决如下：<code>sudo kubectl edit clusterrole traefik-kube-system</code>
+在其中添加 <code>discovery.k8s.io,nodes,endpointslices,serverstransporttcps</code>等字段，最终结果如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">rules:
+</span></span><span class="line"><span class="cl">- apiGroups:
+</span></span><span class="line"><span class="cl">  - extensions
+</span></span><span class="line"><span class="cl">  - networking.k8s.io
+</span></span><span class="line"><span class="cl">  - discovery.k8s.io
+</span></span><span class="line"><span class="cl">  resources:
+</span></span><span class="line"><span class="cl">  - ingressclasses
+</span></span><span class="line"><span class="cl">  - ingresses
+</span></span><span class="line"><span class="cl">  - endpointslices
+</span></span><span class="line"><span class="cl">  verbs:
+</span></span><span class="line"><span class="cl">  - get
+</span></span><span class="line"><span class="cl">  - list
+</span></span><span class="line"><span class="cl">  - watch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">- apiGroups:
+</span></span><span class="line"><span class="cl">  - <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  resources:
+</span></span><span class="line"><span class="cl">  - services
+</span></span><span class="line"><span class="cl">  - endpoints
+</span></span><span class="line"><span class="cl">  - secrets
+</span></span><span class="line"><span class="cl">  - configmaps
+</span></span><span class="line"><span class="cl">  - nodes
+</span></span><span class="line"><span class="cl">  verbs:
+</span></span><span class="line"><span class="cl">  - get
+</span></span><span class="line"><span class="cl">  - list
+</span></span><span class="line"><span class="cl">  - watch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">- apiGroups:
+</span></span><span class="line"><span class="cl">  - extensions
+</span></span><span class="line"><span class="cl">  - networking.k8s.io
+</span></span><span class="line"><span class="cl">  resources:
+</span></span><span class="line"><span class="cl">  - ingresses/status
+</span></span><span class="line"><span class="cl">  verbs:
+</span></span><span class="line"><span class="cl">  - update
+</span></span><span class="line"><span class="cl">- apiGroups:
+</span></span><span class="line"><span class="cl">  - traefik.io
+</span></span><span class="line"><span class="cl">  resources:
+</span></span><span class="line"><span class="cl">  - ingressroutes
+</span></span><span class="line"><span class="cl">  - ingressroutetcps
+</span></span><span class="line"><span class="cl">  - ingressrouteudps
+</span></span><span class="line"><span class="cl">  - middlewares
+</span></span><span class="line"><span class="cl">  - middlewaretcps
+</span></span><span class="line"><span class="cl">  - tlsoptions
+</span></span><span class="line"><span class="cl">  - tlsstores
+</span></span><span class="line"><span class="cl">  - traefikservices
+</span></span><span class="line"><span class="cl">  - serverstransporttcps
+</span></span><span class="line"><span class="cl">  - serverstransports
+</span></span><span class="line"><span class="cl">  verbs:
+</span></span><span class="line"><span class="cl">  - get
+</span></span><span class="line"><span class="cl">  - list
+</span></span><span class="line"><span class="cl">  - watch
+</span></span></code></pre></div><p>删除这个 Pod 之后它会自动重新生成，之后的结果就正常了，可以成功访问定义的路径。</p>
+<h2 id="具体原因">具体原因<a hidden class="anchor" aria-hidden="true" href="#具体原因">#</a></h2>
+<p>从 <code>forbidden</code> 可以看出，这其实是一个 <a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/">RABC</a> (Role-Based Access Control) 权限问题.</p>
+<ul>
+<li>Role 会定义有关于资源的操作权限（可以对哪些资源执行哪些操作）</li>
+<li>RoleBinding 会将这个定义好的权限给某个或某组用户(要注意特定命名空间)</li>
+<li>ServiceAccount: 集群内部的进程(例如 Pod 中运行的应用)</li>
+</ul>
+<p>报错日志告诉我们，<code>User \&quot;system:serviceaccount:kube-system:traefik\&quot; cannot list resource \&quot;configmaps\&quot; in API group \&quot;\&quot; at the cluster scope&quot;</code>即某个用户的对于某个资源的某个操作失败了。</p>
+<p>即我们的 Traefik 在读取某些资源的时候失败了，权限不够！这会造成什么后果呢，请继续往下看。</p>
+<h2 id="traefik-在-k8sk3s-中的应用">Traefik 在 K8s/K3s 中的应用<a hidden class="anchor" aria-hidden="true" href="#traefik-在-k8sk3s-中的应用">#</a></h2>
+<p>Traefik 到底是做什么的呢？(类似于 Nginx,但是又有其特点)</p>
+<ul>
+<li>监视 (Watch) K8s/K3s 集群中的 Ingress、Service、EndpointSlice 等资源的变化</li>
+<li>根据这些资源的信息，<strong>动态配置其内部的路由规则</strong></li>
+<li>将外部传入的流量路由到正确的后端 Service 和 Pod</li>
+</ul>
+<p>在官网的<a href="https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/">这篇文档</a>中可以看到 Traefik 在 K8s 中的应用。
+值得一提的是，K3s 内置了 Traefik 作为 Ingress Controller,而 <a href="https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/">K8s</a> 则是没有内置，默认维护 AWS,nginx 等 Controller，同时也可以采用第三方例如 Traefik.</p>
+<p>在 K8s 中使用 Traefik,我们需要进行以下操作:</p>
+<ul>
+<li>创建 role:ClusterRole</li>
+<li>创建 ServiceAccount,将 role 绑定到 account 上；</li>
+<li>部署 traefik deployment，设置 traefik 容器端口web 80,dashboard 8080</li>
+<li>部署 traefik service,并在其中对应上面两个端口</li>
+</ul>
+<p>而 K3s 中，观其源码可以发现，其在 <code>/manifest</code> 目录下定义了使用 Helm Controller 来管理例如 traefik 这样的预装组件，通过 Helm Chart 自动部署。</p>
+<p>接下来我们来验证一下 K3s 集群中的 Traefik 属性:</p>
+<p><strong>role &amp; ServiceAccount</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># ServiceAccount,名称为 traefik</span>
+</span></span><span class="line"><span class="cl">sudo kubectl get serviceaccount -n kube-system traefik
+</span></span><span class="line"><span class="cl">NAME      SECRETS   AGE
+</span></span><span class="line"><span class="cl">traefik   <span class="m">0</span>         18d
+</span></span><span class="line"><span class="cl"><span class="c1"># ClusterRole,名称为traefik-kube-system    </span>
+</span></span><span class="line"><span class="cl">sudo kubectl get clusterrole <span class="p">|</span> grep traefik
+</span></span><span class="line"><span class="cl">traefik-kube-system                                                    2025-05-15T06:59:41Z
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看其 Role 信息：</span>
+</span></span><span class="line"><span class="cl">sudo kubectl get clusterrole traefik-kube-system -o yaml
+</span></span></code></pre></div><p>这里查看到的信息就是我们上面修改好的“配置文件”,定义了 Traefik 可以访问哪些 apiGroups,groups 中的 resources,可以对这些 resources 进行哪些 verbs</p>
+<p><strong>binding</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看 clusterrolebinding 绑定信息</span>
+</span></span><span class="line"><span class="cl">sudo kubectl get clusterrolebinding <span class="p">|</span> grep traefik
+</span></span><span class="line"><span class="cl">helm-kube-system-traefik                                        ClusterRole/cluster-admin                                                   19d
+</span></span><span class="line"><span class="cl">helm-kube-system-traefik-crd                                    ClusterRole/cluster-admin                                                   19d
+</span></span><span class="line"><span class="cl">traefik-kube-system                                             ClusterRole/traefik-kube-system                                             18d
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看具体的绑定规则</span>
+</span></span><span class="line"><span class="cl">sudo kubectl get clusterrolebinding traefik-kube-system -o yaml
+</span></span><span class="line"><span class="cl">apiVersion: rbac.authorization.k8s.io/v1
+</span></span><span class="line"><span class="cl">kind: ClusterRoleBinding
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  annotations:
+</span></span><span class="line"><span class="cl">    meta.helm.sh/release-name: traefik
+</span></span><span class="line"><span class="cl">    meta.helm.sh/release-namespace: kube-system
+</span></span><span class="line"><span class="cl">  creationTimestamp: <span class="s2">&#34;2025-05-15T06:59:41Z&#34;</span>
+</span></span><span class="line"><span class="cl">  labels:
+</span></span><span class="line"><span class="cl">    app.kubernetes.io/instance: traefik-kube-system
+</span></span><span class="line"><span class="cl">    app.kubernetes.io/managed-by: Helm
+</span></span><span class="line"><span class="cl">    app.kubernetes.io/name: traefik
+</span></span><span class="line"><span class="cl">    helm.sh/chart: traefik-27.0.201_up27.0.2
+</span></span><span class="line"><span class="cl">  name: traefik-kube-system
+</span></span><span class="line"><span class="cl">  resourceVersion: <span class="s2">&#34;4041&#34;</span>
+</span></span><span class="line"><span class="cl">  uid: 905de4bb-8aab-42c6-a84c-169252444073
+</span></span><span class="line"><span class="cl">roleRef:
+</span></span><span class="line"><span class="cl">  apiGroup: rbac.authorization.k8s.io
+</span></span><span class="line"><span class="cl">  kind: ClusterRole
+</span></span><span class="line"><span class="cl">  name: traefik-kube-system
+</span></span><span class="line"><span class="cl">subjects:
+</span></span><span class="line"><span class="cl">- kind: ServiceAccount
+</span></span><span class="line"><span class="cl">  name: traefik
+</span></span><span class="line"><span class="cl">  namespace: kube-system
+</span></span></code></pre></div><p>在最后的部分可以发现就是把 traefik-kube-system 绑定到了 traefik 上，这与<a href="https://doc.traefik.io/traefik/getting-started/quick-start-with-kubernetes/">官网</a>给出的示例几乎一致。</p>
+<p><strong>Deployment &amp; Service</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Deployment</span>
+</span></span><span class="line"><span class="cl">sudo kubectl get deployment -n kube-system traefik
+</span></span><span class="line"><span class="cl">NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+</span></span><span class="line"><span class="cl">traefik   1/1     <span class="m">1</span>            <span class="m">1</span>           18d
+</span></span><span class="line"><span class="cl"><span class="c1"># Deployment 内部 Port 信息</span>
+</span></span><span class="line"><span class="cl">ports:
+</span></span><span class="line"><span class="cl">        - containerPort: <span class="m">9100</span>
+</span></span><span class="line"><span class="cl">          name: metrics
+</span></span><span class="line"><span class="cl">          protocol: TCP
+</span></span><span class="line"><span class="cl">        - containerPort: <span class="m">9000</span>
+</span></span><span class="line"><span class="cl">          name: traefik
+</span></span><span class="line"><span class="cl">          protocol: TCP
+</span></span><span class="line"><span class="cl">        - containerPort: <span class="m">80</span>
+</span></span><span class="line"><span class="cl">          name: web
+</span></span><span class="line"><span class="cl">          protocol: TCP
+</span></span><span class="line"><span class="cl">        - containerPort: <span class="m">8443</span>
+</span></span><span class="line"><span class="cl">          name: websecure
+</span></span><span class="line"><span class="cl">          protocol: TCP
+</span></span><span class="line"><span class="cl"><span class="c1"># Service</span>
+</span></span><span class="line"><span class="cl">sudo kubectl get service -n kube-system traefik
+</span></span><span class="line"><span class="cl">NAME      TYPE           CLUSTER-IP     EXTERNAL-IP     PORT<span class="o">(</span>S<span class="o">)</span>                      AGE
+</span></span><span class="line"><span class="cl">traefik   LoadBalancer   10.43.144.33   192.168.31.70   80:32194/TCP,443:31405/TCP   18d
+</span></span><span class="line"><span class="cl"><span class="c1"># Service 内部 Port 信息，与上面 Deployment 要对应</span>
+</span></span><span class="line"><span class="cl">ports:
+</span></span><span class="line"><span class="cl">  - name: web
+</span></span><span class="line"><span class="cl">    nodePort: <span class="m">32194</span>
+</span></span><span class="line"><span class="cl">    port: <span class="m">80</span>
+</span></span><span class="line"><span class="cl">    protocol: TCP
+</span></span><span class="line"><span class="cl">    targetPort: web
+</span></span><span class="line"><span class="cl">  - name: websecure
+</span></span><span class="line"><span class="cl">    nodePort: <span class="m">31405</span>
+</span></span><span class="line"><span class="cl">    port: <span class="m">443</span>
+</span></span><span class="line"><span class="cl">    protocol: TCP
+</span></span><span class="line"><span class="cl">    targetPort: websecure
+</span></span></code></pre></div><p>其实从这里与之前的集群图片对照，可以看出 Traefik Deployment 作为 Ingress Controller,其 Service 在前面作为 LoadBalancer,让外部的流量可以到达 Traefik Deployment.</p>
+<p><img alt="1" loading="lazy" src="/img/riscv/traefik01.png"></p>
+<h2 id="与-nginx-对比">与 Nginx 对比<a hidden class="anchor" aria-hidden="true" href="#与-nginx-对比">#</a></h2>
+<p>从前面的介绍可以看出，Traefik 最大的卖点就是<em>实时监测集群内的路由情况并自动进行服务发现并为其动态配置路由。</em></p>
+<p>而传统的 Nginx 想要完成这样的自动化是不可能的，需要手动更改 <code>nginx.conf</code>文件，向其中添加路由规则，所以其并不适合动态服务。其通常用作静态文件服务和反向代理。</p>
+<p>但是 Nginx 也像 Traefik 一样，提供了动态监听的 Ingress Controller: <strong>Nginx Ingress Controller</strong>,虽然 K3s 默认嵌入 Traefik,但如果你想，也可以替换成 Nginx.</p>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>Traefik 作为集群中的 Ingress Controller,需要调用集群中的资源来为我们后方 Deployment Pod 中的应用<strong>自动</strong>构建路由规则，将外部的请求转发过来。</p>
+<p>所以我们需要保证其有访问某些资源的权限，例如 <code>nodes,endpointslices</code> 等资源。</p>
+<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
+      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
+      <li><a href="http://localhost:1313/tags/traefik/">Traefik</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Golang版本更新工具</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/040k3sep13%E5%85%B3%E4%BA%8Epod%E7%9A%84%E4%B8%80%E5%88%87/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>040K3sEP13关于Pod的一切</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

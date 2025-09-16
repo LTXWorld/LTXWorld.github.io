@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>AI on LTX&#39;s Blog</title>
     <link>http://localhost:1313/tags/ai/</link>
     <description>Recent content in AI on LTX&#39;s Blog</description>
-    <generator>Hugo</generator>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
     <language>zh</language>
-    <copyright>[©2024 LTX&#39;s Blog](https://LTXWorld.github.io/)</copyright>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
     <lastBuildDate>Sun, 17 Nov 2024 13:00:48 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/ai/index.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -14,7 +19,9 @@
       <link>http://localhost:1313/posts/001aithought/</link>
       <pubDate>Sun, 17 Nov 2024 13:00:48 +0800</pubDate>
       <guid>http://localhost:1313/posts/001aithought/</guid>
-      <description>&lt;h1 id=&#34;why&#34;&gt;Why&lt;/h1&gt;&#xA;&lt;h2 id=&#34;起源&#34;&gt;起源&lt;/h2&gt;&#xA;&lt;p&gt;在上周四下午，我的导师给了我一个小任务，开发一个简单地安卓App调用相关的天气，地图API以显示当前位置的温度，由于我的安卓开发水平并不是那么出色并且当晚就要交付，所以我使用AI来帮我完成这个任务。&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;why&#34;&gt;Why&lt;/h1&gt;
+&lt;h2 id=&#34;起源&#34;&gt;起源&lt;/h2&gt;
+&lt;p&gt;在上周四下午，我的导师给了我一个小任务，开发一个简单地安卓App调用相关的天气，地图API以显示当前位置的温度，由于我的安卓开发水平并不是那么出色并且当晚就要交付，所以我使用AI来帮我完成这个任务。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

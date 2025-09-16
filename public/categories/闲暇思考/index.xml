@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>闲暇思考 on LTX&#39;s Blog</title>
     <link>http://localhost:1313/categories/%E9%97%B2%E6%9A%87%E6%80%9D%E8%80%83/</link>
     <description>Recent content in 闲暇思考 on LTX&#39;s Blog</description>
-    <generator>Hugo</generator>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
     <language>zh</language>
-    <copyright>[©2024 LTX&#39;s Blog](https://LTXWorld.github.io/)</copyright>
-    <lastBuildDate>Sun, 17 Nov 2024 13:00:48 +0800</lastBuildDate>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Mon, 24 Feb 2025 18:13:23 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/%E9%97%B2%E6%9A%87%E6%80%9D%E8%80%83/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>总结我的2024</title>
+      <link>http://localhost:1313/posts/011%E6%80%BB%E7%BB%932024/</link>
+      <pubDate>Mon, 24 Feb 2025 18:13:23 +0800</pubDate>
+      <guid>http://localhost:1313/posts/011%E6%80%BB%E7%BB%932024/</guid>
+      <description>&lt;h1 id=&#34;我的2024&#34;&gt;我的2024&lt;/h1&gt;
+&lt;p&gt;时光如梭啊，一转眼2025年都已经过了快两个月了，我才来写这一篇关于我的2024年总结，因为2024的结尾发生了一些事情吧。&lt;/p&gt;
+&lt;p&gt;往年都是以视频的形式，今年，以个人博客的方式来回顾吧。同样也会用回顾朋友圈的形式来辅助实现回顾。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>AIThought01——让我尝试不依靠AI</title>
       <link>http://localhost:1313/posts/001aithought/</link>
       <pubDate>Sun, 17 Nov 2024 13:00:48 +0800</pubDate>
       <guid>http://localhost:1313/posts/001aithought/</guid>
-      <description>&lt;h1 id=&#34;why&#34;&gt;Why&lt;/h1&gt;&#xA;&lt;h2 id=&#34;起源&#34;&gt;起源&lt;/h2&gt;&#xA;&lt;p&gt;在上周四下午，我的导师给了我一个小任务，开发一个简单地安卓App调用相关的天气，地图API以显示当前位置的温度，由于我的安卓开发水平并不是那么出色并且当晚就要交付，所以我使用AI来帮我完成这个任务。&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;why&#34;&gt;Why&lt;/h1&gt;
+&lt;h2 id=&#34;起源&#34;&gt;起源&lt;/h2&gt;
+&lt;p&gt;在上周四下午，我的导师给了我一个小任务，开发一个简单地安卓App调用相关的天气，地图API以显示当前位置的温度，由于我的安卓开发水平并不是那么出色并且当晚就要交付，所以我使用AI来帮我完成这个任务。&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

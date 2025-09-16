@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Local-Storage on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/local-storage/</link>
+    <description>Recent content in Local-Storage on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Tue, 15 Apr 2025 16:14:08 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/local-storage/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>K3sEP05——开发板上k3s存在的问题02_local-path-provisioner</title>
+      <link>http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</link>
+      <pubDate>Tue, 15 Apr 2025 16:14:08 +0800</pubDate>
+      <guid>http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kubectl get pods -A -o wide
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;NAMESPACE     NAME                                      READY   STATUS             RESTARTS        AGE    IP           NODE                NOMINATED NODE   READINESS GATES
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;default       redis-696579c6c8-v2wns                    1/1     Running            &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;4m10s ago&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;   7d6h   10.42.0.17   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   helm-install-traefik-pv4hv                0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.20   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   local-path-provisioner-7b7dc8d6f5-48jjf   0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.19   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   helm-install-traefik-crd-ktfth            0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.21   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   metrics-server-668d979685-jthzj           0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.22   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running            &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               11s    10.42.0.36   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以发现在 kube-system 命名空间下的这些 Pod 还是处于 ImagePullBackOff 阶段，只有我们上次解决的 CoreDNS 是 Running，
+只是还存在网络问题没有解决,所以并没有 Ready.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

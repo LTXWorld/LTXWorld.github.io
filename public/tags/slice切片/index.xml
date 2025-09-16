@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Slice切片 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/slice%E5%88%87%E7%89%87/</link>
+    <description>Recent content in Slice切片 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Fri, 11 Apr 2025 09:44:17 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/slice%E5%88%87%E7%89%87/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GolangEP03_slice底层原理及注意事项</title>
+      <link>http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
+      <pubDate>Fri, 11 Apr 2025 09:44:17 +0800</pubDate>
+      <guid>http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;在做力扣的题目时，特别是遇到递归问题，需要传入参数，遇到切片的时候经常遇到需要克隆切片的情况，而遇到普通的int类型的时候却不需要。&lt;/p&gt;
+&lt;p&gt;显而易见，这是一个值传递还是引用传递的问题，所以今天我来总结一下 Golang 中切片的底层原理，为什么在递归中需要克隆它。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

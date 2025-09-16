@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>八股 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/%E5%85%AB%E8%82%A1/</link>
+    <description>Recent content in 八股 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Thu, 21 Aug 2025 18:46:47 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E5%85%AB%E8%82%A1/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>兴趣八股之计算机网络EP03——CORS浅探</title>
+      <link>http://localhost:1313/posts/049cors/</link>
+      <pubDate>Thu, 21 Aug 2025 18:46:47 +0800</pubDate>
+      <guid>http://localhost:1313/posts/049cors/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。&lt;/p&gt;
+&lt;p&gt;从下面这段简单的跨域中间件代码开始吧&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>兴趣八股之计算机网络EP03——Ping命令</title>
+      <link>http://localhost:1313/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</link>
+      <pubDate>Fri, 16 May 2025 15:23:10 +0800</pubDate>
+      <guid>http://localhost:1313/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;在与开发板打交道的过程中,网络成为了出现问题最多的地方,之前我们谈过 DNS 的事情,今天我们来说说 Ping 这个命令,每次网络出问题的时候最喜欢的命令就是&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>兴趣八股之计算机网络EP02——HTTPS</title>
+      <link>http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/</link>
+      <pubDate>Tue, 29 Apr 2025 19:39:43 +0800</pubDate>
+      <guid>http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;1&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/bg/https1.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全.
+那为什么会不安全呢?是因为其网站的证书出现问题了.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>兴趣八股之计算机网络EP01——DNS</title>
+      <link>http://localhost:1313/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/</link>
+      <pubDate>Tue, 29 Apr 2025 14:19:24 +0800</pubDate>
+      <guid>http://localhost:1313/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;当我们不挂梯子的时候访问 &lt;code&gt;www.google.com&lt;/code&gt; 会发生什么？ 没错，大概率是访问不到的,我的火狐浏览器会一直显示在连接但是连接不到，那么这是为什么呢？&lt;/p&gt;
+&lt;p&gt;这是因为我们的 DNS 受到了污染，也有可能遭到了劫持，至于这两者是什么意思，就请慢慢往下看吧。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

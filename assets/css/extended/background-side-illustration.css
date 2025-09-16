@@ -1,0 +1,41 @@
+:root {
+  /* 自定义侧边背景图路径，静态资源位于 static/img/ 下 */
+  --ltx-side-illustration: url('/img/background-side.png');
+}
+
+body {
+  position: relative;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: clamp(180px, 22vw, 320px);
+  background-image: var(--ltx-side-illustration);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.22;
+  pointer-events: none;
+  mix-blend-mode: normal;
+  z-index: -1;
+}
+
+body::before {
+  left: 0;
+}
+
+body::after {
+  right: 0;
+  transform: scaleX(-1);
+}
+
+@media (max-width: 900px) {
+  body::before,
+  body::after {
+    display: none;
+  }
+}

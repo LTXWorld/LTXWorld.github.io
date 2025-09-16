@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>并发 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/%E5%B9%B6%E5%8F%91/</link>
+    <description>Recent content in 并发 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Sat, 03 May 2025 21:04:26 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E5%B9%B6%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GolangEP05_Go中的并发</title>
+      <link>http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</link>
+      <pubDate>Sat, 03 May 2025 21:04:26 +0800</pubDate>
+      <guid>http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;之前的两篇文章关于&lt;a href=&#34;https://www.bfsmlt.top/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/&#34;&gt;context&lt;/a&gt;和&lt;a href=&#34;https://www.bfsmlt.top/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/&#34;&gt;channel&lt;/a&gt;，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。&lt;/p&gt;
+&lt;p&gt;但是我并没有从宏观的角度上来阐述为什么我们需要并发？为什么要设计这两种结构来处理并发，本着做到&amp;quot;what-how-why&amp;quot;的态度，我们今天来深入讨论一下 Go 中的并发。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

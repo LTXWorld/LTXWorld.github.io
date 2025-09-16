@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>K3sEP10——迁移k3s至riscv64开发板的过程记录 | LTX&#39;s Blog</title>
+<meta name="keywords" content="K3s, RiscV">
+<meta name="description" content="引子
+在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事
+
+系统级别的重要镜像进行适配并可以成功拉取到开发板
+执行 make 或者 download,build,package-cli 脚本
+
+对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="K3sEP10——迁移k3s至riscv64开发板的过程记录">
+  <meta property="og:description" content="引子 在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事
+系统级别的重要镜像进行适配并可以成功拉取到开发板 执行 make 或者 download,build,package-cli 脚本 对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-05-15T13:43:20+08:00">
+    <meta property="article:modified_time" content="2025-05-15T13:43:20+08:00">
+    <meta property="article:tag" content="K3s">
+    <meta property="article:tag" content="RiscV">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="K3sEP10——迁移k3s至riscv64开发板的过程记录">
+<meta name="twitter:description" content="引子
+在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事
+
+系统级别的重要镜像进行适配并可以成功拉取到开发板
+执行 make 或者 download,build,package-cli 脚本
+
+对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "K3sEP10——迁移k3s至riscv64开发板的过程记录",
+      "item": "http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "K3sEP10——迁移k3s至riscv64开发板的过程记录",
+  "name": "K3sEP10——迁移k3s至riscv64开发板的过程记录",
+  "description": "引子 在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事\n系统级别的重要镜像进行适配并可以成功拉取到开发板 执行 make 或者 download,build,package-cli 脚本 对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.\n",
+  "keywords": [
+    "K3s", "RiscV"
+  ],
+  "articleBody": "引子 在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事\n系统级别的重要镜像进行适配并可以成功拉取到开发板 执行 make 或者 download,build,package-cli 脚本 对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.\n对于第二件事,在操作过程中我们可能会遇到大大小小的问题,其实在之前的文章操作中我们都遇到过,这里汇总一下.\n构建过程 由于 make 过程会执行 dapper 的容器构建,会涉及到下载,由于众所周知的网络问题(我不可能给开发板上代理吧),所以我们放弃 make 过程.\n直接采用执行三个脚本的方法,在此过程中我们需要修改一些部分的代码.\n避免Golang版本检测 由于在脚本执行过程中,会去检测 当前代码中 k8s 的 Golang 的版本,具体代码在 /scripts/validate 如下:\necho Running: go version if ! go version | grep -s \"go version ${VERSION_GOLANG} \"; then echo \"Unexpected $(go version) - Kubernetes ${VERSION_K8S} should be built with go version ${VERSION_GOLANG}\" exit 1 fi 这个 VERSION_GOLANG 来自于 /scripts/version.sh\nDEPENDENCIES_URL=\"https://raw.githubusercontent.com/kubernetes/kubernetes/${VERSION_K8S}/build/dependencies.yaml\" VERSION_GOLANG=\"go\"$(curl -sL \"${DEPENDENCIES_URL}\" | yq e '.dependencies[] | select(.name == \"golang: upstream version\") 故它会去使用 curl 命令查找这个 yaml 文件,接着 yq 读取其中 golang 的字段,具体内容如下:\n# Golang - name: \"golang: upstream version\" version: 1.22.8 refPaths: - path: .go-version - path: build/build-image/cross/VERSION - path: staging/publishing/rules.yaml match: 'default-go-version\\: \\d+.\\d+(alpha|beta|rc)?\\.?(\\d+)?' - path: test/images/Makefile match: GOLANG_VERSION=\\d+.\\d+(alpha|beta|rc)?\\.?\\d+ 而这个检查 golang 版本的行为会出现在我们运行 k3s 的过程中,源码中 server 和 agent 的启动第一步就是 cmds.MustValidateGolang()\n但是,由于众所周知的网络问题, curl 不动,😅;如果你不管这个问题就会出现以下现象:\nMay 14 18:16:01 revyos-lpi4a k3s[1447]: time=\"2025-05-14T18:16:01+08:00\" level=fatal msg=\"Failed to validate golang version: incorrect golang build version - kubernetes v1.31.2 should be built with go, runtime version is go1.23.6\" 可以发现,should built with go这是错误的,至少后面也应该是 goxxx,而不是 go——证明其没有读取到 yaml 文件中的内容.\n这也就导致运行 k3s 时第一步的检查版本代码过不去,即下方这里的代码: pkg/cli/agent/agent.go\nfunc ValidateGolang() error { k8sVersion, _, _ := strings.Cut(version.Version, \"+\") if version.UpstreamGolang == \"\" { return fmt.Errorf(\"kubernetes golang build version not set - see 'golang: upstream version' in https://github.com/kubernetes/kubernetes/blob/%s/build/dependencies.yaml\", k8sVersion) } if v, _, _ := strings.Cut(runtime.Version(), \" \"); version.UpstreamGolang != v { return fmt.Errorf(\"incorrect golang build version - kubernetes %s should be built with %s, runtime version is %s\", k8sVersion, version.UpstreamGolang, v) } return nil } 所以我们最后干了什么:\n将 validate 中关于检验 Golang 版本的代码注释掉 将 server 与 agent 中的 cmds.MustValidateGolang()注释掉 在 yaml 文件中找到适合的 golang 版本作为我们开发板上要用的版本,见上一篇文章环境配置. 避免下载过程过慢 在执行 download 过程中,其实并不需要在开发板上执行,这一点我们在这篇文章中提过,具体做法如下:\n# 在我们的主机上执行 export GOARCH=riscv64 export ARCH=riscv64 export OS=linux ./scripts/download # 然后拷贝build目录到开发板的k3s源码目录中 scp build/ root@ip:/root/k3s 开发板 airgap 安装 在开发板上执行 build 与 package-cli 脚本,build过程中可能会遇到网络问题,速度较慢,但是只要我们的环境,工具都正确,不会出现其他问题.\n执行完两个脚本后会在 /dist/artifacts目录下产生一个 k3s-riscv 可执行二进制文件,将作为我们后续安装的文件.\n接着我们进行 airgap 安装 server 节点,利用上一篇文章中的安装脚本即可完成安装.\n安装后检查是否成功:\nsudo systemctl status k3s sudo kubectl get nodes 看到自己的节点即为成功.\n手动拉取镜像 在 2025-05-14 实验版本中,系统镜像并没有自动拉取,这点我们还在尝试,因为官网还有一种为其设置配置文件的方式 /etc/rancher/k3s/config.yaml\n所以我们使用 sudo kubeclt get pods -A 来查看这些系统镜像,并用sudo kubectl describe pod -n kube-system 来查看其错误原因\n错误原因大部分都来自于镜像拉取失败,因为它还在拉取默认的 rancher 镜像. 所以我们需要修改 registries.yaml 文件,为其添加 rewrite,使其将默认镜像改为我们私有仓库中的镜像.\nmirrors: docker.io: endpoint: - \"https://jimlt.bfsmlt.top\" # 这里根据上 rewrite: \"^library/pause$\": \"pause\" \"^rancher/mirrored-library-traefik$\": \"traefik\" \"^rancher/mirrored-metrics-server$\": \"metrics-server\" \"^rancher/klipper-helm$\": \"klipper-helm\" \"^library/klipper-lb$\": \"klipper-lb\" \"^rancher/local-path-provisioner$\": \"local-path-provisioner\" \"^rancher/mirrored-coredns-coredns$\": \"coredns/coredns\" \"^busybox$\": \"riscv64/busybox\" # 注意,因为我们采用了 TLS 的私有仓库,所以这里需要添加 configs configs: \"jimlt.bfsmlt.top\": # 你的私有仓库地址 auth: username: xxx password: yyyyyyyy 然后需要手动拉取这些镜像,利用 sudo crictl pull 命令拉取. 最终结果如下:\nsudo kubectl get pods -A NAMESPACE NAME READY STATUS RESTARTS AGE kube-system coredns-56f6fc8fd7-28mn7 1/1 Running 1 (18h ago) 19h kube-system helm-install-traefik-crd-98v8n 0/1 Completed 0 19h kube-system helm-install-traefik-j7czp 0/1 Completed 0 19h kube-system local-path-provisioner-5cf85fd84d-hznms 1/1 Running 0 19h kube-system metrics-server-5985cbc9d7-v7dch 1/1 Running 0 19h kube-system svclb-traefik-699324d1-48lvn 2/2 Running 0 93m kube-system traefik-57b79cf995-xnv79 1/1 Running 0 93m 这些系统镜像都已经在成功运行.\n测试pod 在主机上构建一个小的镜像推送到私有仓库中去\npackage main import ( \"fmt\" \"net/http\" \"os\" ) func handler(w http.ResponseWriter, r *http.Request) { message := os.Getenv(\"MESSAGE\") if message == \"\" { message = \"Hello from RISC-V!\" } fmt.Fprintf(w, \"%s\\n\", message) } func main() { http.HandleFunc(\"/\", handler) fmt.Println(\"Listening on :7080\") http.ListenAndServe(\":7080\", nil) } FROM golang:1.22.12-alpine3.20 AS builder WORKDIR /app COPY . . RUN go build -o hello-k8s main.go FROM alpine:latest WORKDIR /root/ COPY --from=builder /app/hello-k8s . EXPOSE 7080 ENTRYPOINT [\"./hello-k8s\"] 构建并推送,注意设置 platform 与 network\ndocker build --platform=linux/riscv64 --network host -t jimlt.bfsmlt.top/hello-kubernetes:1.0.1 . docker push jimlt.bfsmlt.top/hello-kubernetes:1.0.1 这里看着 push 的结果可以思考一下为什么 push 的时候显示 traefik?\nThe push refers to repository [jimlt.bfsmlt.top/hello-kubernetes] f8b25a4c3a38: Pushed ecbb5a20f6d5: Pushed 7df33f7ad8be: Mounted from traefik 4f4fb700ef54: Layer already exists 1.0.1: digest: sha256:78107dc8255d5b7eb09031d1c26fee9b10ee896237ac8b8acc1914e83b704325 size: 857 因为私有仓库中的 traefik 镜像已经有了 7d 这个镜像层(Docker 镜像的基本概念,镜像由层组成) 故这里复用了这个镜像层,就不用再重新构建这层了 在开发板上写一个 hello-deploy.yaml 进行部署测试\napiVersion: v1 kind: Service metadata: name: hello spec: type: ClusterIP ports: - port: 7080 targetPort: 7080 selector: app: hello --- apiVersion: apps/v1 kind: Deployment metadata: name: hello spec: replicas: 1 selector: matchLabels: app: hello template: # 注意这里在 spec 下，不是在 selector 下 metadata: labels: app: hello spec: containers: - name: hello-kubernetes image: jimlt.bfsmlt.top/hello-kubernetes:1.0.0 env: - name: MESSAGE value: \"Hello RISC-V!\" ports: - containerPort: 7080 运行此 deployment 并执行测试\nsudo kubectl apply -f hello-deploy.yaml sudo kubectl port-forward svc/hello 7080:7080 curl http://localhost:7080 # 输出结果 Hello RISC-V! 总结 至此,我们的移植过程暂时告一段落了,可以运行起一个简单的小应用,接下来我们会将另一个开发板作为 agent 加入其中进行集群测试.\n不过其中对源码的修改方式(避免检测)也是一种无奈的尝试,后续看看有没有什么其他的好的方式;还有手动拉取系统镜像这一步也不应该这样做,再看吧.\n最后问自己一句:问题解决了吗?这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
+  "wordCount" : "1947",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-05-15T13:43:20+08:00",
+  "dateModified": "2025-05-15T13:43:20+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      K3sEP10——迁移k3s至riscv64开发板的过程记录
+    </h1>
+    <div class="post-meta"><span title='2025-05-15 13:43:20 +0800 CST'>五月 15, 2025</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#%e6%9e%84%e5%bb%ba%e8%bf%87%e7%a8%8b" aria-label="构建过程">构建过程</a><ul>
+                        
+                <li>
+                    <a href="#%e9%81%bf%e5%85%8dgolang%e7%89%88%e6%9c%ac%e6%a3%80%e6%b5%8b" aria-label="避免Golang版本检测">避免Golang版本检测</a></li>
+                <li>
+                    <a href="#%e9%81%bf%e5%85%8d%e4%b8%8b%e8%bd%bd%e8%bf%87%e7%a8%8b%e8%bf%87%e6%85%a2" aria-label="避免下载过程过慢">避免下载过程过慢</a></li>
+                <li>
+                    <a href="#%e5%bc%80%e5%8f%91%e6%9d%bf-airgap-%e5%ae%89%e8%a3%85" aria-label="开发板 airgap 安装">开发板 airgap 安装</a></li>
+                <li>
+                    <a href="#%e6%89%8b%e5%8a%a8%e6%8b%89%e5%8f%96%e9%95%9c%e5%83%8f" aria-label="手动拉取镜像">手动拉取镜像</a></li>
+                <li>
+                    <a href="#%e6%b5%8b%e8%af%95pod" aria-label="测试pod">测试pod</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事</p>
+<ul>
+<li>系统级别的重要镜像进行适配并可以成功拉取到开发板</li>
+<li>执行 make 或者 download,build,package-cli 脚本</li>
+</ul>
+<p>对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.</p>
+<p><img alt="support" loading="lazy" src="/img/riscv/support.png"></p>
+<p>对于第二件事,在操作过程中我们可能会遇到大大小小的问题,其实在之前的文章操作中我们都遇到过,这里汇总一下.</p>
+<h2 id="构建过程">构建过程<a hidden class="anchor" aria-hidden="true" href="#构建过程">#</a></h2>
+<p>由于 make 过程会执行 dapper 的容器构建,会涉及到下载,由于众所周知的网络问题(我不可能给开发板上代理吧),所以我们放弃 make 过程.</p>
+<p>直接采用执行三个脚本的方法,在此过程中我们需要修改一些部分的代码.</p>
+<h3 id="避免golang版本检测">避免Golang版本检测<a hidden class="anchor" aria-hidden="true" href="#避免golang版本检测">#</a></h3>
+<p>由于在脚本执行过程中,会去检测 当前代码中 k8s 的 Golang 的版本,具体代码在 <code>/scripts/validate</code> 如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">echo</span> Running: go version
+</span></span><span class="line"><span class="cl"><span class="k">if</span> ! go version <span class="p">|</span> grep -s <span class="s2">&#34;go version </span><span class="si">${</span><span class="nv">VERSION_GOLANG</span><span class="si">}</span><span class="s2"> &#34;</span><span class="p">;</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">echo</span> <span class="s2">&#34;Unexpected </span><span class="k">$(</span>go version<span class="k">)</span><span class="s2"> - Kubernetes </span><span class="si">${</span><span class="nv">VERSION_K8S</span><span class="si">}</span><span class="s2"> should be built with go version </span><span class="si">${</span><span class="nv">VERSION_GOLANG</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">exit</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="k">fi</span>
+</span></span></code></pre></div><p>这个 VERSION_GOLANG 来自于 <code>/scripts/version.sh</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">DEPENDENCIES_URL</span><span class="o">=</span><span class="s2">&#34;https://raw.githubusercontent.com/kubernetes/kubernetes/</span><span class="si">${</span><span class="nv">VERSION_K8S</span><span class="si">}</span><span class="s2">/build/dependencies.yaml&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">VERSION_GOLANG</span><span class="o">=</span><span class="s2">&#34;go&#34;</span><span class="k">$(</span>curl -sL <span class="s2">&#34;</span><span class="si">${</span><span class="nv">DEPENDENCIES_URL</span><span class="si">}</span><span class="s2">&#34;</span> <span class="p">|</span> yq e <span class="err">&#39;</span>.dependencies<span class="o">[]</span> <span class="p">|</span> <span class="k">select</span><span class="o">(</span>.name <span class="o">==</span> <span class="s2">&#34;golang: upstream version&#34;</span><span class="k">)</span>
+</span></span></code></pre></div><p>故它会去使用 curl 命令查找这个 yaml 文件,接着 yq 读取其中 golang 的字段,具体内容如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># Golang</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;golang: upstream version&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="m">1.22.8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">refPaths</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">.go-version</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">build/build-image/cross/VERSION</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">staging/publishing/rules.yaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">match: &#39;default-go-version\</span><span class="p">:</span><span class="w"> </span><span class="l">\d+.\d+(alpha|beta|rc)?\.?(\d+)?&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">test/images/Makefile</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">match</span><span class="p">:</span><span class="w"> </span><span class="l">GOLANG_VERSION=\d+.\d+(alpha|beta|rc)?\.?\d+</span><span class="w">
+</span></span></span></code></pre></div><p>而这个检查 golang 版本的行为会出现在我们运行 k3s 的过程中,源码中 server 和 agent 的启动第一步就是 <code>cmds.MustValidateGolang()</code></p>
+<p>但是,由于众所周知的网络问题, curl 不动,😅;如果你不管这个问题就会出现以下现象:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">May <span class="m">14</span> 18:16:01 revyos-lpi4a k3s<span class="o">[</span>1447<span class="o">]</span>: <span class="nv">time</span><span class="o">=</span><span class="s2">&#34;2025-05-14T18:16:01+08:00&#34;</span> <span class="nv">level</span><span class="o">=</span>fatal <span class="nv">msg</span><span class="o">=</span><span class="s2">&#34;Failed to validate golang version: incorrect golang build version - kubernetes v1.31.2 should be built with go, runtime version is go1.23.6&#34;</span>
+</span></span></code></pre></div><p>可以发现,<code>should built with go</code>这是错误的,至少后面也应该是 goxxx,而不是 go——证明其没有读取到 yaml 文件中的内容.</p>
+<p>这也就导致运行 k3s 时第一步的检查版本代码过不去,即下方这里的代码: <code>pkg/cli/agent/agent.go</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">ValidateGolang</span><span class="p">()</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">k8sVersion</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Cut</span><span class="p">(</span><span class="nx">version</span><span class="p">.</span><span class="nx">Version</span><span class="p">,</span> <span class="s">&#34;+&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">version</span><span class="p">.</span><span class="nx">UpstreamGolang</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;kubernetes golang build version not set - see &#39;golang: upstream version&#39; in https://github.com/kubernetes/kubernetes/blob/%s/build/dependencies.yaml&#34;</span><span class="p">,</span> <span class="nx">k8sVersion</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">strings</span><span class="p">.</span><span class="nf">Cut</span><span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nf">Version</span><span class="p">(),</span> <span class="s">&#34; &#34;</span><span class="p">);</span> <span class="nx">version</span><span class="p">.</span><span class="nx">UpstreamGolang</span> <span class="o">!=</span> <span class="nx">v</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;incorrect golang build version - kubernetes %s should be built with %s, runtime version is %s&#34;</span><span class="p">,</span> <span class="nx">k8sVersion</span><span class="p">,</span> <span class="nx">version</span><span class="p">.</span><span class="nx">UpstreamGolang</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>所以我们最后干了什么:</p>
+<ul>
+<li>将 validate 中关于检验 Golang 版本的代码注释掉</li>
+<li>将 server 与 agent 中的 <code>cmds.MustValidateGolang()</code>注释掉</li>
+<li>在 yaml 文件中找到适合的 golang 版本作为我们开发板上要用的版本,见上一篇文章环境配置.</li>
+</ul>
+<h3 id="避免下载过程过慢">避免下载过程过慢<a hidden class="anchor" aria-hidden="true" href="#避免下载过程过慢">#</a></h3>
+<p>在执行 download 过程中,其实并不需要在开发板上执行,这一点我们在<a href="https://www.bfsmlt.top/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/#download%E9%81%87%E5%88%B0%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98">这篇文章</a>中提过,具体做法如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 在我们的主机上执行</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOARCH</span><span class="o">=</span>riscv64
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ARCH</span><span class="o">=</span>riscv64
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">OS</span><span class="o">=</span>linux
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">./scripts/download
+</span></span><span class="line"><span class="cl"><span class="c1"># 然后拷贝build目录到开发板的k3s源码目录中</span>
+</span></span><span class="line"><span class="cl">scp build/ root@ip:/root/k3s
+</span></span></code></pre></div><h3 id="开发板-airgap-安装">开发板 airgap 安装<a hidden class="anchor" aria-hidden="true" href="#开发板-airgap-安装">#</a></h3>
+<p>在开发板上执行 build 与 package-cli 脚本,build过程中可能会遇到网络问题,速度较慢,但是只要我们的环境,工具都正确,不会出现其他问题.</p>
+<p>执行完两个脚本后会在 <code>/dist/artifacts</code>目录下产生一个 k3s-riscv 可执行二进制文件,将作为我们后续安装的文件.</p>
+<p>接着我们进行 <a href="https://docs.k3s.io/zh/installation/airgap">airgap</a> 安装 server 节点,利用上一篇文章中的安装脚本即可完成安装.</p>
+<p>安装后检查是否成功:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo systemctl status k3s
+</span></span><span class="line"><span class="cl">sudo kubectl get nodes
+</span></span></code></pre></div><p>看到自己的节点即为成功.</p>
+<h3 id="手动拉取镜像">手动拉取镜像<a hidden class="anchor" aria-hidden="true" href="#手动拉取镜像">#</a></h3>
+<p>在 2025-05-14 实验版本中,系统镜像并没有自动拉取,这点我们还在尝试,因为官网还有一种为其设置配置文件的方式 <code>/etc/rancher/k3s/config.yaml</code></p>
+<p>所以我们使用 <code>sudo kubeclt get pods -A</code> 来查看这些系统镜像,并用<code>sudo kubectl describe pod &lt;podName&gt; -n kube-system</code> 来查看其错误原因</p>
+<p>错误原因大部分都来自于镜像拉取失败,因为它还在拉取默认的 rancher 镜像.
+所以我们需要修改 registries.yaml 文件,为其添加 rewrite,使其将默认镜像改为我们私有仓库中的镜像.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">mirrors</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">docker.io</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;https://jimlt.bfsmlt.top&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 这里根据上</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">rewrite</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^library/pause$&#34;: </span><span class="s2">&#34;pause&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^rancher/mirrored-library-traefik$&#34;: </span><span class="s2">&#34;traefik&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^rancher/mirrored-metrics-server$&#34;: </span><span class="s2">&#34;metrics-server&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^rancher/klipper-helm$&#34;: </span><span class="s2">&#34;klipper-helm&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^library/klipper-lb$&#34;: </span><span class="s2">&#34;klipper-lb&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^rancher/local-path-provisioner$&#34;: </span><span class="s2">&#34;local-path-provisioner&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^rancher/mirrored-coredns-coredns$&#34;: </span><span class="s2">&#34;coredns/coredns&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^busybox$&#34;: </span><span class="s2">&#34;riscv64/busybox&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># 注意,因为我们采用了 TLS 的私有仓库,所以这里需要添加 configs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">configs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">&#34;jimlt.bfsmlt.top&#34;: </span><span class="c"># 你的私有仓库地址</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">auth</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">xxx</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">yyyyyyyy</span><span class="w">
+</span></span></span></code></pre></div><p>然后需要手动拉取这些镜像,利用 <code>sudo crictl pull</code> 命令拉取.
+最终结果如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo kubectl get pods -A
+</span></span><span class="line"><span class="cl">NAMESPACE     NAME                                      READY   STATUS      RESTARTS      AGE
+</span></span><span class="line"><span class="cl">kube-system   coredns-56f6fc8fd7-28mn7                  1/1     Running     <span class="m">1</span> <span class="o">(</span>18h ago<span class="o">)</span>   19h
+</span></span><span class="line"><span class="cl">kube-system   helm-install-traefik-crd-98v8n            0/1     Completed   <span class="m">0</span>             19h
+</span></span><span class="line"><span class="cl">kube-system   helm-install-traefik-j7czp                0/1     Completed   <span class="m">0</span>             19h
+</span></span><span class="line"><span class="cl">kube-system   local-path-provisioner-5cf85fd84d-hznms   1/1     Running     <span class="m">0</span>             19h
+</span></span><span class="line"><span class="cl">kube-system   metrics-server-5985cbc9d7-v7dch           1/1     Running     <span class="m">0</span>             19h
+</span></span><span class="line"><span class="cl">kube-system   svclb-traefik-699324d1-48lvn              2/2     Running     <span class="m">0</span>             93m
+</span></span><span class="line"><span class="cl">kube-system   traefik-57b79cf995-xnv79                  1/1     Running     <span class="m">0</span>             93m
+</span></span></code></pre></div><p>这些系统镜像都已经在成功运行.</p>
+<h3 id="测试pod">测试pod<a hidden class="anchor" aria-hidden="true" href="#测试pod">#</a></h3>
+<p>在主机上构建一个小的镜像推送到私有仓库中去</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">handler</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">message</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Getenv</span><span class="p">(</span><span class="s">&#34;MESSAGE&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">message</span> <span class="o">==</span> <span class="s">&#34;&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">message</span> <span class="p">=</span> <span class="s">&#34;Hello from RISC-V!&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="s">&#34;%s\n&#34;</span><span class="p">,</span> <span class="nx">message</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Listening on :7080&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:7080&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> golang:1.22.12-alpine3.20 AS builder</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /app</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> . .<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> go build -o hello-k8s main.go<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> alpine:latest</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /root/</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>builder /app/hello-k8s .<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 7080</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;./hello-k8s&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><p>构建并推送,注意设置 platform 与 network</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker build --platform<span class="o">=</span>linux/riscv64 --network host -t jimlt.bfsmlt.top/hello-kubernetes:1.0.1 .
+</span></span><span class="line"><span class="cl">docker push jimlt.bfsmlt.top/hello-kubernetes:1.0.1
+</span></span></code></pre></div><p>这里看着 push 的结果可以思考一下为什么 push 的时候显示 traefik?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">The push refers to repository <span class="o">[</span>jimlt.bfsmlt.top/hello-kubernetes<span class="o">]</span>
+</span></span><span class="line"><span class="cl">f8b25a4c3a38: Pushed
+</span></span><span class="line"><span class="cl">ecbb5a20f6d5: Pushed
+</span></span><span class="line"><span class="cl">7df33f7ad8be: Mounted from traefik
+</span></span><span class="line"><span class="cl">4f4fb700ef54: Layer already exists
+</span></span><span class="line"><span class="cl">1.0.1: digest: sha256:78107dc8255d5b7eb09031d1c26fee9b10ee896237ac8b8acc1914e83b704325 size: <span class="m">857</span>
+</span></span></code></pre></div><ul>
+<li>因为私有仓库中的 traefik 镜像已经有了 7d 这个镜像层(Docker 镜像的基本概念,镜像由层组成)</li>
+<li>故这里复用了这个镜像层,就不用再重新构建这层了</li>
+</ul>
+<p>在开发板上写一个 hello-deploy.yaml 进行部署测试</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterIP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">7080</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">7080</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">  </span><span class="c"># 注意这里在 spec 下，不是在 selector 下</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello-kubernetes</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">jimlt.bfsmlt.top/hello-kubernetes:1.0.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">env</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">MESSAGE</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Hello RISC-V!&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">7080</span><span class="w">
+</span></span></span></code></pre></div><p>运行此 deployment 并执行测试</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo kubectl apply -f hello-deploy.yaml
+</span></span><span class="line"><span class="cl">sudo kubectl port-forward svc/hello 7080:7080
+</span></span><span class="line"><span class="cl">curl http://localhost:7080
+</span></span><span class="line"><span class="cl"><span class="c1"># 输出结果</span>
+</span></span><span class="line"><span class="cl">Hello RISC-V!
+</span></span></code></pre></div><h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>至此,我们的移植过程暂时告一段落了,可以运行起一个简单的小应用,接下来我们会将另一个开发板作为 agent 加入其中进行集群测试.</p>
+<p>不过其中对源码的修改方式(避免检测)也是一种无奈的尝试,后续看看有没有什么其他的好的方式;还有手动拉取系统镜像这一步也不应该这样做,再看吧.</p>
+<p>最后问自己一句:问题解决了吗?<strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+<p><img alt="2" loading="lazy" src="/img/shu/%E8%BA%BA%E5%B9%B3.webp"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
+      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>K3sEP11——加入agent节点进行集群测试</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>K3sEP09——初始化开发板环境操作汇总</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

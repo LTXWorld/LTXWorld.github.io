@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>CORS on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/cors/</link>
+    <description>Recent content in CORS on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Thu, 21 Aug 2025 18:46:47 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/cors/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>兴趣八股之计算机网络EP03——CORS浅探</title>
+      <link>http://localhost:1313/posts/049cors/</link>
+      <pubDate>Thu, 21 Aug 2025 18:46:47 +0800</pubDate>
+      <guid>http://localhost:1313/posts/049cors/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。&lt;/p&gt;
+&lt;p&gt;从下面这段简单的跨域中间件代码开始吧&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>DebugEP02_私有镜像出问题啦</title>
+      <link>http://localhost:1313/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</link>
+      <pubDate>Mon, 21 Jul 2025 19:08:15 +0800</pubDate>
+      <guid>http://localhost:1313/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;在使用私有镜像仓库时突然出现了认证问题，跟着 AI 来回改，在此记录一下改的过程。&lt;/p&gt;
+&lt;p&gt;首先回顾一下之前的那篇构建私有镜像仓库的文章,我们建立了两个容器，&lt;code&gt;registry&lt;/code&gt;用来存放镜像,&lt;code&gt;registry-UI&lt;/code&gt;用来给前端显示。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

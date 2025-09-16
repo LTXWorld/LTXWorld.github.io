@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>GolangEP07-Range遍历(上) | LTX&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="
+Value copy
+
+In GO,everything we assign is a copy.
+变量的值到底是什么？
+
+值类型，string,array,struct,是数据本身；
+引用类型，slice,map,channel,pointer,function,是数据的引用——但仍是值拷贝，只是这个值中带着地址。
+
+所以本质上二者都是值拷贝。">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/046golangep07-range%E9%81%8D%E5%8E%86/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/046golangep07-range%E9%81%8D%E5%8E%86/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/046golangep07-range%E9%81%8D%E5%8E%86/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="GolangEP07-Range遍历(上)">
+  <meta property="og:description" content=" Value copy In GO,everything we assign is a copy.
+变量的值到底是什么？
+值类型，string,array,struct,是数据本身； 引用类型，slice,map,channel,pointer,function,是数据的引用——但仍是值拷贝，只是这个值中带着地址。 所以本质上二者都是值拷贝。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-07-20T10:16:01+08:00">
+    <meta property="article:modified_time" content="2025-07-20T10:16:01+08:00">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="GolangEP07-Range遍历(上)">
+<meta name="twitter:description" content="
+Value copy
+
+In GO,everything we assign is a copy.
+变量的值到底是什么？
+
+值类型，string,array,struct,是数据本身；
+引用类型，slice,map,channel,pointer,function,是数据的引用——但仍是值拷贝，只是这个值中带着地址。
+
+所以本质上二者都是值拷贝。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "GolangEP07-Range遍历(上)",
+      "item": "http://localhost:1313/posts/046golangep07-range%E9%81%8D%E5%8E%86/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "GolangEP07-Range遍历(上)",
+  "name": "GolangEP07-Range遍历(上)",
+  "description": " Value copy In GO,everything we assign is a copy.\n变量的值到底是什么？\n值类型，string,array,struct,是数据本身； 引用类型，slice,map,channel,pointer,function,是数据的引用——但仍是值拷贝，只是这个值中带着地址。 所以本质上二者都是值拷贝。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": " Value copy In GO,everything we assign is a copy.\n变量的值到底是什么？\n值类型，string,array,struct,是数据本身； 引用类型，slice,map,channel,pointer,function,是数据的引用——但仍是值拷贝，只是这个值中带着地址。 所以本质上二者都是值拷贝。\n值拷贝的意义：\n值传递意味着数据可以被分配到栈上，函数返回时，栈上的数据立即销毁，无需 GC； 指针数据分配在堆上，由 GC 管理 要践行通过通信共享内存，而不是共享内存来通信，传递值的副本可以避免数据竞争。 遍历一个很大的 slice 时，除了直接使用索引以外，还可以将 slice 变为指针类型，避免拷贝开销。（但是遍历指针类型对 CPU 来说效率低）\n循环控制器的求值时机 The provided expression is evaluated only once,before the beginning of the loop.\n只在循环开始前求一次值，之后会使用其副本进行迭代。\ns := []int{0, 1, 2} for range s { // 不需要索引和值，只要按照长度循环相应的次数即可。 s = append(s, 10) } 先进行拷贝，得到的s_copy作为循环控制器 后续操作，s 在不断变化，但是循环控制器始终不变，一直是开始的那个拷贝副本，所以只会执行三次。 为什么要有一个始终不变的循环控制器呢？\n为了保证循环的可预测性，防止意外的无限循环,减少对应的性能开销。\n举一个无限循环的错误示范：\ns := []int{0,1,2} for i := 0; i \u003c len(s); i++ { s = append(s, 10) } 这会导致无限循环，因为 s 的长度一直在增长。\nchannels 和 Arrays 也有类似的行为，具体见下方所示：\nChannels 同样的，在处理多个 channel 时也会遇到类似问题。\nch1 := make(chan int, 3) go func() { ch1 \u003c- 0 ch1 \u003c- 1 ch1 \u003c- 2 close(ch1) }() ch2 := make(chan int, 3) go func() { ch2 \u003c- 10 ch2 \u003c- 11 ch2 \u003c- 12 close(ch2) }() ch := ch1 for v := range ch { fmt.Println(v) ch = ch2 } 这里打印出的 v 一直是 ch1，因为只在开始时确定一次。\n一开始就确定了一个循环控制器，这样以后在 range 中修改也不会修改定住的这个控制器。\n日常开发中通常会采用 select 语句来处理多个动态数据。\nArray a := [3]int{0,1,2} for i, v := range a { a[2] = 10 if i == 2 { fmt.Println(v) } } 这段代码最终会输出 2 还是 10 呢？答案是 2，循环中的 v 来自于拷贝，而只有a[i]访问的是原始的数组。\n与最开始的 slice 类似，都有拷贝作为循环控制器:\n一开始求值得到一个拷贝副本值a_copy，接下来的循环都将在a_copy上进行 i,v 都来源于a_copy 明确使用变量名a[2]才是使用原数组 pointer 当结构体较大时，建议使用指针存入 map，否则会带来两个严重的后果：\n只是操作副本 大的结构体在 map 存取过程中会涉及到数据拷贝 所以使用指针 mapPointer map[string]*LargeStruct,可以直接对结构体内的属性值进行操作mapPointer[id].foo = \"bar\"\n在 Go1.22 之前，以下代码会出现循环变量的复用问题:\nfor _, customer := range customers { s.m[customer.ID] = \u0026customer } 循环变量的复用:customer只有一个实例，每次只操作这一个实例。 循环赋值 获取被复用的地址 如何解决这个问题：\n每次循环创建一个新的局部变量 通过索引获取原始切片的元素地址，而不是循环变量的地址 在 Go1.22 之后，修改了 for 循环的语义,让每次循环背后都做了一次局部变量声明操作：\ncustomer := customers[i] 这样就不会出现循环变量的复用问题了。\n在 Java 中 for-each 循环每次都是一个新的变量。\n对比 Java 可以看到，首先 Go 中一切皆值拷贝，而 Java，对象变量存的就是引用，拷贝的是引用的值——地址。\n在传参过程中，Java 传递的是引用的值（地址），这样不会带来拷贝的开销。\n",
+  "wordCount" : "1291",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-07-20T10:16:01+08:00",
+  "dateModified": "2025-07-20T10:16:01+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/046golangep07-range%E9%81%8D%E5%8E%86/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      GolangEP07-Range遍历(上)
+    </h1>
+    <div class="post-meta"><span title='2025-07-20 10:16:01 +0800 CST'>七月 20, 2025</span>&nbsp;·&nbsp;3 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#value-copy" aria-label="Value copy">Value copy</a></li>
+                <li>
+                    <a href="#%e5%be%aa%e7%8e%af%e6%8e%a7%e5%88%b6%e5%99%a8%e7%9a%84%e6%b1%82%e5%80%bc%e6%97%b6%e6%9c%ba" aria-label="循环控制器的求值时机">循环控制器的求值时机</a><ul>
+                        
+                <li>
+                    <a href="#channels" aria-label="Channels">Channels</a></li>
+                <li>
+                    <a href="#array" aria-label="Array">Array</a></li>
+                <li>
+                    <a href="#pointer" aria-label="pointer">pointer</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%af%b9%e6%af%94-java" aria-label="对比 Java">对比 Java</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2></h2>
+<h2 id="value-copy">Value copy<a hidden class="anchor" aria-hidden="true" href="#value-copy">#</a></h2>
+<blockquote>
+<p>In GO,everything we assign is a copy.</p></blockquote>
+<p>变量的值到底是什么？</p>
+<ul>
+<li>值类型，<code>string,array,struct</code>,是数据本身；</li>
+<li>引用类型，<code>slice,map,channel,pointer,function</code>,是数据的引用——但仍是值拷贝，只是这个值中带着地址。</li>
+</ul>
+<p>所以本质上二者都是值拷贝。</p>
+<p>值拷贝的意义：</p>
+<ul>
+<li>值传递意味着数据可以被分配到<strong>栈</strong>上，函数返回时，栈上的数据立即销毁，无需 GC；</li>
+<li><strong>指针数据分配在堆</strong>上，由 GC 管理</li>
+<li>要践行<em>通过通信共享内存，而不是共享内存来通信</em>，传递值的副本可以<strong>避免数据竞争</strong>。</li>
+</ul>
+<p>遍历一个很大的 slice 时，除了直接使用索引以外，还可以将 slice 变为指针类型，避免拷贝开销。（但是遍历指针类型对 CPU 来说效率低）</p>
+<h2 id="循环控制器的求值时机">循环控制器的求值时机<a hidden class="anchor" aria-hidden="true" href="#循环控制器的求值时机">#</a></h2>
+<blockquote>
+<p>The provided expression is evaluated only once,before the beginning of the loop.</p></blockquote>
+<p>只在循环开始前求一次值，之后会使用其副本进行迭代。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">s</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="k">range</span> <span class="nx">s</span> <span class="p">{</span> <span class="c1">// 不需要索引和值，只要按照长度循环相应的次数即可。</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">s</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ul>
+<li>先进行拷贝，得到的<code>s_copy</code>作为循环控制器</li>
+<li>后续操作，s 在不断变化，但是<strong>循环控制器始终不变</strong>，一直是开始的那个拷贝副本，所以只会执行三次。</li>
+</ul>
+<p>为什么要有一个始终不变的循环控制器呢？</p>
+<p>为了<strong>保证循环的可预测性，防止意外的无限循环,减少对应的性能开销</strong>。</p>
+<p>举一个无限循环的错误示范：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">s</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">s</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这会导致无限循环，因为 s 的长度一直在增长。</p>
+<p>channels 和 Arrays 也有类似的行为，具体见下方所示：</p>
+<h3 id="channels">Channels<a hidden class="anchor" aria-hidden="true" href="#channels">#</a></h3>
+<p>同样的，在处理多个 channel 时也会遇到类似问题。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">ch1</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch1</span> <span class="o">&lt;-</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch1</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch1</span> <span class="o">&lt;-</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">close</span><span class="p">(</span><span class="nx">ch1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">ch2</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch2</span> <span class="o">&lt;-</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch2</span> <span class="o">&lt;-</span> <span class="mi">11</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch2</span> <span class="o">&lt;-</span> <span class="mi">12</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">close</span><span class="p">(</span><span class="nx">ch2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">ch</span> <span class="o">:=</span> <span class="nx">ch1</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">ch</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch</span> <span class="p">=</span> <span class="nx">ch2</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这里打印出的 v 一直是 ch1，因为只在开始时确定一次。</p>
+<p>一开始就确定了一个循环控制器，这样以后在 range 中修改也不会修改定住的这个控制器。</p>
+<p>日常开发中通常会采用 <code>select</code> 语句来处理多个动态数据。</p>
+<h3 id="array">Array<a hidden class="anchor" aria-hidden="true" href="#array">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">a</span> <span class="o">:=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">a</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">i</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这段代码最终会输出 2 还是 10 呢？答案是 2，循环中的 v 来自于拷贝，而只有<code>a[i]</code>访问的是原始的数组。</p>
+<p>与最开始的 slice 类似，都有拷贝作为循环控制器:</p>
+<ul>
+<li>一开始求值得到一个拷贝副本值<code>a_copy</code>，接下来的循环都将在<code>a_copy</code>上进行</li>
+<li>i,v 都来源于<code>a_copy</code></li>
+<li>明确使用变量名<code>a[2]</code>才是使用原数组</li>
+</ul>
+<h3 id="pointer">pointer<a hidden class="anchor" aria-hidden="true" href="#pointer">#</a></h3>
+<p>当结构体较大时，建议使用指针存入 map，否则会带来两个严重的后果：</p>
+<ul>
+<li>只是操作副本</li>
+<li>大的结构体在 map 存取过程中会涉及到数据拷贝</li>
+</ul>
+<p>所以使用指针 <code>mapPointer map[string]*LargeStruct</code>,可以直接对结构体内的属性值进行操作<code>mapPointer[id].foo = &quot;bar&quot;</code></p>
+<p>在 Go1.22 之前，以下代码会出现循环变量的复用问题:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">customer</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">customers</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">s</span><span class="p">.</span><span class="nx">m</span><span class="p">[</span><span class="nx">customer</span><span class="p">.</span><span class="nx">ID</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">customer</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ul>
+<li>循环变量的复用:<code>customer</code>只有一个实例，每次只操作这一个实例。</li>
+<li>循环赋值</li>
+<li>获取被复用的地址</li>
+</ul>
+<p>如何解决这个问题：</p>
+<ul>
+<li>每次循环创建一个新的局部变量</li>
+<li>通过索引获取原始切片的元素地址，而不是循环变量的地址</li>
+</ul>
+<p>在 Go1.22 之后，修改了 for 循环的语义,让每次循环背后都做了一次局部变量声明操作：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">customer</span> <span class="o">:=</span> <span class="nx">customers</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span></code></pre></div><p>这样就不会出现循环变量的复用问题了。</p>
+<p>在 Java 中 <code>for-each</code> 循环每次都是一个新的变量。</p>
+<h2 id="对比-java">对比 Java<a hidden class="anchor" aria-hidden="true" href="#对比-java">#</a></h2>
+<p>可以看到，首先 Go 中一切皆值拷贝，而 Java，对象变量存的就是引用，<strong>拷贝的是引用的值——地址</strong>。</p>
+<p>在传参过程中，Java 传递的是引用的值（地址），这样不会带来拷贝的开销。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>DebugEP02_私有镜像出问题啦</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>GolangEP06:关于map-下</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

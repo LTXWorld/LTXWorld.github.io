@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>杂谈 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/%E6%9D%82%E8%B0%88/</link>
+    <description>Recent content in 杂谈 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Mon, 24 Feb 2025 18:13:23 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E6%9D%82%E8%B0%88/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>总结我的2024</title>
+      <link>http://localhost:1313/posts/011%E6%80%BB%E7%BB%932024/</link>
+      <pubDate>Mon, 24 Feb 2025 18:13:23 +0800</pubDate>
+      <guid>http://localhost:1313/posts/011%E6%80%BB%E7%BB%932024/</guid>
+      <description>&lt;h1 id=&#34;我的2024&#34;&gt;我的2024&lt;/h1&gt;
+&lt;p&gt;时光如梭啊，一转眼2025年都已经过了快两个月了，我才来写这一篇关于我的2024年总结，因为2024的结尾发生了一些事情吧。&lt;/p&gt;
+&lt;p&gt;往年都是以视频的形式，今年，以个人博客的方式来回顾吧。同样也会用回顾朋友圈的形式来辅助实现回顾。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

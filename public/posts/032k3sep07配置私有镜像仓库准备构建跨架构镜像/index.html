@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>K3sEP07——配置私有镜像仓库准备构建跨架构镜像 | LTX&#39;s Blog</title>
+<meta name="keywords" content="K3s, 私有仓库, registry, RiscV">
+<meta name="description" content="引子
+根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.
+之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持.
+跟随他的足迹,我找到了他已经做出了的适配工作.">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="K3sEP07——配置私有镜像仓库准备构建跨架构镜像">
+  <meta property="og:description" content="引子 根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.
+之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持. 跟随他的足迹,我找到了他已经做出了的适配工作.">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-05-09T16:04:29+08:00">
+    <meta property="article:modified_time" content="2025-05-09T16:04:29+08:00">
+    <meta property="article:tag" content="K3s">
+    <meta property="article:tag" content="私有仓库">
+    <meta property="article:tag" content="Registry">
+    <meta property="article:tag" content="RiscV">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="K3sEP07——配置私有镜像仓库准备构建跨架构镜像">
+<meta name="twitter:description" content="引子
+根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.
+之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持.
+跟随他的足迹,我找到了他已经做出了的适配工作.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "K3sEP07——配置私有镜像仓库准备构建跨架构镜像",
+      "item": "http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "K3sEP07——配置私有镜像仓库准备构建跨架构镜像",
+  "name": "K3sEP07——配置私有镜像仓库准备构建跨架构镜像",
+  "description": "引子 根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.\n之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持. 跟随他的足迹,我找到了他已经做出了的适配工作.\n",
+  "keywords": [
+    "K3s", "私有仓库", "registry", "RiscV"
+  ],
+  "articleBody": "引子 根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.\n之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持. 跟随他的足迹,我找到了他已经做出了的适配工作.\n适配工作中可以发现,早在2023年他就对这些系统镜像的源码进行了 commit,提供了 riscv 的支持.\n在翻阅其 fork 的有关 riscv 分支上的提交时. 可以发现他的修改主要是将系统镜像的 yaml 文件中的镜像名称修改为了其私有镜像仓库,所以我们本节先来构建一个私有镜像仓库. 目的是可以实现开发板拉取镜像从私有仓库拉取适合的跨架构镜像,而不是默认的 rancher 仓库.\n大佬用的是 dockerhub 中自己的仓库,由于某些原因我们的网络无法访问 dockerhub, 并且为了方便后续我们要自定义某些镜像,例如之前的 redis , nginx 等镜像.\n最终暂时要达到的效果是从我的 MacBook 上构建跨架构镜像,推送至私有仓库中,开发板可以从仓库中拉取对应镜像.\n搭建私有镜像仓库 在之前的这篇文章中我们曾经尝试过私有镜像仓库. 本文中采用的是云服务器+域名+SSL 的方式,比之前本地的仓库更加灵活.(不用写死IP,不再用http)\n云服务器+域名 云服务器我们采用雨云提供的美国服务器,目的是后续与域名结合时无需备案. 毕竟备案比较复杂,我们只是学习实验用途,少一些麻烦.(如果大家想要租云服务器可以点击上面的链接) 服务器配置随意,我这里选择的是 debian 的宝塔配置.购买后会得到一个公网 IP,后面要用.\n关于域名,我之前在阿里云购买了一年的域名,所以继续使用这个域名. 我们需要对域名进行 dns 解析,即将域名与上面得到的 IP 地址结合起来. 这样在别人访问此域名的时候就会解析出我们服务器的 IP 地址,具体配置如下:\n主机记录处填写你想起的域名名称,记录值填写服务器的 IP 地址.\n至此我们完成了域名的绑定,接下来我们配置 SSL .\nSSL 关于 SSL的概念,在这篇文章中有讨论,感兴趣的朋友可以去看看.这里我们采用 acme+Let’s Encrypt 的组合. 根据 acme 官方的教程我们执行以下步骤:\n登陆服务器.首先,安装 acme 脚本\ncurl https://get.acme.sh | sh -s email=my@example.com source ~/.bashrc 由于我直接在 root 目录下执行的,所以他会将脚本安装在其下.\n接着,创建必要目录,由于 acme 后面的命令需要某些特定的目录,所以执行:\nsudo mkdir -p /home/wwwroot/jimlt.bfsmlt.top sudo chown -R www-data:www-data /home/wwwroot/jimlt.bfsmlt.top # 确保Nginx有读写权限 查看 nginx 的配置情况,我的 nginx 的 server 部分原始监听的是 phpmyadmin,所以我们需要添加一个 server 用来使 acme 后续可以访问80端口.\nnginx -t # 检查并获取nginx配置,可以得到配置文件路径 sudo vi /path/to/nginx.conf # 添加如下server块 server { listen 80; server_name jimlt.bfsmlt.top ; root /home/wwwroot/jimlt.bfsmlt.top; location /.well-known/acme-challenge/ { allow all; } # 可选静态资源优化等配置... location ~ .*\\.(gif|jpg|jpeg|png|bmp|swf)$ { expires 30d; } location ~ .*\\.(js|css)?$ { expires 12h; } location ~ /\\. { deny all; } access_log /www/wwwlogs/access.log; } 重载 nginx 并检查配置\nsudo nginx -t \u0026\u0026 sudo systemctl reload nginx nginx -t 看到最后的 success 即代表配置无误.\n接下来我们生成证书,并使用 Let’s Encrypt 作为我们的 CA 服务器.\nacme.sh --set-default-ca --server letsencrypt acme.sh --issue -d mydomain.com -d www.mydomain.com --webroot /home/wwwroot/mydomain.com/ 最终会得到证书,结果类似下方:\nYour cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/jimlt.bfsmlt.top.cer [Fri May 9 09:53:29 AM CST 2025] Your cert key is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/jimlt.bfsmlt.top.key [Fri May 9 09:53:29 AM CST 2025] The intermediate CA cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/ca.cer [Fri May 9 09:53:29 AM CST 2025] And the full-chain cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/fullchain.cer 接下来我们复制证书给 registry 容器使用.\nsudo mkdir -p /etc/docker/registry/certs acme.sh --install-cert -d jimlt.bfsmlt.top \\ --key-file /etc/docker/registry/certs/jimlt.bfsmlt.top.key \\ --fullchain-file /etc/docker/registry/certs/jimlt.bfsmlt.top.crt \\ --reloadcmd \"docker restart registry\" sudo chmod 600 /etc/docker/registry/certs/* # 验证证书的安装结果 ls -l /etc/docker/registry/certs/ # 应看到： # - jimlt.bfsmlt.top.key # - jimlt.bfsmlt.top.crt 部署 registry 容器 使用 htpasswd 模式,这里我们直接让 registry 容器自己监听了443,是一种简单直接的方式. 但是并不推荐,后续考虑改为 nginx 统一处理443端口,让不同的服务监听其他端口.\ndocker run -d \\ --name registry \\ -p 443:443 \\ -v /etc/docker/registry/certs:/certs \\ -v /etc/docker/registry/auth:/auth \\ -v /var/lib/registry:/var/lib/registry \\ -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \\ -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/jimlt.bfsmlt.top.crt \\ -e REGISTRY_HTTP_TLS_KEY=/certs/jimlt.bfsmlt.top.key \\ -e REGISTRY_AUTH=htpasswd \\ -e REGISTRY_AUTH_HTPASSWD_REALM=\"Registry Realm\" \\ -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \\ --restart=always \\ registry:2 验证容器状态docker ps -f name=registry\n接着我们需要知道私有仓库的账号和密码,通过 htpasswd 进行设置.\nsudo mkdir -p /etc/docker/registry/auth docker run --rm \\ --entrypoint htpasswd \\ httpd:2 -Bbn | sudo tee /etc/docker/registry/auth/htpasswd docker restart registry 至此我们就完成了带有 SSL 的私有镜像仓库搭建,接着我们可以在其他机器上进行登陆验证 docker login https://jimlt.bfsmlt.top 输入设置的账号与密码即可.\n如果遇到认证问题,在需要登陆的机器上从服务器上复制证书 但是 Docker 默认信任 Let’s Encrypt 的有效证书,所以一般无需复制.\nsudo mkdir -p /etc/docker/certs.d/jimlt.bfsmlt.top sudo scp root@你的服务器IP:/etc/docker/registry/certs/jimlt.bfsmlt.top.crt \\ /etc/docker/certs.d/jimlt.bfsmlt.top/ca.crt 总结流程 安装 acme.sh 脚本 修改 nginx 关于80端口配置,使 acme 可以访问 使用 acme 的 webroot 模式生成证书 复制证书给 registry 容器使用 测试搭建效果 还记得我们最开始的目标吗? Macos-服务器-开发板 这样一个工作流. 所以我们在 macos 上构建一个之前的 pause 镜像并推送和拉取.\n这里我们仿照大佬的构建思路, Dockerfile.pause 如下:\nFROM ubuntu:latest AS builder RUN apt-get update \u0026\u0026 \\ apt-get install -y wget gcc \u0026\u0026 \\ wget https://raw.githubusercontent.com/kubernetes/kubernetes/v1.31.1/build/pause/linux/pause.c \u0026\u0026 \\ gcc -Os -Wall -Werror -static -DVERSION=v3.10-v1.31.1 -o pause pause.c FROM scratch COPY --from=builder /pause /pause USER 65535:65535 ENTRYPOINT [\"/pause\"] 在 mac 上进行构建并推送到私有仓库中(记得先登陆)\ndocker build --network host --platform linux/riscv64 \\ -f Dockerfile.pause \\ -t jimlt.bfsmlt.top/pause:v3.10-v1.31.1 \\ --push . 这里标签必须写作私有仓库的域名,否则会推送到 dockerhub 中.\n在开发板上拉取该镜像 docker pull jimlt.bfsmlt.top/pause:v3.10-v1.31.1 检查是否存在\ndocker images REPOSITORY TAG IMAGE ID CREATED SIZE jimlt.bfsmlt.top/pause v3.10-v1.31.1 d98ad82e7eed 14 minutes ago 593kB 至此,整条流程打通,暂时告一段落.\n接下来的想法就是仿照大佬的 commit 中的修改,对 k3s 的源码进行修改进行镜像的自定义. 我觉得这个过程一定会遇到很多问题,例如我们不仅要修改镜像名称还要修改 docker.io 这部分;例如可能遇到的网络等问题.\n更新:添加 WebUI 查看仓库内的镜像 推荐使用 WebUI 来查看仓库内的镜像,并作为一个简要的可视化界面;同时采用 nginx 的反向代理功能来管理不同的 https 请求. 最终达到的目的是客户端发来的 https 请求由服务器上的 nginx 处理,处理后转发到 registry 和 WebUI 容器内. 容器与 nginx 的交互通过 http.\nWebUI 需要注意的是,由于 Let’s Encrypt 给出的证书是一个非泛域名的证书,所以我们需要为每个子域名都申请一个证书.\n这里我们同样申请了一个新的子域名来作为可视化界面的地址:registryui.bfsmlt.top\n与上面步骤相同,我们修改 nginx 关于80端口配置\nserver { listen 80; server_name registryui.bfsmlt.top; root /home/wwwroot/registryui.bfsmlt.top; location /.well-known/acme-challenge/ { allow all; } } # 记得检查并重载 nginx 配置 新建对应目录 sudo mkdir -p /home/wwwroot/registryui.bfsmlt.top 生成证书acme.sh --issue -d registryui.bfsmlt.top --webroot /home/wwwroot/registryui.bfsmlt.top/\n因为要让 nginx 反向代理,所以将证书复制给 nginx 使用 sudo mkdir -p /etc/nginx/certs\nacme.sh --install-cert -d registryui.bfsmlt.top \\ --key-file /etc/nginx/certs/registryui.bfsmlt.top.key \\ --fullchain-file /etc/nginx/certs/registryui.bfsmlt.top.crt \\ --reloadcmd \"systemctl reload nginx\" 再次修改 nginx 配置,使 nginx 为我们代理传来的 https 请求\nserver { listen 443 ssl; server_name registryui.bfsmlt.top; ssl_certificate /etc/nginx/certs/registryui.bfsmlt.top.crt; ssl_certificate_key /etc/nginx/certs/registryui.bfsmlt.top.key; location / { proxy_pass http://localhost:8080; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; } } 部署 WebUI 容器,指明要访问的私有仓库地址\ndocker run -d \\ --name registry-ui \\ -p 8080:80 \\ -e REGISTRY_TITLE=\"My Private Registry\" \\ -e REGISTRY_URL=https://jimlt.bfsmlt.top \\ -e DELETE_IMAGES=true \\ --restart=always \\ joxit/docker-registry-ui:static registry 同样的,我们也要修改之前的 registry 容器;删除并以下面的方式启动(不再显示带有 https,交给 nginx)\ndocker run -d \\ --name registry \\ -p 5000:5000 \\ -v /etc/docker/registry/auth:/auth \\ -v /var/lib/registry:/var/lib/registry \\ -e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \\ -e REGISTRY_AUTH=htpasswd \\ -e REGISTRY_AUTH_HTPASSWD_REALM=\"Registry Realm\" \\ -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \\ -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin='[\"https://registryui.bfsmlt.top\"]' \\ -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods='[\"GET\", \"DELETE\", \"PUT\", \"POST\", \"OPTIONS\"]' \\ -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers='[\"Authorization\", \"Accept\", \"Cache-Control\", \"Content-Type\"]' \\ -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials='[\"true\"]' \\ --restart=always \\ registry:2 这是加了允许 CORS 跨域请求的,有时间我们出一期跨域请求的文章.\n(如果你没有配置证书,请仿照之前的步骤来)然后同理修改 nginx 配置文件,以达到我们让 nginx 来管理 https 命令的目的.\nserver { listen 443 ssl; server_name jimlt.bfsmlt.top; ssl_certificate /etc/docker/registry/certs/jimlt.bfsmlt.top.crt; ssl_certificate_key /etc/docker/registry/certs/jimlt.bfsmlt.top.key; location / { proxy_pass http://127.0.0.1:5000; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Authorization $http_authorization; proxy_pass_request_headers on; } } 最后重启 nginx,再次进行测试\n进行 docker pull/push 检查私有镜像仓库是否可以访问 在浏览器中访问 WebUI 的地址看是否可以访问 最终效果如下,我们可以直观地看到自己的私有镜像仓库有哪些镜像:\n总结 本片文章中已经顺利完成了带有SSL的私有镜像仓库搭建,为我接下来的实验提供了有力的镜像保证.\n在这个过程中我们遇到了很多的概念,例如 SSL/TLS, CA, Nginx配置等,我们已经在其他文章中进行了总结.\n引用 https://github.com/CARV-ICS-FORTH/kubernetes-riscv64 http://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E https://hackmd.io/@neverleave0916/S1KhWswhv ",
+  "wordCount" : "2776",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-05-09T16:04:29+08:00",
+  "dateModified": "2025-05-09T16:04:29+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      K3sEP07——配置私有镜像仓库准备构建跨架构镜像
+    </h1>
+    <div class="post-meta"><span title='2025-05-09 16:04:29 +0800 CST'>五月 9, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#%e6%90%ad%e5%bb%ba%e7%a7%81%e6%9c%89%e9%95%9c%e5%83%8f%e4%bb%93%e5%ba%93" aria-label="搭建私有镜像仓库">搭建私有镜像仓库</a><ul>
+                        
+                <li>
+                    <a href="#%e4%ba%91%e6%9c%8d%e5%8a%a1%e5%99%a8%e5%9f%9f%e5%90%8d" aria-label="云服务器&#43;域名">云服务器+域名</a></li>
+                <li>
+                    <a href="#ssl" aria-label="SSL">SSL</a></li>
+                <li>
+                    <a href="#%e9%83%a8%e7%bd%b2-registry-%e5%ae%b9%e5%99%a8" aria-label="部署 registry 容器">部署 registry 容器</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93%e6%b5%81%e7%a8%8b" aria-label="总结流程">总结流程</a></li>
+                <li>
+                    <a href="#%e6%b5%8b%e8%af%95%e6%90%ad%e5%bb%ba%e6%95%88%e6%9e%9c" aria-label="测试搭建效果">测试搭建效果</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%9b%b4%e6%96%b0%e6%b7%bb%e5%8a%a0-webui-%e6%9f%a5%e7%9c%8b%e4%bb%93%e5%ba%93%e5%86%85%e7%9a%84%e9%95%9c%e5%83%8f" aria-label="更新:添加 WebUI 查看仓库内的镜像">更新:添加 WebUI 查看仓库内的镜像</a><ul>
+                        
+                <li>
+                    <a href="#webui" aria-label="WebUI">WebUI</a></li>
+                <li>
+                    <a href="#registry" aria-label="registry">registry</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a></li>
+                <li>
+                    <a href="#%e5%bc%95%e7%94%a8" aria-label="引用">引用</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.</p>
+<p>之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持.
+跟随他的足迹,我找到了他已经做出了的<a href="https://github.com/CARV-ICS-FORTH/kubernetes-riscv64">适配工作</a>.</p>
+<p>适配工作中可以发现,早在2023年他就对这些系统镜像的源码进行了 commit,提供了 riscv 的支持.</p>
+<p>在翻阅其 fork 的有关 riscv 分支上的<a href="https://github.com/CARV-ICS-FORTH/k3s/commit/34f8fa8ddc4e439c6b948b484f5e3ec52189eb0a#diff-44da81872969b4b7bab2f09d89b34b11440d3503dd4dffceae4e987e42727632">提交</a>时.
+可以发现他的修改主要是将系统镜像的 yaml 文件中的镜像名称修改为了其私有镜像仓库,所以我们本节先来构建一个私有镜像仓库.
+目的是可以实现开发板拉取镜像从私有仓库拉取适合的跨架构镜像,而不是默认的 rancher 仓库.</p>
+<p>大佬用的是 dockerhub 中自己的仓库,由于某些原因我们的网络无法访问 dockerhub,
+并且为了方便后续我们要自定义某些镜像,例如之前的 redis , nginx 等镜像.</p>
+<p>最终暂时要达到的效果是从我的 MacBook 上构建跨架构镜像,推送至私有仓库中,开发板可以从仓库中拉取对应镜像.</p>
+<h2 id="搭建私有镜像仓库">搭建私有镜像仓库<a hidden class="anchor" aria-hidden="true" href="#搭建私有镜像仓库">#</a></h2>
+<p>在之前的<a href="https://www.bfsmlt.top/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">这篇文章</a>中我们曾经尝试过私有镜像仓库.
+本文中采用的是云服务器+域名+SSL 的方式,比之前本地的仓库更加灵活.(不用写死IP,不再用http)</p>
+<h3 id="云服务器域名">云服务器+域名<a hidden class="anchor" aria-hidden="true" href="#云服务器域名">#</a></h3>
+<p>云服务器我们采用<a href="https://www.rainyun.com/Njc1MjU2_">雨云</a>提供的美国服务器,目的是后续与域名结合时无需备案.
+毕竟备案比较复杂,我们只是学习实验用途,少一些麻烦.(如果大家想要租云服务器可以点击上面的链接)
+服务器配置随意,我这里选择的是 debian 的宝塔配置.购买后会得到一个公网 IP,后面要用.</p>
+<p>关于域名,我之前在阿里云购买了一年的域名,所以继续使用这个域名.
+我们需要对域名进行 dns 解析,即将域名与上面得到的 IP 地址结合起来.
+这样在别人访问此域名的时候就会解析出我们服务器的 IP 地址,具体配置如下:</p>
+<p><img alt="1" loading="lazy" src="/img/riscv/reg01.png">
+主机记录处填写你想起的域名名称,记录值填写服务器的 IP 地址.</p>
+<p>至此我们完成了域名的绑定,接下来我们配置 SSL .</p>
+<h3 id="ssl">SSL<a hidden class="anchor" aria-hidden="true" href="#ssl">#</a></h3>
+<p>关于 SSL的概念,在这篇文章中有讨论,感兴趣的朋友可以去看看.这里我们采用 acme+Let&rsquo;s Encrypt 的组合.
+根据 acme 官方的<a href="https://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E">教程</a>我们执行以下步骤:</p>
+<p>登陆服务器.首先,安装 acme 脚本</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl https://get.acme.sh <span class="p">|</span> sh -s <span class="nv">email</span><span class="o">=</span>my@example.com
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> ~/.bashrc
+</span></span></code></pre></div><p>由于我直接在 root 目录下执行的,所以他会将脚本安装在其下.</p>
+<p>接着,创建必要目录,由于 acme 后面的命令需要某些特定的目录,所以执行:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo mkdir -p /home/wwwroot/jimlt.bfsmlt.top
+</span></span><span class="line"><span class="cl">sudo chown -R www-data:www-data /home/wwwroot/jimlt.bfsmlt.top  <span class="c1"># 确保Nginx有读写权限</span>
+</span></span></code></pre></div><p>查看 nginx 的配置情况,我的 nginx 的 server 部分原始监听的是 <code>phpmyadmin</code>,所以我们需要添加一个 server 用来使 acme 后续可以访问80端口.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nginx -t <span class="c1"># 检查并获取nginx配置,可以得到配置文件路径</span>
+</span></span><span class="line"><span class="cl">sudo vi /path/to/nginx.conf
+</span></span><span class="line"><span class="cl"><span class="c1"># 添加如下server块</span>
+</span></span><span class="line"><span class="cl">server <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    listen 80<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    server_name jimlt.bfsmlt.top <span class="p">;</span>
+</span></span><span class="line"><span class="cl">    root /home/wwwroot/jimlt.bfsmlt.top<span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    location /.well-known/acme-challenge/ <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        allow all<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># 可选静态资源优化等配置...</span>
+</span></span><span class="line"><span class="cl">    location ~ .*<span class="se">\.</span><span class="o">(</span>gif<span class="p">|</span>jpg<span class="p">|</span>jpeg<span class="p">|</span>png<span class="p">|</span>bmp<span class="p">|</span>swf<span class="o">)</span>$ <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        expires 30d<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    location ~ .*<span class="se">\.</span><span class="o">(</span>js<span class="p">|</span>css<span class="o">)</span>?$ <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        expires 12h<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    location ~ /<span class="se">\.</span>
+</span></span><span class="line"><span class="cl">    <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        deny all<span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    access_log /www/wwwlogs/access.log<span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>重载 nginx 并检查配置</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo nginx -t <span class="o">&amp;&amp;</span> sudo systemctl reload nginx
+</span></span><span class="line"><span class="cl">nginx -t
+</span></span></code></pre></div><p>看到最后的 success 即代表配置无误.</p>
+<p>接下来我们生成证书,并使用 Let&rsquo;s Encrypt 作为我们的 CA 服务器.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">acme.sh --set-default-ca --server letsencrypt
+</span></span><span class="line"><span class="cl">acme.sh --issue -d mydomain.com -d www.mydomain.com --webroot /home/wwwroot/mydomain.com/
+</span></span></code></pre></div><p>最终会得到证书,结果类似下方:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Your cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/jimlt.bfsmlt.top.cer
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Fri May  <span class="m">9</span> 09:53:29 AM CST 2025<span class="o">]</span> Your cert key is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/jimlt.bfsmlt.top.key
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Fri May  <span class="m">9</span> 09:53:29 AM CST 2025<span class="o">]</span> The intermediate CA cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/ca.cer
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Fri May  <span class="m">9</span> 09:53:29 AM CST 2025<span class="o">]</span> And the full-chain cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/fullchain.cer
+</span></span></code></pre></div><p>接下来我们复制证书给 registry 容器使用.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo mkdir -p /etc/docker/registry/certs
+</span></span><span class="line"><span class="cl">acme.sh --install-cert -d jimlt.bfsmlt.top <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --key-file       /etc/docker/registry/certs/jimlt.bfsmlt.top.key <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --fullchain-file /etc/docker/registry/certs/jimlt.bfsmlt.top.crt <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --reloadcmd     <span class="s2">&#34;docker restart registry&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo chmod <span class="m">600</span> /etc/docker/registry/certs/*
+</span></span><span class="line"><span class="cl"><span class="c1"># 验证证书的安装结果</span>
+</span></span><span class="line"><span class="cl">ls -l /etc/docker/registry/certs/
+</span></span><span class="line"><span class="cl"><span class="c1"># 应看到：</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - jimlt.bfsmlt.top.key</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># - jimlt.bfsmlt.top.crt</span>
+</span></span></code></pre></div><h3 id="部署-registry-容器">部署 registry 容器<a hidden class="anchor" aria-hidden="true" href="#部署-registry-容器">#</a></h3>
+<p>使用 htpasswd 模式,这里我们直接让 registry 容器自己监听了443,是一种简单直接的方式.
+但是并不推荐,后续考虑改为 nginx 统一处理443端口,让不同的服务监听其他端口.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --name registry <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p 443:443 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /etc/docker/registry/certs:/certs <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /etc/docker/registry/auth:/auth <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /var/lib/registry:/var/lib/registry <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_HTTP_ADDR</span><span class="o">=</span>0.0.0.0:443 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_HTTP_TLS_CERTIFICATE</span><span class="o">=</span>/certs/jimlt.bfsmlt.top.crt <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_HTTP_TLS_KEY</span><span class="o">=</span>/certs/jimlt.bfsmlt.top.key <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH</span><span class="o">=</span>htpasswd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH_HTPASSWD_REALM</span><span class="o">=</span><span class="s2">&#34;Registry Realm&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH_HTPASSWD_PATH</span><span class="o">=</span>/auth/htpasswd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --restart<span class="o">=</span>always <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  registry:2
+</span></span></code></pre></div><p>验证容器状态<code>docker ps -f name=registry</code></p>
+<p>接着我们需要知道私有仓库的账号和密码,通过 htpasswd 进行设置.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo mkdir -p /etc/docker/registry/auth
+</span></span><span class="line"><span class="cl">docker run --rm <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --entrypoint htpasswd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  httpd:2 -Bbn &lt;username&gt; &lt;password&gt; <span class="p">|</span> sudo tee /etc/docker/registry/auth/htpasswd
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker restart registry
+</span></span></code></pre></div><p>至此我们就完成了带有 SSL 的私有镜像仓库搭建,接着我们可以在其他机器上进行登陆验证 <code>docker login https://jimlt.bfsmlt.top</code>
+输入设置的账号与密码即可.</p>
+<p>如果遇到认证问题,在需要登陆的机器上从服务器上复制证书
+但是 Docker 默认信任 Let’s Encrypt 的有效证书,所以一般无需复制.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo mkdir -p /etc/docker/certs.d/jimlt.bfsmlt.top
+</span></span><span class="line"><span class="cl">sudo scp root@你的服务器IP:/etc/docker/registry/certs/jimlt.bfsmlt.top.crt <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  /etc/docker/certs.d/jimlt.bfsmlt.top/ca.crt
+</span></span></code></pre></div><h3 id="总结流程">总结流程<a hidden class="anchor" aria-hidden="true" href="#总结流程">#</a></h3>
+<ol>
+<li>安装 acme.sh 脚本</li>
+<li>修改 nginx 关于80端口配置,使 acme 可以访问</li>
+<li>使用 acme 的 webroot 模式生成证书</li>
+<li>复制证书给 registry 容器使用</li>
+</ol>
+<h3 id="测试搭建效果">测试搭建效果<a hidden class="anchor" aria-hidden="true" href="#测试搭建效果">#</a></h3>
+<p>还记得我们最开始的目标吗? Macos-服务器-开发板 这样一个工作流.
+所以我们在 macos 上构建一个之前的 pause 镜像并推送和拉取.</p>
+<p>这里我们仿照大佬的构建思路, Dockerfile.pause 如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> ubuntu:latest AS builder</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    apt-get install -y wget gcc <span class="o">&amp;&amp;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    wget https://raw.githubusercontent.com/kubernetes/kubernetes/v1.31.1/build/pause/linux/pause.c <span class="o">&amp;&amp;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    gcc -Os -Wall -Werror -static -DVERSION<span class="o">=</span>v3.10-v1.31.1 -o pause pause.c<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> scratch</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>builder /pause /pause<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">USER</span><span class="s"> 65535:65535</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;/pause&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><p>在 mac 上进行构建并推送到私有仓库中(记得先登陆)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker build --network host --platform linux/riscv64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-f Dockerfile.pause <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>-t jimlt.bfsmlt.top/pause:v3.10-v1.31.1 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--push .
+</span></span></code></pre></div><p>这里标签必须写作私有仓库的域名,否则会推送到 dockerhub 中.</p>
+<p>在开发板上拉取该镜像 <code>docker pull jimlt.bfsmlt.top/pause:v3.10-v1.31.1</code>
+检查是否存在</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker images
+</span></span><span class="line"><span class="cl">REPOSITORY               TAG             IMAGE ID       CREATED          SIZE
+</span></span><span class="line"><span class="cl">jimlt.bfsmlt.top/pause   v3.10-v1.31.1   d98ad82e7eed   <span class="m">14</span> minutes ago   593kB
+</span></span></code></pre></div><p>至此,整条流程打通,暂时告一段落.</p>
+<p>接下来的想法就是仿照大佬的 commit 中的修改,对 k3s 的源码进行修改进行镜像的自定义.
+我觉得这个过程一定会遇到很多问题,例如我们不仅要修改镜像名称还要修改 <code>docker.io</code> 这部分;例如可能遇到的网络等问题.</p>
+<h2 id="更新添加-webui-查看仓库内的镜像">更新:添加 WebUI 查看仓库内的镜像<a hidden class="anchor" aria-hidden="true" href="#更新添加-webui-查看仓库内的镜像">#</a></h2>
+<p>推荐使用 WebUI 来查看仓库内的镜像,并作为一个简要的可视化界面;同时采用 nginx 的反向代理功能来管理不同的 https 请求.
+最终达到的目的是客户端发来的 https 请求由服务器上的 nginx 处理,处理后转发到 registry 和 WebUI 容器内.
+容器与 nginx 的交互通过 http.</p>
+<h3 id="webui">WebUI<a hidden class="anchor" aria-hidden="true" href="#webui">#</a></h3>
+<p>需要注意的是,由于 Let&rsquo;s Encrypt 给出的证书是一个<strong>非泛域名</strong>的证书,所以我们需要为每个子域名都申请一个证书.</p>
+<p>这里我们同样申请了一个新的子域名来作为可视化界面的地址:<code>registryui.bfsmlt.top</code></p>
+<p>与上面步骤相同,我们修改 nginx 关于80端口配置</p>
+<pre tabindex="0"><code class="language-conf" data-lang="conf">server {
+    listen 80;
+    server_name registryui.bfsmlt.top;
+
+    root /home/wwwroot/registryui.bfsmlt.top;
+
+    location /.well-known/acme-challenge/ {
+        allow all;
+    }
+} # 记得检查并重载 nginx 配置
+</code></pre><p>新建对应目录 <code>sudo mkdir -p /home/wwwroot/registryui.bfsmlt.top</code>
+生成证书<code>acme.sh --issue -d registryui.bfsmlt.top --webroot /home/wwwroot/registryui.bfsmlt.top/</code></p>
+<p>因为要让 nginx 反向代理,所以将证书复制给 nginx 使用 <code>sudo mkdir -p /etc/nginx/certs</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">acme.sh --install-cert -d registryui.bfsmlt.top <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--key-file       /etc/nginx/certs/registryui.bfsmlt.top.key <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--fullchain-file /etc/nginx/certs/registryui.bfsmlt.top.crt <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--reloadcmd      <span class="s2">&#34;systemctl reload nginx&#34;</span>
+</span></span></code></pre></div><p>再次修改 nginx 配置,使 nginx 为我们代理传来的 https 请求</p>
+<pre tabindex="0"><code class="language-conf" data-lang="conf">server {
+    listen 443 ssl;
+    server_name registryui.bfsmlt.top;
+
+    ssl_certificate /etc/nginx/certs/registryui.bfsmlt.top.crt;
+    ssl_certificate_key /etc/nginx/certs/registryui.bfsmlt.top.key;
+
+    location / {
+        proxy_pass http://localhost:8080;  
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+</code></pre><p>部署 WebUI 容器,指明要访问的私有仓库地址</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --name registry-ui <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p 8080:80 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_TITLE</span><span class="o">=</span><span class="s2">&#34;My Private Registry&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_URL</span><span class="o">=</span>https://jimlt.bfsmlt.top <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">DELETE_IMAGES</span><span class="o">=</span><span class="nb">true</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --restart<span class="o">=</span>always <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  joxit/docker-registry-ui:static
+</span></span></code></pre></div><h3 id="registry">registry<a hidden class="anchor" aria-hidden="true" href="#registry">#</a></h3>
+<p>同样的,我们也要修改之前的 registry 容器;删除并以下面的方式启动(不再显示带有 https,交给 nginx)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --name registry <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p 5000:5000 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /etc/docker/registry/auth:/auth <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /var/lib/registry:/var/lib/registry <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_HTTP_ADDR</span><span class="o">=</span>0.0.0.0:5000 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH</span><span class="o">=</span>htpasswd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH_HTPASSWD_REALM</span><span class="o">=</span><span class="s2">&#34;Registry Realm&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH_HTPASSWD_PATH</span><span class="o">=</span>/auth/htpasswd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin<span class="o">=</span><span class="s1">&#39;[&#34;https://registryui.bfsmlt.top&#34;]&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods<span class="o">=</span><span class="s1">&#39;[&#34;GET&#34;, &#34;DELETE&#34;, &#34;PUT&#34;, &#34;POST&#34;, &#34;OPTIONS&#34;]&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers<span class="o">=</span><span class="s1">&#39;[&#34;Authorization&#34;, &#34;Accept&#34;, &#34;Cache-Control&#34;, &#34;Content-Type&#34;]&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials<span class="o">=</span><span class="s1">&#39;[&#34;true&#34;]&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --restart<span class="o">=</span>always <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  registry:2
+</span></span></code></pre></div><p>这是加了允许 CORS 跨域请求的,有时间我们出一期跨域请求的文章.</p>
+<p>(如果你没有配置证书,请仿照之前的步骤来)然后同理修改 nginx 配置文件,以达到我们让 nginx 来管理 https 命令的目的.</p>
+<pre tabindex="0"><code class="language-conf" data-lang="conf">server {
+    listen 443 ssl;
+    server_name jimlt.bfsmlt.top;
+
+    ssl_certificate /etc/docker/registry/certs/jimlt.bfsmlt.top.crt;
+    ssl_certificate_key /etc/docker/registry/certs/jimlt.bfsmlt.top.key;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_set_header Authorization $http_authorization;
+        proxy_pass_request_headers on;
+    }
+}
+</code></pre><p>最后重启 nginx,再次进行测试</p>
+<ul>
+<li>进行 docker pull/push 检查私有镜像仓库是否可以访问</li>
+<li>在浏览器中访问 WebUI 的地址看是否可以访问</li>
+</ul>
+<p>最终效果如下,我们可以直观地看到自己的私有镜像仓库有哪些镜像:</p>
+<p><img alt="6" loading="lazy" src="/img/riscv/webui.png"></p>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>本片文章中已经顺利完成了带有SSL的私有镜像仓库搭建,为我接下来的实验提供了有力的镜像保证.</p>
+<p>在这个过程中我们遇到了很多的概念,例如 SSL/TLS, CA, Nginx配置等,我们已经在<a href="https://www.bfsmlt.top/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/">其他文章</a>中进行了总结.</p>
+<h2 id="引用">引用<a hidden class="anchor" aria-hidden="true" href="#引用">#</a></h2>
+<ul>
+<li><a href="https://github.com/CARV-ICS-FORTH/kubernetes-riscv64">https://github.com/CARV-ICS-FORTH/kubernetes-riscv64</a></li>
+<li><a href="http://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E">http://github.com/acmesh-official/acme.sh/wiki/%E8%AF%B4%E6%98%8E</a></li>
+<li><a href="https://hackmd.io/@neverleave0916/S1KhWswhv">https://hackmd.io/@neverleave0916/S1KhWswhv</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
+      <li><a href="http://localhost:1313/tags/%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93/">私有仓库</a></li>
+      <li><a href="http://localhost:1313/tags/registry/">Registry</a></li>
+      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>K3sEP08——make后会发生什么?从源码解析构建过程</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>GolangEP05_Go中的并发</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

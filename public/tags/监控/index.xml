@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>监控 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/%E7%9B%91%E6%8E%A7/</link>
+    <description>Recent content in 监控 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Sun, 18 May 2025 18:29:58 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E7%9B%91%E6%8E%A7/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>K3sEP12——监控集群的两种方式</title>
+      <link>http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Sun, 18 May 2025 18:29:58 +0800</pubDate>
+      <guid>http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 &lt;a href=&#34;https://github.com/kubernetes-sigs/metrics-server&#34;&gt;metric-server&lt;/a&gt;;
+在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

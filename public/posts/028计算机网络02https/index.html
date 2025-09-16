@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>兴趣八股之计算机网络EP02——HTTPS | LTX&#39;s Blog</title>
+<meta name="keywords" content="HTTPS, 八股">
+<meta name="description" content="引子
+HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:
+
+这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全.
+那为什么会不安全呢?是因为其网站的证书出现问题了.">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="兴趣八股之计算机网络EP02——HTTPS">
+  <meta property="og:description" content="引子 HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:
+这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全. 那为什么会不安全呢?是因为其网站的证书出现问题了.">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-29T19:39:43+08:00">
+    <meta property="article:modified_time" content="2025-04-29T19:39:43+08:00">
+    <meta property="article:tag" content="HTTPS">
+    <meta property="article:tag" content="八股">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="兴趣八股之计算机网络EP02——HTTPS">
+<meta name="twitter:description" content="引子
+HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:
+
+这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全.
+那为什么会不安全呢?是因为其网站的证书出现问题了.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "兴趣八股之计算机网络EP02——HTTPS",
+      "item": "http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "兴趣八股之计算机网络EP02——HTTPS",
+  "name": "兴趣八股之计算机网络EP02——HTTPS",
+  "description": "引子 HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:\n这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全. 那为什么会不安全呢?是因为其网站的证书出现问题了.\n",
+  "keywords": [
+    "HTTPS", "八股"
+  ],
+  "articleBody": "引子 HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:\n这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全. 那为什么会不安全呢?是因为其网站的证书出现问题了.\n那么什么是证书?为什么我们需要证书来保证安全?接下来我们将一一说明.\n与之前的 DNS 文章联系一下,二者都是在应用层工作的协议.DNS 的高级过程例如 DoH就采用了 HTTPS 来传输查询结果.\n通常访问某个域名的过程中,先用 DNS 解析 IP 地址, 再用 HTTP 协议向该地址发起请求,例如 GET,POST等,最后服务器响应网页内容. 这个过程我们先在脑子中有个印象,后面大多围绕这个过程展开.\n为什么需要HTTPS HTTPS 故名思义,HTTP over SSL(TSL),是在 HTTP 协议上加了一层 SSL(什么是SSL我们稍后解释)\n众所周知,HTTP 传输的报文是明文传输,在之前 DNS 那篇文章中我们就说 DNS 查询过程是明文传输, 为了保证安全后面采用了 DoT 与 DoH,其中 DoH 就是 DNS over https.\n所以为了保证安全,使我们传输的报文变得不那么透明,我们需要给他加上一层保护,这层保护就是 SSL. 可以阻止其他人嗅探我们的报文,获取我们的报文内容等等不当操作.\n如果没有 SSL,光用 HTTP 行不行呢?举一些例子来说明:\n中间人攻击:如果我们使用 HTTP 进行登陆某个网站,攻击者可以看到其中的内容,那么你的用户名和密码就泄漏了. 内容篡改:同样的,攻击者或者 ISP 可以偷偷修改网页内容例如插入广告 钓鱼网站:访问银行网站,但是攻击者将你的请求重定向(例如DNS劫持)到假的网站,内容是复制真的网站,从而误导你进行错误操作. 所以我们需要 SSL !\n什么是SSL(TLS) 我们上面提到单纯的 HTTP 会遇到嗅探等攻击,所以我们要为它创造一条隧道,一条受保护的隧道,这就是 SSL 的目的. Secure Socket Layer\n一个安全的,受到 SSL 保护的网站是这样的\nSSL 可以做到的是\n加密通信:防止中间人窃听 身份验证:防止钓鱼网站 完整性校验:数据不被篡改 在解释什么是 SSL 之前,我觉得我们需要先了解一些其他概念,辅助我们后续理解.\n证书与CA 密钥与加密 什么是证书与CA 正如上面钓鱼网站的例子,网站怎么能够证明他是真的网站,是我们要访问的网站呢?\n举例说明 仿照别人的例子来说:\n你是A公司的员工,带着一封信要访问B公司,到门口保安室的时候信上带有A公司的公章,由于B公司信任A公司的公章,所以接受这封信.(先不提伪造公章这种事) 这里的公章就是证书的感觉,钓鱼网站一般没有这种证书,所以我们可以知道这是假的网站.\n如果有D,E等等很多公司,B公司也都信任他们,可是这对保安来说是一个坏消息,这么多不同公司的公章,我该怎么认全呢? 所以这时有一个C公司出场了,他是一个中介公司,专门处理代理公章业务——B公司必须信任C公司\n之后A公司再访问B公司情况就变成了这样:A公司携带两封信访问B公司,第一封信上有C公司的公章和A公司的公章,保安看见后, 他只识别C公司的公章,正确,看第二封信.第二封信上有一个A公司的公章,和第一封信上的一对比,发现一致,保安接受第二封信.\n可以发现,对于其他公司也是一样,多带一封信来验证身份,B公司的保安只需要知道C公司的公章即可,然后对比一二封信的公司公章进行验证.\n这个例子最后的C公司就是 CA 证书颁发机构(Certificate Authority),正如例子中所言,他是一个双方都可以完全信任的机构. 常见的 CA 包括 DigiCert,Let’s Encrypt(免费),Secigo 等;常见的 CA 工具包括:OpenSSL,EasyRSA,CFSSL等.\n回到我们访问网站的例子,如果我们访问某个 https 网站,浏览器就会去验证这个网页的 CA证书, 如果这个证书没有问题,那么我们就知道这个网站就是我们要访问的网站,不是什么钓鱼网站.\n所以 CA 就作为了浏览器和网站之间的公证人,让双方知道他就是真实的他,不是伪装者.\n证书链 由于互联网上有那么多的网站,绝大多数网站的证书不是由根 CA 直接签发的,而是由中间 CA 签发的,但是浏览器和操作系统只默认信任根 CA 的证书.\n为什么要这么做呢?根 CA 证书不能频繁签发,通常离线保存,为了避免安全风险,所以通过中间 CA 作为代理向下签发.于是证书链应运而生.\n访问网站时浏览器会:\n拿到网站的证书链 根据证书链向上查询,如果可以查到根 CA ,就证明网站可信. 我们后面的过程直接简化掉了这个证书链的过程,大家注意.\n密钥与加密 可以发现,证书就是我们的身份凭证,那么实际工作中,证书的内容是什么呢? 有了身份凭证就可以做到安全通信了吗?\n很明显不够,在庞大的网络线路上,我们还需要对我们的请求进行加密,那么用什么加密呢? 自然是密钥.\n公钥与私钥 公钥:可公开,用于加密数据or验证签名,加密后的数据只能用对应的私钥解密 私钥:不可公开,用于解密数据or创建签名;经其签名后的数据,可用公钥验证真实性 对称交换与非对称交换 密钥的概念中有对称交换与非对称交换,这里我们略微介绍一下:\n对称交换:双方基于同一个密钥进行通信(加密解密数据) 非对称交换:双方各自持有一对公钥与私钥,发送方使用接收方的公钥加密数据，接收方用自己的私钥解密(正如上面所说) 可以发现,对称交换需要双方提前协商用哪个密钥(这称为密钥交换),而在不安全的通信中如何安全地将这个密钥给到双方,是最大的缺点;而非对称加密不需要事先共享密钥，可以在不安全网络中建立安全连接.\n但是非对称的速度太慢,所以我们要将二者结合使用,即混合加密:\n先用非对称把对称密钥交换给双方(密钥交换),然后双方基于这个对称密钥进行通信.做到了两全其美.\n但是为什么钥先用非对称加密来进行密钥交换呢?具体见下方案例.\n举例说明密钥交换过程 有了上面这些概念,我们来大致描述一下浏览器如何与网站进行通信,首先我们来说说上面刚提到的密钥交换.\n方案一:单纯非对称加密 Step1:网站随机生成密钥对 k1 \u0026 k2 (k1是公钥,k2是私钥) Step2:网站保留 k2,将 k1 通过明文方式发给浏览器;即使是明文,被偷窥者拿到也不会推算出k2(密码学原理) Step3:浏览器拿到 k1, 随机生成一个对称加密的密钥 k(视作私钥),用 k1 去加密 k,得到 k’;浏览器将 k’发送给网站 注意,此时只有 k2 才能解密经过 k1 加密的数据(见上方概念);所以偷窥者拿到 k’也不能解密出k Step4:网站拿到 k’,用 k2 解密,得到 k,至此双方就可以用 k 来进行数据交换的加密,建立起 SSL 隧道 这个过程看起来严密,但是攻击者(我)可以伪造密钥对——我在第二步时截获 k1,我自己生成一个伪造的密钥对 fk1 \u0026 fk2,将 fk1 抢先发给浏览器\n浏览器拿到 fk1,以为是网站的 k1, 就用其加密 k,将 k’ 发出去 发出去后,再次被我截获,我拿 fk2 解密 k’,就会得到 k;此时,我再用之前的 k1去加密 k,得到 k’’,将其发给网站 最后网站利用 k2 解密 k’’,发现可以正常解密,以为自己与浏览器已经建立起了加密通道. 总结一下就是攻击者(我)让浏览器以为我是网站,让网站以为我是浏览器.这就是中间人攻击(Man-In-The-Middle attack)\n方案二:添加CA证书 核心问题在于浏览器和网站不知道发来的公钥是不是对方的,这就需要身份认证,也就是我们之前提到的证书与CA环节,CA扮演公证人. 加上 CA 后,整个环节变为了:\nStep1:网站从 CA 那里购买证书,生成证书,证书内容包括:网站公钥(私钥网站自己保存),域名,有效期,经过 CA 私钥签名后的数字签名——这是信任链的根源,浏览器内置了受信任的 CA 的公钥. Step2:浏览器访问,网站将此证书先发给浏览器,告诉浏览器\"我是我\",浏览器会提取证书内容,用内置的 CA 公钥解密数字签名; 如果解密成功,就可以基本确定这是要访问的网站,是真的 如果解密失败,浏览器提示 CA 证书安全警告 同时再检查域名是否一致,这样就完成了身份验证, Step3:浏览器从证书中提取出网站公钥,随机生成对称加密的 k, 拿证书中的网站公钥加密 k,得到k’,将 k’ 发给网站 Step4:网站用自己的私钥解密 k’,得到 k,至此,密钥交换完成. 这个过程中,就算攻击者拿到了证书,但是当他伪造密钥对发过来时, 由于攻击者没有 CA 的私钥,无法生存有效的数字签名,浏览器会解密失败,显示“此证书不受信任”\n这是 RSA 密钥交换,理论上讲,这个方案无懈可击,但是仍有服务器私钥泄漏的风险.\n握手过程 说了这么多背景知识,终于来到了 SSL(TLS) 的正题,如何建立这个加密的安全通道.\n握手环节发生在浏览器查询网站的源服务器阶段or任何其他使用 HTTPS 的通信过程.(例如 DoH);在通过 TCP 握手打开 TCP 连接(HTTP 使用 TCP 连接)后,发生握手.\nRSA 密钥交换下的握手 Step1:ClinetHello,该消息包含客户端支持的 TLS版本,支持的密码套件,以及一串称为“客户端随机数（client random）”的随机字节 Step2:ServerHello,作为对 client hello 消息的回复，服务器发送一条消息，内含服务器的 SSL 证书,服务器选择的密码套件,以及服务器随机数. Step3:客户端拿到 SSL 证书开始身份验证(上面讨论过) Step4:ClinetKeyExchange: 发送 premaster secret(就是上面的 k’)给服务器 Step5:服务器使用私钥解密 Step6:双方生成会话密钥(就是上面的 k) Step7:客户端发送 Change Cipher Spec通知,同时发送加密的 Finished 消息验证握手完整性 Step8:服务器发送加密的 Finished 消息 Step9:至此,已完成了握手,使用 k 进行后续的通信. 一共2-RTT\nTLS1.3 ECDHE密钥交换 在新版本 TLS1.3 中,不再支持 RSA密钥交换,缩短了握手过程\nClinetHello:由于已从 TLS 1.3 中删除了对不安全密码套件的支持，因此可能的密码套件数量大大减少。 客户端问候消息还包括将用于计算预主密钥的参数(例如ECDHE)。大体上来说，客户端假设它知道服务器的首选密钥交换方法（由于简化的密码套件列表，它有可能知道）。 这减少了握手的总长度——这是 TLS 1.3 握手与 TLS 1.0、1.1 和 1.2 握手之间的重要区别之一 服务器生成主密钥：此时，服务器已经接收到客户端随机数以及客户端的参数和密码套件。它已经拥有服务器随机数，因为它可以自己生成。因此，服务器可以创建主密钥 k 服务器问候和“完成”：服务器问候包括服务器的证书、数字签名、服务器随机数和选择的密码套件。因为它已经有了主密钥，所以它也发送了一个“完成”消息 最后步骤和客户端“完成”：客户端验证签名和证书，生成主密钥，并发送“完成”消息 缩短到了1-RTT,k是由客户端与服务器各自独立生成的,至于其中的原理,涉及到密码学,还不是鼠鼠我考虑涉及的领域,总之就是 ECDHE 这个算法很牛逼.\n如何应用 TLS 在这篇文章中,我们建立了 Docker 私有镜像仓库,使用到了 TLS 证书.\n在这个过程中, 仓库就相当于是网站服务器, Docker 客户端就相当于是浏览器.\n在实现时,我们将 Let’s Encrypt 这个 CA 生成的证书复制给了仓库 registry 容器使用, 每当我们使用 docker 命令例如 docker pull/push myregistry.example.com/image:tag时, Docker Daemon 就会向仓库发起 HTTPS 请求. 仓库会监听 HTTPS 端口(43),响应客户端的请求.\n我们拿当时生成证书后产生的结果说明:\nYour cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/jimlt.bfsmlt.top.cer [Fri May 9 09:53:29 AM CST 2025] Your cert key is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/jimlt.bfsmlt.top.key [Fri May 9 09:53:29 AM CST 2025] The intermediate CA cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/ca.cer [Fri May 9 09:53:29 AM CST 2025] And the full-chain cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/fullchain.cer top.cer 是我的站点的证书,即服务器证书,包括域名,公钥,有效期,签发者等信息 top.key 是服务器私钥 ca.cer 是中间 CA 机构的证书 fullchain.cer 是完整的证书链,可以让浏览器从我的网站一路向上追溯到根 CA 应用中遇到的问题 date 如何影响 TLS ssh 连接中的证书 session 和 cookie 是干嘛的 总结 本文介绍了 HTTPS 中的 SSL,包括非对称加密,密钥交换,证书,CA,握手等概念.\n本文的写作动机是在进行相关操作时通常对操作过程的原理不够清楚,导致操作过程中出错也不置可否,所以旨在弄清楚每一个过程中的原理,让自己能够安心操作.(不只是依赖于 AI)\n当然,本文对 SSL 的一些细节并没有过于深入,特别是密码学的部分,有兴趣的地方希望大家补充.\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n引用 https://www.cloudflare.com/zh-cn/learning/ssl/what-happens-in-a-tls-handshake/ https://program-think.blogspot.com/2014/11/https-ssl-tls-0.html#index ",
+  "wordCount" : "4835",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-04-29T19:39:43+08:00",
+  "dateModified": "2025-04-29T19:39:43+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      兴趣八股之计算机网络EP02——HTTPS
+    </h1>
+    <div class="post-meta"><span title='2025-04-29 19:39:43 +0800 CST'>四月 29, 2025</span>&nbsp;·&nbsp;10 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81https" aria-label="为什么需要HTTPS">为什么需要HTTPS</a></li>
+                <li>
+                    <a href="#%e4%bb%80%e4%b9%88%e6%98%afssltls" aria-label="什么是SSL(TLS)">什么是SSL(TLS)</a><ul>
+                        
+                <li>
+                    <a href="#%e4%bb%80%e4%b9%88%e6%98%af%e8%af%81%e4%b9%a6%e4%b8%8eca" aria-label="什么是证书与CA">什么是证书与CA</a><ul>
+                        
+                <li>
+                    <a href="#%e4%b8%be%e4%be%8b%e8%af%b4%e6%98%8e" aria-label="举例说明">举例说明</a></li>
+                <li>
+                    <a href="#%e8%af%81%e4%b9%a6%e9%93%be" aria-label="证书链">证书链</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%af%86%e9%92%a5%e4%b8%8e%e5%8a%a0%e5%af%86" aria-label="密钥与加密">密钥与加密</a><ul>
+                        
+                <li>
+                    <a href="#%e5%85%ac%e9%92%a5%e4%b8%8e%e7%a7%81%e9%92%a5" aria-label="公钥与私钥">公钥与私钥</a></li>
+                <li>
+                    <a href="#%e5%af%b9%e7%a7%b0%e4%ba%a4%e6%8d%a2%e4%b8%8e%e9%9d%9e%e5%af%b9%e7%a7%b0%e4%ba%a4%e6%8d%a2" aria-label="对称交换与非对称交换">对称交换与非对称交换</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%b8%be%e4%be%8b%e8%af%b4%e6%98%8e%e5%af%86%e9%92%a5%e4%ba%a4%e6%8d%a2%e8%bf%87%e7%a8%8b" aria-label="举例说明密钥交换过程">举例说明密钥交换过程</a><ul>
+                        
+                <li>
+                    <a href="#%e6%96%b9%e6%a1%88%e4%b8%80%e5%8d%95%e7%ba%af%e9%9d%9e%e5%af%b9%e7%a7%b0%e5%8a%a0%e5%af%86" aria-label="方案一:单纯非对称加密">方案一:单纯非对称加密</a></li>
+                <li>
+                    <a href="#%e6%96%b9%e6%a1%88%e4%ba%8c%e6%b7%bb%e5%8a%a0ca%e8%af%81%e4%b9%a6" aria-label="方案二:添加CA证书">方案二:添加CA证书</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%8f%a1%e6%89%8b%e8%bf%87%e7%a8%8b" aria-label="握手过程">握手过程</a><ul>
+                        
+                <li>
+                    <a href="#rsa-%e5%af%86%e9%92%a5%e4%ba%a4%e6%8d%a2%e4%b8%8b%e7%9a%84%e6%8f%a1%e6%89%8b" aria-label="RSA 密钥交换下的握手">RSA 密钥交换下的握手</a></li>
+                <li>
+                    <a href="#tls13-ecdhe%e5%af%86%e9%92%a5%e4%ba%a4%e6%8d%a2" aria-label="TLS1.3 ECDHE密钥交换">TLS1.3 ECDHE密钥交换</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%a6%82%e4%bd%95%e5%ba%94%e7%94%a8-tls" aria-label="如何应用 TLS">如何应用 TLS</a></li>
+                <li>
+                    <a href="#%e5%ba%94%e7%94%a8%e4%b8%ad%e9%81%87%e5%88%b0%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="应用中遇到的问题">应用中遇到的问题</a><ul>
+                        
+                <li>
+                    <a href="#date-%e5%a6%82%e4%bd%95%e5%bd%b1%e5%93%8d-tls" aria-label="date 如何影响 TLS">date 如何影响 TLS</a></li>
+                <li>
+                    <a href="#ssh-%e8%bf%9e%e6%8e%a5%e4%b8%ad%e7%9a%84%e8%af%81%e4%b9%a6" aria-label="ssh 连接中的证书">ssh 连接中的证书</a></li></ul>
+                </li>
+                <li>
+                    <a href="#session-%e5%92%8c-cookie-%e6%98%af%e5%b9%b2%e5%98%9b%e7%9a%84" aria-label="session 和 cookie 是干嘛的">session 和 cookie 是干嘛的</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a></li>
+                <li>
+                    <a href="#%e5%bc%95%e7%94%a8" aria-label="引用">引用</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:</p>
+<p><img alt="1" loading="lazy" src="/img/bg/https1.png"></p>
+<p>这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全.
+那为什么会不安全呢?是因为其网站的证书出现问题了.</p>
+<p>那么什么是证书?为什么我们需要证书来保证安全?接下来我们将一一说明.</p>
+<p>与之前的 DNS 文章联系一下,二者都是在应用层工作的协议.DNS 的高级过程例如 DoH就采用了 HTTPS 来传输查询结果.</p>
+<p>通常访问某个域名的过程中,先用 DNS 解析 IP 地址,
+再用 HTTP 协议向该地址发起请求,例如 GET,POST等,最后服务器响应网页内容.
+这个过程我们先在脑子中有个印象,后面大多围绕这个过程展开.</p>
+<h2 id="为什么需要https">为什么需要HTTPS<a hidden class="anchor" aria-hidden="true" href="#为什么需要https">#</a></h2>
+<p>HTTPS 故名思义,HTTP over SSL(TSL),是在 HTTP 协议上加了一层 SSL(什么是SSL我们稍后解释)</p>
+<p>众所周知,HTTP 传输的报文是明文传输,在之前 DNS 那篇<a href="https://www.bfsmlt.top/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/">文章</a>中我们就说 DNS 查询过程是明文传输,
+为了保证安全后面采用了 DoT 与 DoH,其中 DoH 就是 DNS over https.</p>
+<p>所以为了保证安全,使我们传输的报文变得不那么透明,我们需要给他加上一层保护,这层保护就是 SSL.
+可以阻止其他人嗅探我们的报文,获取我们的报文内容等等不当操作.</p>
+<p><img alt="2" loading="lazy" src="/img/G/wxkj.webp"></p>
+<p>如果没有 SSL,光用 HTTP 行不行呢?举一些例子来说明:</p>
+<ul>
+<li>中间人攻击:如果我们使用 HTTP 进行登陆某个网站,攻击者可以看到其中的内容,那么你的用户名和密码就泄漏了.</li>
+<li>内容篡改:同样的,攻击者或者 ISP 可以偷偷修改网页内容例如插入广告</li>
+<li>钓鱼网站:访问银行网站,但是攻击者将你的请求重定向(例如DNS劫持)到假的网站,内容是复制真的网站,从而误导你进行错误操作.</li>
+</ul>
+<p>所以我们需要 SSL !</p>
+<h2 id="什么是ssltls">什么是SSL(TLS)<a hidden class="anchor" aria-hidden="true" href="#什么是ssltls">#</a></h2>
+<p>我们上面提到单纯的 HTTP 会遇到嗅探等攻击,所以我们要为它创造一条隧道,一条受保护的隧道,这就是 SSL 的目的. <em>Secure Socket Layer</em></p>
+<p>一个安全的,受到 SSL 保护的网站是这样的</p>
+<p><img alt="3" loading="lazy" src="/img/bg/https2.png"></p>
+<p>SSL 可以做到的是</p>
+<ul>
+<li><strong>加密通信</strong>:防止中间人窃听</li>
+<li><strong>身份验证</strong>:防止钓鱼网站</li>
+<li><strong>完整性校验</strong>:数据不被篡改</li>
+</ul>
+<p>在解释什么是 SSL 之前,我觉得我们需要先了解一些其他概念,辅助我们后续理解.</p>
+<ul>
+<li>证书与CA</li>
+<li>密钥与加密</li>
+</ul>
+<h3 id="什么是证书与ca">什么是证书与CA<a hidden class="anchor" aria-hidden="true" href="#什么是证书与ca">#</a></h3>
+<p>正如上面钓鱼网站的例子,网站怎么能够证明他是真的网站,是我们要访问的网站呢?</p>
+<h4 id="举例说明">举例说明<a hidden class="anchor" aria-hidden="true" href="#举例说明">#</a></h4>
+<p>仿照别人的例子来说:</p>
+<p>你是A公司的员工,带着一封信要访问B公司,到门口保安室的时候信上带有A公司的公章,由于B公司信任A公司的公章,所以接受这封信.(先不提伪造公章这种事)
+这里的公章就是证书的感觉,钓鱼网站一般没有这种证书,所以我们可以知道这是假的网站.</p>
+<p>如果有D,E等等很多公司,B公司也都信任他们,可是这对保安来说是一个坏消息,这么多不同公司的公章,我该怎么认全呢?
+所以这时有一个C公司出场了,他是一个中介公司,专门处理代理公章业务——B公司必须信任C公司</p>
+<p>之后A公司再访问B公司情况就变成了这样:A公司携带两封信访问B公司,第一封信上有C公司的公章和A公司的公章,保安看见后,
+他只识别C公司的公章,正确,看第二封信.第二封信上有一个A公司的公章,和第一封信上的一对比,发现一致,保安接受第二封信.</p>
+<p>可以发现,对于其他公司也是一样,多带一封信来验证身份,B公司的保安只需要知道C公司的公章即可,然后对比一二封信的公司公章进行验证.</p>
+<p>这个例子最后的C公司就是 CA 证书颁发机构(Certificate Authority),正如例子中所言,他是一个<strong>双方都可以完全信任的机构</strong>.
+常见的 CA 包括 DigiCert,Let&rsquo;s Encrypt(免费),Secigo 等;常见的 CA 工具包括:OpenSSL,EasyRSA,CFSSL等.</p>
+<p>回到我们访问网站的例子,如果我们访问某个 https 网站,浏览器就会去验证这个网页的 CA证书,
+如果这个证书没有问题,那么我们就知道这个网站就是我们要访问的网站,不是什么钓鱼网站.</p>
+<p>所以 CA 就作为了浏览器和网站之间的<strong>公证人</strong>,让双方知道他就是真实的他,不是伪装者.</p>
+<h4 id="证书链">证书链<a hidden class="anchor" aria-hidden="true" href="#证书链">#</a></h4>
+<p>由于互联网上有那么多的网站,绝大多数网站的证书不是由根 CA 直接签发的,而是由中间 CA 签发的,但是浏览器和操作系统只默认信任根 CA 的证书.</p>
+<p>为什么要这么做呢?根 CA 证书不能频繁签发,通常离线保存,为了避免安全风险,所以通过中间 CA 作为代理向下签发.于是证书链应运而生.</p>
+<p>访问网站时浏览器会:</p>
+<ul>
+<li>拿到网站的证书链</li>
+<li>根据证书链向上查询,如果可以查到根 CA ,就证明网站可信.</li>
+</ul>
+<p>我们后面的过程直接简化掉了这个证书链的过程,大家注意.</p>
+<p><img alt="4" loading="lazy" src="/img/G/tslh.webp"></p>
+<h3 id="密钥与加密">密钥与加密<a hidden class="anchor" aria-hidden="true" href="#密钥与加密">#</a></h3>
+<p>可以发现,证书就是我们的身份凭证,那么实际工作中,证书的内容是什么呢?
+有了身份凭证就可以做到安全通信了吗?</p>
+<p>很明显不够,在庞大的网络线路上,我们还需要对我们的请求进行加密,那么用什么加密呢?
+自然是密钥.</p>
+<h4 id="公钥与私钥">公钥与私钥<a hidden class="anchor" aria-hidden="true" href="#公钥与私钥">#</a></h4>
+<ul>
+<li>公钥:可公开,用于<strong>加密数据or验证签名</strong>,加密后的数据<em>只能用对应的私钥解密</em></li>
+<li>私钥:不可公开,用于<strong>解密数据or创建签名</strong>;经其签名后的数据,<em>可用公钥验证真实性</em></li>
+</ul>
+<h4 id="对称交换与非对称交换">对称交换与非对称交换<a hidden class="anchor" aria-hidden="true" href="#对称交换与非对称交换">#</a></h4>
+<p>密钥的概念中有对称交换与非对称交换,这里我们略微介绍一下:</p>
+<ul>
+<li>对称交换:双方基于同一个密钥进行通信(加密解密数据)</li>
+<li>非对称交换:双方各自持有一对公钥与私钥,发送方使用接收方的公钥加密数据，接收方用自己的私钥解密(正如上面所说)</li>
+</ul>
+<p>可以发现,对称交换需要双方提前协商用哪个密钥(这称为<strong>密钥交换</strong>),而在不安全的通信中如何安全地将这个密钥给到双方,是最大的缺点;而非对称加密不需要事先共享密钥，可以在不安全网络中建立安全连接.</p>
+<p>但是非对称的速度太慢,所以我们要将二者结合使用,即混合加密:</p>
+<p><strong>先用非对称把对称密钥交换给双方(密钥交换),然后双方基于这个对称密钥进行通信</strong>.做到了两全其美.</p>
+<p>但是为什么钥先用非对称加密来进行密钥交换呢?具体见下方案例.</p>
+<h3 id="举例说明密钥交换过程">举例说明密钥交换过程<a hidden class="anchor" aria-hidden="true" href="#举例说明密钥交换过程">#</a></h3>
+<p>有了上面这些概念,我们来大致描述一下浏览器如何与网站进行通信,首先我们来说说上面刚提到的密钥交换.</p>
+<h4 id="方案一单纯非对称加密">方案一:单纯非对称加密<a hidden class="anchor" aria-hidden="true" href="#方案一单纯非对称加密">#</a></h4>
+<ul>
+<li>Step1:网站随机生成密钥对 k1 &amp; k2 (k1是公钥,k2是私钥)</li>
+<li>Step2:网站保留 k2,将 k1 通过<strong>明文</strong>方式发给浏览器;即使是明文,被偷窥者拿到也不会推算出k2(密码学原理)</li>
+<li>Step3:浏览器拿到 k1, 随机生成一个对称加密的密钥 k(视作私钥),用 k1 去加密 k,得到 k&rsquo;;浏览器将 k&rsquo;发送给网站
+<ul>
+<li>注意,此时只有 k2 才能解密经过 k1 加密的数据(见上方概念);所以偷窥者拿到 k&rsquo;也不能解密出k</li>
+</ul>
+</li>
+<li>Step4:网站拿到 k&rsquo;,用 k2 解密,得到 k,至此双方就可以用 k 来进行数据交换的加密,建立起 SSL 隧道</li>
+</ul>
+<p>这个过程看起来严密,但是攻击者(我)可以<strong>伪造密钥对</strong>——我在第二步时截获 k1,我自己生成一个伪造的密钥对
+fk1 &amp; fk2,将 fk1 抢先发给浏览器</p>
+<ul>
+<li>浏览器拿到 fk1,以为是网站的 k1, 就用其加密 k,将 k&rsquo; 发出去</li>
+<li>发出去后,<strong>再次被我截获</strong>,我拿 fk2 解密 k&rsquo;,就会得到 k;此时,我再用之前的 k1去加密 k,得到 k&rsquo;&rsquo;,将其发给网站</li>
+<li>最后网站利用 k2 解密 k&rsquo;&rsquo;,发现可以正常解密,以为自己与浏览器已经建立起了加密通道.</li>
+</ul>
+<p>总结一下就是攻击者(我)让浏览器以为我是网站,让网站以为我是浏览器.这就是中间人攻击(Man-In-The-Middle attack)</p>
+<p><img alt="4" loading="lazy" src="/img/shu/%E5%BC%80%E6%9E%AA.webp"></p>
+<h4 id="方案二添加ca证书">方案二:添加CA证书<a hidden class="anchor" aria-hidden="true" href="#方案二添加ca证书">#</a></h4>
+<p>核心问题在于浏览器和网站不知道发来的公钥是不是对方的,这就需要身份认证,也就是我们之前提到的证书与CA环节,CA扮演公证人.
+加上 CA 后,整个环节变为了:</p>
+<ul>
+<li>Step1:网站从 CA 那里购买证书,生成证书,证书内容包括:网站公钥(私钥网站自己保存),域名,有效期,<strong>经过 CA 私钥签名后的数字签名</strong>——这是信任链的根源,浏览器内置了受信任的 CA 的公钥.</li>
+<li>Step2:浏览器访问,网站将此证书先发给浏览器,告诉浏览器&quot;我是我&quot;,浏览器会提取证书内容,用内置的 CA 公钥解密数字签名;
+<ul>
+<li>如果解密成功,就可以基本确定这是要访问的网站,是真的</li>
+<li>如果解密失败,浏览器提示 CA 证书安全警告</li>
+<li>同时再检查域名是否一致,这样就完成了<strong>身份验证</strong>,</li>
+</ul>
+</li>
+<li>Step3:浏览器从证书中提取出网站公钥,随机生成对称加密的 k, 拿证书中的网站公钥加密 k,得到k&rsquo;,将 k&rsquo; 发给网站</li>
+<li>Step4:网站用自己的私钥解密 k&rsquo;,得到 k,至此,密钥交换完成.</li>
+</ul>
+<p>这个过程中,就算攻击者拿到了证书,但是当他伪造密钥对发过来时,
+由于<strong>攻击者没有 CA 的私钥,无法生存有效的数字签名</strong>,浏览器会解密失败,显示“此证书不受信任”</p>
+<p>这是 RSA 密钥交换,理论上讲,这个方案无懈可击,但是仍有服务器私钥泄漏的风险.</p>
+<p><img alt="5" loading="lazy" src="/img/G/wxkj.webp"></p>
+<h3 id="握手过程">握手过程<a hidden class="anchor" aria-hidden="true" href="#握手过程">#</a></h3>
+<p>说了这么多背景知识,终于来到了 SSL(TLS) 的正题,如何建立这个加密的安全通道.</p>
+<p>握手环节发生在浏览器查询网站的源服务器阶段or任何其他使用 HTTPS 的通信过程.(例如 DoH);在通过 TCP 握手打开 TCP 连接(HTTP 使用 TCP 连接)后,发生握手.</p>
+<h4 id="rsa-密钥交换下的握手">RSA 密钥交换下的握手<a hidden class="anchor" aria-hidden="true" href="#rsa-密钥交换下的握手">#</a></h4>
+<ul>
+<li>Step1:<strong>ClinetHello</strong>,该消息包含客户端支持的 TLS版本,支持的密码套件,以及一串称为“客户端随机数（client random）”的随机字节</li>
+<li>Step2:<strong>ServerHello</strong>,作为对 client hello 消息的回复，服务器发送一条消息，内含服务器的 SSL 证书,服务器选择的密码套件,以及服务器随机数.</li>
+<li>Step3:客户端拿到 SSL 证书开始<strong>身份验证</strong>(上面讨论过)</li>
+<li>Step4:<strong>ClinetKeyExchange</strong>: 发送 <em>premaster secret</em>(就是上面的 k&rsquo;)给服务器</li>
+<li>Step5:服务器使用私钥解密</li>
+<li>Step6:双方生成会话密钥(就是上面的 k)</li>
+<li>Step7:客户端发送 <strong>Change Cipher Spec</strong>通知,同时发送加密的 Finished 消息验证握手完整性</li>
+<li>Step8:服务器发送加密的 Finished 消息</li>
+<li>Step9:至此,已完成了握手,使用 k 进行后续的通信.</li>
+</ul>
+<p>一共2-RTT</p>
+<p><img alt="6" loading="lazy" src="/img/bg/rsa.png"></p>
+<h4 id="tls13-ecdhe密钥交换">TLS1.3 ECDHE密钥交换<a hidden class="anchor" aria-hidden="true" href="#tls13-ecdhe密钥交换">#</a></h4>
+<p>在新版本 TLS1.3 中,不再支持 RSA密钥交换,缩短了握手过程</p>
+<ul>
+<li>ClinetHello:由于已从 TLS 1.3 中删除了对不安全密码套件的支持，因此<strong>可能的密码套件数量大大减少</strong>。
+<ul>
+<li>客户端问候消息还包括将用于计算预主密钥的参数(例如ECDHE)。大体上来说，客户端假设它知道服务器的首选密钥交换方法（由于简化的密码套件列表，它有可能知道）。</li>
+<li>这减少了握手的总长度——这是 TLS 1.3 握手与 TLS 1.0、1.1 和 1.2 握手之间的重要区别之一</li>
+</ul>
+</li>
+<li>服务器生成主密钥：此时，服务器已经接收到<em>客户端随机数以及客户端的参数和密码套件</em>。它已经拥有服务器随机数，因为它可以自己生成。因此，<strong>服务器可以创建主密钥 k</strong></li>
+<li>服务器问候和“完成”：服务器问候包括服务器的证书、数字签名、服务器随机数和选择的密码套件。因为它已经有了主密钥，所以它也发送了一个“完成”消息</li>
+<li>最后步骤和客户端“完成”：客户端验证签名和证书，生成主密钥，并发送“完成”消息</li>
+</ul>
+<p>缩短到了1-RTT,k是由客户端与服务器各自独立生成的,至于其中的原理,涉及到密码学,还不是鼠鼠我考虑涉及的领域,总之就是 ECDHE 这个算法很牛逼.</p>
+<p><img alt="7" loading="lazy" src="/img/G/%E9%BB%91%E6%89%8B.jpg"></p>
+<h2 id="如何应用-tls">如何应用 TLS<a hidden class="anchor" aria-hidden="true" href="#如何应用-tls">#</a></h2>
+<p>在这篇<a href="https://www.bfsmlt.top/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">文章</a>中,我们建立了 Docker 私有镜像仓库,使用到了 TLS 证书.</p>
+<p>在这个过程中, 仓库就相当于是网站服务器, Docker 客户端就相当于是浏览器.</p>
+<p>在实现时,我们将 Let&rsquo;s Encrypt 这个 CA 生成的证书复制给了仓库 registry 容器使用,
+每当我们使用 docker 命令例如 <code>docker pull/push myregistry.example.com/image:tag</code>时, Docker Daemon 就会向仓库发起 HTTPS 请求.
+仓库会监听 HTTPS 端口(43),响应客户端的请求.</p>
+<p>我们拿当时生成证书后产生的结果说明:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Your cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/jimlt.bfsmlt.top.cer
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Fri May  <span class="m">9</span> 09:53:29 AM CST 2025<span class="o">]</span> Your cert key is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/jimlt.bfsmlt.top.key
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Fri May  <span class="m">9</span> 09:53:29 AM CST 2025<span class="o">]</span> The intermediate CA cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/ca.cer
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Fri May  <span class="m">9</span> 09:53:29 AM CST 2025<span class="o">]</span> And the full-chain cert is in: /root/.acme.sh/jimlt.bfsmlt.top_ecc/fullchain.cer
+</span></span></code></pre></div><ul>
+<li>top.cer 是我的站点的证书,即服务器证书,包括域名,公钥,有效期,签发者等信息</li>
+<li>top.key 是服务器私钥</li>
+<li>ca.cer 是中间 CA 机构的证书</li>
+<li>fullchain.cer 是完整的证书链,可以让浏览器从我的网站一路向上追溯到根 CA</li>
+</ul>
+<h2 id="应用中遇到的问题">应用中遇到的问题<a hidden class="anchor" aria-hidden="true" href="#应用中遇到的问题">#</a></h2>
+<h3 id="date-如何影响-tls">date 如何影响 TLS<a hidden class="anchor" aria-hidden="true" href="#date-如何影响-tls">#</a></h3>
+<h3 id="ssh-连接中的证书">ssh 连接中的证书<a hidden class="anchor" aria-hidden="true" href="#ssh-连接中的证书">#</a></h3>
+<h2 id="session-和-cookie-是干嘛的">session 和 cookie 是干嘛的<a hidden class="anchor" aria-hidden="true" href="#session-和-cookie-是干嘛的">#</a></h2>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>本文介绍了 HTTPS 中的 SSL,包括非对称加密,密钥交换,证书,CA,握手等概念.</p>
+<p>本文的写作动机是在进行相关操作时通常对操作过程的原理不够清楚,导致操作过程中出错也不置可否,所以旨在弄清楚每一个过程中的原理,让自己能够安心操作.(不只是依赖于 AI)</p>
+<p>当然,本文对 SSL 的一些细节并没有过于深入,特别是密码学的部分,有兴趣的地方希望大家补充.</p>
+<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+<h2 id="引用">引用<a hidden class="anchor" aria-hidden="true" href="#引用">#</a></h2>
+<ul>
+<li><a href="https://www.cloudflare.com/zh-cn/learning/ssl/what-happens-in-a-tls-handshake/">https://www.cloudflare.com/zh-cn/learning/ssl/what-happens-in-a-tls-handshake/</a></li>
+<li><a href="https://program-think.blogspot.com/2014/11/https-ssl-tls-0.html#index">https://program-think.blogspot.com/2014/11/https-ssl-tls-0.html#index</a></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/https/">HTTPS</a></li>
+      <li><a href="http://localhost:1313/tags/%E5%85%AB%E8%82%A1/">八股</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/029%E6%AF%8F%E6%9C%88%E6%94%B6%E6%94%AF%E5%9B%9E%E9%A1%BEep01-25_04/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>每月收支回顾EP01_25年</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>兴趣八股之计算机网络EP01——DNS</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

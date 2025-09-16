@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Chan on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/chan/</link>
+    <description>Recent content in Chan on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Thu, 05 Dec 2024 15:40:56 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/chan/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GolangEP02_并发中的Channel</title>
+      <link>http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</link>
+      <pubDate>Thu, 05 Dec 2024 15:40:56 +0800</pubDate>
+      <guid>http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</guid>
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;让我们看看关于 chan 有哪些常见的操作。&lt;/p&gt;
+&lt;h3 id=&#34;创建channel&#34;&gt;创建channel&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际上调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#makechan%e5%87%bd%e6%95%b0&#34;&gt;makechan&lt;/a&gt;方法&lt;/p&gt;
+&lt;h3 id=&#34;发送数据到channel&#34;&gt;发送数据到channel&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0&#34;&gt;chansend1&lt;/a&gt;,而chansend1最终也是调用&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0&#34;&gt;chansend&lt;/a&gt;,将block参数设置为true——当前发送操作是&lt;strong&gt;阻塞的&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;从channel中读取数据&#34;&gt;从channel中读取数据&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ok&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chanrecv%e5%87%bd%e6%95%b0&#34;&gt;chanrecv1&lt;/a&gt;和chanrecv2，最终都去调用了chanrecv。&lt;/p&gt;
+&lt;h2 id=&#34;源码&#34;&gt;源码&lt;/h2&gt;
+&lt;p&gt;接下来我们进入源码中一探究竟。&lt;/p&gt;
+&lt;h3 id=&#34;hchan结构体&#34;&gt;hchan结构体&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;hchan&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;qcount&lt;/span&gt;   &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// total data in the queue&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;dataqsiz&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// size of the circular queue&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;buf&lt;/span&gt;      &lt;span class=&#34;nx&#34;&gt;unsafe&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Pointer&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// points to an array of dataqsiz elements&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;elemsize&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint16&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;synctest&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// true if created in a synctest bubble&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;closed&lt;/span&gt;   &lt;span class=&#34;kt&#34;&gt;uint32&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;timer&lt;/span&gt;    &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;timer&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// timer feeding this chan&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;elemtype&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;_type&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// element type&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;sendx&lt;/span&gt;    &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// send index&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;recvx&lt;/span&gt;    &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// receive index&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;recvq&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;waitq&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// list of recv waiters&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;sendq&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;waitq&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// list of send waiters&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// lock protects all fields in hchan, as well as several&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// fields in sudogs blocked on this channel.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;//&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// Do not change another G&amp;#39;s status while holding this lock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// (in particular, do not ready a G), as this can deadlock&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// with stack shrinking.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;lock&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;mutex&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;qcount:通道中存储的数据元素总数&lt;/li&gt;
+&lt;li&gt;dataqsiz:环形队列大小&lt;/li&gt;
+&lt;li&gt;buf:执行环形队列的内存缓冲区，存放实际数据——环形缓存区域，本质上是一个带有头尾指针的固定长度的数组&lt;/li&gt;
+&lt;li&gt;sendx,recvx:发收操作的队列位置&lt;/li&gt;
+&lt;li&gt;recvq,sendq:等待队列&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以发现，hchan 使用&lt;strong&gt;环形队列表示缓冲区&lt;/strong&gt;并且采用 &lt;strong&gt;lock 确保并发访问的安全性&lt;/strong&gt;。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

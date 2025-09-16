@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>兴趣八股之计算机网络EP03——CORS浅探 | LTX&#39;s Blog</title>
+<meta name="keywords" content="CORS, 八股">
+<meta name="description" content="引子
+在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。
+从下面这段简单的跨域中间件代码开始吧">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/049cors/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/049cors/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/049cors/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="兴趣八股之计算机网络EP03——CORS浅探">
+  <meta property="og:description" content="引子 在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。
+从下面这段简单的跨域中间件代码开始吧">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-08-21T18:46:47+08:00">
+    <meta property="article:modified_time" content="2025-08-21T18:46:47+08:00">
+    <meta property="article:tag" content="CORS">
+    <meta property="article:tag" content="八股">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="兴趣八股之计算机网络EP03——CORS浅探">
+<meta name="twitter:description" content="引子
+在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。
+从下面这段简单的跨域中间件代码开始吧">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "兴趣八股之计算机网络EP03——CORS浅探",
+      "item": "http://localhost:1313/posts/049cors/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "兴趣八股之计算机网络EP03——CORS浅探",
+  "name": "兴趣八股之计算机网络EP03——CORS浅探",
+  "description": "引子 在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。\n从下面这段简单的跨域中间件代码开始吧\n",
+  "keywords": [
+    "CORS", "八股"
+  ],
+  "articleBody": "引子 在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。\n从下面这段简单的跨域中间件代码开始吧\n// CORSMiddleware 跨域中间件 func CORSMiddleware() gin.HandlerFunc { return func(c *gin.Context) { c.Writer.Header().Set(\"Access-Control-Allow-Origin\", \"*\") c.Writer.Header().Set(\"Access-Control-Allow-Methods\", \"GET, POST, OPTIONS\") c.Writer.Header().Set(\"Access-Control-Allow-Headers\", \"Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization\") if c.Request.Method == \"OPTIONS\" { c.AbortWithStatus(204) return } c.Next() } } 为什么会有跨域限制 CORS 全称是跨域资源共享，它是一个设定好的标准，起源于浏览器实现的一项安全策略——同源策略。\n两个 URL 的协议、域名、端口必须完全相同 例如 http://example.com:8080和http://example.com:8080/users是同源的 那么他限制了什么呢？不同源的脚本不能直接读取或者操作另一个源的 DOM 或者网络请求。\n目的呢？防止 **CSRF（跨站请求伪造）和 XSS（跨站脚本攻击）**等。\nCSRF 拿一个 AI 的举例来看：\n假设登录了银行网站并且登录状态存在了 cookie 中，此时如果浏览另一个恶意网站，这个网站页面包含了一行访问银行网站并取钱的请求。\n浏览器就会发送这个请求带上以之前的 cookie 内容，这样银行就会把钱转给攻击者。\n所以浏览器就会保证同源访问策略，有了同源访问策略，恶意网站就拿不到银行网站的 cookie 信息了，自然也无法取到钱。\n实际上还使用到了 X-CSRF-Token 来防护 CSRF，这个不是今天的重点。\n问题 这是一个很好地策略，为什么我们还需要来进行跨域呢？因为在日常开发中，前后端分离环境下，前端和后端开发出的内容并不是同源的，所以需要跨域；\n又或者在微服务架构中，服务 A 调用服务 B 的 API，二者不同源的话，需要在 B 的网关处配置 CORS 策略，允许服务 A 的域名。\n而既然要跨域，那必须得保证安全，所以 CORS 就允许服务器主动声明哪些外部源可以访问它的资源，这样既能够保证安全又能够放宽同源策略。\n主要是通过 HTTP 响应头来告知。\n分类 具体来说，服务器通过设置一系列Access-Control-*开头的响应头，告知浏览器，“我允许这个源，用这种方法，带这些头信息来访问我”，否则拦截响应。\n回到上面的代码中，我们一行一行来看\nc.Writer.Header().Set(\"Access-Control-Allow-Origin\", \"*\") 设置允许访问的源为全部，这里是开发环境下，生产环境更加严格。\nc.Writer.Header().Set(\"Access-Control-Allow-Methods\", \"GET, POST, OPTIONS\")设置允许的请求方法。\nc.Writer.Header().Set(\"Access-Control-Allow-Headers\", \"Origin, Content-Type, ... Authorization\")允许浏览器的实际请求允许带哪些自定义的请求头。\nif c.Request.Method == \"OPTIONS\" { c.AbortWithStatus(204) return } 处理预检请求。\n这里我们就要对 CORS 请求进行分类：简单请求+预检请求。\n简单请求：例如一个简单的 GET，POST,且 Content-Type 为 text/plain、multipart/form-data、application/x-www-form-urlencoded 预检请求(OPTIONS)：PUT，DELETE，PATCH，Content-Type为application/json，带有自定义的请求头等。 本中间件的预检流程 浏览器向服务器发送一个OPTIONS请求。这个请求会带上两个特殊的头：\nAccess-Control-Request-Method: 实际请求将要使用的方法 (例如: POST)。 Access-Control-Request-Headers: 实际请求将要携带的自定义头 (例如: Authorization, Content-Type) 服务器捕获预检请求：\n服务器在响应中设置好上面提到的 Allow-Methods 和 Allow-Headers 等许可头 c.AbortWithStatus(204):服务器返回一个 204 No Content 的状态码，表示“许可信息已在头部，没有正文内容”。Abort会中断后续的中间件和处理函数，因为这只是一个许可问询，不需要执行真正的业务逻辑 浏览器 (决策)：收到204响应后，检查响应头里的许可信息。\n如果当前请求的方法和头部都在许可范围内，浏览器就会发送真正的、实际的业务请求（比如那个POST请求） 否则，就在控制台报CORS错误 总结 所以说到这里，跨域资源保护很简单，核心就是从服务器的角度出发，让其规定谁可以如何访问它的资源，保证安全的同时做到跨域访问。\n最后再回顾一下构建私有镜像仓库时我们用到了命令,其中就指定了具体的源可以访问。\ndocker run -d \\ --name registry \\ -p 5000:5000 \\ -v /etc/docker/registry/auth:/auth \\ -v /var/lib/registry:/var/lib/registry \\ -e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \\ -e REGISTRY_AUTH=htpasswd \\ -e REGISTRY_AUTH_HTPASSWD_REALM=\"Registry Realm\" \\ -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \\ -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin='[\"https://registryui.bfsmlt.top\"]' \\ -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods='[\"GET\", \"DELETE\", \"PUT\", \"POST\", \"OPTIONS\"]' \\ -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers='[\"Authorization\", \"Accept\", \"Cache-Control\", \"Content-Type\"]' \\ -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials='[\"true\"]' \\ --restart=always \\ registry:2 在实际后端开发中，通常会从配置文件或者环境变量中加载allowedOrigins列表。\n而 CORS 通常也会和一些认证机制 JWT，OAuth2 结合，下一篇文章我打算谈谈 JWT 等认证机制。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
+  "wordCount" : "1707",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-08-21T18:46:47+08:00",
+  "dateModified": "2025-08-21T18:46:47+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/049cors/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      兴趣八股之计算机网络EP03——CORS浅探
+    </h1>
+    <div class="post-meta"><span title='2025-08-21 18:46:47 +0800 CST'>八月 21, 2025</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bc%9a%e6%9c%89%e8%b7%a8%e5%9f%9f%e9%99%90%e5%88%b6" aria-label="为什么会有跨域限制">为什么会有跨域限制</a><ul>
+                        
+                <li>
+                    <a href="#csrf" aria-label="CSRF">CSRF</a></li>
+                <li>
+                    <a href="#%e9%97%ae%e9%a2%98" aria-label="问题">问题</a></li>
+                <li>
+                    <a href="#%e5%88%86%e7%b1%bb" aria-label="分类">分类</a></li>
+                <li>
+                    <a href="#%e6%9c%ac%e4%b8%ad%e9%97%b4%e4%bb%b6%e7%9a%84%e9%a2%84%e6%a3%80%e6%b5%81%e7%a8%8b" aria-label="本中间件的预检流程">本中间件的预检流程</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。</p>
+<p>从下面这段简单的跨域中间件代码开始吧</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// CORSMiddleware 跨域中间件</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">CORSMiddleware</span><span class="p">()</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">HandlerFunc</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kd">func</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">c</span><span class="p">.</span><span class="nx">Writer</span><span class="p">.</span><span class="nf">Header</span><span class="p">().</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Access-Control-Allow-Origin&#34;</span><span class="p">,</span> <span class="s">&#34;*&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">c</span><span class="p">.</span><span class="nx">Writer</span><span class="p">.</span><span class="nf">Header</span><span class="p">().</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Access-Control-Allow-Methods&#34;</span><span class="p">,</span> <span class="s">&#34;GET, POST, OPTIONS&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">c</span><span class="p">.</span><span class="nx">Writer</span><span class="p">.</span><span class="nf">Header</span><span class="p">().</span><span class="nf">Set</span><span class="p">(</span><span class="s">&#34;Access-Control-Allow-Headers&#34;</span><span class="p">,</span> <span class="s">&#34;Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Request</span><span class="p">.</span><span class="nx">Method</span> <span class="o">==</span> <span class="s">&#34;OPTIONS&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">c</span><span class="p">.</span><span class="nf">AbortWithStatus</span><span class="p">(</span><span class="mi">204</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		
+</span></span><span class="line"><span class="cl">		<span class="nx">c</span><span class="p">.</span><span class="nf">Next</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="为什么会有跨域限制">为什么会有跨域限制<a hidden class="anchor" aria-hidden="true" href="#为什么会有跨域限制">#</a></h2>
+<p>CORS 全称是跨域资源共享，它是一个设定好的<strong>标准</strong>，起源于浏览器实现的一项安全策略——同源策略。</p>
+<ul>
+<li>两个 URL 的协议、域名、端口必须完全相同</li>
+<li>例如 <code>http://example.com:8080</code>和<code>http://example.com:8080/users</code>是同源的</li>
+</ul>
+<p>那么他限制了什么呢？<strong>不同源的脚本不能直接读取或者操作另一个源的 DOM 或者网络请求。</strong></p>
+<p>目的呢？防止 **CSRF（跨站请求伪造）和 XSS（跨站脚本攻击）**等。</p>
+<h3 id="csrf">CSRF<a hidden class="anchor" aria-hidden="true" href="#csrf">#</a></h3>
+<p>拿一个 AI 的举例来看：</p>
+<p>假设登录了银行网站并且登录状态存在了 cookie 中，此时如果浏览另一个恶意网站，这个网站页面包含了一行访问银行网站并取钱的请求。</p>
+<p>浏览器就会发送这个请求带上以之前的 cookie 内容，这样银行就会把钱转给攻击者。</p>
+<p>所以浏览器就会保证同源访问策略，有了同源访问策略，恶意网站就拿不到银行网站的 cookie 信息了，自然也无法取到钱。</p>
+<p>实际上还使用到了 X-CSRF-Token 来防护 CSRF，这个不是今天的重点。</p>
+<h3 id="问题">问题<a hidden class="anchor" aria-hidden="true" href="#问题">#</a></h3>
+<p>这是一个很好地策略，为什么我们还需要来进行跨域呢？因为在日常开发中，前后端分离环境下，前端和后端开发出的内容并不是同源的，所以需要跨域；</p>
+<p>又或者在微服务架构中，服务 A 调用服务 B 的 API，二者不同源的话，需要在 B 的网关处配置 CORS 策略，允许服务 A 的域名。</p>
+<p>而既然要跨域，那必须得保证安全，所以 CORS 就<strong>允许服务器主动声明哪些外部源可以访问它的资源</strong>，这样既能够保证安全又能够放宽同源策略。</p>
+<p>主要是通过 <strong>HTTP 响应头</strong>来告知。</p>
+<h3 id="分类">分类<a hidden class="anchor" aria-hidden="true" href="#分类">#</a></h3>
+<p>具体来说，服务器通过设置一系列<code>Access-Control-*</code>开头的响应头，告知浏览器，“我允许这个源，用这种方法，带这些头信息来访问我”，否则拦截响应。</p>
+<p>回到上面的代码中，我们一行一行来看</p>
+<p><code>c.Writer.Header().Set(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;)</code> 设置允许访问的源为全部，这里是开发环境下，生产环境更加严格。</p>
+<p><code>c.Writer.Header().Set(&quot;Access-Control-Allow-Methods&quot;, &quot;GET, POST, OPTIONS&quot;)</code>设置允许的请求方法。</p>
+<p><code>c.Writer.Header().Set(&quot;Access-Control-Allow-Headers&quot;, &quot;Origin, Content-Type, ... Authorization&quot;)</code>允许浏览器的实际请求允许带哪些自定义的请求头。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">c</span><span class="p">.</span><span class="nx">Request</span><span class="p">.</span><span class="nx">Method</span> <span class="o">==</span> <span class="s">&#34;OPTIONS&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">c</span><span class="p">.</span><span class="nf">AbortWithStatus</span><span class="p">(</span><span class="mi">204</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>处理预检请求。</p>
+<p>这里我们就要对 CORS 请求进行分类：<strong>简单请求+预检请求</strong>。</p>
+<ul>
+<li>简单请求：例如一个简单的 GET，POST,且 <code>Content-Type</code> 为 <code>text/plain、multipart/form-data、application/x-www-form-urlencoded</code></li>
+<li>预检请求(OPTIONS)：PUT，DELETE，PATCH，<code>Content-Type</code>为<code>application/json</code>，带有自定义的请求头等。</li>
+</ul>
+<h3 id="本中间件的预检流程">本中间件的预检流程<a hidden class="anchor" aria-hidden="true" href="#本中间件的预检流程">#</a></h3>
+<p>浏览器向服务器发送一个OPTIONS请求。这个请求会带上两个特殊的头：</p>
+<ul>
+<li>Access-Control-Request-Method: 实际请求将要使用的方法 (例如: POST)。</li>
+<li>Access-Control-Request-Headers: 实际请求将要携带的自定义头 (例如: Authorization, Content-Type)</li>
+</ul>
+<p>服务器捕获预检请求：</p>
+<ul>
+<li>服务器在响应中设置好上面提到的 Allow-Methods 和 Allow-Headers 等许可头</li>
+<li><code>c.AbortWithStatus(204)</code>:服务器返回一个 <code>204 No Content</code> 的状态码，表示“许可信息已在头部，没有正文内容”。Abort会中断后续的中间件和处理函数，因为这只是一个许可问询，不需要执行真正的业务逻辑</li>
+</ul>
+<p>浏览器 (决策)：收到204响应后，检查响应头里的许可信息。</p>
+<ul>
+<li>如果当前请求的方法和头部都在许可范围内，浏览器就会发送真正的、实际的业务请求（比如那个POST请求）</li>
+<li>否则，就在控制台报CORS错误</li>
+</ul>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>所以说到这里，跨域资源保护很简单，核心就是从服务器的角度出发，让其规定谁可以如何访问它的资源，保证安全的同时做到跨域访问。</p>
+<p>最后再回顾一下构建私有镜像仓库时我们用到了命令,其中就指定了具体的源可以访问。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --name registry <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -p 5000:5000 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /etc/docker/registry/auth:/auth <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -v /var/lib/registry:/var/lib/registry <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_HTTP_ADDR</span><span class="o">=</span>0.0.0.0:5000 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH</span><span class="o">=</span>htpasswd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH_HTPASSWD_REALM</span><span class="o">=</span><span class="s2">&#34;Registry Realm&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e <span class="nv">REGISTRY_AUTH_HTPASSWD_PATH</span><span class="o">=</span>/auth/htpasswd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Origin<span class="o">=</span><span class="s1">&#39;[&#34;https://registryui.bfsmlt.top&#34;]&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Methods<span class="o">=</span><span class="s1">&#39;[&#34;GET&#34;, &#34;DELETE&#34;, &#34;PUT&#34;, &#34;POST&#34;, &#34;OPTIONS&#34;]&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Headers<span class="o">=</span><span class="s1">&#39;[&#34;Authorization&#34;, &#34;Accept&#34;, &#34;Cache-Control&#34;, &#34;Content-Type&#34;]&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  -e REGISTRY_HTTP_HEADERS_Access-Control-Allow-Credentials<span class="o">=</span><span class="s1">&#39;[&#34;true&#34;]&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --restart<span class="o">=</span>always <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  registry:2
+</span></span></code></pre></div><p>在实际后端开发中，通常会从配置文件或者环境变量中加载<code>allowedOrigins</code>列表。</p>
+<p>而 CORS 通常也会和一些认证机制 JWT，OAuth2 结合，下一篇文章我打算谈谈 JWT 等认证机制。</p>
+<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/cors/">CORS</a></li>
+      <li><a href="http://localhost:1313/tags/%E5%85%AB%E8%82%A1/">八股</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/050lt%E7%9A%84%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep04%E5%85%B3%E4%BA%8E%E7%A7%8B%E6%8B%9B/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>050LT的奇思乱想EP04——关于秋招</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/048%E8%B7%9F%E7%9D%80ai%E5%AD%A6%E4%B9%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>048跟着AI学习计算机网络</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

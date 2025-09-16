@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Golang源码小试牛刀:Gorm框架源码小探01 | LTX&#39;s Blog</title>
+<meta name="keywords" content="Golang, 源码, Gorm">
+<meta name="description" content="前言
+Gorm框架介绍
+日常使用
+使用注意事项
+
+方法声明顺序
+
+查询举例：
+db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&amp;tags)
+
+db.Select(&#34;id&#34;).Where(&#34;name = ?&#34;, name).First(&amp;tag)
+注意这几个方法的调用顺序不能颠倒，因为GORM 按链式调用的顺序逐步构建 SQL 查询。所以在Gorm中查询常见的顺序是——SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.60bb00c7b34dfc1f8b8a6f21b1fe067b40b3bc3a287fc1d4a3657a89a977208e.css" integrity="sha256-YLsAx7NN/B&#43;Lim8hsf4Ge0CzvDoof8HUo2V6ial3II4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="Golang源码小试牛刀:Gorm框架源码小探01">
+  <meta property="og:description" content="前言 Gorm框架介绍 日常使用 使用注意事项 方法声明顺序 查询举例：
+db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&amp;tags) db.Select(&#34;id&#34;).Where(&#34;name = ?&#34;, name).First(&amp;tag) 注意这几个方法的调用顺序不能颠倒，因为GORM 按链式调用的顺序逐步构建 SQL 查询。所以在Gorm中查询常见的顺序是——SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-12-03T16:34:41+08:00">
+    <meta property="article:modified_time" content="2024-12-03T16:34:41+08:00">
+    <meta property="article:tag" content="Golang">
+    <meta property="article:tag" content="源码">
+    <meta property="article:tag" content="Gorm">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="Golang源码小试牛刀:Gorm框架源码小探01">
+<meta name="twitter:description" content="前言
+Gorm框架介绍
+日常使用
+使用注意事项
+
+方法声明顺序
+
+查询举例：
+db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&amp;tags)
+
+db.Select(&#34;id&#34;).Where(&#34;name = ?&#34;, name).First(&amp;tag)
+注意这几个方法的调用顺序不能颠倒，因为GORM 按链式调用的顺序逐步构建 SQL 查询。所以在Gorm中查询常见的顺序是——SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Golang源码小试牛刀:Gorm框架源码小探01",
+      "item": "http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Golang源码小试牛刀:Gorm框架源码小探01",
+  "name": "Golang源码小试牛刀:Gorm框架源码小探01",
+  "description": "前言 Gorm框架介绍 日常使用 使用注意事项 方法声明顺序 查询举例：\ndb.Where(maps).Offset(pageNum).Limit(pageSize).Find(\u0026amp;tags) db.Select(\u0026#34;id\u0026#34;).Where(\u0026#34;name = ?\u0026#34;, name).First(\u0026amp;tag) 注意这几个方法的调用顺序不能颠倒，因为GORM 按链式调用的顺序逐步构建 SQL 查询。所以在Gorm中查询常见的顺序是——SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。\n",
+  "keywords": [
+    "Golang", "源码", "Gorm"
+  ],
+  "articleBody": "前言 Gorm框架介绍 日常使用 使用注意事项 方法声明顺序 查询举例：\ndb.Where(maps).Offset(pageNum).Limit(pageSize).Find(\u0026tags) db.Select(\"id\").Where(\"name = ?\", name).First(\u0026tag) 注意这几个方法的调用顺序不能颠倒，因为GORM 按链式调用的顺序逐步构建 SQL 查询。所以在Gorm中查询常见的顺序是——SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。\n源码 来自于GORMv1.9.16版本（并非最新版本）\nOpen() 首先看到源码中的注释\nOpen initialize a new db connection, need to import driver first\n意味着需要先import一个数据库驱动例如mysql\n然后我们拿一个普通的调用作为示例 db, err := gorm.Open(\"mysql\", \"user:password@/dbname?charset=utf8\u0026parseTime=True\u0026loc=Local\")\n进入源码我们分层次来看\n第一部分 func Open(dialect string, args ...interface{}) (db *DB, err error) 传入数据库类型和源信息参数，返回一个db连接池和错误\nif len(args) == 0 { err = errors.New(\"invalid database source\") return nil, err } var source string var dbSQL SQLCommon var ownDbSQL bool 先判断是否传入了数据库源参数，如果没有传入则返回错误；其次声明了三个变量：\nsource:数据库连接的源信息，从args提取 dbSQL:是一个接口的实例——标准的*sql.DB对象,其中SQLCommon的注释为 SQLCommon is the minimal database connection functionality gorm requires. Implemented by *sql.DB.\n抽象底层数据库连接对象 ownDbSQL:表示dbSQL是否由当前GORM实例独立管理 第二部分 这里是一个switch分支，通过判断传入的args第一个参数类型\nswitch value := args[0].(type) { case string: var driver = dialect if len(args) == 1 { source = value } else if len(args) \u003e= 2 { driver = value source = args[1].(string) } dbSQL, err = sql.Open(driver, source) ownDbSQL = true case SQLCommon: dbSQL = value ownDbSQL = false default: return nil, fmt.Errorf(\"invalid database source: %v is not a valid type\", value) } string时:将驱动设置为dialect 如果只有一个参数，那么就是源信息；如果不止一个参数，那么第一个作为驱动，第二个作为源 使用标准库sql打开数据库连接，传入驱动与源 并将ownDbSQL设置为true，表示当前实例需要管理这个数据库连接的生命周期 SQLCommon时:说明传入的是一个已经初始化好的数据库连接对象。 将传入的连接对象直接赋值给 dbSQL 标记为 false，表示传入的连接由外部管理，GORM 不负责其生命周期 二者都不是时，参数无效 第三部分 db = \u0026DB{ db: dbSQL, logger: defaultLogger, callbacks: DefaultCallback, dialect: newDialect(dialect, dbSQL), } db.parent = db if err != nil { return } // Send a ping to make sure the database connection is alive. if d, ok := dbSQL.(*sql.DB); ok { if err = d.Ping(); err != nil \u0026\u0026 ownDbSQL { d.Close() } } return 创建DB的实例\n将数据库连接对象 dbSQL 赋值给 DB 的 db 字段，作为后续 SQL 操作的基础 设置默认日志器，用于记录 SQL 执行信息 设置默认回调函数集，用于拦截和处理数据库操作（如查询、插入等） 初始化数据库dialect对象，用于适配不同的数据库（如 MySQL、PostgreSQL）。newDialect 根据传入的 dialect 名称和连接对象 dbSQL，返回一个实现特定dialect功能的实例 为了支持链式调用，将自身作为 parent。 这一顿属性填充完后，进行了一次连接验证:\n使用类型断言检查是否为标准的sql.DB类型 如果是，进行连接验证——如果ping出错并且由GORM管理生命周期，则关闭连接。 至此，Open方法代码结束了，总结一下就是声明三个变量来存储数据库的有关信息；根据源参数确定driver,source,dbSQL,ownDbSQL这些内容；最后创建好连接对象并使用ping检查连接是否成功。\nOpen提供了两种初始化方式\n直接传入驱动名称和连接信息 传入已经初始化好的数据库对象（自定义连接池） Open支持多种数据库，通过dialect对象统一处理差异。\nSQLCommon,SqlDb,sqlTx接口 SQLCommon 从上面的Open代码可以看出，这个SQLCommon比较重要 type SQLCommon interface { Exec(query string, args ...interface{}) (sql.Result, error) Prepare(query string) (*sql.Stmt, error) Query(query string, args ...interface{}) (*sql.Rows, error) QueryRow(query string, args ...interface{}) *sql.Row } 其抽象了底层的数据库操作，如执行非查询的语句，预编译查询，执行结果为多行的查询，执行结果为某行的查询。\nsqlDb type sqlDb interface { Begin() (*sql.Tx, error) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sql.Tx, error) } 抽象了对数据库连接对象（通常是 *sql.DB）的事务操作方法\n开启一个新事务 开启一个带有上下文和配置的事务 这里的上下文我们在之前的Context源码中提到过，提供了取消和超时的能力，允许对长时间运行的事务进行控制。 opts指定事务的隔离级别 sqlTx 抽象了事务对象（*sql.Tx）的控制方法\ntype sqlTx interface { Commit() error Rollback() error } 显然有着提交和回滚事务两个方法。\n",
+  "wordCount" : "1645",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2024-12-03T16:34:41+08:00",
+  "dateModified": "2024-12-03T16:34:41+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Golang源码小试牛刀:Gorm框架源码小探01
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2024-12-03 16:34:41 +0800 CST'>十二月 3, 2024</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%89%8d%e8%a8%80" aria-label="前言">前言</a><ul>
+                        
+                <li>
+                    <a href="#gorm%e6%a1%86%e6%9e%b6%e4%bb%8b%e7%bb%8d" aria-label="Gorm框架介绍">Gorm框架介绍</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%97%a5%e5%b8%b8%e4%bd%bf%e7%94%a8" aria-label="日常使用">日常使用</a><ul>
+                        
+                <li>
+                    <a href="#%e4%bd%bf%e7%94%a8%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9" aria-label="使用注意事项">使用注意事项</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e6%ba%90%e7%a0%81" aria-label="源码">源码</a><ul>
+                        
+                <li>
+                    <a href="#open" aria-label="Open()">Open()</a></li>
+                <li>
+                    <a href="#sqlcommonsqldbsqltx%e6%8e%a5%e5%8f%a3" aria-label="SQLCommon,SqlDb,sqlTx接口">SQLCommon,SqlDb,sqlTx接口</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="前言">前言<a hidden class="anchor" aria-hidden="true" href="#前言">#</a></h1>
+<h2 id="gorm框架介绍">Gorm框架介绍<a hidden class="anchor" aria-hidden="true" href="#gorm框架介绍">#</a></h2>
+<h1 id="日常使用">日常使用<a hidden class="anchor" aria-hidden="true" href="#日常使用">#</a></h1>
+<h2 id="使用注意事项">使用注意事项<a hidden class="anchor" aria-hidden="true" href="#使用注意事项">#</a></h2>
+<ol>
+<li>方法声明顺序</li>
+</ol>
+<p>查询举例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">db</span><span class="p">.</span><span class="nf">Where</span><span class="p">(</span><span class="nx">maps</span><span class="p">).</span><span class="nf">Offset</span><span class="p">(</span><span class="nx">pageNum</span><span class="p">).</span><span class="nf">Limit</span><span class="p">(</span><span class="nx">pageSize</span><span class="p">).</span><span class="nf">Find</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tags</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">db</span><span class="p">.</span><span class="nf">Select</span><span class="p">(</span><span class="s">&#34;id&#34;</span><span class="p">).</span><span class="nf">Where</span><span class="p">(</span><span class="s">&#34;name = ?&#34;</span><span class="p">,</span> <span class="nx">name</span><span class="p">).</span><span class="nf">First</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">tag</span><span class="p">)</span>
+</span></span></code></pre></div><p>注意这几个方法的调用顺序不能颠倒，因为GORM 按<strong>链式调用的顺序逐步构建 SQL 查询</strong>。所以在Gorm中查询常见的顺序是——<em>SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。</em></p>
+<h1 id="源码">源码<a hidden class="anchor" aria-hidden="true" href="#源码">#</a></h1>
+<p>来自于GORMv1.9.16版本（并非最新版本）</p>
+<h2 id="open">Open()<a hidden class="anchor" aria-hidden="true" href="#open">#</a></h2>
+<p>首先看到源码中的注释</p>
+<blockquote>
+<p>Open initialize a new db connection, need to import driver first</p></blockquote>
+<p>意味着需要先import一个<strong>数据库驱动</strong>例如mysql</p>
+<p>然后我们拿一个普通的调用作为示例
+<code>db, err := gorm.Open(&quot;mysql&quot;, &quot;user:password@/dbname?charset=utf8&amp;parseTime=True&amp;loc=Local&quot;)</code></p>
+<p>进入源码我们分层次来看</p>
+<ol>
+<li>第一部分</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Open</span><span class="p">(</span><span class="nx">dialect</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">args</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="nx">db</span> <span class="o">*</span><span class="nx">DB</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+</span></span></code></pre></div><p>传入数据库类型和源信息参数，返回一个<strong>db连接池</strong>和错误</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">err</span> <span class="p">=</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;invalid database source&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">source</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">dbSQL</span> <span class="nx">SQLCommon</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">ownDbSQL</span> <span class="kt">bool</span>
+</span></span></code></pre></div><p>先判断是否传入了数据库源参数，如果没有传入则返回错误；其次声明了三个变量：</p>
+<ul>
+<li>source:数据库连接的源信息，从args提取</li>
+<li>dbSQL:是一个接口的实例——标准的*sql.DB对象,其中<strong>SQLCommon</strong>的注释为
+<ul>
+<li>
+<blockquote>
+<p>SQLCommon is the minimal database connection functionality gorm requires.  Implemented by *sql.DB.</p></blockquote>
+</li>
+<li>抽象底层数据库连接对象</li>
+</ul>
+</li>
+<li>ownDbSQL:表示dbSQL是否由当前GORM实例独立管理</li>
+</ul>
+<ol start="2">
+<li>第二部分</li>
+</ol>
+<p>这里是一个switch分支，通过判断传入的args第一个参数类型</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl">	<span class="k">switch</span> <span class="nx">value</span> <span class="o">:=</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].(</span><span class="kd">type</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="kt">string</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="kd">var</span> <span class="nx">driver</span> <span class="p">=</span> <span class="nx">dialect</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">source</span> <span class="p">=</span> <span class="nx">value</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">driver</span> <span class="p">=</span> <span class="nx">value</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">source</span> <span class="p">=</span> <span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">].(</span><span class="kt">string</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">dbSQL</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">sql</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nx">driver</span><span class="p">,</span> <span class="nx">source</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ownDbSQL</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">	<span class="k">case</span> <span class="nx">SQLCommon</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">dbSQL</span> <span class="p">=</span> <span class="nx">value</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">ownDbSQL</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">	<span class="k">default</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;invalid database source: %v is not a valid type&#34;</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span></code></pre></div><ul>
+<li><strong>string时</strong>:将驱动设置为dialect
+<ul>
+<li>如果只有一个参数，那么就是源信息；如果不止一个参数，那么第一个作为驱动，第二个作为源</li>
+<li>使用标准库sql打开数据库连接，<strong>传入驱动与源</strong></li>
+<li>并将ownDbSQL设置为true，表示当前实例需要管理这个数据库连接的生命周期</li>
+</ul>
+</li>
+<li><strong>SQLCommon时:说明传入的是一个已经初始化好的数据库连接对象</strong>。
+<ul>
+<li>将传入的连接对象直接赋值给 dbSQL</li>
+<li>标记为 false，表示传入的连接由外部管理，GORM 不负责其生命周期</li>
+</ul>
+</li>
+<li>二者都不是时，参数无效</li>
+</ul>
+<ol start="3">
+<li>第三部分</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl">	<span class="nx">db</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">DB</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">db</span><span class="p">:</span>        <span class="nx">dbSQL</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">logger</span><span class="p">:</span>    <span class="nx">defaultLogger</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">callbacks</span><span class="p">:</span> <span class="nx">DefaultCallback</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">dialect</span><span class="p">:</span>   <span class="nf">newDialect</span><span class="p">(</span><span class="nx">dialect</span><span class="p">,</span> <span class="nx">dbSQL</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">db</span><span class="p">.</span><span class="nx">parent</span> <span class="p">=</span> <span class="nx">db</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Send a ping to make sure the database connection is alive.</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">d</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">dbSQL</span><span class="p">.(</span><span class="o">*</span><span class="nx">sql</span><span class="p">.</span><span class="nx">DB</span><span class="p">);</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">d</span><span class="p">.</span><span class="nf">Ping</span><span class="p">();</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">ownDbSQL</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="nx">d</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span>
+</span></span></code></pre></div><p>创建DB的实例</p>
+<ul>
+<li>将<strong>数据库连接对象</strong> dbSQL 赋值给 DB 的 db 字段，作为后续 SQL 操作的基础</li>
+<li>设置默认日志器，用于记录 SQL 执行信息</li>
+<li>设置默认回调函数集，用于拦截和处理数据库操作（如查询、插入等）</li>
+<li>初始化数据库dialect对象，用于<strong>适配不同的数据库</strong>（如 MySQL、PostgreSQL）。newDialect 根据传入的 dialect 名称和连接对象 dbSQL，返回一个实现特定dialect功能的实例</li>
+<li>为了支持链式调用，将自身作为 parent。</li>
+</ul>
+<p>这一顿属性填充完后，进行了一次连接验证:</p>
+<ul>
+<li>使用类型断言检查是否为标准的sql.DB类型</li>
+<li>如果是，进行连接验证——如果ping出错并且由GORM管理生命周期，则关闭连接。</li>
+</ul>
+<p>至此，Open方法代码结束了，总结一下就是声明三个变量来存储数据库的有关信息；根据源参数确定driver,source,dbSQL,ownDbSQL这些内容；最后创建好连接对象并使用ping检查连接是否成功。</p>
+<p>Open提供了两种初始化方式</p>
+<ul>
+<li>直接传入驱动名称和连接信息</li>
+<li>传入已经初始化好的数据库对象（自定义连接池）</li>
+</ul>
+<p>Open支持多种数据库，通过dialect对象统一处理差异。</p>
+<h2 id="sqlcommonsqldbsqltx接口">SQLCommon,SqlDb,sqlTx接口<a hidden class="anchor" aria-hidden="true" href="#sqlcommonsqldbsqltx接口">#</a></h2>
+<ol>
+<li>SQLCommon
+从上面的Open代码可以看出，这个SQLCommon比较重要</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">SQLCommon</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Exec</span><span class="p">(</span><span class="nx">query</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">args</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="nx">sql</span><span class="p">.</span><span class="nx">Result</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Prepare</span><span class="p">(</span><span class="nx">query</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">sql</span><span class="p">.</span><span class="nx">Stmt</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Query</span><span class="p">(</span><span class="nx">query</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">args</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="o">*</span><span class="nx">sql</span><span class="p">.</span><span class="nx">Rows</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">QueryRow</span><span class="p">(</span><span class="nx">query</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">args</span> <span class="o">...</span><span class="kd">interface</span><span class="p">{})</span> <span class="o">*</span><span class="nx">sql</span><span class="p">.</span><span class="nx">Row</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>其抽象了底层的数据库操作，如执行非查询的语句，预编译查询，执行结果为多行的查询，执行结果为某行的查询。</p>
+<ol start="2">
+<li>sqlDb</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">sqlDb</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Begin</span><span class="p">()</span> <span class="p">(</span><span class="o">*</span><span class="nx">sql</span><span class="p">.</span><span class="nx">Tx</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">BeginTx</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">opts</span> <span class="o">*</span><span class="nx">sql</span><span class="p">.</span><span class="nx">TxOptions</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">sql</span><span class="p">.</span><span class="nx">Tx</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>抽象了对数据库连接对象（通常是 *sql.DB）的事务操作方法</p>
+<ul>
+<li>开启一个新事务</li>
+<li>开启一个带有上下文和配置的事务
+<ul>
+<li>这里的上下文我们在之前的<a href="https://www.bfsmlt.top/posts/005golang%E5%B9%B6%E5%8F%9101_context/">Context源码</a>中提到过，提供了取消和超时的能力，允许对长时间运行的事务进行控制。</li>
+<li>opts指定事务的隔离级别</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>sqlTx</li>
+</ol>
+<p>抽象了事务对象（*sql.Tx）的控制方法</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">sqlTx</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Commit</span><span class="p">()</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Rollback</span><span class="p">()</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>显然有着提交和回滚事务两个方法。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/golang/">Golang</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
+      <li><a href="http://localhost:1313/tags/gorm/">Gorm</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>GolangEP02_并发中的Channel</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>GolangEP01_并发之绕不过的context</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
