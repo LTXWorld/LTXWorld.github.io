@@ -74,3 +74,29 @@ body.dark #menu a:hover span,
 body.dark #menu .active {
     color: #ffffff;
 }
+
+body.dark .first-entry {
+    background: rgba(18, 20, 26, 0.88);
+    border-radius: calc(var(--radius) * 1.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 24px 50px rgba(6, 8, 14, 0.38);
+    padding: clamp(28px, 5vw, 56px);
+    color: rgba(240, 242, 250, 0.94);
+}
+
+body.dark .first-entry .entry-header h1 {
+    color: #f5f7ff;
+}
+
+body.dark .first-entry .entry-content,
+body.dark .first-entry .entry-footer,
+body.dark .first-entry .social-icons a,
+body.dark .first-entry .social-icons svg {
+    color: rgba(224, 226, 235, 0.92);
+    fill: rgba(224, 226, 235, 0.92);
+}
+
+body.dark .first-entry .social-icons a:hover svg {
+    color: #ffffff;
+    fill: #ffffff;
+}
