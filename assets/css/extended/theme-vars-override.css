@@ -52,3 +52,25 @@ body.dark article.post-single pre,
 body.dark article.post-single code {
     background: rgba(28, 30, 36, 0.96) !important;
 }
+
+body.dark .header {
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    background: rgba(12, 14, 18, 0.88);
+    box-shadow: 0 16px 40px rgba(6, 8, 12, 0.48);
+    backdrop-filter: blur(18px);
+}
+
+body.dark .logo a,
+body.dark .logo-switches button,
+body.dark #menu a,
+body.dark #menu span,
+body.dark .nav a {
+    color: rgba(244, 246, 255, 0.96);
+}
+
+body.dark #menu a:hover span,
+body.dark #menu .active {
+    color: #ffffff;
+}
