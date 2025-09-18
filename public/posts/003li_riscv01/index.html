@@ -1,64 +1,975 @@
-<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>玩转RISCV开发板01-烧录OpenEuler国产镜像 | LTX's Blog</title>
-<meta name=keywords content="RISC-V,OpenEuler,镜像烧录"><meta name=description content="本次实验环境
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>玩转RISCV开发板01-烧录OpenEuler国产镜像 | LTX&#39;s Blog</title>
+<meta name="keywords" content="RISC-V, OpenEuler, 镜像烧录">
+<meta name="description" content="本次实验环境
 
 宿主机:macbook air M2
-LiCheePi开发板，配置为16+128
+LiCheePi开发板，配置为16&#43;128
 一根USB-C线
 一个拓展坞，键鼠，显示器
 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/
 
 实验步骤
 1.下载fastboot
-这里使用homebrew快捷安装"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/003li_riscv01/><link crossorigin=anonymous href=/assets/css/stylesheet.c98266582198d1e5ef6529482f54b208422b9b1a9eeac13f1e3df51f4f9bfbed.css integrity="sha256-yYJmWCGY0eXvZSlIL1SyCEIrmxqe6sE/Hj31H0+b++0=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/003li_riscv01/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/003li_riscv01/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="玩转RISCV开发板01-烧录OpenEuler国产镜像"><meta property="og:description" content="本次实验环境 宿主机:macbook air M2 LiCheePi开发板，配置为16+128 一根USB-C线 一个拓展坞，键鼠，显示器 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/ 实验步骤 1.下载fastboot 这里使用homebrew快捷安装"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-11-21T14:42:19+08:00"><meta property="article:modified_time" content="2024-11-21T14:42:19+08:00"><meta property="article:tag" content="RISC-V"><meta property="article:tag" content="OpenEuler"><meta property="article:tag" content="镜像烧录"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="玩转RISCV开发板01-烧录OpenEuler国产镜像"><meta name=twitter:description content="本次实验环境
+这里使用homebrew快捷安装">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/003li_riscv01/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/003li_riscv01/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/003li_riscv01/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="玩转RISCV开发板01-烧录OpenEuler国产镜像">
+  <meta property="og:description" content="本次实验环境 宿主机:macbook air M2 LiCheePi开发板，配置为16&#43;128 一根USB-C线 一个拓展坞，键鼠，显示器 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/ 实验步骤 1.下载fastboot 这里使用homebrew快捷安装">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-11-21T14:42:19+08:00">
+    <meta property="article:modified_time" content="2024-11-21T14:42:19+08:00">
+    <meta property="article:tag" content="RISC-V">
+    <meta property="article:tag" content="OpenEuler">
+    <meta property="article:tag" content="镜像烧录">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="玩转RISCV开发板01-烧录OpenEuler国产镜像">
+<meta name="twitter:description" content="本次实验环境
 
 宿主机:macbook air M2
-LiCheePi开发板，配置为16+128
+LiCheePi开发板，配置为16&#43;128
 一根USB-C线
 一个拓展坞，键鼠，显示器
 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/
 
 实验步骤
 1.下载fastboot
-这里使用homebrew快捷安装"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"玩转RISCV开发板01-烧录OpenEuler国产镜像","item":"https://LTXWorld.github.io/posts/003li_riscv01/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"玩转RISCV开发板01-烧录OpenEuler国产镜像","name":"玩转RISCV开发板01-烧录OpenEuler国产镜像","description":"本次实验环境 宿主机:macbook air M2 LiCheePi开发板，配置为16+128 一根USB-C线 一个拓展坞，键鼠，显示器 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/ 实验步骤 1.下载fastboot 这里使用homebrew快捷安装\n","keywords":["RISC-V","OpenEuler","镜像烧录"],"articleBody":"本次实验环境 宿主机:macbook air M2 LiCheePi开发板，配置为16+128 一根USB-C线 一个拓展坞，键鼠，显示器 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/ 实验步骤 1.下载fastboot 这里使用homebrew快捷安装\nbrew install android-platform-tools 2.连接开发板与宿主机 先长按开发板上的BOOT按钮，再将USB线插入到宿主机上（拓展坞上），注意这里的先后次序。这一步是为了让开发板进入USB烧录模式。\n进入终端，运行命令检查fastboot是否识别到了当前连接的开发板\nfastboot devices 注意是devices不是device,结果如下\n这里我也没弄清楚为什么是一堆问号，不过只要能够检测到设备就好。（注意本教程目前只测试了Macos下的操作）\n3.下载所需的镜像文件 来到镜像下载网站选择以下三种文件进行下载：\nu-boot文件用于引导加载程序——系统会先启动一个小型的引导加载程序（SPL），它负责加载完整的 U-Boot 镜像 base-boot.ext4.zst文件用于作为系统的启动分区——包括启动所需的文件，比如 Linux 内核、初始 RAM 磁盘（initramfs）、设备树（device tree） base-root.ext4.zst文件用于作为根文件系统——提供操作系统所需的文件 如果你安装过实打实的Linux系统（比如在windows下的双系统）的话你就会对这几个文件很熟悉。\n值得注意的是，其使用Zst格式压缩，所以在真正使用的时候需要提前进行解压，如果忘了解压，直接操作你就会遇到这个问题\n哈哈，文件格式不对当然无法成功了。\n故我们需要对zst格式结尾的文件进行解压\nzstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst zstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst 4.进行烧录 首先进入上一步下载镜像所在的目录下\nfastboot flash ram u-boot-with-spl-lpi4a-16g.bin fastboot reboot # wait five seconds fastboot flash uboot u-boot-with-spl-lpi4a-16g.bin fastboot flash boot openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4 fastboot flash root openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4 最终如果成功你会得到一堆OKAY，这里放一张我的运行截图\n5.验证 将开发板与宿主机的连接断开，将其连接到准备好的显示器上并准备好键鼠，等待其成功运行。 好的，成功发现一个神奇的问题，鼠标键盘也亮了，风扇也转起来了，结果显示器不亮？不亮？不亮？为什么！！！\n好，我先去google，来到官方文档烧录镜像的评论区发现一个遇到和我同样问题的朋友\n解决显示器不亮的问题 遇到这种问题，google并不能得到很相关的解决方案，这也是我在日常工作时觉得需要使用AI的场景之一。所以我得去询问ChatGPT让他针对于我这种问题给出解决思路。\n即使镜像烧录是成功的，为了保险起见，我们先去利用官网的SHA256文件验证一下文件是否损坏。\nsha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst.sha256sum sha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst.sha256sum 结果都显示OK,那么镜像文件是对的。\n在检查ChatGPT给出的思路之前，我认为还是先来一遍对照实验，因为在烧录镜像之前自带的Debian是能够成功点亮显示器的，所以我们换一下镜像的版本来进行对照。\n对照实验1-换镜像版本 换成兴趣小组的镜像文件23.03再来一遍\n命令与上面相同，其中u-boot-with-spl-lpi4a-16g.bin这个文件是可以复用的。\n嘿，您猜怎么着，还是点不亮！\n那再换成preview版本的23.09再来一遍，这次点亮了！并且给出了一个图形化的界面！正当我准备大展拳脚，以为自己终于找到了问题的所在时，又出差错了！\n没有wifi界面，无法连接wifi，使用nmcli命令查看网络状态\nnmcli general status nmcli device status 显示WIFI是enabled,==WIFI-HW是missing的==，意味着WIFI硬件似乎没有被正确识别；只有本地环回地址连接成功了，其他都处于unmanaged状态。\n我在其他的地方也找不到连接wifi的界面，所以这又是什么问题呢？（个人目前猜测还是镜像不稳定，因为Debian操作系统可以连接wifi）\n最终，我去镜像文件中的devel部分找到23.09的镜像进行测试，结果成功了！\n成功解决 如上面所说，找到链接中的镜像后进行再次烧录,终于可以点亮屏幕（如果遇到键鼠没反应重启开发板即可），进入了一个黑色的命令行界面，接着我们要进行登录。\n用户名:openeuler 密码:openEuler12#$ 登录后我们首先需要连网，使用以下命令。\n# 检查网络状态，去报WIFI-HW,WIFI是enabled nmcli general status # 查看端口和网络，确保有wlan端口 ip a # 显示可用的wifi nmcli dev wifi # 连接具体wifi，其中SSID替换为wifi名，PASSWORD替换为密码 sudo nmcli dev wifi connect SSID password PASSWORD # 连接成功后再检查STATE是否为connected nmcli general status 至此，成功连接wifi，烧录镜像这一步骤到此结束。\n后续问题 看到这里，还有惊喜！还没完！我重启了一次开发板之后，发现wifi又没了，瞬间尴尬在原地，到底是镜像和网卡你两谁的问题!?\n又经历了两次重启，wifi又好了，所以，请看下面总结。\n总结与反思 这里总结一下为LicheePI烧录OpenEuler镜像遇到的问题。\n镜像or网卡问题 在还没烧录的时候，板子自带的Debian操作系统一切正常。接着烧录Openeuler for riscv镜像时出现了一系列的问题：\n先遇到官方最新的24.03LTS版本的专门为LiCheePI准备的镜像烧录后无法打开显示器的问题。 在SIG兴趣小组提供的链接中，preview下的镜像23.03还是没有点亮显示器。 同样，preview下的23.09虽然点亮了显示器，但是无法识别网卡，连接不了wifi 于是去develp下的23.09镜像点亮了显示器也连接到了wifi，但是存在偶尔的抽风问题——重启后wifi又没了，得不断重启尝试。 所以，综上所述，是谁的问题？\n我觉得八成原因在镜像，因为换了镜像后问题得到解决，不过如果细心的读者会发现我们对于23.03镜像并没有进行多次重启来检测是不是网卡的问题（其实我也重启了两次不过都没成功），所以还有两成原因在于WIFI网卡——看的这里你是否觉得这也太不“技术”了，一个技术博客怎么能够有点玄学成分了。\n哈哈，你的批评是对的，在这里我确实不严谨了，没有程序员深挖精神了，私密马赛！\n反思 最后的最后，我不禁想问自己一个问题：操作系统镜像和架构有关系吗？\n那这个问题答案也很简单，一定是有关系的，操作系统镜像必须与CPU指令集兼容，这也是为什么操作系统镜像页面有专门为RISC-V所设计的镜像页面。\n那么关于如何烧录OpenEuler for RISCV镜像到LiCheePi上这一主题就告一段落了，还是有点流水账了，anyway，博客永远是给自己看的。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n","wordCount":"2633","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2024-11-21T14:42:19+08:00","dateModified":"2024-11-21T14:42:19+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/003li_riscv01/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">玩转RISCV开发板01-烧录OpenEuler国产镜像</h1><div class=post-meta><span title='2024-11-21 14:42:19 +0800 CST'>十一月 21, 2024</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e6%9c%ac%e6%ac%a1%e5%ae%9e%e9%aa%8c%e7%8e%af%e5%a2%83 aria-label=本次实验环境>本次实验环境</a></li><li><a href=#%e5%ae%9e%e9%aa%8c%e6%ad%a5%e9%aa%a4 aria-label=实验步骤>实验步骤</a><ul><li><a href=#1%e4%b8%8b%e8%bd%bdfastboot aria-label=1.下载fastboot>1.下载fastboot</a></li><li><a href=#2%e8%bf%9e%e6%8e%a5%e5%bc%80%e5%8f%91%e6%9d%bf%e4%b8%8e%e5%ae%bf%e4%b8%bb%e6%9c%ba aria-label=2.连接开发板与宿主机>2.连接开发板与宿主机</a></li><li><a href=#3%e4%b8%8b%e8%bd%bd%e6%89%80%e9%9c%80%e7%9a%84%e9%95%9c%e5%83%8f%e6%96%87%e4%bb%b6 aria-label=3.下载所需的镜像文件>3.下载所需的镜像文件</a></li><li><a href=#4%e8%bf%9b%e8%a1%8c%e7%83%a7%e5%bd%95 aria-label=4.进行烧录>4.进行烧录</a></li><li><a href=#5%e9%aa%8c%e8%af%81 aria-label=5.验证>5.验证</a></li></ul></li><li><a href=#%e8%a7%a3%e5%86%b3%e6%98%be%e7%a4%ba%e5%99%a8%e4%b8%8d%e4%ba%ae%e7%9a%84%e9%97%ae%e9%a2%98 aria-label=解决显示器不亮的问题>解决显示器不亮的问题</a><ul><li><a href=#%e5%af%b9%e7%85%a7%e5%ae%9e%e9%aa%8c1-%e6%8d%a2%e9%95%9c%e5%83%8f%e7%89%88%e6%9c%ac aria-label=对照实验1-换镜像版本>对照实验1-换镜像版本</a></li><li><a href=#%e6%88%90%e5%8a%9f%e8%a7%a3%e5%86%b3 aria-label=成功解决>成功解决</a></li></ul></li><li><a href=#%e5%90%8e%e7%bb%ad%e9%97%ae%e9%a2%98 aria-label=后续问题>后续问题</a></li><li><a href=#%e6%80%bb%e7%bb%93%e4%b8%8e%e5%8f%8d%e6%80%9d aria-label=总结与反思>总结与反思</a><ul><li><a href=#%e9%95%9c%e5%83%8for%e7%bd%91%e5%8d%a1%e9%97%ae%e9%a2%98 aria-label=镜像or网卡问题>镜像or网卡问题</a></li><li><a href=#%e5%8f%8d%e6%80%9d aria-label=反思>反思</a></li></ul></li></ul></div></details></div><div class=post-content><h2 id=本次实验环境>本次实验环境<a hidden class=anchor aria-hidden=true href=#本次实验环境>#</a></h2><ul><li>宿主机:macbook air M2</li><li>LiCheePi开发板，配置为16+128</li><li>一根USB-C线</li><li>一个拓展坞，键鼠，显示器</li><li>烧录镜像为openEuler/embedded_img/riscv64/lpi4a/</li></ul><h2 id=实验步骤>实验步骤<a hidden class=anchor aria-hidden=true href=#实验步骤>#</a></h2><h3 id=1下载fastboot>1.下载fastboot<a hidden class=anchor aria-hidden=true href=#1下载fastboot>#</a></h3><p>这里使用homebrew快捷安装</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>brew install android-platform-tools
-</span></span></code></pre></div><h3 id=2连接开发板与宿主机>2.连接开发板与宿主机<a hidden class=anchor aria-hidden=true href=#2连接开发板与宿主机>#</a></h3><p>先长按开发板上的BOOT按钮，再将USB线插入到宿主机上（拓展坞上），注意这里的先后次序。这一步是为了让开发板进入USB烧录模式。</p><p>进入终端，运行命令检查fastboot是否识别到了当前连接的开发板</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>fastboot devices
-</span></span></code></pre></div><p>注意是devices不是device,结果如下</p><p><img loading=lazy src=/img/riscv/fastboot.png></p><p>这里我也没弄清楚为什么是一堆问号，不过只要能够检测到设备就好。（注意本教程目前只测试了Macos下的操作）</p><h3 id=3下载所需的镜像文件>3.下载所需的镜像文件<a hidden class=anchor aria-hidden=true href=#3下载所需的镜像文件>#</a></h3><p>来到<a href=https://repo.openeuler.org/openEuler-24.03-LTS/embedded_img/riscv64/lpi4a/>镜像下载网站</a>选择以下三种文件进行下载：</p><ul><li>u-boot文件用于<strong>引导加载程序</strong>——系统会先启动一个小型的引导加载程序（SPL），它负责加载完整的 U-Boot 镜像</li><li>base-boot.ext4.zst文件用于作为<strong>系统的启动分区</strong>——包括启动所需的文件，比如 Linux 内核、初始 RAM 磁盘（initramfs）、设备树（device tree）</li><li>base-root.ext4.zst文件用于作为<strong>根文件系统</strong>——提供操作系统所需的文件</li></ul><p>如果你安装过实打实的Linux系统（比如在windows下的双系统）的话你就会对这几个文件很熟悉。</p><p>值得注意的是，其使用Zst格式压缩，所以在真正使用的时候需要提前进行解压，如果忘了解压，直接操作你就会遇到这个问题</p><p><img loading=lazy src=/img/riscv/fasterr.png></p><p>哈哈，文件格式不对当然无法成功了。</p><p>故我们需要对zst格式结尾的文件进行解压</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>zstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst
-</span></span><span class=line><span class=cl>zstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst
-</span></span></code></pre></div><h3 id=4进行烧录>4.进行烧录<a hidden class=anchor aria-hidden=true href=#4进行烧录>#</a></h3><p>首先进入上一步下载镜像所在的目录下</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>fastboot flash ram u-boot-with-spl-lpi4a-16g.bin
-</span></span><span class=line><span class=cl>fastboot reboot
-</span></span><span class=line><span class=cl><span class=c1># wait five seconds</span>
-</span></span><span class=line><span class=cl>fastboot flash uboot u-boot-with-spl-lpi4a-16g.bin
-</span></span><span class=line><span class=cl>fastboot flash boot openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4
-</span></span><span class=line><span class=cl>fastboot flash root openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4
-</span></span></code></pre></div><p>最终如果成功你会得到一堆OKAY，这里放一张我的运行截图</p><p><img loading=lazy src=/img/riscv/fastsuc.png></p><h3 id=5验证>5.验证<a hidden class=anchor aria-hidden=true href=#5验证>#</a></h3><p>将开发板与宿主机的连接断开，将其连接到准备好的显示器上并准备好键鼠，等待其成功运行。
-好的，成功发现一个神奇的问题，鼠标键盘也亮了，风扇也转起来了，结果显示器不亮？不亮？不亮？为什么！！！</p><p><img loading=lazy src=/img/ys/%E8%8D%AF%E6%B0%B4%E6%8C%A5%E6%8B%B3.webp></p><p>好，我先去google，来到官方文档烧录镜像的评论区发现一个遇到和我同样问题的朋友</p><p><img loading=lazy src=/img/riscv/q1.png></p><h2 id=解决显示器不亮的问题>解决显示器不亮的问题<a hidden class=anchor aria-hidden=true href=#解决显示器不亮的问题>#</a></h2><p>遇到这种问题，google并不能得到很相关的解决方案，这也是我在日常工作时觉得需要使用AI的场景之一。所以我得去询问ChatGPT让他针对于我这种问题给出<strong>解决思路</strong>。</p><p>即使镜像烧录是成功的，为了保险起见，我们先去利用官网的SHA256文件验证一下文件是否损坏。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst.sha256sum
-</span></span><span class=line><span class=cl>sha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst.sha256sum
-</span></span></code></pre></div><p>结果都显示OK,那么镜像文件是对的。</p><p>在检查ChatGPT给出的思路之前，我认为还是先来一遍对照实验，因为在烧录镜像之前自带的Debian是能够成功点亮显示器的，所以我们换一下镜像的版本来进行对照。</p><h3 id=对照实验1-换镜像版本>对照实验1-换镜像版本<a hidden class=anchor aria-hidden=true href=#对照实验1-换镜像版本>#</a></h3><p>换成兴趣小组的<a href=https://mirror.iscas.ac.cn/openeuler-sig-riscv/openEuler-RISC-V/preview/openEuler-23.03-V1-riscv64/lpi4a/>镜像文件</a>23.03再来一遍</p><p>命令与上面相同，其中<code>u-boot-with-spl-lpi4a-16g.bin</code>这个文件是可以复用的。</p><p>嘿，您猜怎么着，还是点不亮！</p><p><img loading=lazy src=/img/ys/%E8%8D%AF%E6%B0%B4%E6%8C%A5%E6%8B%B3.webp></p><p>那再换成<a href=https://mirror.iscas.ac.cn/openeuler-sig-riscv/openEuler-RISC-V/preview/openEuler-23.09-V1-riscv64/lpi4a/>preview版本的23.09</a>再来一遍，这次点亮了！并且给出了一个图形化的界面！正当我准备大展拳脚，以为自己终于找到了问题的所在时，又出差错了！</p><p><strong>没有wifi界面，无法连接wifi</strong>，使用nmcli命令查看网络状态</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>nmcli general status
-</span></span><span class=line><span class=cl>nmcli device status
-</span></span></code></pre></div><p>显示WIFI是enabled,==WIFI-HW是missing的==，意味着WIFI硬件似乎没有被正确识别；只有本地环回地址连接成功了，其他都处于unmanaged状态。</p><p>我在其他的地方也找不到连接wifi的界面，所以这又是什么问题呢？（个人目前猜测还是镜像不稳定，因为Debian操作系统可以连接wifi）</p><p>最终，我去镜像文件中的devel部分找到<a href=https://mirror.iscas.ac.cn/openeuler-sig-riscv/openEuler-RISC-V/devel/20240122/v0.1/lpi4a/>23.09的镜像</a>进行测试，结果成功了！</p><h3 id=成功解决>成功解决<a hidden class=anchor aria-hidden=true href=#成功解决>#</a></h3><p>如上面所说，找到链接中的镜像后进行再次烧录,终于可以点亮屏幕（如果遇到键鼠没反应重启开发板即可），进入了一个黑色的命令行界面，接着我们要进行登录。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>用户名:openeuler
-</span></span><span class=line><span class=cl>密码:openEuler12#$
-</span></span></code></pre></div><p>登录后我们首先需要连网，使用以下命令。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 检查网络状态，去报WIFI-HW,WIFI是enabled</span>
-</span></span><span class=line><span class=cl>nmcli general status
-</span></span><span class=line><span class=cl><span class=c1># 查看端口和网络，确保有wlan端口</span>
-</span></span><span class=line><span class=cl>ip a
-</span></span><span class=line><span class=cl><span class=c1># 显示可用的wifi</span>
-</span></span><span class=line><span class=cl>nmcli dev wifi
-</span></span><span class=line><span class=cl><span class=c1># 连接具体wifi，其中SSID替换为wifi名，PASSWORD替换为密码</span>
-</span></span><span class=line><span class=cl>sudo nmcli dev wifi connect SSID password PASSWORD
-</span></span><span class=line><span class=cl><span class=c1># 连接成功后再检查STATE是否为connected</span>
-</span></span><span class=line><span class=cl>nmcli general status
-</span></span></code></pre></div><p>至此，成功连接wifi，烧录镜像这一步骤到此结束。</p><h2 id=后续问题>后续问题<a hidden class=anchor aria-hidden=true href=#后续问题>#</a></h2><p>看到这里，还有惊喜！还没完！我重启了一次开发板之后，发现wifi又没了，瞬间尴尬在原地，到底是镜像和网卡你两谁的问题!?</p><p><img loading=lazy src=/img/shu/%E5%BC%80%E6%9E%AA.webp></p><p>又经历了两次重启，wifi又好了，所以，请看下面总结。</p><h2 id=总结与反思>总结与反思<a hidden class=anchor aria-hidden=true href=#总结与反思>#</a></h2><p>这里总结一下为LicheePI烧录OpenEuler镜像遇到的问题。</p><h3 id=镜像or网卡问题>镜像or网卡问题<a hidden class=anchor aria-hidden=true href=#镜像or网卡问题>#</a></h3><p>在还没烧录的时候，板子自带的Debian操作系统一切正常。接着烧录Openeuler for riscv镜像时出现了一系列的问题：</p><ul><li>先遇到官方最新的<strong>24.03LTS</strong>版本的专门为LiCheePI准备的镜像烧录后无法打开显示器的问题。</li><li>在SIG兴趣小组提供的链接中，preview下的镜像23.03还是没有点亮显示器。</li><li>同样，preview下的23.09虽然点亮了显示器，但是无法识别网卡，连接不了wifi</li><li>于是去develp下的23.09镜像点亮了显示器也连接到了wifi，但是存在偶尔的抽风问题——重启后wifi又没了，得不断重启尝试。</li></ul><p>所以，综上所述，是谁的问题？</p><p>我觉得八成原因在镜像，因为换了镜像后问题得到解决，不过如果细心的读者会发现我们对于23.03镜像并没有进行多次重启来检测是不是网卡的问题（其实我也重启了两次不过都没成功），所以还有两成原因在于WIFI网卡——看的这里你是否觉得这也太不“技术”了，一个技术博客怎么能够有点玄学成分了。</p><p>哈哈，你的批评是对的，在这里我确实不严谨了，没有程序员深挖精神了，私密马赛！</p><h3 id=反思>反思<a hidden class=anchor aria-hidden=true href=#反思>#</a></h3><p>最后的最后，我不禁想问自己一个问题：操作系统镜像和架构有关系吗？</p><p>那这个问题答案也很简单，一定是有关系的，操作系统镜像必须与CPU指令集兼容，这也是为什么操作系统镜像页面有专门为RISC-V所设计的镜像页面。</p><p>那么关于如何烧录OpenEuler for RISCV镜像到LiCheePi上这一主题就告一段落了，还是有点流水账了，anyway，博客永远是给自己看的。</p><p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/risc-v/>RISC-V</a></li><li><a href=https://LTXWorld.github.io/tags/openeuler/>OpenEuler</a></li><li><a href=https://LTXWorld.github.io/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/>镜像烧录</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/004risc-v_deployment/><span class=title>« 上一页</span><br><span>玩转RISCV开发板02-配置好容器化环境</span>
-</a><a class=next href=https://LTXWorld.github.io/posts/002docker_volume/><span class=title>下一页 »</span><br><span>玩转Docker系列——数据持久化</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
-<span>Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-drag-handle data-role=drag-handle title=上下拖动调整位置></div><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
-<span class=ltx-music-artist data-role=artist></span></div><button type=button class=ltx-music-hide data-action=collapse aria-label=隐藏播放器>&#215;</button></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
-<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
-<button type=button data-action=toggle aria-label=播放或暂停>
-<span data-icon=play>▶</span>
-<span data-icon=pause>⏸</span>
-</button>
-<button type=button data-action=next aria-label=下一首>⏭</button>
-<button type=button data-action=mute aria-label=静音或取消静音>
-<span data-icon=unmuted>🔊</span>
-<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><button type=button class=ltx-music-fab id=ltx-music-fab aria-label=显示音乐播放器>&#9835;</button>
-<script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const a=window.LTX_MUSIC_CONFIG||{};if(!a.tracks||!a.tracks.length)return;const e=document.getElementById("ltx-music-player"),t=e.querySelector("audio"),x=e.querySelector('[data-role="title"]'),O=e.querySelector('[data-role="artist"]'),b=e.querySelector('[data-role="progress"]'),A=e.querySelector('[data-role="progress-fill"]'),F=e.querySelector('[data-role="current"]'),M=e.querySelector('[data-role="total"]'),c=e.querySelector('[data-role="tip"]'),r=e.querySelector('[data-role="cover"]'),S=e.querySelector('[data-action="toggle"]'),y=e.querySelector('[data-action="prev"]'),k=e.querySelector('[data-action="next"]'),E=e.querySelector('[data-action="mute"]'),g=e.querySelector('[data-action="collapse"]'),i=e.querySelector('[data-role="drag-handle"]'),o=document.getElementById("ltx-music-fab"),f=(e,t,n)=>Math.min(Math.max(e,t),n),j=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},C=-120,_=220,w=180,s={active:!1,startY:0,startOffset:0,pointerId:null},n={index:0,tracks:a.tracks,autoplay:a.autoplay!==!1,loopPlaylist:a.loopPlaylist!==!1,offset:0,collapsed:!1},h=t=>{n.offset=f(t,C,_),e.style.setProperty("--ltx-offset",`${n.offset}px`)},l=t=>{const s=Boolean(t);n.collapsed=s,e.classList.toggle("ltx-collapsed",s),s?(e.classList.remove("ltx-dragging"),n.offset=0,e.style.removeProperty("--ltx-offset"),o&&(o.classList.add("ltx-visible"),o.setAttribute("aria-hidden","false"),o.tabIndex=0)):(h(0),o&&(o.classList.remove("ltx-visible"),o.setAttribute("aria-hidden","true"),o.tabIndex=-1))},m=()=>{const n=t.muted||t.volume===0;e.classList.toggle("ltx-muted",n)};t.volume=f(a.startVolume??.6,0,1),m(),l(!1);const d=()=>{const e=t.duration||0,n=t.currentTime||0,s=e?n/e*100:0;A.style.width=`${s}%`,F.textContent=j(n),M.textContent=j(e)},u=(s,o={})=>{const l=n.tracks.length;n.index=(s%l+l)%l;const i=n.tracks[n.index];if(!i||!i.file){console.warn("LTX music player: 音频文件缺失",i),c.textContent="音频文件缺失，请检查配置";return}const u=i.cover||a.defaultCover||"";r&&(u?(r.src=u,r.alt=i.title?`${i.title} 封面`:"音乐封面",e.classList.add("ltx-has-cover")):(r.removeAttribute("src"),r.alt="",e.classList.remove("ltx-has-cover"))),x.textContent=i.title||`Track ${n.index+1}`,O.textContent=i.artist||"",t.src=i.file,e.dataset.trackIndex=n.index,c.textContent="",e.classList.remove("ltx-autoplay-blocked"),d(),o.play&&p()},p=()=>{t.play().then(()=>{e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}).catch(()=>{e.classList.add("ltx-autoplay-blocked"),c.textContent="浏览器阻止了自动播放，请点击播放按钮"})},v=(e=!1)=>{const o=!t.paused||e,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){t.currentTime=t.duration||0,t.pause();return}u(s,{play:o})},T=()=>{const e=!t.paused;u(n.index-1,{play:e})};if(g&&g.addEventListener("click",()=>l(!0)),o&&(o.addEventListener("click",()=>l(!1)),o.setAttribute("aria-hidden","true"),o.tabIndex=-1),i){i.style.touchAction="none",i.addEventListener("pointerdown",t=>{if(n.collapsed)return;if(s.active=!0,s.pointerId=t.pointerId,s.startY=t.clientY,s.startOffset=n.offset,i.setPointerCapture)try{i.setPointerCapture(t.pointerId)}catch{}e.classList.add("ltx-dragging")}),i.addEventListener("pointermove",e=>{if(!s.active)return;const t=e.clientY-s.startY;h(s.startOffset+t)});const t=()=>{if(!s.active)return;if(s.pointerId!==null&&i.releasePointerCapture)try{i.releasePointerCapture(s.pointerId)}catch{}s.active=!1,s.pointerId=null,e.classList.remove("ltx-dragging"),n.offset>w?l(!0):h(n.offset)};["pointerup","pointercancel"].forEach(e=>{i.addEventListener(e,t)}),i.addEventListener("pointerleave",()=>{if(!s.active)return;t()})}S.addEventListener("click",()=>{t.paused?p():t.pause()}),y.addEventListener("click",T),k.addEventListener("click",()=>v(!1)),E.addEventListener("click",()=>{t.muted=!t.muted,m()}),b.addEventListener("click",e=>{const n=b.getBoundingClientRect(),s=f((e.clientX-n.left)/n.width,0,1);Number.isFinite(t.duration)&&(t.currentTime=s*t.duration)}),t.addEventListener("timeupdate",d),t.addEventListener("loadedmetadata",d),t.addEventListener("play",()=>{e.classList.add("ltx-playing"),e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}),t.addEventListener("pause",()=>{e.classList.remove("ltx-playing")}),t.addEventListener("ended",()=>{v(!0)}),t.addEventListener("volumechange",m),u(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+这里使用homebrew快捷安装">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "玩转RISCV开发板01-烧录OpenEuler国产镜像",
+      "item": "http://localhost:1313/posts/003li_riscv01/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "玩转RISCV开发板01-烧录OpenEuler国产镜像",
+  "name": "玩转RISCV开发板01-烧录OpenEuler国产镜像",
+  "description": "本次实验环境 宿主机:macbook air M2 LiCheePi开发板，配置为16+128 一根USB-C线 一个拓展坞，键鼠，显示器 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/ 实验步骤 1.下载fastboot 这里使用homebrew快捷安装\n",
+  "keywords": [
+    "RISC-V", "OpenEuler", "镜像烧录"
+  ],
+  "articleBody": "本次实验环境 宿主机:macbook air M2 LiCheePi开发板，配置为16+128 一根USB-C线 一个拓展坞，键鼠，显示器 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/ 实验步骤 1.下载fastboot 这里使用homebrew快捷安装\nbrew install android-platform-tools 2.连接开发板与宿主机 先长按开发板上的BOOT按钮，再将USB线插入到宿主机上（拓展坞上），注意这里的先后次序。这一步是为了让开发板进入USB烧录模式。\n进入终端，运行命令检查fastboot是否识别到了当前连接的开发板\nfastboot devices 注意是devices不是device,结果如下\n这里我也没弄清楚为什么是一堆问号，不过只要能够检测到设备就好。（注意本教程目前只测试了Macos下的操作）\n3.下载所需的镜像文件 来到镜像下载网站选择以下三种文件进行下载：\nu-boot文件用于引导加载程序——系统会先启动一个小型的引导加载程序（SPL），它负责加载完整的 U-Boot 镜像 base-boot.ext4.zst文件用于作为系统的启动分区——包括启动所需的文件，比如 Linux 内核、初始 RAM 磁盘（initramfs）、设备树（device tree） base-root.ext4.zst文件用于作为根文件系统——提供操作系统所需的文件 如果你安装过实打实的Linux系统（比如在windows下的双系统）的话你就会对这几个文件很熟悉。\n值得注意的是，其使用Zst格式压缩，所以在真正使用的时候需要提前进行解压，如果忘了解压，直接操作你就会遇到这个问题\n哈哈，文件格式不对当然无法成功了。\n故我们需要对zst格式结尾的文件进行解压\nzstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst zstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst 4.进行烧录 首先进入上一步下载镜像所在的目录下\nfastboot flash ram u-boot-with-spl-lpi4a-16g.bin fastboot reboot # wait five seconds fastboot flash uboot u-boot-with-spl-lpi4a-16g.bin fastboot flash boot openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4 fastboot flash root openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4 最终如果成功你会得到一堆OKAY，这里放一张我的运行截图\n5.验证 将开发板与宿主机的连接断开，将其连接到准备好的显示器上并准备好键鼠，等待其成功运行。 好的，成功发现一个神奇的问题，鼠标键盘也亮了，风扇也转起来了，结果显示器不亮？不亮？不亮？为什么！！！\n好，我先去google，来到官方文档烧录镜像的评论区发现一个遇到和我同样问题的朋友\n解决显示器不亮的问题 遇到这种问题，google并不能得到很相关的解决方案，这也是我在日常工作时觉得需要使用AI的场景之一。所以我得去询问ChatGPT让他针对于我这种问题给出解决思路。\n即使镜像烧录是成功的，为了保险起见，我们先去利用官网的SHA256文件验证一下文件是否损坏。\nsha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst.sha256sum sha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst.sha256sum 结果都显示OK,那么镜像文件是对的。\n在检查ChatGPT给出的思路之前，我认为还是先来一遍对照实验，因为在烧录镜像之前自带的Debian是能够成功点亮显示器的，所以我们换一下镜像的版本来进行对照。\n对照实验1-换镜像版本 换成兴趣小组的镜像文件23.03再来一遍\n命令与上面相同，其中u-boot-with-spl-lpi4a-16g.bin这个文件是可以复用的。\n嘿，您猜怎么着，还是点不亮！\n那再换成preview版本的23.09再来一遍，这次点亮了！并且给出了一个图形化的界面！正当我准备大展拳脚，以为自己终于找到了问题的所在时，又出差错了！\n没有wifi界面，无法连接wifi，使用nmcli命令查看网络状态\nnmcli general status nmcli device status 显示WIFI是enabled,==WIFI-HW是missing的==，意味着WIFI硬件似乎没有被正确识别；只有本地环回地址连接成功了，其他都处于unmanaged状态。\n我在其他的地方也找不到连接wifi的界面，所以这又是什么问题呢？（个人目前猜测还是镜像不稳定，因为Debian操作系统可以连接wifi）\n最终，我去镜像文件中的devel部分找到23.09的镜像进行测试，结果成功了！\n成功解决 如上面所说，找到链接中的镜像后进行再次烧录,终于可以点亮屏幕（如果遇到键鼠没反应重启开发板即可），进入了一个黑色的命令行界面，接着我们要进行登录。\n用户名:openeuler 密码:openEuler12#$ 登录后我们首先需要连网，使用以下命令。\n# 检查网络状态，去报WIFI-HW,WIFI是enabled nmcli general status # 查看端口和网络，确保有wlan端口 ip a # 显示可用的wifi nmcli dev wifi # 连接具体wifi，其中SSID替换为wifi名，PASSWORD替换为密码 sudo nmcli dev wifi connect SSID password PASSWORD # 连接成功后再检查STATE是否为connected nmcli general status 至此，成功连接wifi，烧录镜像这一步骤到此结束。\n后续问题 看到这里，还有惊喜！还没完！我重启了一次开发板之后，发现wifi又没了，瞬间尴尬在原地，到底是镜像和网卡你两谁的问题!?\n又经历了两次重启，wifi又好了，所以，请看下面总结。\n总结与反思 这里总结一下为LicheePI烧录OpenEuler镜像遇到的问题。\n镜像or网卡问题 在还没烧录的时候，板子自带的Debian操作系统一切正常。接着烧录Openeuler for riscv镜像时出现了一系列的问题：\n先遇到官方最新的24.03LTS版本的专门为LiCheePI准备的镜像烧录后无法打开显示器的问题。 在SIG兴趣小组提供的链接中，preview下的镜像23.03还是没有点亮显示器。 同样，preview下的23.09虽然点亮了显示器，但是无法识别网卡，连接不了wifi 于是去develp下的23.09镜像点亮了显示器也连接到了wifi，但是存在偶尔的抽风问题——重启后wifi又没了，得不断重启尝试。 所以，综上所述，是谁的问题？\n我觉得八成原因在镜像，因为换了镜像后问题得到解决，不过如果细心的读者会发现我们对于23.03镜像并没有进行多次重启来检测是不是网卡的问题（其实我也重启了两次不过都没成功），所以还有两成原因在于WIFI网卡——看的这里你是否觉得这也太不“技术”了，一个技术博客怎么能够有点玄学成分了。\n哈哈，你的批评是对的，在这里我确实不严谨了，没有程序员深挖精神了，私密马赛！\n反思 最后的最后，我不禁想问自己一个问题：操作系统镜像和架构有关系吗？\n那这个问题答案也很简单，一定是有关系的，操作系统镜像必须与CPU指令集兼容，这也是为什么操作系统镜像页面有专门为RISC-V所设计的镜像页面。\n那么关于如何烧录OpenEuler for RISCV镜像到LiCheePi上这一主题就告一段落了，还是有点流水账了，anyway，博客永远是给自己看的。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
+  "wordCount" : "2633",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2024-11-21T14:42:19+08:00",
+  "dateModified": "2024-11-21T14:42:19+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/003li_riscv01/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      玩转RISCV开发板01-烧录OpenEuler国产镜像
+    </h1>
+    <div class="post-meta"><span title='2024-11-21 14:42:19 +0800 CST'>十一月 21, 2024</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%9c%ac%e6%ac%a1%e5%ae%9e%e9%aa%8c%e7%8e%af%e5%a2%83" aria-label="本次实验环境">本次实验环境</a></li>
+                <li>
+                    <a href="#%e5%ae%9e%e9%aa%8c%e6%ad%a5%e9%aa%a4" aria-label="实验步骤">实验步骤</a><ul>
+                        
+                <li>
+                    <a href="#1%e4%b8%8b%e8%bd%bdfastboot" aria-label="1.下载fastboot">1.下载fastboot</a></li>
+                <li>
+                    <a href="#2%e8%bf%9e%e6%8e%a5%e5%bc%80%e5%8f%91%e6%9d%bf%e4%b8%8e%e5%ae%bf%e4%b8%bb%e6%9c%ba" aria-label="2.连接开发板与宿主机">2.连接开发板与宿主机</a></li>
+                <li>
+                    <a href="#3%e4%b8%8b%e8%bd%bd%e6%89%80%e9%9c%80%e7%9a%84%e9%95%9c%e5%83%8f%e6%96%87%e4%bb%b6" aria-label="3.下载所需的镜像文件">3.下载所需的镜像文件</a></li>
+                <li>
+                    <a href="#4%e8%bf%9b%e8%a1%8c%e7%83%a7%e5%bd%95" aria-label="4.进行烧录">4.进行烧录</a></li>
+                <li>
+                    <a href="#5%e9%aa%8c%e8%af%81" aria-label="5.验证">5.验证</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e8%a7%a3%e5%86%b3%e6%98%be%e7%a4%ba%e5%99%a8%e4%b8%8d%e4%ba%ae%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="解决显示器不亮的问题">解决显示器不亮的问题</a><ul>
+                        
+                <li>
+                    <a href="#%e5%af%b9%e7%85%a7%e5%ae%9e%e9%aa%8c1-%e6%8d%a2%e9%95%9c%e5%83%8f%e7%89%88%e6%9c%ac" aria-label="对照实验1-换镜像版本">对照实验1-换镜像版本</a></li>
+                <li>
+                    <a href="#%e6%88%90%e5%8a%9f%e8%a7%a3%e5%86%b3" aria-label="成功解决">成功解决</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%90%8e%e7%bb%ad%e9%97%ae%e9%a2%98" aria-label="后续问题">后续问题</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93%e4%b8%8e%e5%8f%8d%e6%80%9d" aria-label="总结与反思">总结与反思</a><ul>
+                        
+                <li>
+                    <a href="#%e9%95%9c%e5%83%8for%e7%bd%91%e5%8d%a1%e9%97%ae%e9%a2%98" aria-label="镜像or网卡问题">镜像or网卡问题</a></li>
+                <li>
+                    <a href="#%e5%8f%8d%e6%80%9d" aria-label="反思">反思</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="本次实验环境">本次实验环境<a hidden class="anchor" aria-hidden="true" href="#本次实验环境">#</a></h2>
+<ul>
+<li>宿主机:macbook air M2</li>
+<li>LiCheePi开发板，配置为16+128</li>
+<li>一根USB-C线</li>
+<li>一个拓展坞，键鼠，显示器</li>
+<li>烧录镜像为openEuler/embedded_img/riscv64/lpi4a/</li>
+</ul>
+<h2 id="实验步骤">实验步骤<a hidden class="anchor" aria-hidden="true" href="#实验步骤">#</a></h2>
+<h3 id="1下载fastboot">1.下载fastboot<a hidden class="anchor" aria-hidden="true" href="#1下载fastboot">#</a></h3>
+<p>这里使用homebrew快捷安装</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">brew install android-platform-tools
+</span></span></code></pre></div><h3 id="2连接开发板与宿主机">2.连接开发板与宿主机<a hidden class="anchor" aria-hidden="true" href="#2连接开发板与宿主机">#</a></h3>
+<p>先长按开发板上的BOOT按钮，再将USB线插入到宿主机上（拓展坞上），注意这里的先后次序。这一步是为了让开发板进入USB烧录模式。</p>
+<p>进入终端，运行命令检查fastboot是否识别到了当前连接的开发板</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">fastboot devices
+</span></span></code></pre></div><p>注意是devices不是device,结果如下</p>
+<p><img loading="lazy" src="/img/riscv/fastboot.png"></p>
+<p>这里我也没弄清楚为什么是一堆问号，不过只要能够检测到设备就好。（注意本教程目前只测试了Macos下的操作）</p>
+<h3 id="3下载所需的镜像文件">3.下载所需的镜像文件<a hidden class="anchor" aria-hidden="true" href="#3下载所需的镜像文件">#</a></h3>
+<p>来到<a href="https://repo.openeuler.org/openEuler-24.03-LTS/embedded_img/riscv64/lpi4a/">镜像下载网站</a>选择以下三种文件进行下载：</p>
+<ul>
+<li>u-boot文件用于<strong>引导加载程序</strong>——系统会先启动一个小型的引导加载程序（SPL），它负责加载完整的 U-Boot 镜像</li>
+<li>base-boot.ext4.zst文件用于作为<strong>系统的启动分区</strong>——包括启动所需的文件，比如 Linux 内核、初始 RAM 磁盘（initramfs）、设备树（device tree）</li>
+<li>base-root.ext4.zst文件用于作为<strong>根文件系统</strong>——提供操作系统所需的文件</li>
+</ul>
+<p>如果你安装过实打实的Linux系统（比如在windows下的双系统）的话你就会对这几个文件很熟悉。</p>
+<p>值得注意的是，其使用Zst格式压缩，所以在真正使用的时候需要提前进行解压，如果忘了解压，直接操作你就会遇到这个问题</p>
+<p><img loading="lazy" src="/img/riscv/fasterr.png"></p>
+<p>哈哈，文件格式不对当然无法成功了。</p>
+<p>故我们需要对zst格式结尾的文件进行解压</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">zstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst
+</span></span><span class="line"><span class="cl">zstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst
+</span></span></code></pre></div><h3 id="4进行烧录">4.进行烧录<a hidden class="anchor" aria-hidden="true" href="#4进行烧录">#</a></h3>
+<p>首先进入上一步下载镜像所在的目录下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">fastboot flash ram u-boot-with-spl-lpi4a-16g.bin
+</span></span><span class="line"><span class="cl">fastboot reboot
+</span></span><span class="line"><span class="cl"><span class="c1"># wait five seconds</span>
+</span></span><span class="line"><span class="cl">fastboot flash uboot u-boot-with-spl-lpi4a-16g.bin
+</span></span><span class="line"><span class="cl">fastboot flash boot openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4
+</span></span><span class="line"><span class="cl">fastboot flash root openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4
+</span></span></code></pre></div><p>最终如果成功你会得到一堆OKAY，这里放一张我的运行截图</p>
+<p><img loading="lazy" src="/img/riscv/fastsuc.png"></p>
+<h3 id="5验证">5.验证<a hidden class="anchor" aria-hidden="true" href="#5验证">#</a></h3>
+<p>将开发板与宿主机的连接断开，将其连接到准备好的显示器上并准备好键鼠，等待其成功运行。
+好的，成功发现一个神奇的问题，鼠标键盘也亮了，风扇也转起来了，结果显示器不亮？不亮？不亮？为什么！！！</p>
+<p><img loading="lazy" src="/img/ys/%E8%8D%AF%E6%B0%B4%E6%8C%A5%E6%8B%B3.webp"></p>
+<p>好，我先去google，来到官方文档烧录镜像的评论区发现一个遇到和我同样问题的朋友</p>
+<p><img loading="lazy" src="/img/riscv/q1.png"></p>
+<h2 id="解决显示器不亮的问题">解决显示器不亮的问题<a hidden class="anchor" aria-hidden="true" href="#解决显示器不亮的问题">#</a></h2>
+<p>遇到这种问题，google并不能得到很相关的解决方案，这也是我在日常工作时觉得需要使用AI的场景之一。所以我得去询问ChatGPT让他针对于我这种问题给出<strong>解决思路</strong>。</p>
+<p>即使镜像烧录是成功的，为了保险起见，我们先去利用官网的SHA256文件验证一下文件是否损坏。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst.sha256sum
+</span></span><span class="line"><span class="cl">sha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst.sha256sum
+</span></span></code></pre></div><p>结果都显示OK,那么镜像文件是对的。</p>
+<p>在检查ChatGPT给出的思路之前，我认为还是先来一遍对照实验，因为在烧录镜像之前自带的Debian是能够成功点亮显示器的，所以我们换一下镜像的版本来进行对照。</p>
+<h3 id="对照实验1-换镜像版本">对照实验1-换镜像版本<a hidden class="anchor" aria-hidden="true" href="#对照实验1-换镜像版本">#</a></h3>
+<p>换成兴趣小组的<a href="https://mirror.iscas.ac.cn/openeuler-sig-riscv/openEuler-RISC-V/preview/openEuler-23.03-V1-riscv64/lpi4a/">镜像文件</a>23.03再来一遍</p>
+<p>命令与上面相同，其中<code>u-boot-with-spl-lpi4a-16g.bin</code>这个文件是可以复用的。</p>
+<p>嘿，您猜怎么着，还是点不亮！</p>
+<p><img loading="lazy" src="/img/ys/%E8%8D%AF%E6%B0%B4%E6%8C%A5%E6%8B%B3.webp"></p>
+<p>那再换成<a href="https://mirror.iscas.ac.cn/openeuler-sig-riscv/openEuler-RISC-V/preview/openEuler-23.09-V1-riscv64/lpi4a/">preview版本的23.09</a>再来一遍，这次点亮了！并且给出了一个图形化的界面！正当我准备大展拳脚，以为自己终于找到了问题的所在时，又出差错了！</p>
+<p><strong>没有wifi界面，无法连接wifi</strong>，使用nmcli命令查看网络状态</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nmcli general status
+</span></span><span class="line"><span class="cl">nmcli device status
+</span></span></code></pre></div><p>显示WIFI是enabled,==WIFI-HW是missing的==，意味着WIFI硬件似乎没有被正确识别；只有本地环回地址连接成功了，其他都处于unmanaged状态。</p>
+<p>我在其他的地方也找不到连接wifi的界面，所以这又是什么问题呢？（个人目前猜测还是镜像不稳定，因为Debian操作系统可以连接wifi）</p>
+<p>最终，我去镜像文件中的devel部分找到<a href="https://mirror.iscas.ac.cn/openeuler-sig-riscv/openEuler-RISC-V/devel/20240122/v0.1/lpi4a/">23.09的镜像</a>进行测试，结果成功了！</p>
+<h3 id="成功解决">成功解决<a hidden class="anchor" aria-hidden="true" href="#成功解决">#</a></h3>
+<p>如上面所说，找到链接中的镜像后进行再次烧录,终于可以点亮屏幕（如果遇到键鼠没反应重启开发板即可），进入了一个黑色的命令行界面，接着我们要进行登录。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">用户名:openeuler
+</span></span><span class="line"><span class="cl">密码:openEuler12#$
+</span></span></code></pre></div><p>登录后我们首先需要连网，使用以下命令。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 检查网络状态，去报WIFI-HW,WIFI是enabled</span>
+</span></span><span class="line"><span class="cl">nmcli general status
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看端口和网络，确保有wlan端口</span>
+</span></span><span class="line"><span class="cl">ip a
+</span></span><span class="line"><span class="cl"><span class="c1"># 显示可用的wifi</span>
+</span></span><span class="line"><span class="cl">nmcli dev wifi
+</span></span><span class="line"><span class="cl"><span class="c1"># 连接具体wifi，其中SSID替换为wifi名，PASSWORD替换为密码</span>
+</span></span><span class="line"><span class="cl">sudo nmcli dev wifi connect SSID password PASSWORD
+</span></span><span class="line"><span class="cl"><span class="c1"># 连接成功后再检查STATE是否为connected</span>
+</span></span><span class="line"><span class="cl">nmcli general status
+</span></span></code></pre></div><p>至此，成功连接wifi，烧录镜像这一步骤到此结束。</p>
+<h2 id="后续问题">后续问题<a hidden class="anchor" aria-hidden="true" href="#后续问题">#</a></h2>
+<p>看到这里，还有惊喜！还没完！我重启了一次开发板之后，发现wifi又没了，瞬间尴尬在原地，到底是镜像和网卡你两谁的问题!?</p>
+<p><img loading="lazy" src="/img/shu/%E5%BC%80%E6%9E%AA.webp"></p>
+<p>又经历了两次重启，wifi又好了，所以，请看下面总结。</p>
+<h2 id="总结与反思">总结与反思<a hidden class="anchor" aria-hidden="true" href="#总结与反思">#</a></h2>
+<p>这里总结一下为LicheePI烧录OpenEuler镜像遇到的问题。</p>
+<h3 id="镜像or网卡问题">镜像or网卡问题<a hidden class="anchor" aria-hidden="true" href="#镜像or网卡问题">#</a></h3>
+<p>在还没烧录的时候，板子自带的Debian操作系统一切正常。接着烧录Openeuler for riscv镜像时出现了一系列的问题：</p>
+<ul>
+<li>先遇到官方最新的<strong>24.03LTS</strong>版本的专门为LiCheePI准备的镜像烧录后无法打开显示器的问题。</li>
+<li>在SIG兴趣小组提供的链接中，preview下的镜像23.03还是没有点亮显示器。</li>
+<li>同样，preview下的23.09虽然点亮了显示器，但是无法识别网卡，连接不了wifi</li>
+<li>于是去develp下的23.09镜像点亮了显示器也连接到了wifi，但是存在偶尔的抽风问题——重启后wifi又没了，得不断重启尝试。</li>
+</ul>
+<p>所以，综上所述，是谁的问题？</p>
+<p>我觉得八成原因在镜像，因为换了镜像后问题得到解决，不过如果细心的读者会发现我们对于23.03镜像并没有进行多次重启来检测是不是网卡的问题（其实我也重启了两次不过都没成功），所以还有两成原因在于WIFI网卡——看的这里你是否觉得这也太不“技术”了，一个技术博客怎么能够有点玄学成分了。</p>
+<p>哈哈，你的批评是对的，在这里我确实不严谨了，没有程序员深挖精神了，私密马赛！</p>
+<h3 id="反思">反思<a hidden class="anchor" aria-hidden="true" href="#反思">#</a></h3>
+<p>最后的最后，我不禁想问自己一个问题：操作系统镜像和架构有关系吗？</p>
+<p>那这个问题答案也很简单，一定是有关系的，操作系统镜像必须与CPU指令集兼容，这也是为什么操作系统镜像页面有专门为RISC-V所设计的镜像页面。</p>
+<p>那么关于如何烧录OpenEuler for RISCV镜像到LiCheePi上这一主题就告一段落了，还是有点流水账了，anyway，博客永远是给自己看的。</p>
+<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/risc-v/">RISC-V</a></li>
+      <li><a href="http://localhost:1313/tags/openeuler/">OpenEuler</a></li>
+      <li><a href="http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/">镜像烧录</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/004risc-v_deployment/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>玩转RISCV开发板02-配置好容器化环境</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/002docker_volume/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>玩转Docker系列——数据持久化</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
+  <audio id="ltx-music-audio" preload="metadata"></audio>
+  <div class="ltx-drag-handle" data-role="drag-handle" title="上下拖动调整位置"></div>
+  <div class="ltx-music-header">
+    <div class="ltx-music-visual">
+      <div class="ltx-disc" data-role="disc" aria-hidden="true">
+        <img data-role="cover" alt="" loading="lazy" decoding="async">
+        <div class="ltx-disc-center"></div>
+      </div>
+    </div>
+    <div class="ltx-music-meta">
+      <span class="ltx-music-title" data-role="title"></span>
+      <span class="ltx-music-artist" data-role="artist"></span>
+    </div>
+    <button type="button" class="ltx-music-hide" data-action="collapse" aria-label="隐藏播放器">&#215;</button>
+  </div>
+  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
+    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
+  </div>
+  <div class="ltx-music-time">
+    <span data-role="current">0:00</span>
+    <span data-role="total">--:--</span>
+  </div>
+  <div class="ltx-music-controls">
+    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
+    <button type="button" data-action="toggle" aria-label="播放或暂停">
+      <span data-icon="play">▶</span>
+      <span data-icon="pause">⏸</span>
+    </button>
+    <button type="button" data-action="next" aria-label="下一首">⏭</button>
+    <button type="button" data-action="mute" aria-label="静音或取消静音">
+      <span data-icon="unmuted">🔊</span>
+      <span data-icon="muted">🔇</span>
+    </button>
+  </div>
+  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
+</div>
+<button type="button" class="ltx-music-fab" id="ltx-music-fab" aria-label="显示音乐播放器">&#9835;</button>
+<script>
+  window.LTX_MUSIC_CONFIG = {"autoplay":true,"defaultCover":"","loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
+  (function () {
+    const config = window.LTX_MUSIC_CONFIG || {};
+    if (!config.tracks || !config.tracks.length) {
+      return;
+    }
+
+    const player = document.getElementById('ltx-music-player');
+    const audio = player.querySelector('audio');
+    const titleEl = player.querySelector('[data-role="title"]');
+    const artistEl = player.querySelector('[data-role="artist"]');
+    const progressEl = player.querySelector('[data-role="progress"]');
+    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
+    const currentTimeEl = player.querySelector('[data-role="current"]');
+    const totalTimeEl = player.querySelector('[data-role="total"]');
+    const tipEl = player.querySelector('[data-role="tip"]');
+    const coverEl = player.querySelector('[data-role="cover"]');
+
+    const toggleBtn = player.querySelector('[data-action="toggle"]');
+    const prevBtn = player.querySelector('[data-action="prev"]');
+    const nextBtn = player.querySelector('[data-action="next"]');
+    const muteBtn = player.querySelector('[data-action="mute"]');
+    const collapseBtn = player.querySelector('[data-action="collapse"]');
+    const dragHandle = player.querySelector('[data-role="drag-handle"]');
+    const fabButton = document.getElementById('ltx-music-fab');
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const formatTime = (seconds) => {
+      if (!Number.isFinite(seconds)) {
+        return '--:--';
+      }
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
+    const minOffset = -120;
+    const maxOffset = 220;
+    const hideThreshold = 180;
+    const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+
+    const state = {
+      index: 0,
+      tracks: config.tracks,
+      autoplay: config.autoplay !== false,
+      loopPlaylist: config.loopPlaylist !== false,
+      offset: 0,
+      collapsed: false,
+    };
+
+    const setOffset = (value) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    };
+
+    const setCollapsed = (value) => {
+      const collapsed = Boolean(value);
+      state.collapsed = collapsed;
+      player.classList.toggle('ltx-collapsed', collapsed);
+      if (collapsed) {
+        player.classList.remove('ltx-dragging');
+        state.offset = 0;
+        player.style.removeProperty('--ltx-offset');
+        if (fabButton) {
+          fabButton.classList.add('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'false');
+          fabButton.tabIndex = 0;
+        }
+      } else {
+        setOffset(0);
+        if (fabButton) {
+          fabButton.classList.remove('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'true');
+          fabButton.tabIndex = -1;
+        }
+      }
+    };
+
+    const updateMuteClass = () => {
+      const muted = audio.muted || audio.volume === 0;
+      player.classList.toggle('ltx-muted', muted);
+    };
+
+    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    updateMuteClass();
+    setCollapsed(false);
+
+    const updateProgress = () => {
+      const duration = audio.duration || 0;
+      const current = audio.currentTime || 0;
+      const percentage = duration ? (current / duration) * 100 : 0;
+      progressFillEl.style.width = `${percentage}%`;
+      currentTimeEl.textContent = formatTime(current);
+      totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const setTrack = (nextIndex, options = {}) => {
+      const total = state.tracks.length;
+      state.index = ((nextIndex % total) + total) % total;
+      const track = state.tracks[state.index];
+      if (!track || !track.file) {
+        console.warn('LTX music player: 音频文件缺失', track);
+        tipEl.textContent = '音频文件缺失，请检查配置';
+        return;
+      }
+      const cover = track.cover || config.defaultCover || '';
+      if (coverEl) {
+        if (cover) {
+          coverEl.src = cover;
+          coverEl.alt = track.title ? `${track.title} 封面` : '音乐封面';
+          player.classList.add('ltx-has-cover');
+        } else {
+          coverEl.removeAttribute('src');
+          coverEl.alt = '';
+          player.classList.remove('ltx-has-cover');
+        }
+      }
+      titleEl.textContent = track.title || `Track ${state.index + 1}`;
+      artistEl.textContent = track.artist || '';
+      audio.src = track.file;
+      player.dataset.trackIndex = state.index;
+      tipEl.textContent = '';
+      player.classList.remove('ltx-autoplay-blocked');
+      updateProgress();
+      if (options.play) {
+        attemptPlay();
+      }
+    };
+
+    const attemptPlay = () => {
+      audio.play().then(() => {
+        player.classList.remove('ltx-autoplay-blocked');
+        tipEl.textContent = '';
+      }).catch(() => {
+        player.classList.add('ltx-autoplay-blocked');
+        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
+      });
+    };
+
+    const playNext = (autoTriggered = false) => {
+      const shouldPlay = !audio.paused || autoTriggered;
+      const nextIndex = state.index + 1;
+      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
+        audio.currentTime = audio.duration || 0;
+        audio.pause();
+        return;
+      }
+      setTrack(nextIndex, { play: shouldPlay });
+    };
+
+    const playPrev = () => {
+      const shouldPlay = !audio.paused;
+      setTrack(state.index - 1, { play: shouldPlay });
+    };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', () => setCollapsed(true));
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', () => setCollapsed(false));
+      fabButton.setAttribute('aria-hidden', 'true');
+      fabButton.tabIndex = -1;
+    }
+
+    if (dragHandle) {
+      dragHandle.style.touchAction = 'none';
+      dragHandle.addEventListener('pointerdown', (event) => {
+        if (state.collapsed) {
+          return;
+        }
+        dragState.active = true;
+        dragState.pointerId = event.pointerId;
+        dragState.startY = event.clientY;
+        dragState.startOffset = state.offset;
+        if (dragHandle.setPointerCapture) {
+          try {
+            dragHandle.setPointerCapture(event.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        player.classList.add('ltx-dragging');
+      });
+
+      dragHandle.addEventListener('pointermove', (event) => {
+        if (!dragState.active) {
+          return;
+        }
+        const delta = event.clientY - dragState.startY;
+        setOffset(dragState.startOffset + delta);
+      });
+
+      const finishDrag = () => {
+        if (!dragState.active) {
+          return;
+        }
+        if (dragState.pointerId !== null && dragHandle.releasePointerCapture) {
+          try {
+            dragHandle.releasePointerCapture(dragState.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        dragState.active = false;
+        dragState.pointerId = null;
+        player.classList.remove('ltx-dragging');
+        if (state.offset > hideThreshold) {
+          setCollapsed(true);
+        } else {
+          setOffset(state.offset);
+        }
+      };
+
+      ['pointerup', 'pointercancel'].forEach((eventName) => {
+        dragHandle.addEventListener(eventName, finishDrag);
+      });
+
+      dragHandle.addEventListener('pointerleave', () => {
+        if (!dragState.active) {
+          return;
+        }
+        finishDrag();
+      });
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        attemptPlay();
+      } else {
+        audio.pause();
+      }
+    });
+
+    prevBtn.addEventListener('click', playPrev);
+    nextBtn.addEventListener('click', () => playNext(false));
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      updateMuteClass();
+    });
+
+    progressEl.addEventListener('click', (event) => {
+      const rect = progressEl.getBoundingClientRect();
+      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = ratio * audio.duration;
+      }
+    });
+
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('loadedmetadata', updateProgress);
+
+    audio.addEventListener('play', () => {
+      player.classList.add('ltx-playing');
+      player.classList.remove('ltx-autoplay-blocked');
+      tipEl.textContent = '';
+    });
+
+    audio.addEventListener('pause', () => {
+      player.classList.remove('ltx-playing');
+    });
+
+    audio.addEventListener('ended', () => {
+      playNext(true);
+    });
+
+    audio.addEventListener('volumechange', updateMuteClass);
+
+    setTrack(0, { play: state.autoplay });
+  })();
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

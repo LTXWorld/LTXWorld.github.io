@@ -1,19 +1,50 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>硬核技术 on LTX's Blog</title><link>https://LTXWorld.github.io/categories/%E7%A1%AC%E6%A0%B8%E6%8A%80%E6%9C%AF/</link><description>Recent content in 硬核技术 on LTX's Blog</description><image><title>LTX's Blog</title><url>https://LTXWorld.github.io/images/papermod-cover.png</url><link>https://LTXWorld.github.io/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Fri, 29 Nov 2024 21:07:21 +0800</lastBuildDate><atom:link href="https://LTXWorld.github.io/categories/%E7%A1%AC%E6%A0%B8%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml"/><item><title>玩转RISCV开发板02-配置好容器化环境</title><link>https://LTXWorld.github.io/posts/004risc-v_deployment/</link><pubDate>Fri, 29 Nov 2024 21:07:21 +0800</pubDate><guid>https://LTXWorld.github.io/posts/004risc-v_deployment/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
-&lt;p>这里照例列出所用设备配置&lt;/p>
-&lt;ul>
-&lt;li>macbookair&lt;/li>
-&lt;li>LicheePi4A,16+128&lt;/li>
-&lt;/ul>
-&lt;p>&lt;img loading="lazy" src="https://LTXWorld.github.io/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg">&lt;/p>
-&lt;h2 id="基础配置">基础配置&lt;/h2>
-&lt;p>如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）&lt;/p></description></item><item><title>玩转RISCV开发板01-烧录OpenEuler国产镜像</title><link>https://LTXWorld.github.io/posts/003li_riscv01/</link><pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate><guid>https://LTXWorld.github.io/posts/003li_riscv01/</guid><description>&lt;h2 id="本次实验环境">本次实验环境&lt;/h2>
-&lt;ul>
-&lt;li>宿主机:macbook air M2&lt;/li>
-&lt;li>LiCheePi开发板，配置为16+128&lt;/li>
-&lt;li>一根USB-C线&lt;/li>
-&lt;li>一个拓展坞，键鼠，显示器&lt;/li>
-&lt;li>烧录镜像为openEuler/embedded_img/riscv64/lpi4a/&lt;/li>
-&lt;/ul>
-&lt;h2 id="实验步骤">实验步骤&lt;/h2>
-&lt;h3 id="1下载fastboot">1.下载fastboot&lt;/h3>
-&lt;p>这里使用homebrew快捷安装&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>硬核技术 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/categories/%E7%A1%AC%E6%A0%B8%E6%8A%80%E6%9C%AF/</link>
+    <description>Recent content in 硬核技术 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Fri, 29 Nov 2024 21:07:21 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/%E7%A1%AC%E6%A0%B8%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>玩转RISCV开发板02-配置好容器化环境</title>
+      <link>http://localhost:1313/posts/004risc-v_deployment/</link>
+      <pubDate>Fri, 29 Nov 2024 21:07:21 +0800</pubDate>
+      <guid>http://localhost:1313/posts/004risc-v_deployment/</guid>
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;这里照例列出所用设备配置&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;macbookair&lt;/li&gt;
+&lt;li&gt;LicheePi4A,16+128&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;基础配置&#34;&gt;基础配置&lt;/h2&gt;
+&lt;p&gt;如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>玩转RISCV开发板01-烧录OpenEuler国产镜像</title>
+      <link>http://localhost:1313/posts/003li_riscv01/</link>
+      <pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate>
+      <guid>http://localhost:1313/posts/003li_riscv01/</guid>
+      <description>&lt;h2 id=&#34;本次实验环境&#34;&gt;本次实验环境&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;宿主机:macbook air M2&lt;/li&gt;
+&lt;li&gt;LiCheePi开发板，配置为16+128&lt;/li&gt;
+&lt;li&gt;一根USB-C线&lt;/li&gt;
+&lt;li&gt;一个拓展坞，键鼠，显示器&lt;/li&gt;
+&lt;li&gt;烧录镜像为openEuler/embedded_img/riscv64/lpi4a/&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;实验步骤&#34;&gt;实验步骤&lt;/h2&gt;
+&lt;h3 id=&#34;1下载fastboot&#34;&gt;1.下载fastboot&lt;/h3&gt;
+&lt;p&gt;这里使用homebrew快捷安装&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

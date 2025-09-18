@@ -1,11 +1,35 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>OpenEuler on LTX's Blog</title><link>https://LTXWorld.github.io/tags/openeuler/</link><description>Recent content in OpenEuler on LTX's Blog</description><image><title>LTX's Blog</title><url>https://LTXWorld.github.io/images/papermod-cover.png</url><link>https://LTXWorld.github.io/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Thu, 21 Nov 2024 14:42:19 +0800</lastBuildDate><atom:link href="https://LTXWorld.github.io/tags/openeuler/index.xml" rel="self" type="application/rss+xml"/><item><title>玩转RISCV开发板01-烧录OpenEuler国产镜像</title><link>https://LTXWorld.github.io/posts/003li_riscv01/</link><pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate><guid>https://LTXWorld.github.io/posts/003li_riscv01/</guid><description>&lt;h2 id="本次实验环境">本次实验环境&lt;/h2>
-&lt;ul>
-&lt;li>宿主机:macbook air M2&lt;/li>
-&lt;li>LiCheePi开发板，配置为16+128&lt;/li>
-&lt;li>一根USB-C线&lt;/li>
-&lt;li>一个拓展坞，键鼠，显示器&lt;/li>
-&lt;li>烧录镜像为openEuler/embedded_img/riscv64/lpi4a/&lt;/li>
-&lt;/ul>
-&lt;h2 id="实验步骤">实验步骤&lt;/h2>
-&lt;h3 id="1下载fastboot">1.下载fastboot&lt;/h3>
-&lt;p>这里使用homebrew快捷安装&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>OpenEuler on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/openeuler/</link>
+    <description>Recent content in OpenEuler on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Thu, 21 Nov 2024 14:42:19 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/openeuler/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>玩转RISCV开发板01-烧录OpenEuler国产镜像</title>
+      <link>http://localhost:1313/posts/003li_riscv01/</link>
+      <pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate>
+      <guid>http://localhost:1313/posts/003li_riscv01/</guid>
+      <description>&lt;h2 id=&#34;本次实验环境&#34;&gt;本次实验环境&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;宿主机:macbook air M2&lt;/li&gt;
+&lt;li&gt;LiCheePi开发板，配置为16+128&lt;/li&gt;
+&lt;li&gt;一根USB-C线&lt;/li&gt;
+&lt;li&gt;一个拓展坞，键鼠，显示器&lt;/li&gt;
+&lt;li&gt;烧录镜像为openEuler/embedded_img/riscv64/lpi4a/&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;实验步骤&#34;&gt;实验步骤&lt;/h2&gt;
+&lt;h3 id=&#34;1下载fastboot&#34;&gt;1.下载fastboot&lt;/h3&gt;
+&lt;p&gt;这里使用homebrew快捷安装&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

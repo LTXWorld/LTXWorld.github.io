@@ -1,98 +1,936 @@
-<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>DebugEP02——MacOs系统升级与Homebrew的关系 | LTX's Blog</title>
-<meta name=keywords content="Homebrew,Macos,软件包管理"><meta name=description content="引子
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>DebugEP02——MacOs系统升级与Homebrew的关系 | LTX&#39;s Blog</title>
+<meta name="keywords" content="Homebrew, Macos, 软件包管理">
+<meta name="description" content="引子
 某天我想要在我的macos上使用homebrew安装riscv编译工具链为了交叉编译一些镜像文件。
 brew tap riscv-software-src/riscv
 brew install riscv-tools
-即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/><link crossorigin=anonymous href=/assets/css/stylesheet.c98266582198d1e5ef6529482f54b208422b9b1a9eeac13f1e3df51f4f9bfbed.css integrity="sha256-yYJmWCGY0eXvZSlIL1SyCEIrmxqe6sE/Hj31H0+b++0=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="DebugEP02——MacOs系统升级与Homebrew的关系"><meta property="og:description" content="引子 某天我想要在我的macos上使用homebrew安装riscv编译工具链为了交叉编译一些镜像文件。
-brew tap riscv-software-src/riscv brew install riscv-tools 即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-03T17:07:56+08:00"><meta property="article:modified_time" content="2025-04-03T17:07:56+08:00"><meta property="article:tag" content="Homebrew"><meta property="article:tag" content="Macos"><meta property="article:tag" content="软件包管理"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="DebugEP02——MacOs系统升级与Homebrew的关系"><meta name=twitter:description content="引子
+即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="DebugEP02——MacOs系统升级与Homebrew的关系">
+  <meta property="og:description" content="引子 某天我想要在我的macos上使用homebrew安装riscv编译工具链为了交叉编译一些镜像文件。
+brew tap riscv-software-src/riscv brew install riscv-tools 即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-03T17:07:56+08:00">
+    <meta property="article:modified_time" content="2025-04-03T17:07:56+08:00">
+    <meta property="article:tag" content="Homebrew">
+    <meta property="article:tag" content="Macos">
+    <meta property="article:tag" content="软件包管理">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="DebugEP02——MacOs系统升级与Homebrew的关系">
+<meta name="twitter:description" content="引子
 某天我想要在我的macos上使用homebrew安装riscv编译工具链为了交叉编译一些镜像文件。
 brew tap riscv-software-src/riscv
 brew install riscv-tools
-即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"DebugEP02——MacOs系统升级与Homebrew的关系","item":"https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"DebugEP02——MacOs系统升级与Homebrew的关系","name":"DebugEP02——MacOs系统升级与Homebrew的关系","description":"引子 某天我想要在我的macos上使用homebrew安装riscv编译工具链为了交叉编译一些镜像文件。\nbrew tap riscv-software-src/riscv brew install riscv-tools 即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。\n","keywords":["Homebrew","Macos","软件包管理"],"articleBody":"引子 某天我想要在我的macos上使用homebrew安装riscv编译工具链为了交叉编译一些镜像文件。\nbrew tap riscv-software-src/riscv brew install riscv-tools 即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。\n所以这一顿操作结束后我就在思考，为什么？\nHomebrew简介 还记得大三第一次使用mac的时候，我觉得这不就是一个笔记本形态的ipad吗？下载软件也是从AppStore或者浏览器搜到的DMG文件，直到某天我在下载某个Github上的软件时看到有一段专门为macos写的命令brew install xxx，我才知道原来Homebrew才是macos下载东西的利器！\n如果您没有使用macos，或许您没有听过Homebrew，不过简单地类比就是我们在linux下使用的apt，dnf，yum等包管理器。如果您了解linux的包管理器，apt和dnf在执行安装时都是直接安装二进制文件，而Homebrew采取了两种方式一种是安装二进制文件，一种是本地编译构建，因为其本质是一个用Ruby编写的Git仓库项目。\n形象地描述一下Homebrew的执行原理——Homebrew这个软件安装助手其自身叫Brew,他要为我们安装软件时需要找到软件安装说明书即Formula软件安装脚本（用ruby编写），诸多的软件对应着诸多的安装脚本，我们使用Core这样一个Git仓库来保存这些脚本。当安装命令下达时，管家查找本地的Core仓库，寻找对应的脚本，找到后查看脚本中是否设置了对应的Bottle(二进制文件)链接，如果有则直接下载这个Bottle，如果没有，则利用安装脚本中指定的链接下载源码进行本地构建。\n让我们根据清华源中给出的安装步骤再来看看Homebrew的执行原理。\nexport HOMEBREW_BREW_GIT_REMOTE=\"https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git\" export HOMEBREW_CORE_GIT_REMOTE=\"https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git\" export HOMEBREW_INSTALL_FROM_API=1 echo 'export HOMEBREW_API_DOMAIN=\"https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api\"' \u003e\u003e ~/.zprofile echo 'export HOMEBREW_BOTTLE_DOMAIN=\"https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles\"' \u003e\u003e ~/.zprofile export HOMEBREW_API_DOMAIN=\"https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api\" export HOMEBREW_BOTTLE_DOMAIN=\"https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles\" pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple # 安装 git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install /bin/bash brew-install/install.sh rm -rf brew-install # 加入环境变量 test -r ~/.zprofile \u0026\u0026 echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' \u003e\u003e ~/.zprofile 在这里我们设置了Homebrew_Brew和Homebrew_Core的地址使用清华的镜像仓库，这样在使用Core仓库时就不会遇到网络问题；设置了API_DOMAIN和BOTTLE_DOMAIN的镜像地址，并且将FROM_API设置为1，意味着开启了API模式——接着上面的解释，之前Homebrew必须将Core仓库全部Clone到本地，每次更新时也会更新极为庞大的仓库，所以自2021年后，推出的API安装模式，不再需要Clone Core仓库，而是通过API访问https://api.homebrew.sh/找到指定的JSON文件，brew管家会解析这个JSON文件知道其Bottole在哪，用哪个架构，版本号是多少等各种信息。\n最终下载好的二进制包默认在Cellar目录下，可执行文件会被设置一个软链接，让我们在终端可以直接运行此软件。最后补充一点，Homebrew对比apt,dnf来说更像是一个用户的软件助手，而非系统管家，因为其不需要root权限。\n所以到这里对于Homebrew我们就有了一个大致的了解，后续我可能会对比一下这些包管理工具的异同，敬请期待。\n为什么需要升级Xcode 首先解释为什么需要Xcode,前面说到，如果没有Bottle,Homebrew会进行本地构建，这里更关键的是，Homebrew本身不处理编译过程，而是依赖于系统工具链，对于macos来说就是Xcode的clang和make，通过xcode-select --install安装。\n我的场景是要安装riscv的编译工具链，因为使用了brew tap，添加了第三方的formula仓库，会去Github上clone这个仓库，所以其一定会触发本地编译构建过程。\n其次为什么要升级，执行brew doctor这个诊断指令，系统会提示你版本过低。\nError: Your Command Line Tools are too outdated. Please update them via Software Update or `xcode-select --install`. 并且Xcode提供的CLT工具链会调用macos的系统库，所以我们必须要升级macos的系统。\n总结Homebrew操作 写到这里，我对Homebrew的理解已经比较清晰了，所以同时来总结一下其可能的操作流程。\n# 查看基本信息 brew info # 查看依赖项 brew deps brew deps --tree # brew install # 如果需要tap指定第三方仓库,然后再安装 brew tap # 列出安装详细过程 brew install --verbose # 列出已安装的 brew list --version # 检查配置操作和潜在问题 brew doctor # 更新brew本体和formula brew update # 升级所有安装软件 brew upgrade 举例说明,这个RiscV工具链是本地构建的。\nbrew info riscv-tools ==\u003e riscv-software-src/riscv/riscv-tools: stable 0.2 RISC-V toolchain including gcc (with newlib), simulator (spike), and pk http://riscv.org Installed /opt/homebrew/Cellar/riscv-tools/0.2 (5 files, 54.5KB) * Built from source on 2025-04-03 at 18:05:56 From: https://github.com/riscv-software-src/homebrew-riscv/blob/HEAD/riscv-tools.rb ==\u003e Dependencies Required: riscv-gnu-toolchain ✔, riscv-isa-sim ✔, riscv-pk ✔ (base) lutao@MagicTech Downloads % brew deps riscv-tools dtc gmp isl libmpc lz4 mpfr riscv-software-src/riscv/riscv-gnu-toolchain riscv-software-src/riscv/riscv-isa-sim riscv-software-src/riscv/riscv-pk xz zstd 这个Go语言来自于Bottle\n(base) lutao@MagicTech Downloads % brew info go ==\u003e go: stable 1.24.2 (bottled), HEAD Open source programming language to build simple/reliable/efficient software https://go.dev/ Installed /opt/homebrew/Cellar/go/1.24.2 (14,109 files, 283.8MB) * Poured from bottle using the formulae.brew.sh API on 2025-04-03 at 17:31:38 From: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git/Formula/g/go.rb License: BSD-3-Clause 启发 对于我们日后镜像的迁移构建，其带来了一定的启发\n把每一步构建流程脚本化、配置化 提高可复现性，适配 CI/CD 缓存和复用已构建的镜像或软件包 构建前先 resolve 所有依赖 类似 bottle 仓库 + fallback 编译方式 那么本篇文章到这里就结束了，这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n","wordCount":"2121","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2025-04-03T17:07:56+08:00","dateModified":"2025-04-03T17:07:56+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">DebugEP02——MacOs系统升级与Homebrew的关系</h1><div class=post-meta><span title='2025-04-03 17:07:56 +0800 CST'>四月 3, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e5%bc%95%e5%ad%90 aria-label=引子>引子</a></li><li><a href=#homebrew%e7%ae%80%e4%bb%8b aria-label=Homebrew简介>Homebrew简介</a></li><li><a href=#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e5%8d%87%e7%ba%a7xcode aria-label=为什么需要升级Xcode>为什么需要升级Xcode</a></li><li><a href=#%e6%80%bb%e7%bb%93homebrew%e6%93%8d%e4%bd%9c aria-label=总结Homebrew操作>总结Homebrew操作</a></li><li><a href=#%e5%90%af%e5%8f%91 aria-label=启发>启发</a></li></ul></div></details></div><div class=post-content><h2 id=引子>引子<a hidden class=anchor aria-hidden=true href=#引子>#</a></h2><p>某天我想要在我的macos上使用homebrew安装<a href=https://github.com/riscv-software-src/homebrew-riscv/>riscv编译工具链</a>为了交叉编译一些镜像文件。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>brew tap riscv-software-src/riscv
-</span></span><span class=line><span class=cl>brew install riscv-tools
-</span></span></code></pre></div><p>即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。</p><p>所以这一顿操作结束后我就在思考，为什么？</p><h2 id=homebrew简介>Homebrew简介<a hidden class=anchor aria-hidden=true href=#homebrew简介>#</a></h2><p>还记得大三第一次使用mac的时候，我觉得这不就是一个笔记本形态的ipad吗？下载软件也是从AppStore或者浏览器搜到的DMG文件，直到某天我在下载某个Github上的软件时看到有一段专门为macos写的命令<code>brew install xxx</code>，我才知道原来Homebrew才是macos下载东西的利器！</p><p>如果您没有使用macos，或许您没有听过Homebrew，不过简单地类比就是我们在linux下使用的apt，dnf，yum等包管理器。如果您了解linux的包管理器，apt和dnf在执行安装时都是直接安装二进制文件，而Homebrew采取了两种方式一种是安装二进制文件，一种是本地编译构建，因为<strong>其本质是一个用Ruby编写的Git仓库项目。</strong></p><p>形象地描述一下Homebrew的执行原理——Homebrew这个软件安装助手其自身叫Brew,他要为我们安装软件时需要找到软件安装说明书即Formula软件安装脚本（用ruby编写），诸多的软件对应着诸多的安装脚本，我们使用Core这样一个Git仓库来保存这些脚本。当安装命令下达时，管家查找本地的Core仓库，寻找对应的脚本，找到后查看脚本中是否设置了对应的Bottle(二进制文件)链接，如果有则直接下载这个Bottle，如果没有，则利用安装脚本中指定的链接下载源码进行本地构建。</p><p>让我们根据<a href=https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/>清华源</a>中给出的安装步骤再来看看Homebrew的执行原理。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>export</span> <span class=nv>HOMEBREW_BREW_GIT_REMOTE</span><span class=o>=</span><span class=s2>&#34;https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>HOMEBREW_CORE_GIT_REMOTE</span><span class=o>=</span><span class=s2>&#34;https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>HOMEBREW_INSTALL_FROM_API</span><span class=o>=</span><span class=m>1</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;export HOMEBREW_API_DOMAIN=&#34;https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api&#34;&#39;</span> &gt;&gt; ~/.zprofile
-</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;export HOMEBREW_BOTTLE_DOMAIN=&#34;https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles&#34;&#39;</span> &gt;&gt; ~/.zprofile
-</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>HOMEBREW_API_DOMAIN</span><span class=o>=</span><span class=s2>&#34;https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>HOMEBREW_BOTTLE_DOMAIN</span><span class=o>=</span><span class=s2>&#34;https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>pip config <span class=nb>set</span> global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># 安装</span>
-</span></span><span class=line><span class=cl>git clone --depth<span class=o>=</span><span class=m>1</span> https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install
-</span></span><span class=line><span class=cl>/bin/bash brew-install/install.sh
-</span></span><span class=line><span class=cl>rm -rf brew-install
-</span></span><span class=line><span class=cl><span class=c1># 加入环境变量</span>
-</span></span><span class=line><span class=cl><span class=nb>test</span> -r ~/.zprofile <span class=o>&amp;&amp;</span> <span class=nb>echo</span> <span class=s1>&#39;eval &#34;$(/opt/homebrew/bin/brew shellenv)&#34;&#39;</span> &gt;&gt; ~/.zprofile
-</span></span></code></pre></div><p>在这里我们设置了<code>Homebrew_Brew</code>和<code>Homebrew_Core</code>的地址使用清华的镜像仓库，这样在使用Core仓库时就不会遇到网络问题；设置了<code>API_DOMAIN</code>和<code>BOTTLE_DOMAIN</code>的镜像地址，并且将<code>FROM_API</code>设置为1，意味着开启了API模式——接着上面的解释，之前Homebrew必须将Core仓库全部Clone到本地，每次更新时也会更新极为庞大的仓库，所以自2021年后，推出的API安装模式，不再需要Clone Core仓库，而是通过API访问<code>https://api.homebrew.sh/</code>找到指定的JSON文件，brew管家会解析这个JSON文件知道其Bottole在哪，用哪个架构，版本号是多少等各种信息。</p><p>最终下载好的二进制包默认在Cellar目录下，可执行文件会被设置一个软链接，让我们在终端可以直接运行此软件。最后补充一点，Homebrew对比apt,dnf来说更像是一个<strong>用户的软件助手，而非系统管家，因为其不需要root权限。</strong></p><p>所以到这里对于Homebrew我们就有了一个大致的了解，后续我可能会对比一下这些包管理工具的异同，敬请期待。</p><h2 id=为什么需要升级xcode>为什么需要升级Xcode<a hidden class=anchor aria-hidden=true href=#为什么需要升级xcode>#</a></h2><p>首先解释为什么需要Xcode,前面说到，如果没有Bottle,Homebrew会进行本地构建，这里更关键的是，Homebrew本身不处理编译过程，而是依赖于系统工具链，对于macos来说就是Xcode的clang和make，通过<code>xcode-select --install</code>安装。</p><p>我的场景是要安装riscv的编译工具链，因为使用了<code>brew tap</code>，添加了第三方的formula仓库，会去Github上clone这个仓库，所以其一定会触发本地编译构建过程。</p><p>其次为什么要升级，执行<code>brew doctor</code>这个诊断指令，系统会提示你版本过低。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Error: Your Command Line Tools are too outdated.
-</span></span><span class=line><span class=cl>Please update them via Software Update or <span class=sb>`</span>xcode-select --install<span class=sb>`</span>.
-</span></span></code></pre></div><p>并且Xcode提供的CLT工具链会调用macos的系统库，所以我们必须要升级macos的系统。</p><h2 id=总结homebrew操作>总结Homebrew操作<a hidden class=anchor aria-hidden=true href=#总结homebrew操作>#</a></h2><p>写到这里，我对Homebrew的理解已经比较清晰了，所以同时来总结一下其可能的操作流程。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看基本信息</span>
-</span></span><span class=line><span class=cl>brew info &lt;appName&gt;
-</span></span><span class=line><span class=cl><span class=c1># 查看依赖项</span>
-</span></span><span class=line><span class=cl>brew deps &lt;appName&gt;
-</span></span><span class=line><span class=cl>brew deps --tree &lt;appName&gt;
-</span></span><span class=line><span class=cl><span class=c1># </span>
-</span></span><span class=line><span class=cl>brew install &lt;appName&gt;
-</span></span><span class=line><span class=cl><span class=c1># 如果需要tap指定第三方仓库,然后再安装</span>
-</span></span><span class=line><span class=cl>brew tap
-</span></span><span class=line><span class=cl><span class=c1># 列出安装详细过程</span>
-</span></span><span class=line><span class=cl>brew install &lt;appName&gt; --verbose
-</span></span><span class=line><span class=cl><span class=c1># 列出已安装的</span>
-</span></span><span class=line><span class=cl>brew list
-</span></span><span class=line><span class=cl>&lt;appName&gt; --version
-</span></span><span class=line><span class=cl><span class=c1># 检查配置操作和潜在问题</span>
-</span></span><span class=line><span class=cl>brew doctor
-</span></span><span class=line><span class=cl><span class=c1># 更新brew本体和formula</span>
-</span></span><span class=line><span class=cl>brew update
-</span></span><span class=line><span class=cl><span class=c1># 升级所有安装软件</span>
-</span></span><span class=line><span class=cl>brew upgrade
-</span></span></code></pre></div><p>举例说明,这个RiscV工具链是本地构建的。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>brew info riscv-tools
-</span></span><span class=line><span class=cl><span class=o>==</span>&gt; riscv-software-src/riscv/riscv-tools: stable 0.2
-</span></span><span class=line><span class=cl>RISC-V toolchain including gcc <span class=o>(</span>with newlib<span class=o>)</span>, simulator <span class=o>(</span>spike<span class=o>)</span>, and pk
-</span></span><span class=line><span class=cl>http://riscv.org
-</span></span><span class=line><span class=cl>Installed
-</span></span><span class=line><span class=cl>/opt/homebrew/Cellar/riscv-tools/0.2 <span class=o>(</span><span class=m>5</span> files, 54.5KB<span class=o>)</span> *
-</span></span><span class=line><span class=cl>  Built from <span class=nb>source</span> on 2025-04-03 at 18:05:56
-</span></span><span class=line><span class=cl>From: https://github.com/riscv-software-src/homebrew-riscv/blob/HEAD/riscv-tools.rb
-</span></span><span class=line><span class=cl><span class=o>==</span>&gt; Dependencies
-</span></span><span class=line><span class=cl>Required: riscv-gnu-toolchain ✔, riscv-isa-sim ✔, riscv-pk ✔
-</span></span><span class=line><span class=cl><span class=o>(</span>base<span class=o>)</span> lutao@MagicTech Downloads % brew deps riscv-tools
-</span></span><span class=line><span class=cl>dtc
-</span></span><span class=line><span class=cl>gmp
-</span></span><span class=line><span class=cl>isl
-</span></span><span class=line><span class=cl>libmpc
-</span></span><span class=line><span class=cl>lz4
-</span></span><span class=line><span class=cl>mpfr
-</span></span><span class=line><span class=cl>riscv-software-src/riscv/riscv-gnu-toolchain
-</span></span><span class=line><span class=cl>riscv-software-src/riscv/riscv-isa-sim
-</span></span><span class=line><span class=cl>riscv-software-src/riscv/riscv-pk
-</span></span><span class=line><span class=cl>xz
-</span></span><span class=line><span class=cl>zstd
-</span></span></code></pre></div><p>这个Go语言来自于Bottle</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>(</span>base<span class=o>)</span> lutao@MagicTech Downloads % brew info <span class=nv>go</span>
-</span></span><span class=line><span class=cl><span class=o>==</span>&gt; go: stable 1.24.2 <span class=o>(</span>bottled<span class=o>)</span>, HEAD
-</span></span><span class=line><span class=cl>Open <span class=nb>source</span> programming language to build simple/reliable/efficient software
-</span></span><span class=line><span class=cl>https://go.dev/
-</span></span><span class=line><span class=cl>Installed
-</span></span><span class=line><span class=cl>/opt/homebrew/Cellar/go/1.24.2 <span class=o>(</span>14,109 files, 283.8MB<span class=o>)</span> *
-</span></span><span class=line><span class=cl>  Poured from bottle using the formulae.brew.sh API on 2025-04-03 at 17:31:38
-</span></span><span class=line><span class=cl>From: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git/Formula/g/go.rb
-</span></span><span class=line><span class=cl>License: BSD-3-Clause
-</span></span></code></pre></div><h2 id=启发>启发<a hidden class=anchor aria-hidden=true href=#启发>#</a></h2><p>对于我们日后镜像的迁移构建，其带来了一定的启发</p><ul><li>把每一步构建流程脚本化、配置化</li><li>提高可复现性，适配 CI/CD</li><li>缓存和复用已构建的镜像或软件包</li><li>构建前先 resolve 所有依赖</li><li>类似 bottle 仓库 + fallback 编译方式</li></ul><p>那么本篇文章到这里就结束了，<strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/homebrew/>Homebrew</a></li><li><a href=https://LTXWorld.github.io/tags/macos/>Macos</a></li><li><a href=https://LTXWorld.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/>软件包管理</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/><span class=title>« 上一页</span><br><span>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像</span>
-</a><a class=next href=https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/><span class=title>下一页 »</span><br><span>K3sEP03——移植镜像到RiscV开发板</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
-<span>Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-drag-handle data-role=drag-handle title=上下拖动调整位置></div><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
-<span class=ltx-music-artist data-role=artist></span></div><button type=button class=ltx-music-hide data-action=collapse aria-label=隐藏播放器>&#215;</button></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
-<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
-<button type=button data-action=toggle aria-label=播放或暂停>
-<span data-icon=play>▶</span>
-<span data-icon=pause>⏸</span>
-</button>
-<button type=button data-action=next aria-label=下一首>⏭</button>
-<button type=button data-action=mute aria-label=静音或取消静音>
-<span data-icon=unmuted>🔊</span>
-<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><button type=button class=ltx-music-fab id=ltx-music-fab aria-label=显示音乐播放器>&#9835;</button>
-<script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const a=window.LTX_MUSIC_CONFIG||{};if(!a.tracks||!a.tracks.length)return;const e=document.getElementById("ltx-music-player"),t=e.querySelector("audio"),x=e.querySelector('[data-role="title"]'),O=e.querySelector('[data-role="artist"]'),b=e.querySelector('[data-role="progress"]'),A=e.querySelector('[data-role="progress-fill"]'),F=e.querySelector('[data-role="current"]'),M=e.querySelector('[data-role="total"]'),c=e.querySelector('[data-role="tip"]'),r=e.querySelector('[data-role="cover"]'),S=e.querySelector('[data-action="toggle"]'),y=e.querySelector('[data-action="prev"]'),k=e.querySelector('[data-action="next"]'),E=e.querySelector('[data-action="mute"]'),g=e.querySelector('[data-action="collapse"]'),i=e.querySelector('[data-role="drag-handle"]'),o=document.getElementById("ltx-music-fab"),f=(e,t,n)=>Math.min(Math.max(e,t),n),j=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},C=-120,_=220,w=180,s={active:!1,startY:0,startOffset:0,pointerId:null},n={index:0,tracks:a.tracks,autoplay:a.autoplay!==!1,loopPlaylist:a.loopPlaylist!==!1,offset:0,collapsed:!1},h=t=>{n.offset=f(t,C,_),e.style.setProperty("--ltx-offset",`${n.offset}px`)},l=t=>{const s=Boolean(t);n.collapsed=s,e.classList.toggle("ltx-collapsed",s),s?(e.classList.remove("ltx-dragging"),n.offset=0,e.style.removeProperty("--ltx-offset"),o&&(o.classList.add("ltx-visible"),o.setAttribute("aria-hidden","false"),o.tabIndex=0)):(h(0),o&&(o.classList.remove("ltx-visible"),o.setAttribute("aria-hidden","true"),o.tabIndex=-1))},m=()=>{const n=t.muted||t.volume===0;e.classList.toggle("ltx-muted",n)};t.volume=f(a.startVolume??.6,0,1),m(),l(!1);const d=()=>{const e=t.duration||0,n=t.currentTime||0,s=e?n/e*100:0;A.style.width=`${s}%`,F.textContent=j(n),M.textContent=j(e)},u=(s,o={})=>{const l=n.tracks.length;n.index=(s%l+l)%l;const i=n.tracks[n.index];if(!i||!i.file){console.warn("LTX music player: 音频文件缺失",i),c.textContent="音频文件缺失，请检查配置";return}const u=i.cover||a.defaultCover||"";r&&(u?(r.src=u,r.alt=i.title?`${i.title} 封面`:"音乐封面",e.classList.add("ltx-has-cover")):(r.removeAttribute("src"),r.alt="",e.classList.remove("ltx-has-cover"))),x.textContent=i.title||`Track ${n.index+1}`,O.textContent=i.artist||"",t.src=i.file,e.dataset.trackIndex=n.index,c.textContent="",e.classList.remove("ltx-autoplay-blocked"),d(),o.play&&p()},p=()=>{t.play().then(()=>{e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}).catch(()=>{e.classList.add("ltx-autoplay-blocked"),c.textContent="浏览器阻止了自动播放，请点击播放按钮"})},v=(e=!1)=>{const o=!t.paused||e,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){t.currentTime=t.duration||0,t.pause();return}u(s,{play:o})},T=()=>{const e=!t.paused;u(n.index-1,{play:e})};if(g&&g.addEventListener("click",()=>l(!0)),o&&(o.addEventListener("click",()=>l(!1)),o.setAttribute("aria-hidden","true"),o.tabIndex=-1),i){i.style.touchAction="none",i.addEventListener("pointerdown",t=>{if(n.collapsed)return;if(s.active=!0,s.pointerId=t.pointerId,s.startY=t.clientY,s.startOffset=n.offset,i.setPointerCapture)try{i.setPointerCapture(t.pointerId)}catch{}e.classList.add("ltx-dragging")}),i.addEventListener("pointermove",e=>{if(!s.active)return;const t=e.clientY-s.startY;h(s.startOffset+t)});const t=()=>{if(!s.active)return;if(s.pointerId!==null&&i.releasePointerCapture)try{i.releasePointerCapture(s.pointerId)}catch{}s.active=!1,s.pointerId=null,e.classList.remove("ltx-dragging"),n.offset>w?l(!0):h(n.offset)};["pointerup","pointercancel"].forEach(e=>{i.addEventListener(e,t)}),i.addEventListener("pointerleave",()=>{if(!s.active)return;t()})}S.addEventListener("click",()=>{t.paused?p():t.pause()}),y.addEventListener("click",T),k.addEventListener("click",()=>v(!1)),E.addEventListener("click",()=>{t.muted=!t.muted,m()}),b.addEventListener("click",e=>{const n=b.getBoundingClientRect(),s=f((e.clientX-n.left)/n.width,0,1);Number.isFinite(t.duration)&&(t.currentTime=s*t.duration)}),t.addEventListener("timeupdate",d),t.addEventListener("loadedmetadata",d),t.addEventListener("play",()=>{e.classList.add("ltx-playing"),e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}),t.addEventListener("pause",()=>{e.classList.remove("ltx-playing")}),t.addEventListener("ended",()=>{v(!0)}),t.addEventListener("volumechange",m),u(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "DebugEP02——MacOs系统升级与Homebrew的关系",
+      "item": "http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DebugEP02——MacOs系统升级与Homebrew的关系",
+  "name": "DebugEP02——MacOs系统升级与Homebrew的关系",
+  "description": "引子 某天我想要在我的macos上使用homebrew安装riscv编译工具链为了交叉编译一些镜像文件。\nbrew tap riscv-software-src/riscv brew install riscv-tools 即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。\n",
+  "keywords": [
+    "Homebrew", "Macos", "软件包管理"
+  ],
+  "articleBody": "引子 某天我想要在我的macos上使用homebrew安装riscv编译工具链为了交叉编译一些镜像文件。\nbrew tap riscv-software-src/riscv brew install riscv-tools 即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。\n所以这一顿操作结束后我就在思考，为什么？\nHomebrew简介 还记得大三第一次使用mac的时候，我觉得这不就是一个笔记本形态的ipad吗？下载软件也是从AppStore或者浏览器搜到的DMG文件，直到某天我在下载某个Github上的软件时看到有一段专门为macos写的命令brew install xxx，我才知道原来Homebrew才是macos下载东西的利器！\n如果您没有使用macos，或许您没有听过Homebrew，不过简单地类比就是我们在linux下使用的apt，dnf，yum等包管理器。如果您了解linux的包管理器，apt和dnf在执行安装时都是直接安装二进制文件，而Homebrew采取了两种方式一种是安装二进制文件，一种是本地编译构建，因为其本质是一个用Ruby编写的Git仓库项目。\n形象地描述一下Homebrew的执行原理——Homebrew这个软件安装助手其自身叫Brew,他要为我们安装软件时需要找到软件安装说明书即Formula软件安装脚本（用ruby编写），诸多的软件对应着诸多的安装脚本，我们使用Core这样一个Git仓库来保存这些脚本。当安装命令下达时，管家查找本地的Core仓库，寻找对应的脚本，找到后查看脚本中是否设置了对应的Bottle(二进制文件)链接，如果有则直接下载这个Bottle，如果没有，则利用安装脚本中指定的链接下载源码进行本地构建。\n让我们根据清华源中给出的安装步骤再来看看Homebrew的执行原理。\nexport HOMEBREW_BREW_GIT_REMOTE=\"https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git\" export HOMEBREW_CORE_GIT_REMOTE=\"https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git\" export HOMEBREW_INSTALL_FROM_API=1 echo 'export HOMEBREW_API_DOMAIN=\"https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api\"' \u003e\u003e ~/.zprofile echo 'export HOMEBREW_BOTTLE_DOMAIN=\"https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles\"' \u003e\u003e ~/.zprofile export HOMEBREW_API_DOMAIN=\"https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api\" export HOMEBREW_BOTTLE_DOMAIN=\"https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles\" pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple # 安装 git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install /bin/bash brew-install/install.sh rm -rf brew-install # 加入环境变量 test -r ~/.zprofile \u0026\u0026 echo 'eval \"$(/opt/homebrew/bin/brew shellenv)\"' \u003e\u003e ~/.zprofile 在这里我们设置了Homebrew_Brew和Homebrew_Core的地址使用清华的镜像仓库，这样在使用Core仓库时就不会遇到网络问题；设置了API_DOMAIN和BOTTLE_DOMAIN的镜像地址，并且将FROM_API设置为1，意味着开启了API模式——接着上面的解释，之前Homebrew必须将Core仓库全部Clone到本地，每次更新时也会更新极为庞大的仓库，所以自2021年后，推出的API安装模式，不再需要Clone Core仓库，而是通过API访问https://api.homebrew.sh/找到指定的JSON文件，brew管家会解析这个JSON文件知道其Bottole在哪，用哪个架构，版本号是多少等各种信息。\n最终下载好的二进制包默认在Cellar目录下，可执行文件会被设置一个软链接，让我们在终端可以直接运行此软件。最后补充一点，Homebrew对比apt,dnf来说更像是一个用户的软件助手，而非系统管家，因为其不需要root权限。\n所以到这里对于Homebrew我们就有了一个大致的了解，后续我可能会对比一下这些包管理工具的异同，敬请期待。\n为什么需要升级Xcode 首先解释为什么需要Xcode,前面说到，如果没有Bottle,Homebrew会进行本地构建，这里更关键的是，Homebrew本身不处理编译过程，而是依赖于系统工具链，对于macos来说就是Xcode的clang和make，通过xcode-select --install安装。\n我的场景是要安装riscv的编译工具链，因为使用了brew tap，添加了第三方的formula仓库，会去Github上clone这个仓库，所以其一定会触发本地编译构建过程。\n其次为什么要升级，执行brew doctor这个诊断指令，系统会提示你版本过低。\nError: Your Command Line Tools are too outdated. Please update them via Software Update or `xcode-select --install`. 并且Xcode提供的CLT工具链会调用macos的系统库，所以我们必须要升级macos的系统。\n总结Homebrew操作 写到这里，我对Homebrew的理解已经比较清晰了，所以同时来总结一下其可能的操作流程。\n# 查看基本信息 brew info # 查看依赖项 brew deps brew deps --tree # brew install # 如果需要tap指定第三方仓库,然后再安装 brew tap # 列出安装详细过程 brew install --verbose # 列出已安装的 brew list --version # 检查配置操作和潜在问题 brew doctor # 更新brew本体和formula brew update # 升级所有安装软件 brew upgrade 举例说明,这个RiscV工具链是本地构建的。\nbrew info riscv-tools ==\u003e riscv-software-src/riscv/riscv-tools: stable 0.2 RISC-V toolchain including gcc (with newlib), simulator (spike), and pk http://riscv.org Installed /opt/homebrew/Cellar/riscv-tools/0.2 (5 files, 54.5KB) * Built from source on 2025-04-03 at 18:05:56 From: https://github.com/riscv-software-src/homebrew-riscv/blob/HEAD/riscv-tools.rb ==\u003e Dependencies Required: riscv-gnu-toolchain ✔, riscv-isa-sim ✔, riscv-pk ✔ (base) lutao@MagicTech Downloads % brew deps riscv-tools dtc gmp isl libmpc lz4 mpfr riscv-software-src/riscv/riscv-gnu-toolchain riscv-software-src/riscv/riscv-isa-sim riscv-software-src/riscv/riscv-pk xz zstd 这个Go语言来自于Bottle\n(base) lutao@MagicTech Downloads % brew info go ==\u003e go: stable 1.24.2 (bottled), HEAD Open source programming language to build simple/reliable/efficient software https://go.dev/ Installed /opt/homebrew/Cellar/go/1.24.2 (14,109 files, 283.8MB) * Poured from bottle using the formulae.brew.sh API on 2025-04-03 at 17:31:38 From: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git/Formula/g/go.rb License: BSD-3-Clause 启发 对于我们日后镜像的迁移构建，其带来了一定的启发\n把每一步构建流程脚本化、配置化 提高可复现性，适配 CI/CD 缓存和复用已构建的镜像或软件包 构建前先 resolve 所有依赖 类似 bottle 仓库 + fallback 编译方式 那么本篇文章到这里就结束了，这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
+  "wordCount" : "2121",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-04-03T17:07:56+08:00",
+  "dateModified": "2025-04-03T17:07:56+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      DebugEP02——MacOs系统升级与Homebrew的关系
+    </h1>
+    <div class="post-meta"><span title='2025-04-03 17:07:56 +0800 CST'>四月 3, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#homebrew%e7%ae%80%e4%bb%8b" aria-label="Homebrew简介">Homebrew简介</a></li>
+                <li>
+                    <a href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e5%8d%87%e7%ba%a7xcode" aria-label="为什么需要升级Xcode">为什么需要升级Xcode</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93homebrew%e6%93%8d%e4%bd%9c" aria-label="总结Homebrew操作">总结Homebrew操作</a></li>
+                <li>
+                    <a href="#%e5%90%af%e5%8f%91" aria-label="启发">启发</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>某天我想要在我的macos上使用homebrew安装<a href="https://github.com/riscv-software-src/homebrew-riscv/">riscv编译工具链</a>为了交叉编译一些镜像文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">brew tap riscv-software-src/riscv
+</span></span><span class="line"><span class="cl">brew install riscv-tools
+</span></span></code></pre></div><p>即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。</p>
+<p>所以这一顿操作结束后我就在思考，为什么？</p>
+<h2 id="homebrew简介">Homebrew简介<a hidden class="anchor" aria-hidden="true" href="#homebrew简介">#</a></h2>
+<p>还记得大三第一次使用mac的时候，我觉得这不就是一个笔记本形态的ipad吗？下载软件也是从AppStore或者浏览器搜到的DMG文件，直到某天我在下载某个Github上的软件时看到有一段专门为macos写的命令<code>brew install xxx</code>，我才知道原来Homebrew才是macos下载东西的利器！</p>
+<p>如果您没有使用macos，或许您没有听过Homebrew，不过简单地类比就是我们在linux下使用的apt，dnf，yum等包管理器。如果您了解linux的包管理器，apt和dnf在执行安装时都是直接安装二进制文件，而Homebrew采取了两种方式一种是安装二进制文件，一种是本地编译构建，因为<strong>其本质是一个用Ruby编写的Git仓库项目。</strong></p>
+<p>形象地描述一下Homebrew的执行原理——Homebrew这个软件安装助手其自身叫Brew,他要为我们安装软件时需要找到软件安装说明书即Formula软件安装脚本（用ruby编写），诸多的软件对应着诸多的安装脚本，我们使用Core这样一个Git仓库来保存这些脚本。当安装命令下达时，管家查找本地的Core仓库，寻找对应的脚本，找到后查看脚本中是否设置了对应的Bottle(二进制文件)链接，如果有则直接下载这个Bottle，如果没有，则利用安装脚本中指定的链接下载源码进行本地构建。</p>
+<p>让我们根据<a href="https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/">清华源</a>中给出的安装步骤再来看看Homebrew的执行原理。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">HOMEBREW_BREW_GIT_REMOTE</span><span class="o">=</span><span class="s2">&#34;https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">HOMEBREW_CORE_GIT_REMOTE</span><span class="o">=</span><span class="s2">&#34;https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">HOMEBREW_INSTALL_FROM_API</span><span class="o">=</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s1">&#39;export HOMEBREW_API_DOMAIN=&#34;https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api&#34;&#39;</span> &gt;&gt; ~/.zprofile
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s1">&#39;export HOMEBREW_BOTTLE_DOMAIN=&#34;https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles&#34;&#39;</span> &gt;&gt; ~/.zprofile
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">HOMEBREW_API_DOMAIN</span><span class="o">=</span><span class="s2">&#34;https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">HOMEBREW_BOTTLE_DOMAIN</span><span class="o">=</span><span class="s2">&#34;https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pip config <span class="nb">set</span> global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装</span>
+</span></span><span class="line"><span class="cl">git clone --depth<span class="o">=</span><span class="m">1</span> https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install
+</span></span><span class="line"><span class="cl">/bin/bash brew-install/install.sh
+</span></span><span class="line"><span class="cl">rm -rf brew-install
+</span></span><span class="line"><span class="cl"><span class="c1"># 加入环境变量</span>
+</span></span><span class="line"><span class="cl"><span class="nb">test</span> -r ~/.zprofile <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s1">&#39;eval &#34;$(/opt/homebrew/bin/brew shellenv)&#34;&#39;</span> &gt;&gt; ~/.zprofile
+</span></span></code></pre></div><p>在这里我们设置了<code>Homebrew_Brew</code>和<code>Homebrew_Core</code>的地址使用清华的镜像仓库，这样在使用Core仓库时就不会遇到网络问题；设置了<code>API_DOMAIN</code>和<code>BOTTLE_DOMAIN</code>的镜像地址，并且将<code>FROM_API</code>设置为1，意味着开启了API模式——接着上面的解释，之前Homebrew必须将Core仓库全部Clone到本地，每次更新时也会更新极为庞大的仓库，所以自2021年后，推出的API安装模式，不再需要Clone Core仓库，而是通过API访问<code>https://api.homebrew.sh/</code>找到指定的JSON文件，brew管家会解析这个JSON文件知道其Bottole在哪，用哪个架构，版本号是多少等各种信息。</p>
+<p>最终下载好的二进制包默认在Cellar目录下，可执行文件会被设置一个软链接，让我们在终端可以直接运行此软件。最后补充一点，Homebrew对比apt,dnf来说更像是一个<strong>用户的软件助手，而非系统管家，因为其不需要root权限。</strong></p>
+<p>所以到这里对于Homebrew我们就有了一个大致的了解，后续我可能会对比一下这些包管理工具的异同，敬请期待。</p>
+<h2 id="为什么需要升级xcode">为什么需要升级Xcode<a hidden class="anchor" aria-hidden="true" href="#为什么需要升级xcode">#</a></h2>
+<p>首先解释为什么需要Xcode,前面说到，如果没有Bottle,Homebrew会进行本地构建，这里更关键的是，Homebrew本身不处理编译过程，而是依赖于系统工具链，对于macos来说就是Xcode的clang和make，通过<code>xcode-select --install</code>安装。</p>
+<p>我的场景是要安装riscv的编译工具链，因为使用了<code>brew tap</code>，添加了第三方的formula仓库，会去Github上clone这个仓库，所以其一定会触发本地编译构建过程。</p>
+<p>其次为什么要升级，执行<code>brew doctor</code>这个诊断指令，系统会提示你版本过低。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Error: Your Command Line Tools are too outdated.
+</span></span><span class="line"><span class="cl">Please update them via Software Update or <span class="sb">`</span>xcode-select --install<span class="sb">`</span>.
+</span></span></code></pre></div><p>并且Xcode提供的CLT工具链会调用macos的系统库，所以我们必须要升级macos的系统。</p>
+<h2 id="总结homebrew操作">总结Homebrew操作<a hidden class="anchor" aria-hidden="true" href="#总结homebrew操作">#</a></h2>
+<p>写到这里，我对Homebrew的理解已经比较清晰了，所以同时来总结一下其可能的操作流程。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看基本信息</span>
+</span></span><span class="line"><span class="cl">brew info &lt;appName&gt;
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看依赖项</span>
+</span></span><span class="line"><span class="cl">brew deps &lt;appName&gt;
+</span></span><span class="line"><span class="cl">brew deps --tree &lt;appName&gt;
+</span></span><span class="line"><span class="cl"><span class="c1"># </span>
+</span></span><span class="line"><span class="cl">brew install &lt;appName&gt;
+</span></span><span class="line"><span class="cl"><span class="c1"># 如果需要tap指定第三方仓库,然后再安装</span>
+</span></span><span class="line"><span class="cl">brew tap
+</span></span><span class="line"><span class="cl"><span class="c1"># 列出安装详细过程</span>
+</span></span><span class="line"><span class="cl">brew install &lt;appName&gt; --verbose
+</span></span><span class="line"><span class="cl"><span class="c1"># 列出已安装的</span>
+</span></span><span class="line"><span class="cl">brew list
+</span></span><span class="line"><span class="cl">&lt;appName&gt; --version
+</span></span><span class="line"><span class="cl"><span class="c1"># 检查配置操作和潜在问题</span>
+</span></span><span class="line"><span class="cl">brew doctor
+</span></span><span class="line"><span class="cl"><span class="c1"># 更新brew本体和formula</span>
+</span></span><span class="line"><span class="cl">brew update
+</span></span><span class="line"><span class="cl"><span class="c1"># 升级所有安装软件</span>
+</span></span><span class="line"><span class="cl">brew upgrade
+</span></span></code></pre></div><p>举例说明,这个RiscV工具链是本地构建的。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">brew info riscv-tools
+</span></span><span class="line"><span class="cl"><span class="o">==</span>&gt; riscv-software-src/riscv/riscv-tools: stable 0.2
+</span></span><span class="line"><span class="cl">RISC-V toolchain including gcc <span class="o">(</span>with newlib<span class="o">)</span>, simulator <span class="o">(</span>spike<span class="o">)</span>, and pk
+</span></span><span class="line"><span class="cl">http://riscv.org
+</span></span><span class="line"><span class="cl">Installed
+</span></span><span class="line"><span class="cl">/opt/homebrew/Cellar/riscv-tools/0.2 <span class="o">(</span><span class="m">5</span> files, 54.5KB<span class="o">)</span> *
+</span></span><span class="line"><span class="cl">  Built from <span class="nb">source</span> on 2025-04-03 at 18:05:56
+</span></span><span class="line"><span class="cl">From: https://github.com/riscv-software-src/homebrew-riscv/blob/HEAD/riscv-tools.rb
+</span></span><span class="line"><span class="cl"><span class="o">==</span>&gt; Dependencies
+</span></span><span class="line"><span class="cl">Required: riscv-gnu-toolchain ✔, riscv-isa-sim ✔, riscv-pk ✔
+</span></span><span class="line"><span class="cl"><span class="o">(</span>base<span class="o">)</span> lutao@MagicTech Downloads % brew deps riscv-tools
+</span></span><span class="line"><span class="cl">dtc
+</span></span><span class="line"><span class="cl">gmp
+</span></span><span class="line"><span class="cl">isl
+</span></span><span class="line"><span class="cl">libmpc
+</span></span><span class="line"><span class="cl">lz4
+</span></span><span class="line"><span class="cl">mpfr
+</span></span><span class="line"><span class="cl">riscv-software-src/riscv/riscv-gnu-toolchain
+</span></span><span class="line"><span class="cl">riscv-software-src/riscv/riscv-isa-sim
+</span></span><span class="line"><span class="cl">riscv-software-src/riscv/riscv-pk
+</span></span><span class="line"><span class="cl">xz
+</span></span><span class="line"><span class="cl">zstd
+</span></span></code></pre></div><p>这个Go语言来自于Bottle</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">(</span>base<span class="o">)</span> lutao@MagicTech Downloads % brew info <span class="nv">go</span>
+</span></span><span class="line"><span class="cl"><span class="o">==</span>&gt; go: stable 1.24.2 <span class="o">(</span>bottled<span class="o">)</span>, HEAD
+</span></span><span class="line"><span class="cl">Open <span class="nb">source</span> programming language to build simple/reliable/efficient software
+</span></span><span class="line"><span class="cl">https://go.dev/
+</span></span><span class="line"><span class="cl">Installed
+</span></span><span class="line"><span class="cl">/opt/homebrew/Cellar/go/1.24.2 <span class="o">(</span>14,109 files, 283.8MB<span class="o">)</span> *
+</span></span><span class="line"><span class="cl">  Poured from bottle using the formulae.brew.sh API on 2025-04-03 at 17:31:38
+</span></span><span class="line"><span class="cl">From: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git/Formula/g/go.rb
+</span></span><span class="line"><span class="cl">License: BSD-3-Clause
+</span></span></code></pre></div><h2 id="启发">启发<a hidden class="anchor" aria-hidden="true" href="#启发">#</a></h2>
+<p>对于我们日后镜像的迁移构建，其带来了一定的启发</p>
+<ul>
+<li>把每一步构建流程脚本化、配置化</li>
+<li>提高可复现性，适配 CI/CD</li>
+<li>缓存和复用已构建的镜像或软件包</li>
+<li>构建前先 resolve 所有依赖</li>
+<li>类似 bottle 仓库 + fallback 编译方式</li>
+</ul>
+<p>那么本篇文章到这里就结束了，<strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/homebrew/">Homebrew</a></li>
+      <li><a href="http://localhost:1313/tags/macos/">Macos</a></li>
+      <li><a href="http://localhost:1313/tags/%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/">软件包管理</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>K3sEP03——移植镜像到RiscV开发板</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
+  <audio id="ltx-music-audio" preload="metadata"></audio>
+  <div class="ltx-drag-handle" data-role="drag-handle" title="上下拖动调整位置"></div>
+  <div class="ltx-music-header">
+    <div class="ltx-music-visual">
+      <div class="ltx-disc" data-role="disc" aria-hidden="true">
+        <img data-role="cover" alt="" loading="lazy" decoding="async">
+        <div class="ltx-disc-center"></div>
+      </div>
+    </div>
+    <div class="ltx-music-meta">
+      <span class="ltx-music-title" data-role="title"></span>
+      <span class="ltx-music-artist" data-role="artist"></span>
+    </div>
+    <button type="button" class="ltx-music-hide" data-action="collapse" aria-label="隐藏播放器">&#215;</button>
+  </div>
+  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
+    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
+  </div>
+  <div class="ltx-music-time">
+    <span data-role="current">0:00</span>
+    <span data-role="total">--:--</span>
+  </div>
+  <div class="ltx-music-controls">
+    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
+    <button type="button" data-action="toggle" aria-label="播放或暂停">
+      <span data-icon="play">▶</span>
+      <span data-icon="pause">⏸</span>
+    </button>
+    <button type="button" data-action="next" aria-label="下一首">⏭</button>
+    <button type="button" data-action="mute" aria-label="静音或取消静音">
+      <span data-icon="unmuted">🔊</span>
+      <span data-icon="muted">🔇</span>
+    </button>
+  </div>
+  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
+</div>
+<button type="button" class="ltx-music-fab" id="ltx-music-fab" aria-label="显示音乐播放器">&#9835;</button>
+<script>
+  window.LTX_MUSIC_CONFIG = {"autoplay":true,"defaultCover":"","loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
+  (function () {
+    const config = window.LTX_MUSIC_CONFIG || {};
+    if (!config.tracks || !config.tracks.length) {
+      return;
+    }
+
+    const player = document.getElementById('ltx-music-player');
+    const audio = player.querySelector('audio');
+    const titleEl = player.querySelector('[data-role="title"]');
+    const artistEl = player.querySelector('[data-role="artist"]');
+    const progressEl = player.querySelector('[data-role="progress"]');
+    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
+    const currentTimeEl = player.querySelector('[data-role="current"]');
+    const totalTimeEl = player.querySelector('[data-role="total"]');
+    const tipEl = player.querySelector('[data-role="tip"]');
+    const coverEl = player.querySelector('[data-role="cover"]');
+
+    const toggleBtn = player.querySelector('[data-action="toggle"]');
+    const prevBtn = player.querySelector('[data-action="prev"]');
+    const nextBtn = player.querySelector('[data-action="next"]');
+    const muteBtn = player.querySelector('[data-action="mute"]');
+    const collapseBtn = player.querySelector('[data-action="collapse"]');
+    const dragHandle = player.querySelector('[data-role="drag-handle"]');
+    const fabButton = document.getElementById('ltx-music-fab');
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const formatTime = (seconds) => {
+      if (!Number.isFinite(seconds)) {
+        return '--:--';
+      }
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
+    const minOffset = -120;
+    const maxOffset = 220;
+    const hideThreshold = 180;
+    const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+
+    const state = {
+      index: 0,
+      tracks: config.tracks,
+      autoplay: config.autoplay !== false,
+      loopPlaylist: config.loopPlaylist !== false,
+      offset: 0,
+      collapsed: false,
+    };
+
+    const setOffset = (value) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    };
+
+    const setCollapsed = (value) => {
+      const collapsed = Boolean(value);
+      state.collapsed = collapsed;
+      player.classList.toggle('ltx-collapsed', collapsed);
+      if (collapsed) {
+        player.classList.remove('ltx-dragging');
+        state.offset = 0;
+        player.style.removeProperty('--ltx-offset');
+        if (fabButton) {
+          fabButton.classList.add('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'false');
+          fabButton.tabIndex = 0;
+        }
+      } else {
+        setOffset(0);
+        if (fabButton) {
+          fabButton.classList.remove('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'true');
+          fabButton.tabIndex = -1;
+        }
+      }
+    };
+
+    const updateMuteClass = () => {
+      const muted = audio.muted || audio.volume === 0;
+      player.classList.toggle('ltx-muted', muted);
+    };
+
+    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    updateMuteClass();
+    setCollapsed(false);
+
+    const updateProgress = () => {
+      const duration = audio.duration || 0;
+      const current = audio.currentTime || 0;
+      const percentage = duration ? (current / duration) * 100 : 0;
+      progressFillEl.style.width = `${percentage}%`;
+      currentTimeEl.textContent = formatTime(current);
+      totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const setTrack = (nextIndex, options = {}) => {
+      const total = state.tracks.length;
+      state.index = ((nextIndex % total) + total) % total;
+      const track = state.tracks[state.index];
+      if (!track || !track.file) {
+        console.warn('LTX music player: 音频文件缺失', track);
+        tipEl.textContent = '音频文件缺失，请检查配置';
+        return;
+      }
+      const cover = track.cover || config.defaultCover || '';
+      if (coverEl) {
+        if (cover) {
+          coverEl.src = cover;
+          coverEl.alt = track.title ? `${track.title} 封面` : '音乐封面';
+          player.classList.add('ltx-has-cover');
+        } else {
+          coverEl.removeAttribute('src');
+          coverEl.alt = '';
+          player.classList.remove('ltx-has-cover');
+        }
+      }
+      titleEl.textContent = track.title || `Track ${state.index + 1}`;
+      artistEl.textContent = track.artist || '';
+      audio.src = track.file;
+      player.dataset.trackIndex = state.index;
+      tipEl.textContent = '';
+      player.classList.remove('ltx-autoplay-blocked');
+      updateProgress();
+      if (options.play) {
+        attemptPlay();
+      }
+    };
+
+    const attemptPlay = () => {
+      audio.play().then(() => {
+        player.classList.remove('ltx-autoplay-blocked');
+        tipEl.textContent = '';
+      }).catch(() => {
+        player.classList.add('ltx-autoplay-blocked');
+        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
+      });
+    };
+
+    const playNext = (autoTriggered = false) => {
+      const shouldPlay = !audio.paused || autoTriggered;
+      const nextIndex = state.index + 1;
+      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
+        audio.currentTime = audio.duration || 0;
+        audio.pause();
+        return;
+      }
+      setTrack(nextIndex, { play: shouldPlay });
+    };
+
+    const playPrev = () => {
+      const shouldPlay = !audio.paused;
+      setTrack(state.index - 1, { play: shouldPlay });
+    };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', () => setCollapsed(true));
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', () => setCollapsed(false));
+      fabButton.setAttribute('aria-hidden', 'true');
+      fabButton.tabIndex = -1;
+    }
+
+    if (dragHandle) {
+      dragHandle.style.touchAction = 'none';
+      dragHandle.addEventListener('pointerdown', (event) => {
+        if (state.collapsed) {
+          return;
+        }
+        dragState.active = true;
+        dragState.pointerId = event.pointerId;
+        dragState.startY = event.clientY;
+        dragState.startOffset = state.offset;
+        if (dragHandle.setPointerCapture) {
+          try {
+            dragHandle.setPointerCapture(event.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        player.classList.add('ltx-dragging');
+      });
+
+      dragHandle.addEventListener('pointermove', (event) => {
+        if (!dragState.active) {
+          return;
+        }
+        const delta = event.clientY - dragState.startY;
+        setOffset(dragState.startOffset + delta);
+      });
+
+      const finishDrag = () => {
+        if (!dragState.active) {
+          return;
+        }
+        if (dragState.pointerId !== null && dragHandle.releasePointerCapture) {
+          try {
+            dragHandle.releasePointerCapture(dragState.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        dragState.active = false;
+        dragState.pointerId = null;
+        player.classList.remove('ltx-dragging');
+        if (state.offset > hideThreshold) {
+          setCollapsed(true);
+        } else {
+          setOffset(state.offset);
+        }
+      };
+
+      ['pointerup', 'pointercancel'].forEach((eventName) => {
+        dragHandle.addEventListener(eventName, finishDrag);
+      });
+
+      dragHandle.addEventListener('pointerleave', () => {
+        if (!dragState.active) {
+          return;
+        }
+        finishDrag();
+      });
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        attemptPlay();
+      } else {
+        audio.pause();
+      }
+    });
+
+    prevBtn.addEventListener('click', playPrev);
+    nextBtn.addEventListener('click', () => playNext(false));
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      updateMuteClass();
+    });
+
+    progressEl.addEventListener('click', (event) => {
+      const rect = progressEl.getBoundingClientRect();
+      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = ratio * audio.duration;
+      }
+    });
+
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('loadedmetadata', updateProgress);
+
+    audio.addEventListener('play', () => {
+      player.classList.add('ltx-playing');
+      player.classList.remove('ltx-autoplay-blocked');
+      tipEl.textContent = '';
+    });
+
+    audio.addEventListener('pause', () => {
+      player.classList.remove('ltx-playing');
+    });
+
+    audio.addEventListener('ended', () => {
+      playNext(true);
+    });
+
+    audio.addEventListener('volumechange', updateMuteClass);
+
+    setTrack(0, { play: state.autoplay });
+  })();
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

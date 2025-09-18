@@ -1,189 +1,1061 @@
-<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>K3sEP02——解决RiscV开发板镜像无法拉取问题 | LTX's Blog</title>
-<meta name=keywords content="RISC-V,k3s,pod,适配"><meta name=description content="引子
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>K3sEP02——解决RiscV开发板镜像无法拉取问题 | LTX&#39;s Blog</title>
+<meta name="keywords" content="RISC-V, k3s, pod, 适配">
+<meta name="description" content="引子
 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。
-值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/><link crossorigin=anonymous href=/assets/css/stylesheet.c98266582198d1e5ef6529482f54b208422b9b1a9eeac13f1e3df51f4f9bfbed.css integrity="sha256-yYJmWCGY0eXvZSlIL1SyCEIrmxqe6sE/Hj31H0+b++0=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="K3sEP02——解决RiscV开发板镜像无法拉取问题"><meta property="og:description" content="引子 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。
-值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-03-28T14:19:09+08:00"><meta property="article:modified_time" content="2025-03-28T14:19:09+08:00"><meta property="article:tag" content="RISC-V"><meta property="article:tag" content="K3s"><meta property="article:tag" content="Pod"><meta property="article:tag" content="适配"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="K3sEP02——解决RiscV开发板镜像无法拉取问题"><meta name=twitter:description content="引子
+值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="K3sEP02——解决RiscV开发板镜像无法拉取问题">
+  <meta property="og:description" content="引子 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。
+值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-28T14:19:09+08:00">
+    <meta property="article:modified_time" content="2025-03-28T14:19:09+08:00">
+    <meta property="article:tag" content="RISC-V">
+    <meta property="article:tag" content="K3s">
+    <meta property="article:tag" content="Pod">
+    <meta property="article:tag" content="适配">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="K3sEP02——解决RiscV开发板镜像无法拉取问题">
+<meta name="twitter:description" content="引子
 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。
-值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"K3sEP02——解决RiscV开发板镜像无法拉取问题","item":"https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"K3sEP02——解决RiscV开发板镜像无法拉取问题","name":"K3sEP02——解决RiscV开发板镜像无法拉取问题","description":"引子 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。\n值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。\n","keywords":["RISC-V","k3s","pod","适配"],"articleBody":"引子 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。\n值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。\n本次实验利用了这两篇文章中的配置:玩转RISCV开发板01-烧录OpenEuler国产镜像,玩转RISCV开发板02-配置好容器化环境，关键在于使用了RiscV+Openeuler的架构系统组合，来自于SIG兴趣小组的23.09的镜像，以及其已经貌似适配好的k3s包。（具体请参考上面的两篇文章）\n实验环境 LiCheePi4A 16+256G OpenEuler23.09镜像,下载地址 实验过程 我们之前使用sudo dnf install -y k3s成功安装了k3及其依赖\n[root@openeuler-riscv64 ~]# sudo dnf install -y k3s mainline 3.8 kB/s | 3.0 kB 00:00 epol 5.4 kB/s | 3.0 kB 00:00 ceph-user 4.6 kB/s | 3.0 kB 00:00 chromium-user 4.4 kB/s | 3.0 kB 00:00 libreoffice 4.6 kB/s | 3.0 kB 00:00 rust167-user 5.8 kB/s | 3.0 kB 00:00 mesa-supplements 3.7 kB/s | 3.0 kB 00:00 oetestsuite 5.1 kB/s | 3.0 kB 00:00 update 4.6 kB/s | 3.0 kB 00:00 Dependencies resolved. ================================================================================ Package Arch Version Repo Size ================================================================================ Installing: k3s riscv64 1.24.2+rc1+k3s2-3.oe2303 epol 59 M Installing dependencies: container-selinux noarch 2:2.163-1.oe2303 mainline 39 k k3s-selinux noarch 1.1.stable.1-1.oe2303 epol 20 k policycoreutils riscv64 3.4-1.oe2303 mainline 156 k selinux-policy noarch 38.6-4.oe2303 mainline 24 k selinux-policy-targeted noarch 38.6-4.oe2303 mainline 6.8 M Transaction Summary ================================================================================ Install 6 Packages Total download size: 66 M Installed size: 87 M Downloading Packages: (1/6): container-selinux-2.163-1.oe2303.noarch. 22 kB/s | 39 kB 00:01 (2/6): selinux-policy-38.6-4.oe2303.noarch.rpm 13 kB/s | 24 kB 00:01 (3/6): policycoreutils-3.4-1.oe2303.riscv64.rpm 84 kB/s | 156 kB 00:01 (4/6): selinux-policy-targeted-38.6-4.oe2303.no 4.1 MB/s | 6.8 MB 00:01 (5/6): k3s-selinux-1.1.stable.1-1.oe2303.noarch 14 kB/s | 20 kB 00:01 (6/6): k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64.rpm 4.2 MB/s | 59 MB 00:14 -------------------------------------------------------------------------------- Total 4.2 MB/s | 66 MB 00:15 Running transaction check Transaction check succeeded. Running transaction test Transaction test succeeded. Running transaction Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch 1/1 Preparing : 1/1 Installing : policycoreutils-3.4-1.oe2303.riscv64 1/6 Running scriptlet: policycoreutils-3.4-1.oe2303.riscv64 1/6 Created symlink /etc/systemd/system/multi-user.target.wants/restorecond.service → /usr/lib/systemd/system/restorecond.service. Installing : selinux-policy-38.6-4.oe2303.noarch 2/6 Running scriptlet: selinux-policy-38.6-4.oe2303.noarch 2/6 Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch 3/6 Installing : selinux-policy-targeted-38.6-4.oe2303.noarch 3/6 Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch 3/6 Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch 4/6 Installing : container-selinux-2:2.163-1.oe2303.noarch 4/6 Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch 4/6 Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch 5/6 Installing : k3s-selinux-1.1.stable.1-1.oe2303.noarch 5/6 Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch 5/6 Installing : k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64 6/6 Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch 6/6 Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch 6/6 Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch 6/6 Running scriptlet: k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64 6/6 Verifying : container-selinux-2:2.163-1.oe2303.noarch 1/6 Verifying : policycoreutils-3.4-1.oe2303.riscv64 2/6 Verifying : selinux-policy-38.6-4.oe2303.noarch 3/6 Verifying : selinux-policy-targeted-38.6-4.oe2303.noarch 4/6 Verifying : k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64 5/6 Verifying : k3s-selinux-1.1.stable.1-1.oe2303.noarch 6/6 Installed: container-selinux-2:2.163-1.oe2303.noarch k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64 k3s-selinux-1.1.stable.1-1.oe2303.noarch policycoreutils-3.4-1.oe2303.riscv64 selinux-policy-38.6-4.oe2303.noarch selinux-policy-targeted-38.6-4.oe2303.noarch Complete! 验证部署Server节点 接下来我们需要验证部署Server节点，由于之前我们安装好的k3s只是一个运行脚本，所以我们需要执行 INSTALL_K3S_SKIP_DOWNLOAD=true k3s-install.sh 并执行kubectl get nodes检查集群中的节点。\n[root@openeuler-riscv64 ~]# INSTALL_K3S_SKIP_DOWNLOAD=true k3s-install.sh [INFO] Skipping k3s download and verify [INFO] Skipping installation of SELinux RPM [INFO] Creating /usr/local/bin/kubectl symlink to k3s [INFO] Creating /usr/local/bin/crictl symlink to k3s [INFO] Creating /usr/local/bin/ctr symlink to k3s [INFO] Creating killall script /usr/local/bin/k3s-killall.sh [INFO] Creating uninstall script /usr/local/bin/k3s-uninstall.sh [INFO] env: Creating environment file /etc/systemd/system/k3s.service.env [INFO] systemd: Creating service file /etc/systemd/system/k3s.service [INFO] systemd: Enabling k3s unit Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service. [INFO] systemd: Starting k3s [ 4166.015532] bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this. [ 4166.085229] Bridge firewalling registered [ 4436.489721] IPVS: Registered protocols (TCP, UDP) [ 4436.501236] IPVS: Connection hash table configured (size=4096, memory=32Kbytes) [ 4436.507135] IPVS: ipvs loaded. [ 4438.223653] IPVS: [rr] scheduler registered. [root@openeuler-riscv64 ~]# kubectl get nodes NAME STATUS ROLES AGE VERSION openeuler-riscv64 Ready control-plane,master 3m37s v1.24.2+k3s- 这个过程中跳过了k3s的下载和架构验证，创建了系统 kubectl, crictl,ctr 三个命令的系统链接到 k3s. 创建了 kill all，uninstall 脚本，创建了环境变量，服务文件。\n需要提醒的是，此时我们只有一个节点一个开发板，而在 K3s 的源码中默认Server既是Server又是Agent，这样才能在单机的情况下运行。\n之后我们验证其关于 pod,容器等具体功能是否支持。\n我们可以写一个简单的 yaml 文件，指定使用riscv64/busybox:latest这个镜像，执行kubectl apply -f b1.yaml进行部署 可以发现其创建成功了，但是在执行kubectl get pods时显示的状态一直是ContainerCreated 我们需要使用kubectl describe pod b1来观察这个pod创建的具体过程。\nps:由于本记录没有与实验同步进行（这是我需要吸取的一个教训）所以没有相应的截图可以贴出。 这里拿一个类似的情况举例,发现pause镜像无法拉取导致其他 Pod 无法正常启动.\nWarning FailedCreatePodSandBox 38s (x129 over 108m) kubelet (combined from similar events): Failed to create pod sandbox: rpc error: code = Unknown desc = failed to get sandbox image \"carvicsforth/pause:v3.10-v1.31.1\": failed to pull image \"carvicsforth/pause:v3.10-v1.31.1\": failed to pull and unpack image \"docker.io/carvicsforth/pause:v3.10-v1.31.1\": failed to resolve reference \"docker.io/carvicsforth/pause:v3.10-v1.31.1\": failed to do request: Head \"https://registry-1.docker.io/v2/carvicsforth/pause/manifests/v3.10-v1.31.1\": dial tcp 208.101.60.87:443: i/o timeout 可以发现其成功 Scheduled 了，但是拉取镜像 pause:3.6 时遇到了 manifest 问题，其实就是pause镜像并不支持 RiscV架构. 于是我们就来深入研究一下 pause 镜像这个东西。\nPod需要一个中间容器Infa来实现，而这个Infra容器正是pause容器\nPause在K8s的源码位置 /kubernetes/build/pause/linux/pause.c，其作用就是\n无限循环调用 pause 系统调用并休眠直到收到信号。 作为 PID 为1的进程，专一于维护命名空间和进程管理。 故我们需要先解决这个 pause 镜像的适配问题，由于其源码就是一段C代码而已，所以我们直接尝试在开发板上进行镜像的适配。\n适配Pause镜像 如果没有安装编译工具链，请先安装dnf install -y gcc\n将上述 pause.c文件下载或传输到开发板上,这里使用ssh相关命令\nscp -r 本机文件路径 目标主机名@IP:目标路径 以下步骤参考整合于 Deepseek 与 ChatGpt 的回答。\n1.直接编译现有代码\ngcc -static -Os -o pause pause.c 2.检查并测试\nldd ./pause # 测试版本显示 ./pause -v 3.容器化使用\nFROM scratch COPY pause /pause ENTRYPOINT [\"/pause\"] 4.测试容器\n# 构建镜像 docker build -t my-pause . # 运行测试 docker run --rm -it --name test-pause my-pause # 在另一个终端发送停止信号 docker stop test-pause # 应看到正常退出 5.docker保存镜像为tar文件\ndocker save my-pause \u003e pause-riscv.tar 6.在k3s节点上加载镜像\n# 先查看当前k3s使用的containerd命名空间,我的结果是k8s.io k3s ctr namespace ls # 再加载 k3s ctr images import pause-riscv.tar # or k3s ctr -n k8s.io images import pause-riscv.tar 7.将此镜像作为本地镜像\n# 如果没有这个文件夹，自行创建 cd /var/lib/rancher/k3s/agent/images mkdir -p /var/lib/rancher/k3s/agent/images # 放置我们自己的pause镜像 cp ./pause-riscv.tar /var/lib/rancher/k3s/agent/images 8.将此镜像打标签以适应原本拉取时所要的镜像名称\n# 先查看当前我们制作的镜像名称 ctr images ls # 重新打标签 后面的名称是之前k3s拉取时拉取失败的镜像名称 ctr -n k8s.io images tag \u003c上一条命令的名称\u003e docker.io/rancher/mirrored-pause:3.6 9.再使用 crictl,ctr 命令检查镜像\n将这两个命令理解为docker命令即可，用来管理镜像。\nctr --namespace=k8s.io images list | grep pause crictl images | grep pause 10.重新尝试busybox镜像\nkubectl apply-f b1.yaml # 再用crictl命令,使用debug标签观察其过程 crictl --debug pull riscv64/alpine # 最后检查pod是否运行成功 kubectl get pods -o wide 最终发现busybox和alpine镜像均可以成功拉取，不会再出现pause镜像不适配的问题。\n其他镜像可能会因为网络问题，适配问题无法拉取成功，这是我们后续需要进行的工作。\n回到源码 回到源码之中，在cli/cmds/agent.go源码中，关于pause-image命令的代码如下\nPauseImageFlag = \u0026cli.StringFlag{ Name: \"pause-image\", Usage: \"(agent/runtime) Customized pause image for containerd or docker sandbox\", Destination: \u0026AgentConfig.PauseImage, Value: \"rancher/mirrored-pause:3.6\", } 所以在启动agent节点时可以直接在命令行中指定\nsudo k3s agent \\ --pause-image=your-repo/your-pause:3.6-riscv64 \\ --server=https://:6443 \\ --token= 源码中关于pause的构建Dockefile如下：\nARG BASE FROM ${BASE} ARG ARCH ADD bin/pause-linux-${ARCH} /pause USER 65535:65535 ENTRYPOINT [\"/pause\"] 可供我们构建时参考。\n总结 至此，我们完成在 RiscV+Openeuler 开发板上 k3s 的 Server 节点部署工作，并成功解决了其拉取 pause 镜像出现的架构不适配问题。 我们采用的方法是本地自行构建适合 riscv 的 pause 镜像并让 k3s 使用这个镜像启动.\n后续目标再仔细研究 k3s/k8s 源码中有关于 Pod 创建的过程，看看其对 pause的具体应用在哪里. 如何能够将 pause 这部分的缺陷从源码的部分补充完整，可以不再需要直接从本地构建，而是可以直接部署。\n更新(5.8) 从大佬的思路中得到启发,我们可以修改源码中的pkg/cli/cmds/const_linux.go文件的 DefaultPauseImage = \"rancher/mirrored-pause:3.6\" 换为我们自己仓库的地址,例如carvicsforth/pause:v3.10-v1.31.1(这是大佬的地址),这样就可以避免了本地构建.\n","wordCount":"2734","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2025-03-28T14:19:09+08:00","dateModified":"2025-03-28T14:19:09+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">K3sEP02——解决RiscV开发板镜像无法拉取问题</h1><div class=post-meta><span title='2025-03-28 14:19:09 +0800 CST'>三月 28, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e5%bc%95%e5%ad%90 aria-label=引子>引子</a></li><li><a href=#%e5%ae%9e%e9%aa%8c%e7%8e%af%e5%a2%83 aria-label=实验环境>实验环境</a></li><li><a href=#%e5%ae%9e%e9%aa%8c%e8%bf%87%e7%a8%8b aria-label=实验过程>实验过程</a><ul><li><a href=#%e9%aa%8c%e8%af%81%e9%83%a8%e7%bd%b2server%e8%8a%82%e7%82%b9 aria-label=验证部署Server节点>验证部署Server节点</a></li><li><a href=#%e9%80%82%e9%85%8dpause%e9%95%9c%e5%83%8f aria-label=适配Pause镜像>适配Pause镜像</a></li></ul></li><li><a href=#%e5%9b%9e%e5%88%b0%e6%ba%90%e7%a0%81 aria-label=回到源码>回到源码</a></li><li><a href=#%e6%80%bb%e7%bb%93 aria-label=总结>总结</a></li><li><a href=#%e6%9b%b4%e6%96%b058 aria-label=更新(5.8)>更新(5.8)</a></li></ul></div></details></div><div class=post-content><h2 id=引子>引子<a hidden class=anchor aria-hidden=true href=#引子>#</a></h2><p>继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。</p><p>值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。</p><p>本次实验利用了这两篇文章中的配置:<a href=https://www.bfsmlt.top/posts/003li_riscv01/>玩转RISCV开发板01-烧录OpenEuler国产镜像</a>,<a href=https://www.bfsmlt.top/posts/004risc-v_deployment/>玩转RISCV开发板02-配置好容器化环境</a>，关键在于使用了RiscV+Openeuler的架构系统组合，来自于SIG兴趣小组的23.09的镜像，以及其已经貌似适配好的k3s包。（具体请参考上面的两篇文章）</p><h2 id=实验环境>实验环境<a hidden class=anchor aria-hidden=true href=#实验环境>#</a></h2><ul><li>LiCheePi4A 16+256G</li><li>OpenEuler23.09镜像,<a href=https://mirror.iscas.ac.cn/openeuler-sig-riscv/openEuler-RISC-V/preview/openEuler-23.03-V1-riscv64/lpi4a/>下载地址</a></li></ul><h2 id=实验过程>实验过程<a hidden class=anchor aria-hidden=true href=#实验过程>#</a></h2><p>我们之前使用<code>sudo dnf install -y k3s</code>成功安装了k3及其依赖</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>root@openeuler-riscv64 ~<span class=o>]</span><span class=c1># sudo dnf install -y k3s</span>
-</span></span><span class=line><span class=cl>mainline                                        3.8 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>epol                                            5.4 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>ceph-user                                       4.6 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>chromium-user                                   4.4 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>libreoffice                                     4.6 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>rust167-user                                    5.8 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>mesa-supplements                                3.7 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>oetestsuite                                     5.1 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>update                                          4.6 kB/s <span class=p>|</span> 3.0 kB     00:00    
-</span></span><span class=line><span class=cl>Dependencies resolved.
-</span></span><span class=line><span class=cl><span class=o>================================================================================</span>
-</span></span><span class=line><span class=cl> Package                  Arch     Version                      Repo       <span class=nv>Size</span>
-</span></span><span class=line><span class=cl><span class=o>================================================================================</span>
-</span></span><span class=line><span class=cl>Installing:
-</span></span><span class=line><span class=cl> k3s                      riscv64  1.24.2+rc1+k3s2-3.oe2303     epol       <span class=m>59</span> M
-</span></span><span class=line><span class=cl>Installing dependencies:
-</span></span><span class=line><span class=cl> container-selinux        noarch   2:2.163-1.oe2303             mainline   <span class=m>39</span> k
-</span></span><span class=line><span class=cl> k3s-selinux              noarch   1.1.stable.1-1.oe2303        epol       <span class=m>20</span> k
-</span></span><span class=line><span class=cl> policycoreutils          riscv64  3.4-1.oe2303                 mainline  <span class=m>156</span> k
-</span></span><span class=line><span class=cl> selinux-policy           noarch   38.6-4.oe2303                mainline   <span class=m>24</span> k
-</span></span><span class=line><span class=cl> selinux-policy-targeted  noarch   38.6-4.oe2303                mainline  6.8 M
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Transaction <span class=nv>Summary</span>
-</span></span><span class=line><span class=cl><span class=o>================================================================================</span>
-</span></span><span class=line><span class=cl>Install  <span class=m>6</span> Packages
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Total download size: <span class=m>66</span> M
-</span></span><span class=line><span class=cl>Installed size: <span class=m>87</span> M
-</span></span><span class=line><span class=cl>Downloading Packages:
-</span></span><span class=line><span class=cl><span class=o>(</span>1/6<span class=o>)</span>: container-selinux-2.163-1.oe2303.noarch.  <span class=m>22</span> kB/s <span class=p>|</span>  <span class=m>39</span> kB     00:01    
-</span></span><span class=line><span class=cl><span class=o>(</span>2/6<span class=o>)</span>: selinux-policy-38.6-4.oe2303.noarch.rpm   <span class=m>13</span> kB/s <span class=p>|</span>  <span class=m>24</span> kB     00:01    
-</span></span><span class=line><span class=cl><span class=o>(</span>3/6<span class=o>)</span>: policycoreutils-3.4-1.oe2303.riscv64.rpm  <span class=m>84</span> kB/s <span class=p>|</span> <span class=m>156</span> kB     00:01    
-</span></span><span class=line><span class=cl><span class=o>(</span>4/6<span class=o>)</span>: selinux-policy-targeted-38.6-4.oe2303.no 4.1 MB/s <span class=p>|</span> 6.8 MB     00:01    
-</span></span><span class=line><span class=cl><span class=o>(</span>5/6<span class=o>)</span>: k3s-selinux-1.1.stable.1-1.oe2303.noarch  <span class=m>14</span> kB/s <span class=p>|</span>  <span class=m>20</span> kB     00:01    
-</span></span><span class=line><span class=cl><span class=o>(</span>6/6<span class=o>)</span>: k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64.rpm 4.2 MB/s <span class=p>|</span>  <span class=m>59</span> MB     00:14    
-</span></span><span class=line><span class=cl>--------------------------------------------------------------------------------
-</span></span><span class=line><span class=cl>Total                                           4.2 MB/s <span class=p>|</span>  <span class=m>66</span> MB     00:15     
-</span></span><span class=line><span class=cl>Running transaction check
-</span></span><span class=line><span class=cl>Transaction check succeeded.
-</span></span><span class=line><span class=cl>Running transaction <span class=nb>test</span>
-</span></span><span class=line><span class=cl>Transaction <span class=nb>test</span> succeeded.
-</span></span><span class=line><span class=cl>Running transaction
-</span></span><span class=line><span class=cl>  Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch           1/1 
-</span></span><span class=line><span class=cl>  Preparing        :                                                        1/1 
-</span></span><span class=line><span class=cl>  Installing       : policycoreutils-3.4-1.oe2303.riscv64                   1/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: policycoreutils-3.4-1.oe2303.riscv64                   1/6 
-</span></span><span class=line><span class=cl>Created symlink /etc/systemd/system/multi-user.target.wants/restorecond.service → /usr/lib/systemd/system/restorecond.service.
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>  Installing       : selinux-policy-38.6-4.oe2303.noarch                    2/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: selinux-policy-38.6-4.oe2303.noarch                    2/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch           3/6 
-</span></span><span class=line><span class=cl>  Installing       : selinux-policy-targeted-38.6-4.oe2303.noarch           3/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch           3/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch              4/6 
-</span></span><span class=line><span class=cl>  Installing       : container-selinux-2:2.163-1.oe2303.noarch              4/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch              4/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch               5/6 
-</span></span><span class=line><span class=cl>  Installing       : k3s-selinux-1.1.stable.1-1.oe2303.noarch               5/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch               5/6 
-</span></span><span class=line><span class=cl>  Installing       : k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64                   6/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch           6/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch              6/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch               6/6 
-</span></span><span class=line><span class=cl>  Running scriptlet: k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64                   6/6 
-</span></span><span class=line><span class=cl>  Verifying        : container-selinux-2:2.163-1.oe2303.noarch              1/6 
-</span></span><span class=line><span class=cl>  Verifying        : policycoreutils-3.4-1.oe2303.riscv64                   2/6 
-</span></span><span class=line><span class=cl>  Verifying        : selinux-policy-38.6-4.oe2303.noarch                    3/6 
-</span></span><span class=line><span class=cl>  Verifying        : selinux-policy-targeted-38.6-4.oe2303.noarch           4/6 
-</span></span><span class=line><span class=cl>  Verifying        : k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64                   5/6 
-</span></span><span class=line><span class=cl>  Verifying        : k3s-selinux-1.1.stable.1-1.oe2303.noarch               6/6 
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Installed:
-</span></span><span class=line><span class=cl>  container-selinux-2:2.163-1.oe2303.noarch                                     
-</span></span><span class=line><span class=cl>  k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64                                          
-</span></span><span class=line><span class=cl>  k3s-selinux-1.1.stable.1-1.oe2303.noarch                                      
-</span></span><span class=line><span class=cl>  policycoreutils-3.4-1.oe2303.riscv64                                          
-</span></span><span class=line><span class=cl>  selinux-policy-38.6-4.oe2303.noarch                                           
-</span></span><span class=line><span class=cl>  selinux-policy-targeted-38.6-4.oe2303.noarch                                  
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>Complete!
-</span></span></code></pre></div><h3 id=验证部署server节点>验证部署Server节点<a hidden class=anchor aria-hidden=true href=#验证部署server节点>#</a></h3><p>接下来我们需要验证部署Server节点，由于之前我们安装好的k3s只是一个运行脚本，所以我们需要执行 <code>INSTALL_K3S_SKIP_DOWNLOAD=true k3s-install.sh</code>
-并执行<code>kubectl get nodes</code>检查集群中的节点。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>root@openeuler-riscv64 ~<span class=o>]</span><span class=c1># INSTALL_K3S_SKIP_DOWNLOAD=true k3s-install.sh</span>
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  Skipping k3s download and verify
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  Skipping installation of SELinux RPM
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  Creating /usr/local/bin/kubectl symlink to k3s
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  Creating /usr/local/bin/crictl symlink to k3s
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  Creating /usr/local/bin/ctr symlink to k3s
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  Creating killall script /usr/local/bin/k3s-killall.sh
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  env: Creating environment file /etc/systemd/system/k3s.service.env
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  systemd: Creating service file /etc/systemd/system/k3s.service
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  systemd: Enabling k3s unit
-</span></span><span class=line><span class=cl>Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
-</span></span><span class=line><span class=cl><span class=o>[</span>INFO<span class=o>]</span>  systemd: Starting k3s
-</span></span><span class=line><span class=cl><span class=o>[</span> 4166.015532<span class=o>]</span> bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter <span class=k>if</span> you need this.
-</span></span><span class=line><span class=cl><span class=o>[</span> 4166.085229<span class=o>]</span> Bridge firewalling registered
-</span></span><span class=line><span class=cl><span class=o>[</span> 4436.489721<span class=o>]</span> IPVS: Registered protocols <span class=o>(</span>TCP, UDP<span class=o>)</span>
-</span></span><span class=line><span class=cl><span class=o>[</span> 4436.501236<span class=o>]</span> IPVS: Connection <span class=nb>hash</span> table configured <span class=o>(</span><span class=nv>size</span><span class=o>=</span>4096, <span class=nv>memory</span><span class=o>=</span>32Kbytes<span class=o>)</span>
-</span></span><span class=line><span class=cl><span class=o>[</span> 4436.507135<span class=o>]</span> IPVS: ipvs loaded.
-</span></span><span class=line><span class=cl><span class=o>[</span> 4438.223653<span class=o>]</span> IPVS: <span class=o>[</span>rr<span class=o>]</span> scheduler registered.
-</span></span><span class=line><span class=cl><span class=o>[</span>root@openeuler-riscv64 ~<span class=o>]</span><span class=c1># kubectl get nodes</span>
-</span></span><span class=line><span class=cl>NAME                STATUS   ROLES                  AGE     VERSION
-</span></span><span class=line><span class=cl>openeuler-riscv64   Ready    control-plane,master   3m37s   v1.24.2+k3s-
+值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "K3sEP02——解决RiscV开发板镜像无法拉取问题",
+      "item": "http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "K3sEP02——解决RiscV开发板镜像无法拉取问题",
+  "name": "K3sEP02——解决RiscV开发板镜像无法拉取问题",
+  "description": "引子 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。\n值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。\n",
+  "keywords": [
+    "RISC-V", "k3s", "pod", "适配"
+  ],
+  "articleBody": "引子 继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。\n值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。\n本次实验利用了这两篇文章中的配置:玩转RISCV开发板01-烧录OpenEuler国产镜像,玩转RISCV开发板02-配置好容器化环境，关键在于使用了RiscV+Openeuler的架构系统组合，来自于SIG兴趣小组的23.09的镜像，以及其已经貌似适配好的k3s包。（具体请参考上面的两篇文章）\n实验环境 LiCheePi4A 16+256G OpenEuler23.09镜像,下载地址 实验过程 我们之前使用sudo dnf install -y k3s成功安装了k3及其依赖\n[root@openeuler-riscv64 ~]# sudo dnf install -y k3s mainline 3.8 kB/s | 3.0 kB 00:00 epol 5.4 kB/s | 3.0 kB 00:00 ceph-user 4.6 kB/s | 3.0 kB 00:00 chromium-user 4.4 kB/s | 3.0 kB 00:00 libreoffice 4.6 kB/s | 3.0 kB 00:00 rust167-user 5.8 kB/s | 3.0 kB 00:00 mesa-supplements 3.7 kB/s | 3.0 kB 00:00 oetestsuite 5.1 kB/s | 3.0 kB 00:00 update 4.6 kB/s | 3.0 kB 00:00 Dependencies resolved. ================================================================================ Package Arch Version Repo Size ================================================================================ Installing: k3s riscv64 1.24.2+rc1+k3s2-3.oe2303 epol 59 M Installing dependencies: container-selinux noarch 2:2.163-1.oe2303 mainline 39 k k3s-selinux noarch 1.1.stable.1-1.oe2303 epol 20 k policycoreutils riscv64 3.4-1.oe2303 mainline 156 k selinux-policy noarch 38.6-4.oe2303 mainline 24 k selinux-policy-targeted noarch 38.6-4.oe2303 mainline 6.8 M Transaction Summary ================================================================================ Install 6 Packages Total download size: 66 M Installed size: 87 M Downloading Packages: (1/6): container-selinux-2.163-1.oe2303.noarch. 22 kB/s | 39 kB 00:01 (2/6): selinux-policy-38.6-4.oe2303.noarch.rpm 13 kB/s | 24 kB 00:01 (3/6): policycoreutils-3.4-1.oe2303.riscv64.rpm 84 kB/s | 156 kB 00:01 (4/6): selinux-policy-targeted-38.6-4.oe2303.no 4.1 MB/s | 6.8 MB 00:01 (5/6): k3s-selinux-1.1.stable.1-1.oe2303.noarch 14 kB/s | 20 kB 00:01 (6/6): k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64.rpm 4.2 MB/s | 59 MB 00:14 -------------------------------------------------------------------------------- Total 4.2 MB/s | 66 MB 00:15 Running transaction check Transaction check succeeded. Running transaction test Transaction test succeeded. Running transaction Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch 1/1 Preparing : 1/1 Installing : policycoreutils-3.4-1.oe2303.riscv64 1/6 Running scriptlet: policycoreutils-3.4-1.oe2303.riscv64 1/6 Created symlink /etc/systemd/system/multi-user.target.wants/restorecond.service → /usr/lib/systemd/system/restorecond.service. Installing : selinux-policy-38.6-4.oe2303.noarch 2/6 Running scriptlet: selinux-policy-38.6-4.oe2303.noarch 2/6 Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch 3/6 Installing : selinux-policy-targeted-38.6-4.oe2303.noarch 3/6 Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch 3/6 Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch 4/6 Installing : container-selinux-2:2.163-1.oe2303.noarch 4/6 Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch 4/6 Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch 5/6 Installing : k3s-selinux-1.1.stable.1-1.oe2303.noarch 5/6 Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch 5/6 Installing : k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64 6/6 Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch 6/6 Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch 6/6 Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch 6/6 Running scriptlet: k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64 6/6 Verifying : container-selinux-2:2.163-1.oe2303.noarch 1/6 Verifying : policycoreutils-3.4-1.oe2303.riscv64 2/6 Verifying : selinux-policy-38.6-4.oe2303.noarch 3/6 Verifying : selinux-policy-targeted-38.6-4.oe2303.noarch 4/6 Verifying : k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64 5/6 Verifying : k3s-selinux-1.1.stable.1-1.oe2303.noarch 6/6 Installed: container-selinux-2:2.163-1.oe2303.noarch k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64 k3s-selinux-1.1.stable.1-1.oe2303.noarch policycoreutils-3.4-1.oe2303.riscv64 selinux-policy-38.6-4.oe2303.noarch selinux-policy-targeted-38.6-4.oe2303.noarch Complete! 验证部署Server节点 接下来我们需要验证部署Server节点，由于之前我们安装好的k3s只是一个运行脚本，所以我们需要执行 INSTALL_K3S_SKIP_DOWNLOAD=true k3s-install.sh 并执行kubectl get nodes检查集群中的节点。\n[root@openeuler-riscv64 ~]# INSTALL_K3S_SKIP_DOWNLOAD=true k3s-install.sh [INFO] Skipping k3s download and verify [INFO] Skipping installation of SELinux RPM [INFO] Creating /usr/local/bin/kubectl symlink to k3s [INFO] Creating /usr/local/bin/crictl symlink to k3s [INFO] Creating /usr/local/bin/ctr symlink to k3s [INFO] Creating killall script /usr/local/bin/k3s-killall.sh [INFO] Creating uninstall script /usr/local/bin/k3s-uninstall.sh [INFO] env: Creating environment file /etc/systemd/system/k3s.service.env [INFO] systemd: Creating service file /etc/systemd/system/k3s.service [INFO] systemd: Enabling k3s unit Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service. [INFO] systemd: Starting k3s [ 4166.015532] bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this. [ 4166.085229] Bridge firewalling registered [ 4436.489721] IPVS: Registered protocols (TCP, UDP) [ 4436.501236] IPVS: Connection hash table configured (size=4096, memory=32Kbytes) [ 4436.507135] IPVS: ipvs loaded. [ 4438.223653] IPVS: [rr] scheduler registered. [root@openeuler-riscv64 ~]# kubectl get nodes NAME STATUS ROLES AGE VERSION openeuler-riscv64 Ready control-plane,master 3m37s v1.24.2+k3s- 这个过程中跳过了k3s的下载和架构验证，创建了系统 kubectl, crictl,ctr 三个命令的系统链接到 k3s. 创建了 kill all，uninstall 脚本，创建了环境变量，服务文件。\n需要提醒的是，此时我们只有一个节点一个开发板，而在 K3s 的源码中默认Server既是Server又是Agent，这样才能在单机的情况下运行。\n之后我们验证其关于 pod,容器等具体功能是否支持。\n我们可以写一个简单的 yaml 文件，指定使用riscv64/busybox:latest这个镜像，执行kubectl apply -f b1.yaml进行部署 可以发现其创建成功了，但是在执行kubectl get pods时显示的状态一直是ContainerCreated 我们需要使用kubectl describe pod b1来观察这个pod创建的具体过程。\nps:由于本记录没有与实验同步进行（这是我需要吸取的一个教训）所以没有相应的截图可以贴出。 这里拿一个类似的情况举例,发现pause镜像无法拉取导致其他 Pod 无法正常启动.\nWarning FailedCreatePodSandBox 38s (x129 over 108m) kubelet (combined from similar events): Failed to create pod sandbox: rpc error: code = Unknown desc = failed to get sandbox image \"carvicsforth/pause:v3.10-v1.31.1\": failed to pull image \"carvicsforth/pause:v3.10-v1.31.1\": failed to pull and unpack image \"docker.io/carvicsforth/pause:v3.10-v1.31.1\": failed to resolve reference \"docker.io/carvicsforth/pause:v3.10-v1.31.1\": failed to do request: Head \"https://registry-1.docker.io/v2/carvicsforth/pause/manifests/v3.10-v1.31.1\": dial tcp 208.101.60.87:443: i/o timeout 可以发现其成功 Scheduled 了，但是拉取镜像 pause:3.6 时遇到了 manifest 问题，其实就是pause镜像并不支持 RiscV架构. 于是我们就来深入研究一下 pause 镜像这个东西。\nPod需要一个中间容器Infa来实现，而这个Infra容器正是pause容器\nPause在K8s的源码位置 /kubernetes/build/pause/linux/pause.c，其作用就是\n无限循环调用 pause 系统调用并休眠直到收到信号。 作为 PID 为1的进程，专一于维护命名空间和进程管理。 故我们需要先解决这个 pause 镜像的适配问题，由于其源码就是一段C代码而已，所以我们直接尝试在开发板上进行镜像的适配。\n适配Pause镜像 如果没有安装编译工具链，请先安装dnf install -y gcc\n将上述 pause.c文件下载或传输到开发板上,这里使用ssh相关命令\nscp -r 本机文件路径 目标主机名@IP:目标路径 以下步骤参考整合于 Deepseek 与 ChatGpt 的回答。\n1.直接编译现有代码\ngcc -static -Os -o pause pause.c 2.检查并测试\nldd ./pause # 测试版本显示 ./pause -v 3.容器化使用\nFROM scratch COPY pause /pause ENTRYPOINT [\"/pause\"] 4.测试容器\n# 构建镜像 docker build -t my-pause . # 运行测试 docker run --rm -it --name test-pause my-pause # 在另一个终端发送停止信号 docker stop test-pause # 应看到正常退出 5.docker保存镜像为tar文件\ndocker save my-pause \u003e pause-riscv.tar 6.在k3s节点上加载镜像\n# 先查看当前k3s使用的containerd命名空间,我的结果是k8s.io k3s ctr namespace ls # 再加载 k3s ctr images import pause-riscv.tar # or k3s ctr -n k8s.io images import pause-riscv.tar 7.将此镜像作为本地镜像\n# 如果没有这个文件夹，自行创建 cd /var/lib/rancher/k3s/agent/images mkdir -p /var/lib/rancher/k3s/agent/images # 放置我们自己的pause镜像 cp ./pause-riscv.tar /var/lib/rancher/k3s/agent/images 8.将此镜像打标签以适应原本拉取时所要的镜像名称\n# 先查看当前我们制作的镜像名称 ctr images ls # 重新打标签 后面的名称是之前k3s拉取时拉取失败的镜像名称 ctr -n k8s.io images tag \u003c上一条命令的名称\u003e docker.io/rancher/mirrored-pause:3.6 9.再使用 crictl,ctr 命令检查镜像\n将这两个命令理解为docker命令即可，用来管理镜像。\nctr --namespace=k8s.io images list | grep pause crictl images | grep pause 10.重新尝试busybox镜像\nkubectl apply-f b1.yaml # 再用crictl命令,使用debug标签观察其过程 crictl --debug pull riscv64/alpine # 最后检查pod是否运行成功 kubectl get pods -o wide 最终发现busybox和alpine镜像均可以成功拉取，不会再出现pause镜像不适配的问题。\n其他镜像可能会因为网络问题，适配问题无法拉取成功，这是我们后续需要进行的工作。\n回到源码 回到源码之中，在cli/cmds/agent.go源码中，关于pause-image命令的代码如下\nPauseImageFlag = \u0026cli.StringFlag{ Name: \"pause-image\", Usage: \"(agent/runtime) Customized pause image for containerd or docker sandbox\", Destination: \u0026AgentConfig.PauseImage, Value: \"rancher/mirrored-pause:3.6\", } 所以在启动agent节点时可以直接在命令行中指定\nsudo k3s agent \\ --pause-image=your-repo/your-pause:3.6-riscv64 \\ --server=https://:6443 \\ --token= 源码中关于pause的构建Dockefile如下：\nARG BASE FROM ${BASE} ARG ARCH ADD bin/pause-linux-${ARCH} /pause USER 65535:65535 ENTRYPOINT [\"/pause\"] 可供我们构建时参考。\n总结 至此，我们完成在 RiscV+Openeuler 开发板上 k3s 的 Server 节点部署工作，并成功解决了其拉取 pause 镜像出现的架构不适配问题。 我们采用的方法是本地自行构建适合 riscv 的 pause 镜像并让 k3s 使用这个镜像启动.\n后续目标再仔细研究 k3s/k8s 源码中有关于 Pod 创建的过程，看看其对 pause的具体应用在哪里. 如何能够将 pause 这部分的缺陷从源码的部分补充完整，可以不再需要直接从本地构建，而是可以直接部署。\n更新(5.8) 从大佬的思路中得到启发,我们可以修改源码中的pkg/cli/cmds/const_linux.go文件的 DefaultPauseImage = \"rancher/mirrored-pause:3.6\" 换为我们自己仓库的地址,例如carvicsforth/pause:v3.10-v1.31.1(这是大佬的地址),这样就可以避免了本地构建.\n",
+  "wordCount" : "2734",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-03-28T14:19:09+08:00",
+  "dateModified": "2025-03-28T14:19:09+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      K3sEP02——解决RiscV开发板镜像无法拉取问题
+    </h1>
+    <div class="post-meta"><span title='2025-03-28 14:19:09 +0800 CST'>三月 28, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#%e5%ae%9e%e9%aa%8c%e7%8e%af%e5%a2%83" aria-label="实验环境">实验环境</a></li>
+                <li>
+                    <a href="#%e5%ae%9e%e9%aa%8c%e8%bf%87%e7%a8%8b" aria-label="实验过程">实验过程</a><ul>
+                        
+                <li>
+                    <a href="#%e9%aa%8c%e8%af%81%e9%83%a8%e7%bd%b2server%e8%8a%82%e7%82%b9" aria-label="验证部署Server节点">验证部署Server节点</a></li>
+                <li>
+                    <a href="#%e9%80%82%e9%85%8dpause%e9%95%9c%e5%83%8f" aria-label="适配Pause镜像">适配Pause镜像</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%9b%9e%e5%88%b0%e6%ba%90%e7%a0%81" aria-label="回到源码">回到源码</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a></li>
+                <li>
+                    <a href="#%e6%9b%b4%e6%96%b058" aria-label="更新(5.8)">更新(5.8)</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。</p>
+<p>值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。</p>
+<p>本次实验利用了这两篇文章中的配置:<a href="https://www.bfsmlt.top/posts/003li_riscv01/">玩转RISCV开发板01-烧录OpenEuler国产镜像</a>,<a href="https://www.bfsmlt.top/posts/004risc-v_deployment/">玩转RISCV开发板02-配置好容器化环境</a>，关键在于使用了RiscV+Openeuler的架构系统组合，来自于SIG兴趣小组的23.09的镜像，以及其已经貌似适配好的k3s包。（具体请参考上面的两篇文章）</p>
+<h2 id="实验环境">实验环境<a hidden class="anchor" aria-hidden="true" href="#实验环境">#</a></h2>
+<ul>
+<li>LiCheePi4A 16+256G</li>
+<li>OpenEuler23.09镜像,<a href="https://mirror.iscas.ac.cn/openeuler-sig-riscv/openEuler-RISC-V/preview/openEuler-23.03-V1-riscv64/lpi4a/">下载地址</a></li>
+</ul>
+<h2 id="实验过程">实验过程<a hidden class="anchor" aria-hidden="true" href="#实验过程">#</a></h2>
+<p>我们之前使用<code>sudo dnf install -y k3s</code>成功安装了k3及其依赖</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>root@openeuler-riscv64 ~<span class="o">]</span><span class="c1"># sudo dnf install -y k3s</span>
+</span></span><span class="line"><span class="cl">mainline                                        3.8 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">epol                                            5.4 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">ceph-user                                       4.6 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">chromium-user                                   4.4 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">libreoffice                                     4.6 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">rust167-user                                    5.8 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">mesa-supplements                                3.7 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">oetestsuite                                     5.1 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">update                                          4.6 kB/s <span class="p">|</span> 3.0 kB     00:00    
+</span></span><span class="line"><span class="cl">Dependencies resolved.
+</span></span><span class="line"><span class="cl"><span class="o">================================================================================</span>
+</span></span><span class="line"><span class="cl"> Package                  Arch     Version                      Repo       <span class="nv">Size</span>
+</span></span><span class="line"><span class="cl"><span class="o">================================================================================</span>
+</span></span><span class="line"><span class="cl">Installing:
+</span></span><span class="line"><span class="cl"> k3s                      riscv64  1.24.2+rc1+k3s2-3.oe2303     epol       <span class="m">59</span> M
+</span></span><span class="line"><span class="cl">Installing dependencies:
+</span></span><span class="line"><span class="cl"> container-selinux        noarch   2:2.163-1.oe2303             mainline   <span class="m">39</span> k
+</span></span><span class="line"><span class="cl"> k3s-selinux              noarch   1.1.stable.1-1.oe2303        epol       <span class="m">20</span> k
+</span></span><span class="line"><span class="cl"> policycoreutils          riscv64  3.4-1.oe2303                 mainline  <span class="m">156</span> k
+</span></span><span class="line"><span class="cl"> selinux-policy           noarch   38.6-4.oe2303                mainline   <span class="m">24</span> k
+</span></span><span class="line"><span class="cl"> selinux-policy-targeted  noarch   38.6-4.oe2303                mainline  6.8 M
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Transaction <span class="nv">Summary</span>
+</span></span><span class="line"><span class="cl"><span class="o">================================================================================</span>
+</span></span><span class="line"><span class="cl">Install  <span class="m">6</span> Packages
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Total download size: <span class="m">66</span> M
+</span></span><span class="line"><span class="cl">Installed size: <span class="m">87</span> M
+</span></span><span class="line"><span class="cl">Downloading Packages:
+</span></span><span class="line"><span class="cl"><span class="o">(</span>1/6<span class="o">)</span>: container-selinux-2.163-1.oe2303.noarch.  <span class="m">22</span> kB/s <span class="p">|</span>  <span class="m">39</span> kB     00:01    
+</span></span><span class="line"><span class="cl"><span class="o">(</span>2/6<span class="o">)</span>: selinux-policy-38.6-4.oe2303.noarch.rpm   <span class="m">13</span> kB/s <span class="p">|</span>  <span class="m">24</span> kB     00:01    
+</span></span><span class="line"><span class="cl"><span class="o">(</span>3/6<span class="o">)</span>: policycoreutils-3.4-1.oe2303.riscv64.rpm  <span class="m">84</span> kB/s <span class="p">|</span> <span class="m">156</span> kB     00:01    
+</span></span><span class="line"><span class="cl"><span class="o">(</span>4/6<span class="o">)</span>: selinux-policy-targeted-38.6-4.oe2303.no 4.1 MB/s <span class="p">|</span> 6.8 MB     00:01    
+</span></span><span class="line"><span class="cl"><span class="o">(</span>5/6<span class="o">)</span>: k3s-selinux-1.1.stable.1-1.oe2303.noarch  <span class="m">14</span> kB/s <span class="p">|</span>  <span class="m">20</span> kB     00:01    
+</span></span><span class="line"><span class="cl"><span class="o">(</span>6/6<span class="o">)</span>: k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64.rpm 4.2 MB/s <span class="p">|</span>  <span class="m">59</span> MB     00:14    
+</span></span><span class="line"><span class="cl">--------------------------------------------------------------------------------
+</span></span><span class="line"><span class="cl">Total                                           4.2 MB/s <span class="p">|</span>  <span class="m">66</span> MB     00:15     
+</span></span><span class="line"><span class="cl">Running transaction check
+</span></span><span class="line"><span class="cl">Transaction check succeeded.
+</span></span><span class="line"><span class="cl">Running transaction <span class="nb">test</span>
+</span></span><span class="line"><span class="cl">Transaction <span class="nb">test</span> succeeded.
+</span></span><span class="line"><span class="cl">Running transaction
+</span></span><span class="line"><span class="cl">  Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch           1/1 
+</span></span><span class="line"><span class="cl">  Preparing        :                                                        1/1 
+</span></span><span class="line"><span class="cl">  Installing       : policycoreutils-3.4-1.oe2303.riscv64                   1/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: policycoreutils-3.4-1.oe2303.riscv64                   1/6 
+</span></span><span class="line"><span class="cl">Created symlink /etc/systemd/system/multi-user.target.wants/restorecond.service → /usr/lib/systemd/system/restorecond.service.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Installing       : selinux-policy-38.6-4.oe2303.noarch                    2/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: selinux-policy-38.6-4.oe2303.noarch                    2/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch           3/6 
+</span></span><span class="line"><span class="cl">  Installing       : selinux-policy-targeted-38.6-4.oe2303.noarch           3/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch           3/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch              4/6 
+</span></span><span class="line"><span class="cl">  Installing       : container-selinux-2:2.163-1.oe2303.noarch              4/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch              4/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch               5/6 
+</span></span><span class="line"><span class="cl">  Installing       : k3s-selinux-1.1.stable.1-1.oe2303.noarch               5/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch               5/6 
+</span></span><span class="line"><span class="cl">  Installing       : k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64                   6/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: selinux-policy-targeted-38.6-4.oe2303.noarch           6/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: container-selinux-2:2.163-1.oe2303.noarch              6/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: k3s-selinux-1.1.stable.1-1.oe2303.noarch               6/6 
+</span></span><span class="line"><span class="cl">  Running scriptlet: k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64                   6/6 
+</span></span><span class="line"><span class="cl">  Verifying        : container-selinux-2:2.163-1.oe2303.noarch              1/6 
+</span></span><span class="line"><span class="cl">  Verifying        : policycoreutils-3.4-1.oe2303.riscv64                   2/6 
+</span></span><span class="line"><span class="cl">  Verifying        : selinux-policy-38.6-4.oe2303.noarch                    3/6 
+</span></span><span class="line"><span class="cl">  Verifying        : selinux-policy-targeted-38.6-4.oe2303.noarch           4/6 
+</span></span><span class="line"><span class="cl">  Verifying        : k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64                   5/6 
+</span></span><span class="line"><span class="cl">  Verifying        : k3s-selinux-1.1.stable.1-1.oe2303.noarch               6/6 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Installed:
+</span></span><span class="line"><span class="cl">  container-selinux-2:2.163-1.oe2303.noarch                                     
+</span></span><span class="line"><span class="cl">  k3s-1.24.2+rc1+k3s2-3.oe2303.riscv64                                          
+</span></span><span class="line"><span class="cl">  k3s-selinux-1.1.stable.1-1.oe2303.noarch                                      
+</span></span><span class="line"><span class="cl">  policycoreutils-3.4-1.oe2303.riscv64                                          
+</span></span><span class="line"><span class="cl">  selinux-policy-38.6-4.oe2303.noarch                                           
+</span></span><span class="line"><span class="cl">  selinux-policy-targeted-38.6-4.oe2303.noarch                                  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Complete!
+</span></span></code></pre></div><h3 id="验证部署server节点">验证部署Server节点<a hidden class="anchor" aria-hidden="true" href="#验证部署server节点">#</a></h3>
+<p>接下来我们需要验证部署Server节点，由于之前我们安装好的k3s只是一个运行脚本，所以我们需要执行 <code>INSTALL_K3S_SKIP_DOWNLOAD=true k3s-install.sh</code>
+并执行<code>kubectl get nodes</code>检查集群中的节点。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">[</span>root@openeuler-riscv64 ~<span class="o">]</span><span class="c1"># INSTALL_K3S_SKIP_DOWNLOAD=true k3s-install.sh</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  Skipping k3s download and verify
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  Skipping installation of SELinux RPM
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  Creating /usr/local/bin/kubectl symlink to k3s
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  Creating /usr/local/bin/crictl symlink to k3s
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  Creating /usr/local/bin/ctr symlink to k3s
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  Creating killall script /usr/local/bin/k3s-killall.sh
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  env: Creating environment file /etc/systemd/system/k3s.service.env
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  systemd: Creating service file /etc/systemd/system/k3s.service
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  systemd: Enabling k3s unit
+</span></span><span class="line"><span class="cl">Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span>  systemd: Starting k3s
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 4166.015532<span class="o">]</span> bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter <span class="k">if</span> you need this.
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 4166.085229<span class="o">]</span> Bridge firewalling registered
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 4436.489721<span class="o">]</span> IPVS: Registered protocols <span class="o">(</span>TCP, UDP<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 4436.501236<span class="o">]</span> IPVS: Connection <span class="nb">hash</span> table configured <span class="o">(</span><span class="nv">size</span><span class="o">=</span>4096, <span class="nv">memory</span><span class="o">=</span>32Kbytes<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 4436.507135<span class="o">]</span> IPVS: ipvs loaded.
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 4438.223653<span class="o">]</span> IPVS: <span class="o">[</span>rr<span class="o">]</span> scheduler registered.
+</span></span><span class="line"><span class="cl"><span class="o">[</span>root@openeuler-riscv64 ~<span class="o">]</span><span class="c1"># kubectl get nodes</span>
+</span></span><span class="line"><span class="cl">NAME                STATUS   ROLES                  AGE     VERSION
+</span></span><span class="line"><span class="cl">openeuler-riscv64   Ready    control-plane,master   3m37s   v1.24.2+k3s-
 </span></span></code></pre></div><p>这个过程中跳过了k3s的下载和架构验证，创建了系统 kubectl, crictl,ctr 三个命令的系统链接到 k3s.
-创建了 kill all，uninstall 脚本，创建了环境变量，服务文件。</p><p>需要提醒的是，此时我们只有一个节点一个开发板，而在 K3s 的源码中默认<strong>Server既是Server又是Agent</strong>，这样才能在单机的情况下运行。</p><p>之后我们验证其关于 pod,容器等具体功能是否支持。</p><p>我们可以写一个简单的 yaml 文件，指定使用<code>riscv64/busybox:latest</code>这个镜像，执行<code>kubectl apply -f b1.yaml</code>进行部署
+创建了 kill all，uninstall 脚本，创建了环境变量，服务文件。</p>
+<p>需要提醒的是，此时我们只有一个节点一个开发板，而在 K3s 的源码中默认<strong>Server既是Server又是Agent</strong>，这样才能在单机的情况下运行。</p>
+<p>之后我们验证其关于 pod,容器等具体功能是否支持。</p>
+<p>我们可以写一个简单的 yaml 文件，指定使用<code>riscv64/busybox:latest</code>这个镜像，执行<code>kubectl apply -f b1.yaml</code>进行部署
 可以发现其创建成功了，但是在执行<code>kubectl get pods</code>时显示的状态一直是<code>ContainerCreated</code>
-我们需要使用<code>kubectl describe pod b1</code>来观察这个pod创建的具体过程。</p><p>ps:由于本记录没有与实验同步进行（这是我需要吸取的一个教训）所以没有相应的截图可以贴出。
-这里拿一个类似的情况举例,发现<code>pause</code>镜像无法拉取导致其他 Pod 无法正常启动.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl> Warning  FailedCreatePodSandBox  38s <span class=o>(</span>x129 over 108m<span class=o>)</span>  kubelet  <span class=o>(</span>combined from similar events<span class=o>)</span>: Failed to create pod sandbox: rpc error: <span class=nv>code</span> <span class=o>=</span> Unknown <span class=nv>desc</span> <span class=o>=</span> failed to get sandbox image <span class=s2>&#34;carvicsforth/pause:v3.10-v1.31.1&#34;</span>: failed to pull image <span class=s2>&#34;carvicsforth/pause:v3.10-v1.31.1&#34;</span>: failed to pull and unpack image <span class=s2>&#34;docker.io/carvicsforth/pause:v3.10-v1.31.1&#34;</span>: failed to resolve reference <span class=s2>&#34;docker.io/carvicsforth/pause:v3.10-v1.31.1&#34;</span>: failed to <span class=k>do</span> request: Head <span class=s2>&#34;https://registry-1.docker.io/v2/carvicsforth/pause/manifests/v3.10-v1.31.1&#34;</span>: dial tcp 208.101.60.87:443: i/o timeout
+我们需要使用<code>kubectl describe pod b1</code>来观察这个pod创建的具体过程。</p>
+<p>ps:由于本记录没有与实验同步进行（这是我需要吸取的一个教训）所以没有相应的截图可以贴出。
+这里拿一个类似的情况举例,发现<code>pause</code>镜像无法拉取导致其他 Pod 无法正常启动.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> Warning  FailedCreatePodSandBox  38s <span class="o">(</span>x129 over 108m<span class="o">)</span>  kubelet  <span class="o">(</span>combined from similar events<span class="o">)</span>: Failed to create pod sandbox: rpc error: <span class="nv">code</span> <span class="o">=</span> Unknown <span class="nv">desc</span> <span class="o">=</span> failed to get sandbox image <span class="s2">&#34;carvicsforth/pause:v3.10-v1.31.1&#34;</span>: failed to pull image <span class="s2">&#34;carvicsforth/pause:v3.10-v1.31.1&#34;</span>: failed to pull and unpack image <span class="s2">&#34;docker.io/carvicsforth/pause:v3.10-v1.31.1&#34;</span>: failed to resolve reference <span class="s2">&#34;docker.io/carvicsforth/pause:v3.10-v1.31.1&#34;</span>: failed to <span class="k">do</span> request: Head <span class="s2">&#34;https://registry-1.docker.io/v2/carvicsforth/pause/manifests/v3.10-v1.31.1&#34;</span>: dial tcp 208.101.60.87:443: i/o timeout
 </span></span></code></pre></div><p>可以发现其成功 Scheduled 了，但是拉取镜像 pause:3.6 时遇到了 manifest 问题，其实就是pause镜像并不支持 RiscV架构.
-于是我们就来深入研究一下 pause 镜像这个东西。</p><blockquote><p>Pod需要一个中间容器Infa来实现，而这个Infra容器正是pause容器</p></blockquote><p>Pause在K8s的源码位置 <code>/kubernetes/build/pause/linux/pause.c</code>，其作用就是</p><ul><li>无限循环调用 <code>pause</code> 系统调用并休眠直到收到信号。</li><li>作为 PID 为1的进程，专一于维护命名空间和进程管理。</li></ul><p>故我们需要先解决这个 pause 镜像的适配问题，由于其源码就是一段C代码而已，所以我们直接尝试在开发板上进行镜像的适配。</p><h3 id=适配pause镜像>适配Pause镜像<a hidden class=anchor aria-hidden=true href=#适配pause镜像>#</a></h3><p>如果没有安装编译工具链，请先安装<code>dnf install -y gcc</code></p><p>将上述 pause.c文件下载或传输到开发板上,这里使用ssh相关命令</p><p><code>scp -r 本机文件路径 目标主机名@IP:目标路径</code></p><p>以下步骤参考整合于 Deepseek 与 ChatGpt 的回答。</p><p><strong>1.直接编译现有代码</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>gcc -static -Os -o pause pause.c
-</span></span></code></pre></div><p><strong>2.检查并测试</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ldd ./pause
-</span></span><span class=line><span class=cl><span class=c1># 测试版本显示</span>
-</span></span><span class=line><span class=cl>./pause -v
-</span></span></code></pre></div><p><strong>3.容器化使用</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dockerfile data-lang=dockerfile><span class=line><span class=cl><span class=k>FROM</span><span class=s> scratch</span><span class=err>
-</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> pause /pause<span class=err>
-</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>ENTRYPOINT</span> <span class=p>[</span><span class=s2>&#34;/pause&#34;</span><span class=p>]</span><span class=err>
-</span></span></span></code></pre></div><p><strong>4.测试容器</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 构建镜像</span>
-</span></span><span class=line><span class=cl>docker build -t my-pause .
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># 运行测试</span>
-</span></span><span class=line><span class=cl>docker run --rm -it --name test-pause my-pause
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># 在另一个终端发送停止信号</span>
-</span></span><span class=line><span class=cl>docker stop test-pause  <span class=c1># 应看到正常退出</span>
-</span></span></code></pre></div><p><strong>5.docker保存镜像为tar文件</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker save my-pause &gt; pause-riscv.tar
-</span></span></code></pre></div><p><strong>6.在k3s节点上加载镜像</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 先查看当前k3s使用的containerd命名空间,我的结果是k8s.io</span>
-</span></span><span class=line><span class=cl>k3s ctr namespace ls
-</span></span><span class=line><span class=cl><span class=c1># 再加载</span>
-</span></span><span class=line><span class=cl>k3s ctr images import pause-riscv.tar
-</span></span><span class=line><span class=cl><span class=c1># or</span>
-</span></span><span class=line><span class=cl>k3s ctr -n k8s.io images import pause-riscv.tar
-</span></span></code></pre></div><p><strong>7.将此镜像作为本地镜像</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 如果没有这个文件夹，自行创建</span>
-</span></span><span class=line><span class=cl><span class=nb>cd</span> /var/lib/rancher/k3s/agent/images
-</span></span><span class=line><span class=cl>mkdir -p /var/lib/rancher/k3s/agent/images
-</span></span><span class=line><span class=cl><span class=c1># 放置我们自己的pause镜像</span>
-</span></span><span class=line><span class=cl>cp ./pause-riscv.tar /var/lib/rancher/k3s/agent/images
-</span></span></code></pre></div><p><strong>8.将此镜像打标签以适应原本拉取时所要的镜像名称</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 先查看当前我们制作的镜像名称</span>
-</span></span><span class=line><span class=cl>ctr images ls
-</span></span><span class=line><span class=cl><span class=c1># 重新打标签 后面的名称是之前k3s拉取时拉取失败的镜像名称 </span>
-</span></span><span class=line><span class=cl>ctr -n k8s.io images tag &lt;上一条命令的名称&gt; docker.io/rancher/mirrored-pause:3.6
-</span></span></code></pre></div><p><strong>9.再使用 crictl,ctr 命令检查镜像</strong></p><p>将这两个命令理解为docker命令即可，用来管理镜像。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ctr --namespace<span class=o>=</span>k8s.io images list <span class=p>|</span> grep pause
-</span></span><span class=line><span class=cl>crictl images <span class=p>|</span> grep pause
-</span></span></code></pre></div><p><strong>10.重新尝试busybox镜像</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl apply-f b1.yaml
-</span></span><span class=line><span class=cl><span class=c1># 再用crictl命令,使用debug标签观察其过程</span>
-</span></span><span class=line><span class=cl>crictl --debug pull riscv64/alpine
-</span></span><span class=line><span class=cl><span class=c1># 最后检查pod是否运行成功</span>
-</span></span><span class=line><span class=cl>kubectl get pods -o wide
-</span></span></code></pre></div><p>最终发现busybox和alpine镜像均可以成功拉取，不会再出现pause镜像不适配的问题。</p><p>其他镜像可能会因为网络问题，适配问题无法拉取成功，这是我们后续需要进行的工作。</p><h2 id=回到源码>回到源码<a hidden class=anchor aria-hidden=true href=#回到源码>#</a></h2><p>回到源码之中，在<code>cli/cmds/agent.go</code>源码中，关于pause-image命令的代码如下</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>PauseImageFlag</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>cli</span><span class=p>.</span><span class=nx>StringFlag</span><span class=p>{</span>
-</span></span><span class=line><span class=cl>	<span class=nx>Name</span><span class=p>:</span>        <span class=s>&#34;pause-image&#34;</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>	<span class=nx>Usage</span><span class=p>:</span>       <span class=s>&#34;(agent/runtime) Customized pause image for containerd or docker sandbox&#34;</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>	<span class=nx>Destination</span><span class=p>:</span> <span class=o>&amp;</span><span class=nx>AgentConfig</span><span class=p>.</span><span class=nx>PauseImage</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>	<span class=nx>Value</span><span class=p>:</span>       <span class=s>&#34;rancher/mirrored-pause:3.6&#34;</span><span class=p>,</span>
-</span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></div><p>所以在启动agent节点时可以直接在命令行中指定</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo k3s agent <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>  --pause-image<span class=o>=</span>your-repo/your-pause:3.6-riscv64 <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>  --server<span class=o>=</span>https://&lt;K3s-Server-IP&gt;:6443 <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>  --token<span class=o>=</span>&lt;Your-Token&gt;
-</span></span></code></pre></div><p>源码中关于pause的构建Dockefile如下：</p><pre tabindex=0><code class=language-dockefile data-lang=dockefile>ARG BASE
+于是我们就来深入研究一下 pause 镜像这个东西。</p>
+<blockquote>
+<p>Pod需要一个中间容器Infa来实现，而这个Infra容器正是pause容器</p></blockquote>
+<p>Pause在K8s的源码位置 <code>/kubernetes/build/pause/linux/pause.c</code>，其作用就是</p>
+<ul>
+<li>无限循环调用 <code>pause</code> 系统调用并休眠直到收到信号。</li>
+<li>作为 PID 为1的进程，专一于维护命名空间和进程管理。</li>
+</ul>
+<p>故我们需要先解决这个 pause 镜像的适配问题，由于其源码就是一段C代码而已，所以我们直接尝试在开发板上进行镜像的适配。</p>
+<h3 id="适配pause镜像">适配Pause镜像<a hidden class="anchor" aria-hidden="true" href="#适配pause镜像">#</a></h3>
+<p>如果没有安装编译工具链，请先安装<code>dnf install -y gcc</code></p>
+<p>将上述 pause.c文件下载或传输到开发板上,这里使用ssh相关命令</p>
+<p><code>scp -r 本机文件路径 目标主机名@IP:目标路径 </code></p>
+<p>以下步骤参考整合于 Deepseek 与 ChatGpt 的回答。</p>
+<p><strong>1.直接编译现有代码</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -static -Os -o pause pause.c
+</span></span></code></pre></div><p><strong>2.检查并测试</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ldd ./pause
+</span></span><span class="line"><span class="cl"><span class="c1"># 测试版本显示</span>
+</span></span><span class="line"><span class="cl">./pause -v
+</span></span></code></pre></div><p><strong>3.容器化使用</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> scratch</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> pause /pause<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;/pause&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></div><p><strong>4.测试容器</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 构建镜像</span>
+</span></span><span class="line"><span class="cl">docker build -t my-pause .
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 运行测试</span>
+</span></span><span class="line"><span class="cl">docker run --rm -it --name test-pause my-pause
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 在另一个终端发送停止信号</span>
+</span></span><span class="line"><span class="cl">docker stop test-pause  <span class="c1"># 应看到正常退出</span>
+</span></span></code></pre></div><p><strong>5.docker保存镜像为tar文件</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker save my-pause &gt; pause-riscv.tar
+</span></span></code></pre></div><p><strong>6.在k3s节点上加载镜像</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 先查看当前k3s使用的containerd命名空间,我的结果是k8s.io</span>
+</span></span><span class="line"><span class="cl">k3s ctr namespace ls
+</span></span><span class="line"><span class="cl"><span class="c1"># 再加载</span>
+</span></span><span class="line"><span class="cl">k3s ctr images import pause-riscv.tar
+</span></span><span class="line"><span class="cl"><span class="c1"># or</span>
+</span></span><span class="line"><span class="cl">k3s ctr -n k8s.io images import pause-riscv.tar
+</span></span></code></pre></div><p><strong>7.将此镜像作为本地镜像</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 如果没有这个文件夹，自行创建</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /var/lib/rancher/k3s/agent/images
+</span></span><span class="line"><span class="cl">mkdir -p /var/lib/rancher/k3s/agent/images
+</span></span><span class="line"><span class="cl"><span class="c1"># 放置我们自己的pause镜像</span>
+</span></span><span class="line"><span class="cl">cp ./pause-riscv.tar /var/lib/rancher/k3s/agent/images
+</span></span></code></pre></div><p><strong>8.将此镜像打标签以适应原本拉取时所要的镜像名称</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 先查看当前我们制作的镜像名称</span>
+</span></span><span class="line"><span class="cl">ctr images ls
+</span></span><span class="line"><span class="cl"><span class="c1"># 重新打标签 后面的名称是之前k3s拉取时拉取失败的镜像名称 </span>
+</span></span><span class="line"><span class="cl">ctr -n k8s.io images tag &lt;上一条命令的名称&gt; docker.io/rancher/mirrored-pause:3.6
+</span></span></code></pre></div><p><strong>9.再使用 crictl,ctr 命令检查镜像</strong></p>
+<p>将这两个命令理解为docker命令即可，用来管理镜像。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ctr --namespace<span class="o">=</span>k8s.io images list <span class="p">|</span> grep pause
+</span></span><span class="line"><span class="cl">crictl images <span class="p">|</span> grep pause
+</span></span></code></pre></div><p><strong>10.重新尝试busybox镜像</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl apply-f b1.yaml
+</span></span><span class="line"><span class="cl"><span class="c1"># 再用crictl命令,使用debug标签观察其过程</span>
+</span></span><span class="line"><span class="cl">crictl --debug pull riscv64/alpine
+</span></span><span class="line"><span class="cl"><span class="c1"># 最后检查pod是否运行成功</span>
+</span></span><span class="line"><span class="cl">kubectl get pods -o wide
+</span></span></code></pre></div><p>最终发现busybox和alpine镜像均可以成功拉取，不会再出现pause镜像不适配的问题。</p>
+<p>其他镜像可能会因为网络问题，适配问题无法拉取成功，这是我们后续需要进行的工作。</p>
+<h2 id="回到源码">回到源码<a hidden class="anchor" aria-hidden="true" href="#回到源码">#</a></h2>
+<p>回到源码之中，在<code>cli/cmds/agent.go</code>源码中，关于pause-image命令的代码如下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">PauseImageFlag</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">cli</span><span class="p">.</span><span class="nx">StringFlag</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Name</span><span class="p">:</span>        <span class="s">&#34;pause-image&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Usage</span><span class="p">:</span>       <span class="s">&#34;(agent/runtime) Customized pause image for containerd or docker sandbox&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Destination</span><span class="p">:</span> <span class="o">&amp;</span><span class="nx">AgentConfig</span><span class="p">.</span><span class="nx">PauseImage</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Value</span><span class="p">:</span>       <span class="s">&#34;rancher/mirrored-pause:3.6&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>所以在启动agent节点时可以直接在命令行中指定</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo k3s agent <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --pause-image<span class="o">=</span>your-repo/your-pause:3.6-riscv64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --server<span class="o">=</span>https://&lt;K3s-Server-IP&gt;:6443 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --token<span class="o">=</span>&lt;Your-Token&gt;
+</span></span></code></pre></div><p>源码中关于pause的构建Dockefile如下：</p>
+<pre tabindex="0"><code class="language-dockefile" data-lang="dockefile">ARG BASE
 FROM ${BASE}
 ARG ARCH
 ADD bin/pause-linux-${ARCH} /pause
 USER 65535:65535
 ENTRYPOINT [&#34;/pause&#34;]
-</code></pre><p>可供我们构建时参考。</p><h2 id=总结>总结<a hidden class=anchor aria-hidden=true href=#总结>#</a></h2><p>至此，我们完成在 RiscV+Openeuler 开发板上 k3s 的 Server 节点部署工作，并成功解决了其拉取 pause 镜像出现的架构不适配问题。
-我们采用的方法是本地自行构建适合 riscv 的 pause 镜像并让 k3s 使用这个镜像启动.</p><p>后续目标再仔细研究 k3s/k8s 源码中有关于 Pod 创建的过程，看看其对 pause的具体应用在哪里.
-如何能够将 pause 这部分的缺陷从源码的部分补充完整，可以不再需要直接从本地构建，而是可以直接部署。</p><h2 id=更新58>更新(5.8)<a hidden class=anchor aria-hidden=true href=#更新58>#</a></h2><p>从大佬的思路中得到启发,我们可以修改源码中的<code>pkg/cli/cmds/const_linux.go</code>文件的 <code>DefaultPauseImage = "rancher/mirrored-pause:3.6"</code>
-换为我们自己仓库的地址,例如<code>carvicsforth/pause:v3.10-v1.31.1</code>(这是大佬的地址),这样就可以避免了本地构建.</p></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/risc-v/>RISC-V</a></li><li><a href=https://LTXWorld.github.io/tags/k3s/>K3s</a></li><li><a href=https://LTXWorld.github.io/tags/pod/>Pod</a></li><li><a href=https://LTXWorld.github.io/tags/%E9%80%82%E9%85%8D/>适配</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/><span class=title>« 上一页</span><br><span>Tmux终端窗口器</span>
-</a><a class=next href=https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/><span class=title>下一页 »</span><br><span>K3sEP01——模拟Kine集群部署</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
-<span>Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-drag-handle data-role=drag-handle title=上下拖动调整位置></div><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
-<span class=ltx-music-artist data-role=artist></span></div><button type=button class=ltx-music-hide data-action=collapse aria-label=隐藏播放器>&#215;</button></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
-<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
-<button type=button data-action=toggle aria-label=播放或暂停>
-<span data-icon=play>▶</span>
-<span data-icon=pause>⏸</span>
-</button>
-<button type=button data-action=next aria-label=下一首>⏭</button>
-<button type=button data-action=mute aria-label=静音或取消静音>
-<span data-icon=unmuted>🔊</span>
-<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><button type=button class=ltx-music-fab id=ltx-music-fab aria-label=显示音乐播放器>&#9835;</button>
-<script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const a=window.LTX_MUSIC_CONFIG||{};if(!a.tracks||!a.tracks.length)return;const e=document.getElementById("ltx-music-player"),t=e.querySelector("audio"),x=e.querySelector('[data-role="title"]'),O=e.querySelector('[data-role="artist"]'),b=e.querySelector('[data-role="progress"]'),A=e.querySelector('[data-role="progress-fill"]'),F=e.querySelector('[data-role="current"]'),M=e.querySelector('[data-role="total"]'),c=e.querySelector('[data-role="tip"]'),r=e.querySelector('[data-role="cover"]'),S=e.querySelector('[data-action="toggle"]'),y=e.querySelector('[data-action="prev"]'),k=e.querySelector('[data-action="next"]'),E=e.querySelector('[data-action="mute"]'),g=e.querySelector('[data-action="collapse"]'),i=e.querySelector('[data-role="drag-handle"]'),o=document.getElementById("ltx-music-fab"),f=(e,t,n)=>Math.min(Math.max(e,t),n),j=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},C=-120,_=220,w=180,s={active:!1,startY:0,startOffset:0,pointerId:null},n={index:0,tracks:a.tracks,autoplay:a.autoplay!==!1,loopPlaylist:a.loopPlaylist!==!1,offset:0,collapsed:!1},h=t=>{n.offset=f(t,C,_),e.style.setProperty("--ltx-offset",`${n.offset}px`)},l=t=>{const s=Boolean(t);n.collapsed=s,e.classList.toggle("ltx-collapsed",s),s?(e.classList.remove("ltx-dragging"),n.offset=0,e.style.removeProperty("--ltx-offset"),o&&(o.classList.add("ltx-visible"),o.setAttribute("aria-hidden","false"),o.tabIndex=0)):(h(0),o&&(o.classList.remove("ltx-visible"),o.setAttribute("aria-hidden","true"),o.tabIndex=-1))},m=()=>{const n=t.muted||t.volume===0;e.classList.toggle("ltx-muted",n)};t.volume=f(a.startVolume??.6,0,1),m(),l(!1);const d=()=>{const e=t.duration||0,n=t.currentTime||0,s=e?n/e*100:0;A.style.width=`${s}%`,F.textContent=j(n),M.textContent=j(e)},u=(s,o={})=>{const l=n.tracks.length;n.index=(s%l+l)%l;const i=n.tracks[n.index];if(!i||!i.file){console.warn("LTX music player: 音频文件缺失",i),c.textContent="音频文件缺失，请检查配置";return}const u=i.cover||a.defaultCover||"";r&&(u?(r.src=u,r.alt=i.title?`${i.title} 封面`:"音乐封面",e.classList.add("ltx-has-cover")):(r.removeAttribute("src"),r.alt="",e.classList.remove("ltx-has-cover"))),x.textContent=i.title||`Track ${n.index+1}`,O.textContent=i.artist||"",t.src=i.file,e.dataset.trackIndex=n.index,c.textContent="",e.classList.remove("ltx-autoplay-blocked"),d(),o.play&&p()},p=()=>{t.play().then(()=>{e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}).catch(()=>{e.classList.add("ltx-autoplay-blocked"),c.textContent="浏览器阻止了自动播放，请点击播放按钮"})},v=(e=!1)=>{const o=!t.paused||e,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){t.currentTime=t.duration||0,t.pause();return}u(s,{play:o})},T=()=>{const e=!t.paused;u(n.index-1,{play:e})};if(g&&g.addEventListener("click",()=>l(!0)),o&&(o.addEventListener("click",()=>l(!1)),o.setAttribute("aria-hidden","true"),o.tabIndex=-1),i){i.style.touchAction="none",i.addEventListener("pointerdown",t=>{if(n.collapsed)return;if(s.active=!0,s.pointerId=t.pointerId,s.startY=t.clientY,s.startOffset=n.offset,i.setPointerCapture)try{i.setPointerCapture(t.pointerId)}catch{}e.classList.add("ltx-dragging")}),i.addEventListener("pointermove",e=>{if(!s.active)return;const t=e.clientY-s.startY;h(s.startOffset+t)});const t=()=>{if(!s.active)return;if(s.pointerId!==null&&i.releasePointerCapture)try{i.releasePointerCapture(s.pointerId)}catch{}s.active=!1,s.pointerId=null,e.classList.remove("ltx-dragging"),n.offset>w?l(!0):h(n.offset)};["pointerup","pointercancel"].forEach(e=>{i.addEventListener(e,t)}),i.addEventListener("pointerleave",()=>{if(!s.active)return;t()})}S.addEventListener("click",()=>{t.paused?p():t.pause()}),y.addEventListener("click",T),k.addEventListener("click",()=>v(!1)),E.addEventListener("click",()=>{t.muted=!t.muted,m()}),b.addEventListener("click",e=>{const n=b.getBoundingClientRect(),s=f((e.clientX-n.left)/n.width,0,1);Number.isFinite(t.duration)&&(t.currentTime=s*t.duration)}),t.addEventListener("timeupdate",d),t.addEventListener("loadedmetadata",d),t.addEventListener("play",()=>{e.classList.add("ltx-playing"),e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}),t.addEventListener("pause",()=>{e.classList.remove("ltx-playing")}),t.addEventListener("ended",()=>{v(!0)}),t.addEventListener("volumechange",m),u(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+</code></pre><p>可供我们构建时参考。</p>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>至此，我们完成在 RiscV+Openeuler 开发板上 k3s 的 Server 节点部署工作，并成功解决了其拉取 pause 镜像出现的架构不适配问题。
+我们采用的方法是本地自行构建适合 riscv 的 pause 镜像并让 k3s 使用这个镜像启动.</p>
+<p>后续目标再仔细研究 k3s/k8s 源码中有关于 Pod 创建的过程，看看其对 pause的具体应用在哪里.
+如何能够将 pause 这部分的缺陷从源码的部分补充完整，可以不再需要直接从本地构建，而是可以直接部署。</p>
+<h2 id="更新58">更新(5.8)<a hidden class="anchor" aria-hidden="true" href="#更新58">#</a></h2>
+<p>从大佬的思路中得到启发,我们可以修改源码中的<code>pkg/cli/cmds/const_linux.go</code>文件的 <code>DefaultPauseImage  = &quot;rancher/mirrored-pause:3.6&quot;</code>
+换为我们自己仓库的地址,例如<code>carvicsforth/pause:v3.10-v1.31.1</code>(这是大佬的地址),这样就可以避免了本地构建.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/risc-v/">RISC-V</a></li>
+      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
+      <li><a href="http://localhost:1313/tags/pod/">Pod</a></li>
+      <li><a href="http://localhost:1313/tags/%E9%80%82%E9%85%8D/">适配</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Tmux终端窗口器</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>K3sEP01——模拟Kine集群部署</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
+  <audio id="ltx-music-audio" preload="metadata"></audio>
+  <div class="ltx-drag-handle" data-role="drag-handle" title="上下拖动调整位置"></div>
+  <div class="ltx-music-header">
+    <div class="ltx-music-visual">
+      <div class="ltx-disc" data-role="disc" aria-hidden="true">
+        <img data-role="cover" alt="" loading="lazy" decoding="async">
+        <div class="ltx-disc-center"></div>
+      </div>
+    </div>
+    <div class="ltx-music-meta">
+      <span class="ltx-music-title" data-role="title"></span>
+      <span class="ltx-music-artist" data-role="artist"></span>
+    </div>
+    <button type="button" class="ltx-music-hide" data-action="collapse" aria-label="隐藏播放器">&#215;</button>
+  </div>
+  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
+    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
+  </div>
+  <div class="ltx-music-time">
+    <span data-role="current">0:00</span>
+    <span data-role="total">--:--</span>
+  </div>
+  <div class="ltx-music-controls">
+    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
+    <button type="button" data-action="toggle" aria-label="播放或暂停">
+      <span data-icon="play">▶</span>
+      <span data-icon="pause">⏸</span>
+    </button>
+    <button type="button" data-action="next" aria-label="下一首">⏭</button>
+    <button type="button" data-action="mute" aria-label="静音或取消静音">
+      <span data-icon="unmuted">🔊</span>
+      <span data-icon="muted">🔇</span>
+    </button>
+  </div>
+  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
+</div>
+<button type="button" class="ltx-music-fab" id="ltx-music-fab" aria-label="显示音乐播放器">&#9835;</button>
+<script>
+  window.LTX_MUSIC_CONFIG = {"autoplay":true,"defaultCover":"","loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
+  (function () {
+    const config = window.LTX_MUSIC_CONFIG || {};
+    if (!config.tracks || !config.tracks.length) {
+      return;
+    }
+
+    const player = document.getElementById('ltx-music-player');
+    const audio = player.querySelector('audio');
+    const titleEl = player.querySelector('[data-role="title"]');
+    const artistEl = player.querySelector('[data-role="artist"]');
+    const progressEl = player.querySelector('[data-role="progress"]');
+    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
+    const currentTimeEl = player.querySelector('[data-role="current"]');
+    const totalTimeEl = player.querySelector('[data-role="total"]');
+    const tipEl = player.querySelector('[data-role="tip"]');
+    const coverEl = player.querySelector('[data-role="cover"]');
+
+    const toggleBtn = player.querySelector('[data-action="toggle"]');
+    const prevBtn = player.querySelector('[data-action="prev"]');
+    const nextBtn = player.querySelector('[data-action="next"]');
+    const muteBtn = player.querySelector('[data-action="mute"]');
+    const collapseBtn = player.querySelector('[data-action="collapse"]');
+    const dragHandle = player.querySelector('[data-role="drag-handle"]');
+    const fabButton = document.getElementById('ltx-music-fab');
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const formatTime = (seconds) => {
+      if (!Number.isFinite(seconds)) {
+        return '--:--';
+      }
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
+    const minOffset = -120;
+    const maxOffset = 220;
+    const hideThreshold = 180;
+    const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+
+    const state = {
+      index: 0,
+      tracks: config.tracks,
+      autoplay: config.autoplay !== false,
+      loopPlaylist: config.loopPlaylist !== false,
+      offset: 0,
+      collapsed: false,
+    };
+
+    const setOffset = (value) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    };
+
+    const setCollapsed = (value) => {
+      const collapsed = Boolean(value);
+      state.collapsed = collapsed;
+      player.classList.toggle('ltx-collapsed', collapsed);
+      if (collapsed) {
+        player.classList.remove('ltx-dragging');
+        state.offset = 0;
+        player.style.removeProperty('--ltx-offset');
+        if (fabButton) {
+          fabButton.classList.add('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'false');
+          fabButton.tabIndex = 0;
+        }
+      } else {
+        setOffset(0);
+        if (fabButton) {
+          fabButton.classList.remove('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'true');
+          fabButton.tabIndex = -1;
+        }
+      }
+    };
+
+    const updateMuteClass = () => {
+      const muted = audio.muted || audio.volume === 0;
+      player.classList.toggle('ltx-muted', muted);
+    };
+
+    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    updateMuteClass();
+    setCollapsed(false);
+
+    const updateProgress = () => {
+      const duration = audio.duration || 0;
+      const current = audio.currentTime || 0;
+      const percentage = duration ? (current / duration) * 100 : 0;
+      progressFillEl.style.width = `${percentage}%`;
+      currentTimeEl.textContent = formatTime(current);
+      totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const setTrack = (nextIndex, options = {}) => {
+      const total = state.tracks.length;
+      state.index = ((nextIndex % total) + total) % total;
+      const track = state.tracks[state.index];
+      if (!track || !track.file) {
+        console.warn('LTX music player: 音频文件缺失', track);
+        tipEl.textContent = '音频文件缺失，请检查配置';
+        return;
+      }
+      const cover = track.cover || config.defaultCover || '';
+      if (coverEl) {
+        if (cover) {
+          coverEl.src = cover;
+          coverEl.alt = track.title ? `${track.title} 封面` : '音乐封面';
+          player.classList.add('ltx-has-cover');
+        } else {
+          coverEl.removeAttribute('src');
+          coverEl.alt = '';
+          player.classList.remove('ltx-has-cover');
+        }
+      }
+      titleEl.textContent = track.title || `Track ${state.index + 1}`;
+      artistEl.textContent = track.artist || '';
+      audio.src = track.file;
+      player.dataset.trackIndex = state.index;
+      tipEl.textContent = '';
+      player.classList.remove('ltx-autoplay-blocked');
+      updateProgress();
+      if (options.play) {
+        attemptPlay();
+      }
+    };
+
+    const attemptPlay = () => {
+      audio.play().then(() => {
+        player.classList.remove('ltx-autoplay-blocked');
+        tipEl.textContent = '';
+      }).catch(() => {
+        player.classList.add('ltx-autoplay-blocked');
+        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
+      });
+    };
+
+    const playNext = (autoTriggered = false) => {
+      const shouldPlay = !audio.paused || autoTriggered;
+      const nextIndex = state.index + 1;
+      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
+        audio.currentTime = audio.duration || 0;
+        audio.pause();
+        return;
+      }
+      setTrack(nextIndex, { play: shouldPlay });
+    };
+
+    const playPrev = () => {
+      const shouldPlay = !audio.paused;
+      setTrack(state.index - 1, { play: shouldPlay });
+    };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', () => setCollapsed(true));
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', () => setCollapsed(false));
+      fabButton.setAttribute('aria-hidden', 'true');
+      fabButton.tabIndex = -1;
+    }
+
+    if (dragHandle) {
+      dragHandle.style.touchAction = 'none';
+      dragHandle.addEventListener('pointerdown', (event) => {
+        if (state.collapsed) {
+          return;
+        }
+        dragState.active = true;
+        dragState.pointerId = event.pointerId;
+        dragState.startY = event.clientY;
+        dragState.startOffset = state.offset;
+        if (dragHandle.setPointerCapture) {
+          try {
+            dragHandle.setPointerCapture(event.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        player.classList.add('ltx-dragging');
+      });
+
+      dragHandle.addEventListener('pointermove', (event) => {
+        if (!dragState.active) {
+          return;
+        }
+        const delta = event.clientY - dragState.startY;
+        setOffset(dragState.startOffset + delta);
+      });
+
+      const finishDrag = () => {
+        if (!dragState.active) {
+          return;
+        }
+        if (dragState.pointerId !== null && dragHandle.releasePointerCapture) {
+          try {
+            dragHandle.releasePointerCapture(dragState.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        dragState.active = false;
+        dragState.pointerId = null;
+        player.classList.remove('ltx-dragging');
+        if (state.offset > hideThreshold) {
+          setCollapsed(true);
+        } else {
+          setOffset(state.offset);
+        }
+      };
+
+      ['pointerup', 'pointercancel'].forEach((eventName) => {
+        dragHandle.addEventListener(eventName, finishDrag);
+      });
+
+      dragHandle.addEventListener('pointerleave', () => {
+        if (!dragState.active) {
+          return;
+        }
+        finishDrag();
+      });
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        attemptPlay();
+      } else {
+        audio.pause();
+      }
+    });
+
+    prevBtn.addEventListener('click', playPrev);
+    nextBtn.addEventListener('click', () => playNext(false));
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      updateMuteClass();
+    });
+
+    progressEl.addEventListener('click', (event) => {
+      const rect = progressEl.getBoundingClientRect();
+      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = ratio * audio.duration;
+      }
+    });
+
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('loadedmetadata', updateProgress);
+
+    audio.addEventListener('play', () => {
+      player.classList.add('ltx-playing');
+      player.classList.remove('ltx-autoplay-blocked');
+      tipEl.textContent = '';
+    });
+
+    audio.addEventListener('pause', () => {
+      player.classList.remove('ltx-playing');
+    });
+
+    audio.addEventListener('ended', () => {
+      playNext(true);
+    });
+
+    audio.addEventListener('volumechange', updateMuteClass);
+
+    setTrack(0, { play: state.autoplay });
+  })();
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

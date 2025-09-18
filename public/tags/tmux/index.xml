@@ -1,4 +1,28 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Tmux on LTX's Blog</title><link>https://LTXWorld.github.io/tags/tmux/</link><description>Recent content in Tmux on LTX's Blog</description><image><title>LTX's Blog</title><url>https://LTXWorld.github.io/images/papermod-cover.png</url><link>https://LTXWorld.github.io/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Tue, 01 Apr 2025 08:36:54 +0800</lastBuildDate><atom:link href="https://LTXWorld.github.io/tags/tmux/index.xml" rel="self" type="application/rss+xml"/><item><title>Tmux终端窗口器</title><link>https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/</link><pubDate>Tue, 01 Apr 2025 08:36:54 +0800</pubDate><guid>https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
-&lt;p>开篇提问，大家平时用终端的次数多吗？&lt;/p>
-&lt;p>&lt;img loading="lazy" src="https://LTXWorld.github.io/img/xm/hdw.png">&lt;/p>
-&lt;p>如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tmux on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/tmux/</link>
+    <description>Recent content in Tmux on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Tue, 01 Apr 2025 08:36:54 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/tmux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tmux终端窗口器</title>
+      <link>http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/</link>
+      <pubDate>Tue, 01 Apr 2025 08:36:54 +0800</pubDate>
+      <guid>http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;开篇提问，大家平时用终端的次数多吗？&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/xm/hdw.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

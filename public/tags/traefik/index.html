@@ -1,19 +1,594 @@
-<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Traefik | LTX's Blog</title>
-<meta name=keywords content><meta name=description content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/tags/traefik/><link crossorigin=anonymous href=/assets/css/stylesheet.c98266582198d1e5ef6529482f54b208422b9b1a9eeac13f1e3df51f4f9bfbed.css integrity="sha256-yYJmWCGY0eXvZSlIL1SyCEIrmxqe6sE/Hj31H0+b++0=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=https://LTXWorld.github.io/tags/traefik/index.xml><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/tags/traefik/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/tags/traefik/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="Traefik"><meta property="og:description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"><meta property="og:locale" content="zh"><meta property="og:type" content="website"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="Traefik"><meta name=twitter:description content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"></head><body class="list dark" id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><header class=page-header><h1>Traefik
-<a href=/tags/traefik/index.xml title=RSS aria-label=RSS><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" height="23"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></h1></header><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>K3sEP13——遇到的Traedfik问题</h2></header><div class=entry-content><p>引子 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Traefik | LTX&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/tags/traefik/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/traefik/index.xml">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/tags/traefik/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/tags/traefik/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="Traefik">
+  <meta property="og:description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="website">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="Traefik">
+<meta name="twitter:description" content="Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod">
+
+</head>
+
+<body class="list dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    Traefik
+    <a href="/tags/traefik/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">K3sEP13——遇到的Traedfik问题
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>引子 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
 恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。
-...</p></div><footer class=entry-footer><span title='2025-06-03 09:27:10 +0800 CST'>六月 3, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX</footer><a class=entry-link aria-label="post link to K3sEP13——遇到的Traedfik问题" href=https://LTXWorld.github.io/posts/041traefik/></a></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
-<span>Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-drag-handle data-role=drag-handle title=上下拖动调整位置></div><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
-<span class=ltx-music-artist data-role=artist></span></div><button type=button class=ltx-music-hide data-action=collapse aria-label=隐藏播放器>&#215;</button></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
-<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
-<button type=button data-action=toggle aria-label=播放或暂停>
-<span data-icon=play>▶</span>
-<span data-icon=pause>⏸</span>
-</button>
-<button type=button data-action=next aria-label=下一首>⏭</button>
-<button type=button data-action=mute aria-label=静音或取消静音>
-<span data-icon=unmuted>🔊</span>
-<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><button type=button class=ltx-music-fab id=ltx-music-fab aria-label=显示音乐播放器>&#9835;</button>
-<script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const a=window.LTX_MUSIC_CONFIG||{};if(!a.tracks||!a.tracks.length)return;const e=document.getElementById("ltx-music-player"),t=e.querySelector("audio"),x=e.querySelector('[data-role="title"]'),O=e.querySelector('[data-role="artist"]'),b=e.querySelector('[data-role="progress"]'),A=e.querySelector('[data-role="progress-fill"]'),F=e.querySelector('[data-role="current"]'),M=e.querySelector('[data-role="total"]'),c=e.querySelector('[data-role="tip"]'),r=e.querySelector('[data-role="cover"]'),S=e.querySelector('[data-action="toggle"]'),y=e.querySelector('[data-action="prev"]'),k=e.querySelector('[data-action="next"]'),E=e.querySelector('[data-action="mute"]'),g=e.querySelector('[data-action="collapse"]'),i=e.querySelector('[data-role="drag-handle"]'),o=document.getElementById("ltx-music-fab"),f=(e,t,n)=>Math.min(Math.max(e,t),n),j=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},C=-120,_=220,w=180,s={active:!1,startY:0,startOffset:0,pointerId:null},n={index:0,tracks:a.tracks,autoplay:a.autoplay!==!1,loopPlaylist:a.loopPlaylist!==!1,offset:0,collapsed:!1},h=t=>{n.offset=f(t,C,_),e.style.setProperty("--ltx-offset",`${n.offset}px`)},l=t=>{const s=Boolean(t);n.collapsed=s,e.classList.toggle("ltx-collapsed",s),s?(e.classList.remove("ltx-dragging"),n.offset=0,e.style.removeProperty("--ltx-offset"),o&&(o.classList.add("ltx-visible"),o.setAttribute("aria-hidden","false"),o.tabIndex=0)):(h(0),o&&(o.classList.remove("ltx-visible"),o.setAttribute("aria-hidden","true"),o.tabIndex=-1))},m=()=>{const n=t.muted||t.volume===0;e.classList.toggle("ltx-muted",n)};t.volume=f(a.startVolume??.6,0,1),m(),l(!1);const d=()=>{const e=t.duration||0,n=t.currentTime||0,s=e?n/e*100:0;A.style.width=`${s}%`,F.textContent=j(n),M.textContent=j(e)},u=(s,o={})=>{const l=n.tracks.length;n.index=(s%l+l)%l;const i=n.tracks[n.index];if(!i||!i.file){console.warn("LTX music player: 音频文件缺失",i),c.textContent="音频文件缺失，请检查配置";return}const u=i.cover||a.defaultCover||"";r&&(u?(r.src=u,r.alt=i.title?`${i.title} 封面`:"音乐封面",e.classList.add("ltx-has-cover")):(r.removeAttribute("src"),r.alt="",e.classList.remove("ltx-has-cover"))),x.textContent=i.title||`Track ${n.index+1}`,O.textContent=i.artist||"",t.src=i.file,e.dataset.trackIndex=n.index,c.textContent="",e.classList.remove("ltx-autoplay-blocked"),d(),o.play&&p()},p=()=>{t.play().then(()=>{e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}).catch(()=>{e.classList.add("ltx-autoplay-blocked"),c.textContent="浏览器阻止了自动播放，请点击播放按钮"})},v=(e=!1)=>{const o=!t.paused||e,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){t.currentTime=t.duration||0,t.pause();return}u(s,{play:o})},T=()=>{const e=!t.paused;u(n.index-1,{play:e})};if(g&&g.addEventListener("click",()=>l(!0)),o&&(o.addEventListener("click",()=>l(!1)),o.setAttribute("aria-hidden","true"),o.tabIndex=-1),i){i.style.touchAction="none",i.addEventListener("pointerdown",t=>{if(n.collapsed)return;if(s.active=!0,s.pointerId=t.pointerId,s.startY=t.clientY,s.startOffset=n.offset,i.setPointerCapture)try{i.setPointerCapture(t.pointerId)}catch{}e.classList.add("ltx-dragging")}),i.addEventListener("pointermove",e=>{if(!s.active)return;const t=e.clientY-s.startY;h(s.startOffset+t)});const t=()=>{if(!s.active)return;if(s.pointerId!==null&&i.releasePointerCapture)try{i.releasePointerCapture(s.pointerId)}catch{}s.active=!1,s.pointerId=null,e.classList.remove("ltx-dragging"),n.offset>w?l(!0):h(n.offset)};["pointerup","pointercancel"].forEach(e=>{i.addEventListener(e,t)}),i.addEventListener("pointerleave",()=>{if(!s.active)return;t()})}S.addEventListener("click",()=>{t.paused?p():t.pause()}),y.addEventListener("click",T),k.addEventListener("click",()=>v(!1)),E.addEventListener("click",()=>{t.muted=!t.muted,m()}),b.addEventListener("click",e=>{const n=b.getBoundingClientRect(),s=f((e.clientX-n.left)/n.width,0,1);Number.isFinite(t.duration)&&(t.currentTime=s*t.duration)}),t.addEventListener("timeupdate",d),t.addEventListener("loadedmetadata",d),t.addEventListener("play",()=>{e.classList.add("ltx-playing"),e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}),t.addEventListener("pause",()=>{e.classList.remove("ltx-playing")}),t.addEventListener("ended",()=>{v(!0)}),t.addEventListener("volumechange",m),u(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-06-03 09:27:10 +0800 CST'>六月 3, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX</footer>
+  <a class="entry-link" aria-label="post link to K3sEP13——遇到的Traedfik问题" href="http://localhost:1313/posts/041traefik/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
+  <audio id="ltx-music-audio" preload="metadata"></audio>
+  <div class="ltx-drag-handle" data-role="drag-handle" title="上下拖动调整位置"></div>
+  <div class="ltx-music-header">
+    <div class="ltx-music-visual">
+      <div class="ltx-disc" data-role="disc" aria-hidden="true">
+        <img data-role="cover" alt="" loading="lazy" decoding="async">
+        <div class="ltx-disc-center"></div>
+      </div>
+    </div>
+    <div class="ltx-music-meta">
+      <span class="ltx-music-title" data-role="title"></span>
+      <span class="ltx-music-artist" data-role="artist"></span>
+    </div>
+    <button type="button" class="ltx-music-hide" data-action="collapse" aria-label="隐藏播放器">&#215;</button>
+  </div>
+  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
+    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
+  </div>
+  <div class="ltx-music-time">
+    <span data-role="current">0:00</span>
+    <span data-role="total">--:--</span>
+  </div>
+  <div class="ltx-music-controls">
+    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
+    <button type="button" data-action="toggle" aria-label="播放或暂停">
+      <span data-icon="play">▶</span>
+      <span data-icon="pause">⏸</span>
+    </button>
+    <button type="button" data-action="next" aria-label="下一首">⏭</button>
+    <button type="button" data-action="mute" aria-label="静音或取消静音">
+      <span data-icon="unmuted">🔊</span>
+      <span data-icon="muted">🔇</span>
+    </button>
+  </div>
+  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
+</div>
+<button type="button" class="ltx-music-fab" id="ltx-music-fab" aria-label="显示音乐播放器">&#9835;</button>
+<script>
+  window.LTX_MUSIC_CONFIG = {"autoplay":true,"defaultCover":"","loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
+  (function () {
+    const config = window.LTX_MUSIC_CONFIG || {};
+    if (!config.tracks || !config.tracks.length) {
+      return;
+    }
+
+    const player = document.getElementById('ltx-music-player');
+    const audio = player.querySelector('audio');
+    const titleEl = player.querySelector('[data-role="title"]');
+    const artistEl = player.querySelector('[data-role="artist"]');
+    const progressEl = player.querySelector('[data-role="progress"]');
+    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
+    const currentTimeEl = player.querySelector('[data-role="current"]');
+    const totalTimeEl = player.querySelector('[data-role="total"]');
+    const tipEl = player.querySelector('[data-role="tip"]');
+    const coverEl = player.querySelector('[data-role="cover"]');
+
+    const toggleBtn = player.querySelector('[data-action="toggle"]');
+    const prevBtn = player.querySelector('[data-action="prev"]');
+    const nextBtn = player.querySelector('[data-action="next"]');
+    const muteBtn = player.querySelector('[data-action="mute"]');
+    const collapseBtn = player.querySelector('[data-action="collapse"]');
+    const dragHandle = player.querySelector('[data-role="drag-handle"]');
+    const fabButton = document.getElementById('ltx-music-fab');
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const formatTime = (seconds) => {
+      if (!Number.isFinite(seconds)) {
+        return '--:--';
+      }
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
+    const minOffset = -120;
+    const maxOffset = 220;
+    const hideThreshold = 180;
+    const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+
+    const state = {
+      index: 0,
+      tracks: config.tracks,
+      autoplay: config.autoplay !== false,
+      loopPlaylist: config.loopPlaylist !== false,
+      offset: 0,
+      collapsed: false,
+    };
+
+    const setOffset = (value) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    };
+
+    const setCollapsed = (value) => {
+      const collapsed = Boolean(value);
+      state.collapsed = collapsed;
+      player.classList.toggle('ltx-collapsed', collapsed);
+      if (collapsed) {
+        player.classList.remove('ltx-dragging');
+        state.offset = 0;
+        player.style.removeProperty('--ltx-offset');
+        if (fabButton) {
+          fabButton.classList.add('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'false');
+          fabButton.tabIndex = 0;
+        }
+      } else {
+        setOffset(0);
+        if (fabButton) {
+          fabButton.classList.remove('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'true');
+          fabButton.tabIndex = -1;
+        }
+      }
+    };
+
+    const updateMuteClass = () => {
+      const muted = audio.muted || audio.volume === 0;
+      player.classList.toggle('ltx-muted', muted);
+    };
+
+    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    updateMuteClass();
+    setCollapsed(false);
+
+    const updateProgress = () => {
+      const duration = audio.duration || 0;
+      const current = audio.currentTime || 0;
+      const percentage = duration ? (current / duration) * 100 : 0;
+      progressFillEl.style.width = `${percentage}%`;
+      currentTimeEl.textContent = formatTime(current);
+      totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const setTrack = (nextIndex, options = {}) => {
+      const total = state.tracks.length;
+      state.index = ((nextIndex % total) + total) % total;
+      const track = state.tracks[state.index];
+      if (!track || !track.file) {
+        console.warn('LTX music player: 音频文件缺失', track);
+        tipEl.textContent = '音频文件缺失，请检查配置';
+        return;
+      }
+      const cover = track.cover || config.defaultCover || '';
+      if (coverEl) {
+        if (cover) {
+          coverEl.src = cover;
+          coverEl.alt = track.title ? `${track.title} 封面` : '音乐封面';
+          player.classList.add('ltx-has-cover');
+        } else {
+          coverEl.removeAttribute('src');
+          coverEl.alt = '';
+          player.classList.remove('ltx-has-cover');
+        }
+      }
+      titleEl.textContent = track.title || `Track ${state.index + 1}`;
+      artistEl.textContent = track.artist || '';
+      audio.src = track.file;
+      player.dataset.trackIndex = state.index;
+      tipEl.textContent = '';
+      player.classList.remove('ltx-autoplay-blocked');
+      updateProgress();
+      if (options.play) {
+        attemptPlay();
+      }
+    };
+
+    const attemptPlay = () => {
+      audio.play().then(() => {
+        player.classList.remove('ltx-autoplay-blocked');
+        tipEl.textContent = '';
+      }).catch(() => {
+        player.classList.add('ltx-autoplay-blocked');
+        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
+      });
+    };
+
+    const playNext = (autoTriggered = false) => {
+      const shouldPlay = !audio.paused || autoTriggered;
+      const nextIndex = state.index + 1;
+      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
+        audio.currentTime = audio.duration || 0;
+        audio.pause();
+        return;
+      }
+      setTrack(nextIndex, { play: shouldPlay });
+    };
+
+    const playPrev = () => {
+      const shouldPlay = !audio.paused;
+      setTrack(state.index - 1, { play: shouldPlay });
+    };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', () => setCollapsed(true));
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', () => setCollapsed(false));
+      fabButton.setAttribute('aria-hidden', 'true');
+      fabButton.tabIndex = -1;
+    }
+
+    if (dragHandle) {
+      dragHandle.style.touchAction = 'none';
+      dragHandle.addEventListener('pointerdown', (event) => {
+        if (state.collapsed) {
+          return;
+        }
+        dragState.active = true;
+        dragState.pointerId = event.pointerId;
+        dragState.startY = event.clientY;
+        dragState.startOffset = state.offset;
+        if (dragHandle.setPointerCapture) {
+          try {
+            dragHandle.setPointerCapture(event.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        player.classList.add('ltx-dragging');
+      });
+
+      dragHandle.addEventListener('pointermove', (event) => {
+        if (!dragState.active) {
+          return;
+        }
+        const delta = event.clientY - dragState.startY;
+        setOffset(dragState.startOffset + delta);
+      });
+
+      const finishDrag = () => {
+        if (!dragState.active) {
+          return;
+        }
+        if (dragState.pointerId !== null && dragHandle.releasePointerCapture) {
+          try {
+            dragHandle.releasePointerCapture(dragState.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        dragState.active = false;
+        dragState.pointerId = null;
+        player.classList.remove('ltx-dragging');
+        if (state.offset > hideThreshold) {
+          setCollapsed(true);
+        } else {
+          setOffset(state.offset);
+        }
+      };
+
+      ['pointerup', 'pointercancel'].forEach((eventName) => {
+        dragHandle.addEventListener(eventName, finishDrag);
+      });
+
+      dragHandle.addEventListener('pointerleave', () => {
+        if (!dragState.active) {
+          return;
+        }
+        finishDrag();
+      });
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        attemptPlay();
+      } else {
+        audio.pause();
+      }
+    });
+
+    prevBtn.addEventListener('click', playPrev);
+    nextBtn.addEventListener('click', () => playNext(false));
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      updateMuteClass();
+    });
+
+    progressEl.addEventListener('click', (event) => {
+      const rect = progressEl.getBoundingClientRect();
+      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = ratio * audio.duration;
+      }
+    });
+
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('loadedmetadata', updateProgress);
+
+    audio.addEventListener('play', () => {
+      player.classList.add('ltx-playing');
+      player.classList.remove('ltx-autoplay-blocked');
+      tipEl.textContent = '';
+    });
+
+    audio.addEventListener('pause', () => {
+      player.classList.remove('ltx-playing');
+    });
+
+    audio.addEventListener('ended', () => {
+      playNext(true);
+    });
+
+    audio.addEventListener('volumechange', updateMuteClass);
+
+    setTrack(0, { play: state.autoplay });
+  })();
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -32,3 +32,23 @@
 body.dark {
     background: transparent;
 }
+
+body.dark article.post-single {
+    margin: calc(var(--gap) * 1.5) auto;
+    padding: clamp(24px, 4vw, 48px);
+    background: rgba(22, 24, 30, 0.9);
+    border-radius: calc(var(--radius) * 1.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 28px 60px rgba(5, 7, 12, 0.45);
+    backdrop-filter: blur(16px);
+}
+
+body.dark article.post-single .toc {
+    background: rgba(36, 38, 46, 0.9);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.dark article.post-single pre,
+body.dark article.post-single code {
+    background: rgba(28, 30, 36, 0.96) !important;
+}

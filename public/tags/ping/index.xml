@@ -1,2 +1,26 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Ping on LTX's Blog</title><link>https://LTXWorld.github.io/tags/ping/</link><description>Recent content in Ping on LTX's Blog</description><image><title>LTX's Blog</title><url>https://LTXWorld.github.io/images/papermod-cover.png</url><link>https://LTXWorld.github.io/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Fri, 16 May 2025 15:23:10 +0800</lastBuildDate><atom:link href="https://LTXWorld.github.io/tags/ping/index.xml" rel="self" type="application/rss+xml"/><item><title>兴趣八股之计算机网络EP03——Ping命令</title><link>https://LTXWorld.github.io/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</link><pubDate>Fri, 16 May 2025 15:23:10 +0800</pubDate><guid>https://LTXWorld.github.io/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
-&lt;p>在与开发板打交道的过程中,网络成为了出现问题最多的地方,之前我们谈过 DNS 的事情,今天我们来说说 Ping 这个命令,每次网络出问题的时候最喜欢的命令就是&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Ping on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/ping/</link>
+    <description>Recent content in Ping on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Fri, 16 May 2025 15:23:10 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/ping/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>兴趣八股之计算机网络EP03——Ping命令</title>
+      <link>http://localhost:1313/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</link>
+      <pubDate>Fri, 16 May 2025 15:23:10 +0800</pubDate>
+      <guid>http://localhost:1313/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;在与开发板打交道的过程中,网络成为了出现问题最多的地方,之前我们谈过 DNS 的事情,今天我们来说说 Ping 这个命令,每次网络出问题的时候最喜欢的命令就是&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

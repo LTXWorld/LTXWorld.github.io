@@ -1,141 +1,997 @@
-<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Tmux终端窗口器 | LTX's Blog</title>
-<meta name=keywords content="tmux,终端"><meta name=description content="引子
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Tmux终端窗口器 | LTX&#39;s Blog</title>
+<meta name="keywords" content="tmux, 终端">
+<meta name="description" content="引子
 开篇提问，大家平时用终端的次数多吗？
 
-如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/><link crossorigin=anonymous href=/assets/css/stylesheet.c98266582198d1e5ef6529482f54b208422b9b1a9eeac13f1e3df51f4f9bfbed.css integrity="sha256-yYJmWCGY0eXvZSlIL1SyCEIrmxqe6sE/Hj31H0+b++0=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="Tmux终端窗口器"><meta property="og:description" content="引子 开篇提问，大家平时用终端的次数多吗？
-如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-01T08:36:54+08:00"><meta property="article:modified_time" content="2025-04-01T08:36:54+08:00"><meta property="article:tag" content="Tmux"><meta property="article:tag" content="终端"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="Tmux终端窗口器"><meta name=twitter:description content="引子
+如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="Tmux终端窗口器">
+  <meta property="og:description" content="引子 开篇提问，大家平时用终端的次数多吗？
+如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-01T08:36:54+08:00">
+    <meta property="article:modified_time" content="2025-04-01T08:36:54+08:00">
+    <meta property="article:tag" content="Tmux">
+    <meta property="article:tag" content="终端">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="Tmux终端窗口器">
+<meta name="twitter:description" content="引子
 开篇提问，大家平时用终端的次数多吗？
 
-如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"Tmux终端窗口器","item":"https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Tmux终端窗口器","name":"Tmux终端窗口器","description":"引子 开篇提问，大家平时用终端的次数多吗？\n如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）\n","keywords":["tmux","终端"],"articleBody":"引子 开篇提问，大家平时用终端的次数多吗？\n如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）\n不管怎么样，在我们使用这些终端的时候，通常都会面对一个大大的黑框，然后就在这个黑框里不断地操作，那么此时如果我想要保留当前框中的内容的同时又想开另外一个框来进行其他操作呢？我想，这一定是所有使用终端的人都会遇到的问题。\n系统中的默认终端编辑器给我们了这样一种做法：New Tab，与浏览器窗口的打开一样，一个接着一个，但这还不够好，如果我想要同时观察两个窗口中的内容呢？总不能一会儿点这个，一会儿又点回另一个吧，那这样的操作肯定是有点累赘的。\n所以就有了tmux这个终端窗口器，它可以做到在一个窗口内，分割出多个子窗口，这个子窗口其实叫做窗格，接下来我们会简单的说一下其中的概念，不过我想当你亲自上手使用一段时间后，这些概念反倒没有那么重要了。\n我对于tmux的了解来源于Missing课程，其中也包含了Vim的操作等非常重要的课程。\n简介 Tmux中有几个概念需要了解，从大往小来说分别是：会话-\u003e窗口-\u003e窗格 下面我们逆序来分别介绍一下他们。\n窗格 如上图所示，窗格就是我在一个窗口内分出的四个块，甚至可以做到不同尺寸（稍后见配置文件），这每一个窗格我们其实都可以把他当作一个新的终端，这样就可以完美解决在引子中我们提到的问题，可以同时观察终端中运行的不同命令的结果。\n我们可以垂直划分也可以水平划分窗口来创建不同的窗格。（操作见下方快捷键）\n窗口 窗口就是最开始普通的终端编辑器中的大窗口的概念，在tmux中我们不仅可以在一个窗口内创建多个窗格，还可以在一个会话内创建多个窗口，就像下图中红色框出的部分，在这一个会话中我创建了5个不同的窗口并且对其进行不同的命名以区分每个窗口的作用，是不是比不停的去New Tab要整齐地多？\n这些窗口已经自动排好了序，那如何在这些窗口中切换呢？虽然tmux给了相应的快捷键，但是我更改了配置文件，现在可以做到直接点击切换窗口。\n会话 我们上面说过，一个会话包含多个窗口，而我们每次进行操作本质上是进入了一个会话中，我们一般以一个会话包含一系列类似的工作窗口。\n如何创建和退出会话呢，这里就要用到一些命令了(当然快捷键也可以)\n# 新建 tmux new -s \u003c会话名\u003e # 退出会话，但是仍在后台执行没有销毁 tmux detach # 进入会话 tmux attach -t \u003c会话名\u003e # 列出会话 tmux ls # 杀死 tmux kill-session -t \u003c会话名\u003e or \u003c会话id\u003e # 切换会话 tmux switch -t \u003c会话名\u003e or \u003c会话id\u003e # 重命名 tmux rename-session -t \u003c会话名\u003e 配置文件 tmux本身是一个快捷键很多的工具，而其快捷键又极其依赖操作前缀，默认是Ctrl/Command+b,而低头看看自己的键盘，这两个键离得是不是有点稍远了点，不是那么好按啊。以及其新建窗格的按键是什么%,切换又是;这种有些很难记且很难按的设置，所以我们需要个性化一下，来改变~/.tmux.conf这个文件的内容。\n下面我列出的配置是专门对于我macos的配置，其实与windows或者linux大查不查，有些地方不一样而已。\n将前缀修改为Ctrl/Command+a,下面以Pre代替 窗口管理\n启用base-index 1让窗口编号从1开始 Pre+c 新建窗口，Pre+t切换下一个窗口；Pre+space/Backspace下/上一个窗口 Pre+v/s垂直/水平分割当前窗口产生窗格 Pre+,对窗口进行重命名操作 窗格管理\n启用了vim模式，可以使用Pre + h/j/k/l在窗格之间导航 Pre+a切换到上一个窗格 setw -g mouse on启用了鼠标模式，这样我们可以实现点选窗口，拖拽窗格大小，还能够选择一段代码（其状态会变为黄色）自动复制到剪贴板上，方便复制（注意这样点选后会自动来到最新的终端位置） 并且开启了状态栏，可以在底部显示时间信息。 其他的操作大家可以自行查阅资料。\n# vim style tmux config # use C-a, since it's on the home row and easier to hit than C-b set-option -g prefix C-a unbind-key C-a bind-key C-a send-prefix set -g base-index 1 # Easy config reload bind-key R source-file ~/.tmux.conf \\; display-message \"tmux.conf reloaded.\" # vi is good setw -g mode-keys vi # mouse behavior setw -g mouse on set-option -g default-terminal screen-256color bind-key : command-prompt bind-key r refresh-client bind-key L clear-history bind-key space next-window bind-key bspace previous-window bind-key enter next-layout # use vim-like keys for splits and windows bind-key v split-window -h bind-key s split-window -v bind-key h select-pane -L bind-key j select-pane -D bind-key k select-pane -U bind-key l select-pane -R # smart pane switching with awareness of vim splits bind -n C-h run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys C-h) || tmux select-pane -L\" bind -n C-j run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys C-j) || tmux select-pane -D\" bind -n C-k run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys C-k) || tmux select-pane -U\" bind -n C-l run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys C-l) || tmux select-pane -R\" bind -n 'C-\\' run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys 'C-\\\\') || tmux select-pane -l\" bind C-l send-keys 'C-l' bind-key C-o rotate-window bind-key + select-layout main-horizontal bind-key = select-layout main-vertical set-window-option -g other-pane-height 25 set-window-option -g other-pane-width 80 set-window-option -g display-panes-time 1500 set-window-option -g window-status-current-style fg=magenta bind-key a last-pane bind-key q display-panes bind-key c new-window bind-key t next-window bind-key T previous-window bind-key [ copy-mode bind-key ] paste-buffer # Setup 'v' to begin selection as in Vim bind-key -T copy-mode-vi v send -X begin-selection bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel \"xclip -sel clip\" # Update default binding of `Enter` to also use copy-pipe unbind -T copy-mode-vi Enter bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel \"xclip -sel clip\" # Status Bar set-option -g status-interval 1 set-option -g status-style bg=black set-option -g status-style fg=white set -g status-left '#[fg=green]#H #[default]' set -g status-right '%a%l:%M:%S %p#[default] #[fg=blue]%Y-%m-%d' set-option -g pane-active-border-style fg=yellow set-option -g pane-border-style fg=cyan # Set window notifications setw -g monitor-activity on set -g visual-activity on # Enable native Mac OS X copy/paste set-option -g default-command \"/bin/bash -c 'which reattach-to-user-namespace \u003e/dev/null \u0026\u0026 exec reattach-to-user-namespace $SHELL -l || exec $SHELL -l'\" # Allow the arrow key to be used immediately after changing windows set-option -g repeat-time 0 最终激活配置可以直接Pre+R这是我们设置好的激活快捷键；或者你直接重启tmux服务\ntmux kill-server， tmux 简单流程 总结一下使用的流程，来到我们的终端后，执行如下操作\ntmux new -s t1 # 新建一些窗口 Pre+c # 对当前窗口进行垂直或水平划分 Pre+v/c # 进行终端操作即可 # 退出tmux会话 tmux detach # 再次进入 tmux ls tmux a -t \u003c会话名\u003e ","wordCount":"2216","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2025-04-01T08:36:54+08:00","dateModified":"2025-04-01T08:36:54+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">Tmux终端窗口器</h1><div class=post-meta><span title='2025-04-01 08:36:54 +0800 CST'>四月 1, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e5%bc%95%e5%ad%90 aria-label=引子>引子</a></li><li><a href=#%e7%ae%80%e4%bb%8b aria-label=简介>简介</a><ul><li><a href=#%e7%aa%97%e6%a0%bc aria-label=窗格>窗格</a></li><li><a href=#%e7%aa%97%e5%8f%a3 aria-label=窗口>窗口</a></li><li><a href=#%e4%bc%9a%e8%af%9d aria-label=会话>会话</a></li></ul></li><li><a href=#%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6 aria-label=配置文件>配置文件</a></li><li><a href=#%e7%ae%80%e5%8d%95%e6%b5%81%e7%a8%8b aria-label=简单流程>简单流程</a></li></ul></div></details></div><div class=post-content><h2 id=引子>引子<a hidden class=anchor aria-hidden=true href=#引子>#</a></h2><p>开篇提问，大家平时用终端的次数多吗？</p><p><img loading=lazy src=/img/xm/hdw.png></p><p>如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）</p><p>不管怎么样，在我们使用这些终端的时候，通常都会面对一个大大的黑框，然后就在这个黑框里不断地操作，那么此时如果我想要保留当前框中的内容的同时又想开另外一个框来进行其他操作呢？我想，这一定是所有使用终端的人都会遇到的问题。</p><p>系统中的默认终端编辑器给我们了这样一种做法：New Tab，与浏览器窗口的打开一样，一个接着一个，但这还不够好，如果我想要同时观察两个窗口中的内容呢？总不能一会儿点这个，一会儿又点回另一个吧，那这样的操作肯定是有点累赘的。</p><p>所以就有了tmux这个终端窗口器，它可以做到在一个窗口内，分割出多个子窗口，这个子窗口其实叫做窗格，接下来我们会简单的说一下其中的概念，不过我想当你亲自上手使用一段时间后，这些概念反倒没有那么重要了。</p><p><img loading=lazy src=/img/riscv/tmux3.png></p><p>我对于tmux的了解来源于<a href=https://missing-semester-cn.github.io/>Missing课程</a>，其中也包含了Vim的操作等非常重要的课程。</p><h2 id=简介>简介<a hidden class=anchor aria-hidden=true href=#简介>#</a></h2><p>Tmux中有几个概念需要了解，从大往小来说分别是：会话->窗口->窗格
-下面我们逆序来分别介绍一下他们。</p><h3 id=窗格>窗格<a hidden class=anchor aria-hidden=true href=#窗格>#</a></h3><p>如上图所示，窗格就是我在一个窗口内分出的四个块，甚至可以做到不同尺寸（稍后见配置文件），这每一个窗格我们其实都可以把他当作一个新的终端，这样就可以完美解决在引子中我们提到的问题，可以同时观察终端中运行的不同命令的结果。</p><p>我们可以垂直划分也可以水平划分窗口来创建不同的窗格。（操作见下方快捷键）</p><h3 id=窗口>窗口<a hidden class=anchor aria-hidden=true href=#窗口>#</a></h3><p>窗口就是最开始普通的终端编辑器中的大窗口的概念，在tmux中我们不仅可以在一个窗口内创建多个窗格，还可以在一个会话内创建多个窗口，就像下图中红色框出的部分，在这一个会话中我创建了5个不同的窗口并且对其进行不同的命名以区分每个窗口的作用，是不是比不停的去New Tab要整齐地多？</p><p><img loading=lazy src=/img/riscv/tmux4.png></p><p>这些窗口已经自动排好了序，那如何在这些窗口中切换呢？虽然tmux给了相应的快捷键，但是我更改了配置文件，现在可以做到直接点击切换窗口。</p><h3 id=会话>会话<a hidden class=anchor aria-hidden=true href=#会话>#</a></h3><p>我们上面说过，一个会话包含多个窗口，而我们每次进行操作本质上是进入了一个会话中，我们一般以一个会话包含一系列类似的工作窗口。</p><p>如何创建和退出会话呢，这里就要用到一些命令了(当然快捷键也可以)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 新建</span>
-</span></span><span class=line><span class=cl>tmux new -s &lt;会话名&gt;
-</span></span><span class=line><span class=cl><span class=c1># 退出会话，但是仍在后台执行没有销毁</span>
-</span></span><span class=line><span class=cl>tmux detach
-</span></span><span class=line><span class=cl><span class=c1># 进入会话</span>
-</span></span><span class=line><span class=cl>tmux attach -t &lt;会话名&gt;
-</span></span><span class=line><span class=cl><span class=c1># 列出会话</span>
-</span></span><span class=line><span class=cl>tmux ls
-</span></span><span class=line><span class=cl><span class=c1># 杀死</span>
-</span></span><span class=line><span class=cl>tmux kill-session -t &lt;会话名&gt; or &lt;会话id&gt;
-</span></span><span class=line><span class=cl><span class=c1># 切换会话</span>
-</span></span><span class=line><span class=cl>tmux switch -t &lt;会话名&gt; or &lt;会话id&gt;
-</span></span><span class=line><span class=cl><span class=c1># 重命名</span>
-</span></span><span class=line><span class=cl>tmux rename-session -t &lt;会话名&gt; &lt;new-name&gt;
-</span></span></code></pre></div><h2 id=配置文件>配置文件<a hidden class=anchor aria-hidden=true href=#配置文件>#</a></h2><p>tmux本身是一个快捷键很多的工具，而其快捷键又极其依赖操作前缀，默认是<code>Ctrl/Command+b</code>,而低头看看自己的键盘，这两个键离得是不是有点稍远了点，不是那么好按啊。以及其新建窗格的按键是什么<code>%</code>,切换又是<code>;</code>这种有些很难记且很难按的设置，所以我们需要个性化一下，来改变<code>~/.tmux.conf</code>这个文件的内容。</p><p>下面我列出的配置是专门对于我macos的配置，其实与windows或者linux大查不查，有些地方不一样而已。</p><ul><li>将前缀修改为<code>Ctrl/Command+a</code>,下面以Pre代替</li></ul><p><strong>窗口管理</strong></p><ul><li>启用<code>base-index 1</code>让窗口编号从1开始</li><li><code>Pre+c</code> 新建窗口，<code>Pre+t</code>切换下一个窗口；<code>Pre+space/Backspace</code>下/上一个窗口</li><li><code>Pre+v/s</code>垂直/水平分割当前窗口产生窗格</li><li><code>Pre+,</code>对窗口进行重命名操作</li></ul><p><strong>窗格管理</strong></p><ul><li>启用了vim模式，可以使用<code>Pre + h/j/k/l</code>在窗格之间导航</li><li><code>Pre+a</code>切换到上一个窗格</li><li><code>setw -g mouse on</code>启用了鼠标模式，这样我们可以实现点选窗口，拖拽窗格大小，还能够选择一段代码（其状态会变为黄色）自动复制到剪贴板上，方便复制（注意这样点选后会自动来到最新的终端位置）</li><li>并且开启了状态栏，可以在底部显示时间信息。</li></ul><p>其他的操作大家可以自行查阅资料。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># vim style tmux config</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># use C-a, since it&#39;s on the home row and easier to hit than C-b</span>
-</span></span><span class=line><span class=cl>set-option -g prefix C-a
-</span></span><span class=line><span class=cl>unbind-key C-a
-</span></span><span class=line><span class=cl>bind-key C-a send-prefix
-</span></span><span class=line><span class=cl><span class=nb>set</span> -g base-index <span class=m>1</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Easy config reload</span>
-</span></span><span class=line><span class=cl>bind-key R source-file ~/.tmux.conf <span class=se>\;</span> display-message <span class=s2>&#34;tmux.conf reloaded.&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># vi is good</span>
-</span></span><span class=line><span class=cl>setw -g mode-keys vi
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># mouse behavior</span>
-</span></span><span class=line><span class=cl>setw -g mouse on
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>set-option -g default-terminal screen-256color
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bind-key : command-prompt
-</span></span><span class=line><span class=cl>bind-key r refresh-client
-</span></span><span class=line><span class=cl>bind-key L clear-history
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bind-key space next-window
-</span></span><span class=line><span class=cl>bind-key bspace previous-window
-</span></span><span class=line><span class=cl>bind-key enter next-layout
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># use vim-like keys for splits and windows</span>
-</span></span><span class=line><span class=cl>bind-key v split-window -h
-</span></span><span class=line><span class=cl>bind-key s split-window -v
-</span></span><span class=line><span class=cl>bind-key h <span class=k>select</span>-pane -L
-</span></span><span class=line><span class=cl>bind-key j <span class=k>select</span>-pane -D
-</span></span><span class=line><span class=cl>bind-key k <span class=k>select</span>-pane -U
-</span></span><span class=line><span class=cl>bind-key l <span class=k>select</span>-pane -R
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># smart pane switching with awareness of vim splits</span>
-</span></span><span class=line><span class=cl><span class=nb>bind</span> -n C-h run <span class=s2>&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class=s2>&#39; &amp;&amp; tmux send-keys C-h) || tmux select-pane -L&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>bind</span> -n C-j run <span class=s2>&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class=s2>&#39; &amp;&amp; tmux send-keys C-j) || tmux select-pane -D&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>bind</span> -n C-k run <span class=s2>&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class=s2>&#39; &amp;&amp; tmux send-keys C-k) || tmux select-pane -U&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>bind</span> -n C-l run <span class=s2>&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class=s2>&#39; &amp;&amp; tmux send-keys C-l) || tmux select-pane -R&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>bind</span> -n <span class=s1>&#39;C-\&#39;</span> run <span class=s2>&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class=s2>&#39; &amp;&amp; tmux send-keys &#39;C-\\&#39;) || tmux select-pane -l&#34;</span>
-</span></span><span class=line><span class=cl><span class=nb>bind</span> C-l send-keys <span class=s1>&#39;C-l&#39;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bind-key C-o rotate-window
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bind-key + <span class=k>select</span>-layout main-horizontal
-</span></span><span class=line><span class=cl>bind-key <span class=o>=</span> <span class=k>select</span>-layout main-vertical
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>set-window-option -g other-pane-height <span class=m>25</span>
-</span></span><span class=line><span class=cl>set-window-option -g other-pane-width <span class=m>80</span>
-</span></span><span class=line><span class=cl>set-window-option -g display-panes-time <span class=m>1500</span>
-</span></span><span class=line><span class=cl>set-window-option -g window-status-current-style <span class=nv>fg</span><span class=o>=</span>magenta
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bind-key a last-pane
-</span></span><span class=line><span class=cl>bind-key q display-panes
-</span></span><span class=line><span class=cl>bind-key c new-window
-</span></span><span class=line><span class=cl>bind-key t next-window
-</span></span><span class=line><span class=cl>bind-key T previous-window
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>bind-key <span class=o>[</span> copy-mode
-</span></span><span class=line><span class=cl>bind-key <span class=o>]</span> paste-buffer
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Setup &#39;v&#39; to begin selection as in Vim</span>
-</span></span><span class=line><span class=cl>bind-key -T copy-mode-vi v send -X begin-selection
-</span></span><span class=line><span class=cl>bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel <span class=s2>&#34;xclip -sel clip&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Update default binding of `Enter` to also use copy-pipe</span>
-</span></span><span class=line><span class=cl>unbind -T copy-mode-vi Enter
-</span></span><span class=line><span class=cl>bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel <span class=s2>&#34;xclip -sel clip&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Status Bar</span>
-</span></span><span class=line><span class=cl>set-option -g status-interval <span class=m>1</span>
-</span></span><span class=line><span class=cl>set-option -g status-style <span class=nv>bg</span><span class=o>=</span>black
-</span></span><span class=line><span class=cl>set-option -g status-style <span class=nv>fg</span><span class=o>=</span>white
-</span></span><span class=line><span class=cl><span class=nb>set</span> -g status-left <span class=s1>&#39;#[fg=green]#H #[default]&#39;</span>
-</span></span><span class=line><span class=cl><span class=nb>set</span> -g status-right <span class=s1>&#39;%a%l:%M:%S %p#[default] #[fg=blue]%Y-%m-%d&#39;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>set-option -g pane-active-border-style <span class=nv>fg</span><span class=o>=</span>yellow
-</span></span><span class=line><span class=cl>set-option -g pane-border-style <span class=nv>fg</span><span class=o>=</span>cyan
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Set window notifications</span>
-</span></span><span class=line><span class=cl>setw -g monitor-activity on
-</span></span><span class=line><span class=cl><span class=nb>set</span> -g visual-activity on
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Enable native Mac OS X copy/paste</span>
-</span></span><span class=line><span class=cl>set-option -g default-command <span class=s2>&#34;/bin/bash -c &#39;which reattach-to-user-namespace &gt;/dev/null &amp;&amp; exec reattach-to-user-namespace </span><span class=nv>$SHELL</span><span class=s2> -l || exec </span><span class=nv>$SHELL</span><span class=s2> -l&#39;&#34;</span>
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Allow the arrow key to be used immediately after changing windows</span>
-</span></span><span class=line><span class=cl>set-option -g repeat-time <span class=m>0</span>
-</span></span></code></pre></div><p>最终激活配置可以直接<code>Pre+R</code>这是我们设置好的激活快捷键；或者你直接重启tmux服务</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>tmux kill-server，
-</span></span><span class=line><span class=cl>tmux
-</span></span></code></pre></div><h2 id=简单流程>简单流程<a hidden class=anchor aria-hidden=true href=#简单流程>#</a></h2><p>总结一下使用的流程，来到我们的终端后，执行如下操作</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>tmux new -s t1
-</span></span><span class=line><span class=cl><span class=c1># 新建一些窗口</span>
-</span></span><span class=line><span class=cl>Pre+c
-</span></span><span class=line><span class=cl><span class=c1># 对当前窗口进行垂直或水平划分</span>
-</span></span><span class=line><span class=cl>Pre+v/c
-</span></span><span class=line><span class=cl><span class=c1># 进行终端操作即可</span>
-</span></span><span class=line><span class=cl><span class=c1># 退出tmux会话</span>
-</span></span><span class=line><span class=cl>tmux detach
-</span></span><span class=line><span class=cl><span class=c1># 再次进入</span>
-</span></span><span class=line><span class=cl>tmux ls
-</span></span><span class=line><span class=cl>tmux a -t &lt;会话名&gt;
-</span></span></code></pre></div></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/tmux/>Tmux</a></li><li><a href=https://LTXWorld.github.io/tags/%E7%BB%88%E7%AB%AF/>终端</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/><span class=title>« 上一页</span><br><span>K3sEP03——移植镜像到RiscV开发板</span>
-</a><a class=next href=https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/><span class=title>下一页 »</span><br><span>K3sEP02——解决RiscV开发板镜像无法拉取问题</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
-<span>Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-drag-handle data-role=drag-handle title=上下拖动调整位置></div><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
-<span class=ltx-music-artist data-role=artist></span></div><button type=button class=ltx-music-hide data-action=collapse aria-label=隐藏播放器>&#215;</button></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
-<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
-<button type=button data-action=toggle aria-label=播放或暂停>
-<span data-icon=play>▶</span>
-<span data-icon=pause>⏸</span>
-</button>
-<button type=button data-action=next aria-label=下一首>⏭</button>
-<button type=button data-action=mute aria-label=静音或取消静音>
-<span data-icon=unmuted>🔊</span>
-<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><button type=button class=ltx-music-fab id=ltx-music-fab aria-label=显示音乐播放器>&#9835;</button>
-<script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const a=window.LTX_MUSIC_CONFIG||{};if(!a.tracks||!a.tracks.length)return;const e=document.getElementById("ltx-music-player"),t=e.querySelector("audio"),x=e.querySelector('[data-role="title"]'),O=e.querySelector('[data-role="artist"]'),b=e.querySelector('[data-role="progress"]'),A=e.querySelector('[data-role="progress-fill"]'),F=e.querySelector('[data-role="current"]'),M=e.querySelector('[data-role="total"]'),c=e.querySelector('[data-role="tip"]'),r=e.querySelector('[data-role="cover"]'),S=e.querySelector('[data-action="toggle"]'),y=e.querySelector('[data-action="prev"]'),k=e.querySelector('[data-action="next"]'),E=e.querySelector('[data-action="mute"]'),g=e.querySelector('[data-action="collapse"]'),i=e.querySelector('[data-role="drag-handle"]'),o=document.getElementById("ltx-music-fab"),f=(e,t,n)=>Math.min(Math.max(e,t),n),j=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},C=-120,_=220,w=180,s={active:!1,startY:0,startOffset:0,pointerId:null},n={index:0,tracks:a.tracks,autoplay:a.autoplay!==!1,loopPlaylist:a.loopPlaylist!==!1,offset:0,collapsed:!1},h=t=>{n.offset=f(t,C,_),e.style.setProperty("--ltx-offset",`${n.offset}px`)},l=t=>{const s=Boolean(t);n.collapsed=s,e.classList.toggle("ltx-collapsed",s),s?(e.classList.remove("ltx-dragging"),n.offset=0,e.style.removeProperty("--ltx-offset"),o&&(o.classList.add("ltx-visible"),o.setAttribute("aria-hidden","false"),o.tabIndex=0)):(h(0),o&&(o.classList.remove("ltx-visible"),o.setAttribute("aria-hidden","true"),o.tabIndex=-1))},m=()=>{const n=t.muted||t.volume===0;e.classList.toggle("ltx-muted",n)};t.volume=f(a.startVolume??.6,0,1),m(),l(!1);const d=()=>{const e=t.duration||0,n=t.currentTime||0,s=e?n/e*100:0;A.style.width=`${s}%`,F.textContent=j(n),M.textContent=j(e)},u=(s,o={})=>{const l=n.tracks.length;n.index=(s%l+l)%l;const i=n.tracks[n.index];if(!i||!i.file){console.warn("LTX music player: 音频文件缺失",i),c.textContent="音频文件缺失，请检查配置";return}const u=i.cover||a.defaultCover||"";r&&(u?(r.src=u,r.alt=i.title?`${i.title} 封面`:"音乐封面",e.classList.add("ltx-has-cover")):(r.removeAttribute("src"),r.alt="",e.classList.remove("ltx-has-cover"))),x.textContent=i.title||`Track ${n.index+1}`,O.textContent=i.artist||"",t.src=i.file,e.dataset.trackIndex=n.index,c.textContent="",e.classList.remove("ltx-autoplay-blocked"),d(),o.play&&p()},p=()=>{t.play().then(()=>{e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}).catch(()=>{e.classList.add("ltx-autoplay-blocked"),c.textContent="浏览器阻止了自动播放，请点击播放按钮"})},v=(e=!1)=>{const o=!t.paused||e,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){t.currentTime=t.duration||0,t.pause();return}u(s,{play:o})},T=()=>{const e=!t.paused;u(n.index-1,{play:e})};if(g&&g.addEventListener("click",()=>l(!0)),o&&(o.addEventListener("click",()=>l(!1)),o.setAttribute("aria-hidden","true"),o.tabIndex=-1),i){i.style.touchAction="none",i.addEventListener("pointerdown",t=>{if(n.collapsed)return;if(s.active=!0,s.pointerId=t.pointerId,s.startY=t.clientY,s.startOffset=n.offset,i.setPointerCapture)try{i.setPointerCapture(t.pointerId)}catch{}e.classList.add("ltx-dragging")}),i.addEventListener("pointermove",e=>{if(!s.active)return;const t=e.clientY-s.startY;h(s.startOffset+t)});const t=()=>{if(!s.active)return;if(s.pointerId!==null&&i.releasePointerCapture)try{i.releasePointerCapture(s.pointerId)}catch{}s.active=!1,s.pointerId=null,e.classList.remove("ltx-dragging"),n.offset>w?l(!0):h(n.offset)};["pointerup","pointercancel"].forEach(e=>{i.addEventListener(e,t)}),i.addEventListener("pointerleave",()=>{if(!s.active)return;t()})}S.addEventListener("click",()=>{t.paused?p():t.pause()}),y.addEventListener("click",T),k.addEventListener("click",()=>v(!1)),E.addEventListener("click",()=>{t.muted=!t.muted,m()}),b.addEventListener("click",e=>{const n=b.getBoundingClientRect(),s=f((e.clientX-n.left)/n.width,0,1);Number.isFinite(t.duration)&&(t.currentTime=s*t.duration)}),t.addEventListener("timeupdate",d),t.addEventListener("loadedmetadata",d),t.addEventListener("play",()=>{e.classList.add("ltx-playing"),e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}),t.addEventListener("pause",()=>{e.classList.remove("ltx-playing")}),t.addEventListener("ended",()=>{v(!0)}),t.addEventListener("volumechange",m),u(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Tmux终端窗口器",
+      "item": "http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Tmux终端窗口器",
+  "name": "Tmux终端窗口器",
+  "description": "引子 开篇提问，大家平时用终端的次数多吗？\n如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）\n",
+  "keywords": [
+    "tmux", "终端"
+  ],
+  "articleBody": "引子 开篇提问，大家平时用终端的次数多吗？\n如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）\n不管怎么样，在我们使用这些终端的时候，通常都会面对一个大大的黑框，然后就在这个黑框里不断地操作，那么此时如果我想要保留当前框中的内容的同时又想开另外一个框来进行其他操作呢？我想，这一定是所有使用终端的人都会遇到的问题。\n系统中的默认终端编辑器给我们了这样一种做法：New Tab，与浏览器窗口的打开一样，一个接着一个，但这还不够好，如果我想要同时观察两个窗口中的内容呢？总不能一会儿点这个，一会儿又点回另一个吧，那这样的操作肯定是有点累赘的。\n所以就有了tmux这个终端窗口器，它可以做到在一个窗口内，分割出多个子窗口，这个子窗口其实叫做窗格，接下来我们会简单的说一下其中的概念，不过我想当你亲自上手使用一段时间后，这些概念反倒没有那么重要了。\n我对于tmux的了解来源于Missing课程，其中也包含了Vim的操作等非常重要的课程。\n简介 Tmux中有几个概念需要了解，从大往小来说分别是：会话-\u003e窗口-\u003e窗格 下面我们逆序来分别介绍一下他们。\n窗格 如上图所示，窗格就是我在一个窗口内分出的四个块，甚至可以做到不同尺寸（稍后见配置文件），这每一个窗格我们其实都可以把他当作一个新的终端，这样就可以完美解决在引子中我们提到的问题，可以同时观察终端中运行的不同命令的结果。\n我们可以垂直划分也可以水平划分窗口来创建不同的窗格。（操作见下方快捷键）\n窗口 窗口就是最开始普通的终端编辑器中的大窗口的概念，在tmux中我们不仅可以在一个窗口内创建多个窗格，还可以在一个会话内创建多个窗口，就像下图中红色框出的部分，在这一个会话中我创建了5个不同的窗口并且对其进行不同的命名以区分每个窗口的作用，是不是比不停的去New Tab要整齐地多？\n这些窗口已经自动排好了序，那如何在这些窗口中切换呢？虽然tmux给了相应的快捷键，但是我更改了配置文件，现在可以做到直接点击切换窗口。\n会话 我们上面说过，一个会话包含多个窗口，而我们每次进行操作本质上是进入了一个会话中，我们一般以一个会话包含一系列类似的工作窗口。\n如何创建和退出会话呢，这里就要用到一些命令了(当然快捷键也可以)\n# 新建 tmux new -s \u003c会话名\u003e # 退出会话，但是仍在后台执行没有销毁 tmux detach # 进入会话 tmux attach -t \u003c会话名\u003e # 列出会话 tmux ls # 杀死 tmux kill-session -t \u003c会话名\u003e or \u003c会话id\u003e # 切换会话 tmux switch -t \u003c会话名\u003e or \u003c会话id\u003e # 重命名 tmux rename-session -t \u003c会话名\u003e 配置文件 tmux本身是一个快捷键很多的工具，而其快捷键又极其依赖操作前缀，默认是Ctrl/Command+b,而低头看看自己的键盘，这两个键离得是不是有点稍远了点，不是那么好按啊。以及其新建窗格的按键是什么%,切换又是;这种有些很难记且很难按的设置，所以我们需要个性化一下，来改变~/.tmux.conf这个文件的内容。\n下面我列出的配置是专门对于我macos的配置，其实与windows或者linux大查不查，有些地方不一样而已。\n将前缀修改为Ctrl/Command+a,下面以Pre代替 窗口管理\n启用base-index 1让窗口编号从1开始 Pre+c 新建窗口，Pre+t切换下一个窗口；Pre+space/Backspace下/上一个窗口 Pre+v/s垂直/水平分割当前窗口产生窗格 Pre+,对窗口进行重命名操作 窗格管理\n启用了vim模式，可以使用Pre + h/j/k/l在窗格之间导航 Pre+a切换到上一个窗格 setw -g mouse on启用了鼠标模式，这样我们可以实现点选窗口，拖拽窗格大小，还能够选择一段代码（其状态会变为黄色）自动复制到剪贴板上，方便复制（注意这样点选后会自动来到最新的终端位置） 并且开启了状态栏，可以在底部显示时间信息。 其他的操作大家可以自行查阅资料。\n# vim style tmux config # use C-a, since it's on the home row and easier to hit than C-b set-option -g prefix C-a unbind-key C-a bind-key C-a send-prefix set -g base-index 1 # Easy config reload bind-key R source-file ~/.tmux.conf \\; display-message \"tmux.conf reloaded.\" # vi is good setw -g mode-keys vi # mouse behavior setw -g mouse on set-option -g default-terminal screen-256color bind-key : command-prompt bind-key r refresh-client bind-key L clear-history bind-key space next-window bind-key bspace previous-window bind-key enter next-layout # use vim-like keys for splits and windows bind-key v split-window -h bind-key s split-window -v bind-key h select-pane -L bind-key j select-pane -D bind-key k select-pane -U bind-key l select-pane -R # smart pane switching with awareness of vim splits bind -n C-h run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys C-h) || tmux select-pane -L\" bind -n C-j run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys C-j) || tmux select-pane -D\" bind -n C-k run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys C-k) || tmux select-pane -U\" bind -n C-l run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys C-l) || tmux select-pane -R\" bind -n 'C-\\' run \"(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\\/)vim$' \u0026\u0026 tmux send-keys 'C-\\\\') || tmux select-pane -l\" bind C-l send-keys 'C-l' bind-key C-o rotate-window bind-key + select-layout main-horizontal bind-key = select-layout main-vertical set-window-option -g other-pane-height 25 set-window-option -g other-pane-width 80 set-window-option -g display-panes-time 1500 set-window-option -g window-status-current-style fg=magenta bind-key a last-pane bind-key q display-panes bind-key c new-window bind-key t next-window bind-key T previous-window bind-key [ copy-mode bind-key ] paste-buffer # Setup 'v' to begin selection as in Vim bind-key -T copy-mode-vi v send -X begin-selection bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel \"xclip -sel clip\" # Update default binding of `Enter` to also use copy-pipe unbind -T copy-mode-vi Enter bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel \"xclip -sel clip\" # Status Bar set-option -g status-interval 1 set-option -g status-style bg=black set-option -g status-style fg=white set -g status-left '#[fg=green]#H #[default]' set -g status-right '%a%l:%M:%S %p#[default] #[fg=blue]%Y-%m-%d' set-option -g pane-active-border-style fg=yellow set-option -g pane-border-style fg=cyan # Set window notifications setw -g monitor-activity on set -g visual-activity on # Enable native Mac OS X copy/paste set-option -g default-command \"/bin/bash -c 'which reattach-to-user-namespace \u003e/dev/null \u0026\u0026 exec reattach-to-user-namespace $SHELL -l || exec $SHELL -l'\" # Allow the arrow key to be used immediately after changing windows set-option -g repeat-time 0 最终激活配置可以直接Pre+R这是我们设置好的激活快捷键；或者你直接重启tmux服务\ntmux kill-server， tmux 简单流程 总结一下使用的流程，来到我们的终端后，执行如下操作\ntmux new -s t1 # 新建一些窗口 Pre+c # 对当前窗口进行垂直或水平划分 Pre+v/c # 进行终端操作即可 # 退出tmux会话 tmux detach # 再次进入 tmux ls tmux a -t \u003c会话名\u003e ",
+  "wordCount" : "2216",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-04-01T08:36:54+08:00",
+  "dateModified": "2025-04-01T08:36:54+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Tmux终端窗口器
+    </h1>
+    <div class="post-meta"><span title='2025-04-01 08:36:54 +0800 CST'>四月 1, 2025</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
+                <li>
+                    <a href="#%e7%ae%80%e4%bb%8b" aria-label="简介">简介</a><ul>
+                        
+                <li>
+                    <a href="#%e7%aa%97%e6%a0%bc" aria-label="窗格">窗格</a></li>
+                <li>
+                    <a href="#%e7%aa%97%e5%8f%a3" aria-label="窗口">窗口</a></li>
+                <li>
+                    <a href="#%e4%bc%9a%e8%af%9d" aria-label="会话">会话</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e9%85%8d%e7%bd%ae%e6%96%87%e4%bb%b6" aria-label="配置文件">配置文件</a></li>
+                <li>
+                    <a href="#%e7%ae%80%e5%8d%95%e6%b5%81%e7%a8%8b" aria-label="简单流程">简单流程</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
+<p>开篇提问，大家平时用终端的次数多吗？</p>
+<p><img loading="lazy" src="/img/xm/hdw.png"></p>
+<p>如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）</p>
+<p>不管怎么样，在我们使用这些终端的时候，通常都会面对一个大大的黑框，然后就在这个黑框里不断地操作，那么此时如果我想要保留当前框中的内容的同时又想开另外一个框来进行其他操作呢？我想，这一定是所有使用终端的人都会遇到的问题。</p>
+<p>系统中的默认终端编辑器给我们了这样一种做法：New Tab，与浏览器窗口的打开一样，一个接着一个，但这还不够好，如果我想要同时观察两个窗口中的内容呢？总不能一会儿点这个，一会儿又点回另一个吧，那这样的操作肯定是有点累赘的。</p>
+<p>所以就有了tmux这个终端窗口器，它可以做到在一个窗口内，分割出多个子窗口，这个子窗口其实叫做窗格，接下来我们会简单的说一下其中的概念，不过我想当你亲自上手使用一段时间后，这些概念反倒没有那么重要了。</p>
+<p><img loading="lazy" src="/img/riscv/tmux3.png"></p>
+<p>我对于tmux的了解来源于<a href="https://missing-semester-cn.github.io/">Missing课程</a>，其中也包含了Vim的操作等非常重要的课程。</p>
+<h2 id="简介">简介<a hidden class="anchor" aria-hidden="true" href="#简介">#</a></h2>
+<p>Tmux中有几个概念需要了解，从大往小来说分别是：会话-&gt;窗口-&gt;窗格
+下面我们逆序来分别介绍一下他们。</p>
+<h3 id="窗格">窗格<a hidden class="anchor" aria-hidden="true" href="#窗格">#</a></h3>
+<p>如上图所示，窗格就是我在一个窗口内分出的四个块，甚至可以做到不同尺寸（稍后见配置文件），这每一个窗格我们其实都可以把他当作一个新的终端，这样就可以完美解决在引子中我们提到的问题，可以同时观察终端中运行的不同命令的结果。</p>
+<p>我们可以垂直划分也可以水平划分窗口来创建不同的窗格。（操作见下方快捷键）</p>
+<h3 id="窗口">窗口<a hidden class="anchor" aria-hidden="true" href="#窗口">#</a></h3>
+<p>窗口就是最开始普通的终端编辑器中的大窗口的概念，在tmux中我们不仅可以在一个窗口内创建多个窗格，还可以在一个会话内创建多个窗口，就像下图中红色框出的部分，在这一个会话中我创建了5个不同的窗口并且对其进行不同的命名以区分每个窗口的作用，是不是比不停的去New Tab要整齐地多？</p>
+<p><img loading="lazy" src="/img/riscv/tmux4.png"></p>
+<p>这些窗口已经自动排好了序，那如何在这些窗口中切换呢？虽然tmux给了相应的快捷键，但是我更改了配置文件，现在可以做到直接点击切换窗口。</p>
+<h3 id="会话">会话<a hidden class="anchor" aria-hidden="true" href="#会话">#</a></h3>
+<p>我们上面说过，一个会话包含多个窗口，而我们每次进行操作本质上是进入了一个会话中，我们一般以一个会话包含一系列类似的工作窗口。</p>
+<p>如何创建和退出会话呢，这里就要用到一些命令了(当然快捷键也可以)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 新建</span>
+</span></span><span class="line"><span class="cl">tmux new -s &lt;会话名&gt;
+</span></span><span class="line"><span class="cl"><span class="c1"># 退出会话，但是仍在后台执行没有销毁</span>
+</span></span><span class="line"><span class="cl">tmux detach
+</span></span><span class="line"><span class="cl"><span class="c1"># 进入会话</span>
+</span></span><span class="line"><span class="cl">tmux attach -t &lt;会话名&gt;
+</span></span><span class="line"><span class="cl"><span class="c1"># 列出会话</span>
+</span></span><span class="line"><span class="cl">tmux ls
+</span></span><span class="line"><span class="cl"><span class="c1"># 杀死</span>
+</span></span><span class="line"><span class="cl">tmux kill-session -t &lt;会话名&gt; or &lt;会话id&gt;
+</span></span><span class="line"><span class="cl"><span class="c1"># 切换会话</span>
+</span></span><span class="line"><span class="cl">tmux switch -t &lt;会话名&gt; or &lt;会话id&gt;
+</span></span><span class="line"><span class="cl"><span class="c1"># 重命名</span>
+</span></span><span class="line"><span class="cl">tmux rename-session -t &lt;会话名&gt; &lt;new-name&gt;
+</span></span></code></pre></div><h2 id="配置文件">配置文件<a hidden class="anchor" aria-hidden="true" href="#配置文件">#</a></h2>
+<p>tmux本身是一个快捷键很多的工具，而其快捷键又极其依赖操作前缀，默认是<code>Ctrl/Command+b</code>,而低头看看自己的键盘，这两个键离得是不是有点稍远了点，不是那么好按啊。以及其新建窗格的按键是什么<code>%</code>,切换又是<code>;</code>这种有些很难记且很难按的设置，所以我们需要个性化一下，来改变<code>~/.tmux.conf</code>这个文件的内容。</p>
+<p>下面我列出的配置是专门对于我macos的配置，其实与windows或者linux大查不查，有些地方不一样而已。</p>
+<ul>
+<li>将前缀修改为<code>Ctrl/Command+a</code>,下面以Pre代替</li>
+</ul>
+<p><strong>窗口管理</strong></p>
+<ul>
+<li>启用<code>base-index 1</code>让窗口编号从1开始</li>
+<li><code>Pre+c</code> 新建窗口，<code>Pre+t</code>切换下一个窗口；<code>Pre+space/Backspace</code>下/上一个窗口</li>
+<li><code>Pre+v/s</code>垂直/水平分割当前窗口产生窗格</li>
+<li><code>Pre+,</code>对窗口进行重命名操作</li>
+</ul>
+<p><strong>窗格管理</strong></p>
+<ul>
+<li>启用了vim模式，可以使用<code>Pre + h/j/k/l</code>在窗格之间导航</li>
+<li><code>Pre+a</code>切换到上一个窗格</li>
+<li><code>setw -g mouse on</code>启用了鼠标模式，这样我们可以实现点选窗口，拖拽窗格大小，还能够选择一段代码（其状态会变为黄色）自动复制到剪贴板上，方便复制（注意这样点选后会自动来到最新的终端位置）</li>
+<li>并且开启了状态栏，可以在底部显示时间信息。</li>
+</ul>
+<p>其他的操作大家可以自行查阅资料。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># vim style tmux config</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># use C-a, since it&#39;s on the home row and easier to hit than C-b</span>
+</span></span><span class="line"><span class="cl">set-option -g prefix C-a
+</span></span><span class="line"><span class="cl">unbind-key C-a
+</span></span><span class="line"><span class="cl">bind-key C-a send-prefix
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -g base-index <span class="m">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Easy config reload</span>
+</span></span><span class="line"><span class="cl">bind-key R source-file ~/.tmux.conf <span class="se">\;</span> display-message <span class="s2">&#34;tmux.conf reloaded.&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># vi is good</span>
+</span></span><span class="line"><span class="cl">setw -g mode-keys vi
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># mouse behavior</span>
+</span></span><span class="line"><span class="cl">setw -g mouse on
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set-option -g default-terminal screen-256color
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bind-key : command-prompt
+</span></span><span class="line"><span class="cl">bind-key r refresh-client
+</span></span><span class="line"><span class="cl">bind-key L clear-history
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bind-key space next-window
+</span></span><span class="line"><span class="cl">bind-key bspace previous-window
+</span></span><span class="line"><span class="cl">bind-key enter next-layout
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># use vim-like keys for splits and windows</span>
+</span></span><span class="line"><span class="cl">bind-key v split-window -h
+</span></span><span class="line"><span class="cl">bind-key s split-window -v
+</span></span><span class="line"><span class="cl">bind-key h <span class="k">select</span>-pane -L
+</span></span><span class="line"><span class="cl">bind-key j <span class="k">select</span>-pane -D
+</span></span><span class="line"><span class="cl">bind-key k <span class="k">select</span>-pane -U
+</span></span><span class="line"><span class="cl">bind-key l <span class="k">select</span>-pane -R
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># smart pane switching with awareness of vim splits</span>
+</span></span><span class="line"><span class="cl"><span class="nb">bind</span> -n C-h run <span class="s2">&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class="s2">&#39; &amp;&amp; tmux send-keys C-h) || tmux select-pane -L&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">bind</span> -n C-j run <span class="s2">&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class="s2">&#39; &amp;&amp; tmux send-keys C-j) || tmux select-pane -D&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">bind</span> -n C-k run <span class="s2">&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class="s2">&#39; &amp;&amp; tmux send-keys C-k) || tmux select-pane -U&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">bind</span> -n C-l run <span class="s2">&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class="s2">&#39; &amp;&amp; tmux send-keys C-l) || tmux select-pane -R&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">bind</span> -n <span class="s1">&#39;C-\&#39;</span> run <span class="s2">&#34;(tmux display-message -p &#39;#{pane_current_command}&#39; | grep -iqE &#39;(^|\/)vim</span>$<span class="s2">&#39; &amp;&amp; tmux send-keys &#39;C-\\&#39;) || tmux select-pane -l&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">bind</span> C-l send-keys <span class="s1">&#39;C-l&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bind-key C-o rotate-window
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bind-key + <span class="k">select</span>-layout main-horizontal
+</span></span><span class="line"><span class="cl">bind-key <span class="o">=</span> <span class="k">select</span>-layout main-vertical
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set-window-option -g other-pane-height <span class="m">25</span>
+</span></span><span class="line"><span class="cl">set-window-option -g other-pane-width <span class="m">80</span>
+</span></span><span class="line"><span class="cl">set-window-option -g display-panes-time <span class="m">1500</span>
+</span></span><span class="line"><span class="cl">set-window-option -g window-status-current-style <span class="nv">fg</span><span class="o">=</span>magenta
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bind-key a last-pane
+</span></span><span class="line"><span class="cl">bind-key q display-panes
+</span></span><span class="line"><span class="cl">bind-key c new-window
+</span></span><span class="line"><span class="cl">bind-key t next-window
+</span></span><span class="line"><span class="cl">bind-key T previous-window
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bind-key <span class="o">[</span> copy-mode
+</span></span><span class="line"><span class="cl">bind-key <span class="o">]</span> paste-buffer
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Setup &#39;v&#39; to begin selection as in Vim</span>
+</span></span><span class="line"><span class="cl">bind-key -T copy-mode-vi v send -X begin-selection
+</span></span><span class="line"><span class="cl">bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel <span class="s2">&#34;xclip -sel clip&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Update default binding of `Enter` to also use copy-pipe</span>
+</span></span><span class="line"><span class="cl">unbind -T copy-mode-vi Enter
+</span></span><span class="line"><span class="cl">bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel <span class="s2">&#34;xclip -sel clip&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Status Bar</span>
+</span></span><span class="line"><span class="cl">set-option -g status-interval <span class="m">1</span>
+</span></span><span class="line"><span class="cl">set-option -g status-style <span class="nv">bg</span><span class="o">=</span>black
+</span></span><span class="line"><span class="cl">set-option -g status-style <span class="nv">fg</span><span class="o">=</span>white
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -g status-left <span class="s1">&#39;#[fg=green]#H #[default]&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -g status-right <span class="s1">&#39;%a%l:%M:%S %p#[default] #[fg=blue]%Y-%m-%d&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set-option -g pane-active-border-style <span class="nv">fg</span><span class="o">=</span>yellow
+</span></span><span class="line"><span class="cl">set-option -g pane-border-style <span class="nv">fg</span><span class="o">=</span>cyan
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Set window notifications</span>
+</span></span><span class="line"><span class="cl">setw -g monitor-activity on
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> -g visual-activity on
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Enable native Mac OS X copy/paste</span>
+</span></span><span class="line"><span class="cl">set-option -g default-command <span class="s2">&#34;/bin/bash -c &#39;which reattach-to-user-namespace &gt;/dev/null &amp;&amp; exec reattach-to-user-namespace </span><span class="nv">$SHELL</span><span class="s2"> -l || exec </span><span class="nv">$SHELL</span><span class="s2"> -l&#39;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Allow the arrow key to be used immediately after changing windows</span>
+</span></span><span class="line"><span class="cl">set-option -g repeat-time <span class="m">0</span>
+</span></span></code></pre></div><p>最终激活配置可以直接<code>Pre+R</code>这是我们设置好的激活快捷键；或者你直接重启tmux服务</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tmux kill-server，
+</span></span><span class="line"><span class="cl">tmux
+</span></span></code></pre></div><h2 id="简单流程">简单流程<a hidden class="anchor" aria-hidden="true" href="#简单流程">#</a></h2>
+<p>总结一下使用的流程，来到我们的终端后，执行如下操作</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tmux new -s t1
+</span></span><span class="line"><span class="cl"><span class="c1"># 新建一些窗口</span>
+</span></span><span class="line"><span class="cl">Pre+c
+</span></span><span class="line"><span class="cl"><span class="c1"># 对当前窗口进行垂直或水平划分</span>
+</span></span><span class="line"><span class="cl">Pre+v/c
+</span></span><span class="line"><span class="cl"><span class="c1"># 进行终端操作即可</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 退出tmux会话</span>
+</span></span><span class="line"><span class="cl">tmux detach
+</span></span><span class="line"><span class="cl"><span class="c1"># 再次进入</span>
+</span></span><span class="line"><span class="cl">tmux ls
+</span></span><span class="line"><span class="cl">tmux a -t &lt;会话名&gt;
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/tmux/">Tmux</a></li>
+      <li><a href="http://localhost:1313/tags/%E7%BB%88%E7%AB%AF/">终端</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>K3sEP03——移植镜像到RiscV开发板</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>K3sEP02——解决RiscV开发板镜像无法拉取问题</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
+  <audio id="ltx-music-audio" preload="metadata"></audio>
+  <div class="ltx-drag-handle" data-role="drag-handle" title="上下拖动调整位置"></div>
+  <div class="ltx-music-header">
+    <div class="ltx-music-visual">
+      <div class="ltx-disc" data-role="disc" aria-hidden="true">
+        <img data-role="cover" alt="" loading="lazy" decoding="async">
+        <div class="ltx-disc-center"></div>
+      </div>
+    </div>
+    <div class="ltx-music-meta">
+      <span class="ltx-music-title" data-role="title"></span>
+      <span class="ltx-music-artist" data-role="artist"></span>
+    </div>
+    <button type="button" class="ltx-music-hide" data-action="collapse" aria-label="隐藏播放器">&#215;</button>
+  </div>
+  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
+    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
+  </div>
+  <div class="ltx-music-time">
+    <span data-role="current">0:00</span>
+    <span data-role="total">--:--</span>
+  </div>
+  <div class="ltx-music-controls">
+    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
+    <button type="button" data-action="toggle" aria-label="播放或暂停">
+      <span data-icon="play">▶</span>
+      <span data-icon="pause">⏸</span>
+    </button>
+    <button type="button" data-action="next" aria-label="下一首">⏭</button>
+    <button type="button" data-action="mute" aria-label="静音或取消静音">
+      <span data-icon="unmuted">🔊</span>
+      <span data-icon="muted">🔇</span>
+    </button>
+  </div>
+  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
+</div>
+<button type="button" class="ltx-music-fab" id="ltx-music-fab" aria-label="显示音乐播放器">&#9835;</button>
+<script>
+  window.LTX_MUSIC_CONFIG = {"autoplay":true,"defaultCover":"","loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
+  (function () {
+    const config = window.LTX_MUSIC_CONFIG || {};
+    if (!config.tracks || !config.tracks.length) {
+      return;
+    }
+
+    const player = document.getElementById('ltx-music-player');
+    const audio = player.querySelector('audio');
+    const titleEl = player.querySelector('[data-role="title"]');
+    const artistEl = player.querySelector('[data-role="artist"]');
+    const progressEl = player.querySelector('[data-role="progress"]');
+    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
+    const currentTimeEl = player.querySelector('[data-role="current"]');
+    const totalTimeEl = player.querySelector('[data-role="total"]');
+    const tipEl = player.querySelector('[data-role="tip"]');
+    const coverEl = player.querySelector('[data-role="cover"]');
+
+    const toggleBtn = player.querySelector('[data-action="toggle"]');
+    const prevBtn = player.querySelector('[data-action="prev"]');
+    const nextBtn = player.querySelector('[data-action="next"]');
+    const muteBtn = player.querySelector('[data-action="mute"]');
+    const collapseBtn = player.querySelector('[data-action="collapse"]');
+    const dragHandle = player.querySelector('[data-role="drag-handle"]');
+    const fabButton = document.getElementById('ltx-music-fab');
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const formatTime = (seconds) => {
+      if (!Number.isFinite(seconds)) {
+        return '--:--';
+      }
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
+    const minOffset = -120;
+    const maxOffset = 220;
+    const hideThreshold = 180;
+    const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+
+    const state = {
+      index: 0,
+      tracks: config.tracks,
+      autoplay: config.autoplay !== false,
+      loopPlaylist: config.loopPlaylist !== false,
+      offset: 0,
+      collapsed: false,
+    };
+
+    const setOffset = (value) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    };
+
+    const setCollapsed = (value) => {
+      const collapsed = Boolean(value);
+      state.collapsed = collapsed;
+      player.classList.toggle('ltx-collapsed', collapsed);
+      if (collapsed) {
+        player.classList.remove('ltx-dragging');
+        state.offset = 0;
+        player.style.removeProperty('--ltx-offset');
+        if (fabButton) {
+          fabButton.classList.add('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'false');
+          fabButton.tabIndex = 0;
+        }
+      } else {
+        setOffset(0);
+        if (fabButton) {
+          fabButton.classList.remove('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'true');
+          fabButton.tabIndex = -1;
+        }
+      }
+    };
+
+    const updateMuteClass = () => {
+      const muted = audio.muted || audio.volume === 0;
+      player.classList.toggle('ltx-muted', muted);
+    };
+
+    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    updateMuteClass();
+    setCollapsed(false);
+
+    const updateProgress = () => {
+      const duration = audio.duration || 0;
+      const current = audio.currentTime || 0;
+      const percentage = duration ? (current / duration) * 100 : 0;
+      progressFillEl.style.width = `${percentage}%`;
+      currentTimeEl.textContent = formatTime(current);
+      totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const setTrack = (nextIndex, options = {}) => {
+      const total = state.tracks.length;
+      state.index = ((nextIndex % total) + total) % total;
+      const track = state.tracks[state.index];
+      if (!track || !track.file) {
+        console.warn('LTX music player: 音频文件缺失', track);
+        tipEl.textContent = '音频文件缺失，请检查配置';
+        return;
+      }
+      const cover = track.cover || config.defaultCover || '';
+      if (coverEl) {
+        if (cover) {
+          coverEl.src = cover;
+          coverEl.alt = track.title ? `${track.title} 封面` : '音乐封面';
+          player.classList.add('ltx-has-cover');
+        } else {
+          coverEl.removeAttribute('src');
+          coverEl.alt = '';
+          player.classList.remove('ltx-has-cover');
+        }
+      }
+      titleEl.textContent = track.title || `Track ${state.index + 1}`;
+      artistEl.textContent = track.artist || '';
+      audio.src = track.file;
+      player.dataset.trackIndex = state.index;
+      tipEl.textContent = '';
+      player.classList.remove('ltx-autoplay-blocked');
+      updateProgress();
+      if (options.play) {
+        attemptPlay();
+      }
+    };
+
+    const attemptPlay = () => {
+      audio.play().then(() => {
+        player.classList.remove('ltx-autoplay-blocked');
+        tipEl.textContent = '';
+      }).catch(() => {
+        player.classList.add('ltx-autoplay-blocked');
+        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
+      });
+    };
+
+    const playNext = (autoTriggered = false) => {
+      const shouldPlay = !audio.paused || autoTriggered;
+      const nextIndex = state.index + 1;
+      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
+        audio.currentTime = audio.duration || 0;
+        audio.pause();
+        return;
+      }
+      setTrack(nextIndex, { play: shouldPlay });
+    };
+
+    const playPrev = () => {
+      const shouldPlay = !audio.paused;
+      setTrack(state.index - 1, { play: shouldPlay });
+    };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', () => setCollapsed(true));
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', () => setCollapsed(false));
+      fabButton.setAttribute('aria-hidden', 'true');
+      fabButton.tabIndex = -1;
+    }
+
+    if (dragHandle) {
+      dragHandle.style.touchAction = 'none';
+      dragHandle.addEventListener('pointerdown', (event) => {
+        if (state.collapsed) {
+          return;
+        }
+        dragState.active = true;
+        dragState.pointerId = event.pointerId;
+        dragState.startY = event.clientY;
+        dragState.startOffset = state.offset;
+        if (dragHandle.setPointerCapture) {
+          try {
+            dragHandle.setPointerCapture(event.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        player.classList.add('ltx-dragging');
+      });
+
+      dragHandle.addEventListener('pointermove', (event) => {
+        if (!dragState.active) {
+          return;
+        }
+        const delta = event.clientY - dragState.startY;
+        setOffset(dragState.startOffset + delta);
+      });
+
+      const finishDrag = () => {
+        if (!dragState.active) {
+          return;
+        }
+        if (dragState.pointerId !== null && dragHandle.releasePointerCapture) {
+          try {
+            dragHandle.releasePointerCapture(dragState.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        dragState.active = false;
+        dragState.pointerId = null;
+        player.classList.remove('ltx-dragging');
+        if (state.offset > hideThreshold) {
+          setCollapsed(true);
+        } else {
+          setOffset(state.offset);
+        }
+      };
+
+      ['pointerup', 'pointercancel'].forEach((eventName) => {
+        dragHandle.addEventListener(eventName, finishDrag);
+      });
+
+      dragHandle.addEventListener('pointerleave', () => {
+        if (!dragState.active) {
+          return;
+        }
+        finishDrag();
+      });
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        attemptPlay();
+      } else {
+        audio.pause();
+      }
+    });
+
+    prevBtn.addEventListener('click', playPrev);
+    nextBtn.addEventListener('click', () => playNext(false));
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      updateMuteClass();
+    });
+
+    progressEl.addEventListener('click', (event) => {
+      const rect = progressEl.getBoundingClientRect();
+      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = ratio * audio.duration;
+      }
+    });
+
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('loadedmetadata', updateProgress);
+
+    audio.addEventListener('play', () => {
+      player.classList.add('ltx-playing');
+      player.classList.remove('ltx-autoplay-blocked');
+      tipEl.textContent = '';
+    });
+
+    audio.addEventListener('pause', () => {
+      player.classList.remove('ltx-playing');
+    });
+
+    audio.addEventListener('ended', () => {
+      playNext(true);
+    });
+
+    audio.addEventListener('volumechange', updateMuteClass);
+
+    setTrack(0, { play: state.autoplay });
+  })();
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

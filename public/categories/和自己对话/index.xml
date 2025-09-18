@@ -1,3 +1,41 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>和自己对话 on LTX's Blog</title><link>https://LTXWorld.github.io/categories/%E5%92%8C%E8%87%AA%E5%B7%B1%E5%AF%B9%E8%AF%9D/</link><description>Recent content in 和自己对话 on LTX's Blog</description><image><title>LTX's Blog</title><url>https://LTXWorld.github.io/images/papermod-cover.png</url><link>https://LTXWorld.github.io/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Sun, 27 Apr 2025 14:07:46 +0800</lastBuildDate><atom:link href="https://LTXWorld.github.io/categories/%E5%92%8C%E8%87%AA%E5%B7%B1%E5%AF%B9%E8%AF%9D/index.xml" rel="self" type="application/rss+xml"/><item><title>LT的奇思乱想EP03——让人上瘾的APP们</title><link>https://LTXWorld.github.io/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/</link><pubDate>Sun, 27 Apr 2025 14:07:46 +0800</pubDate><guid>https://LTXWorld.github.io/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
-&lt;p>看到这个标题，可能你第一个想到的是抖音这个常常被人们说为精神鸦片的软件，刷着刷着时间就走完了。但今天我想聊的是另外两款红色封面的软件，二者的内容呈现形式几乎相同，但是内容格式完全不同，我对于它们的使用也迥然不同。&lt;/p></description></item><item><title>LT的奇思乱想EP02精气神——消费观与阅读</title><link>https://LTXWorld.github.io/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/</link><pubDate>Fri, 18 Apr 2025 08:53:41 +0800</pubDate><guid>https://LTXWorld.github.io/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
-&lt;p>又是奇思乱想环节，今天来聊聊自己的消费观和阅读吧。起因在于来自我大学舍友几个月前的一句话“很符合你的消费习惯”，这句话我算是一直记在心里，直到最近关于显示器和键盘的购买上，我发现自己的消费观确实有些困扰自己，所以聊聊；&lt;/p></description></item><item><title>LT的奇思乱想Ep01</title><link>https://LTXWorld.github.io/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/</link><pubDate>Sat, 15 Mar 2025 15:18:35 +0800</pubDate><guid>https://LTXWorld.github.io/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/</guid><description>&lt;p>这是第一期的奇思乱想，暂且将这个专栏作为我的博客中非技术分类下的随意输出内容，灵感来源于JJLin的专辑《和自己对话》，所以就让我在这个专栏里面真正地与自己对话，每个周六的下午，带上耳机接一杯温水，开始与自己对话，一场完全脱离AI的自我对话。&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>和自己对话 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/categories/%E5%92%8C%E8%87%AA%E5%B7%B1%E5%AF%B9%E8%AF%9D/</link>
+    <description>Recent content in 和自己对话 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Sun, 27 Apr 2025 14:07:46 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/%E5%92%8C%E8%87%AA%E5%B7%B1%E5%AF%B9%E8%AF%9D/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LT的奇思乱想EP03——让人上瘾的APP们</title>
+      <link>http://localhost:1313/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/</link>
+      <pubDate>Sun, 27 Apr 2025 14:07:46 +0800</pubDate>
+      <guid>http://localhost:1313/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;看到这个标题，可能你第一个想到的是抖音这个常常被人们说为精神鸦片的软件，刷着刷着时间就走完了。但今天我想聊的是另外两款红色封面的软件，二者的内容呈现形式几乎相同，但是内容格式完全不同，我对于它们的使用也迥然不同。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>LT的奇思乱想EP02精气神——消费观与阅读</title>
+      <link>http://localhost:1313/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/</link>
+      <pubDate>Fri, 18 Apr 2025 08:53:41 +0800</pubDate>
+      <guid>http://localhost:1313/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;又是奇思乱想环节，今天来聊聊自己的消费观和阅读吧。起因在于来自我大学舍友几个月前的一句话“很符合你的消费习惯”，这句话我算是一直记在心里，直到最近关于显示器和键盘的购买上，我发现自己的消费观确实有些困扰自己，所以聊聊；&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>LT的奇思乱想Ep01</title>
+      <link>http://localhost:1313/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/</link>
+      <pubDate>Sat, 15 Mar 2025 15:18:35 +0800</pubDate>
+      <guid>http://localhost:1313/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/</guid>
+      <description>&lt;p&gt;这是第一期的奇思乱想，暂且将这个专栏作为我的博客中非技术分类下的随意输出内容，灵感来源于JJLin的专辑《和自己对话》，所以就让我在这个专栏里面真正地与自己对话，每个周六的下午，带上耳机接一杯温水，开始与自己对话，一场完全脱离AI的自我对话。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

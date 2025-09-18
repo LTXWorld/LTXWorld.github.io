@@ -1,55 +1,919 @@
-<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>K3sEP01——模拟Kine集群部署 | LTX's Blog</title>
-<meta name=keywords content="RiscV,实验"><meta name=description content="本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>K3sEP01——模拟Kine集群部署 | LTX&#39;s Blog</title>
+<meta name="keywords" content="RiscV, 实验">
+<meta name="description" content="本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）
 实验环境
 本机: macos M2
-虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/><link crossorigin=anonymous href=/assets/css/stylesheet.c98266582198d1e5ef6529482f54b208422b9b1a9eeac13f1e3df51f4f9bfbed.css integrity="sha256-yYJmWCGY0eXvZSlIL1SyCEIrmxqe6sE/Hj31H0+b++0=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="K3sEP01——模拟Kine集群部署"><meta property="og:description" content="本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）
-实验环境 本机: macos M2 虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-03-26T18:51:27+08:00"><meta property="article:modified_time" content="2025-03-26T18:51:27+08:00"><meta property="article:tag" content="RiscV"><meta property="article:tag" content="实验"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="K3sEP01——模拟Kine集群部署"><meta name=twitter:description content="本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）
+虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。">
+<meta name="author" content="LTX">
+<link rel="canonical" href="http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
+<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<script type="text/javascript"
+
+        async
+
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+
+MathJax.Hub.Config({
+
+  tex2jax: {
+
+    inlineMath: [['$','$'], ['\\(','\\)']],
+
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+
+    processEscapes: true,
+
+    processEnvironments: true,
+
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+
+  }
+
+});
+
+
+MathJax.Hub.Queue(function() {
+
+    
+
+    
+
+    
+
+    var all = MathJax.Hub.getAllJax(), i;
+
+    for(i = 0; i < all.length; i += 1) {
+
+        all[i].SourceElement().parentNode.className += ' has-jax';
+
+    }
+
+});
+
+</script>
+
+
+<style>
+
+code.has-jax {
+
+    font: inherit;
+
+    font-size: 100%;
+
+    background: inherit;
+
+    border: inherit;
+
+    color: #515151;
+
+}
+
+</style><meta property="og:url" content="http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+  <meta property="og:site_name" content="LTX&#39;s Blog">
+  <meta property="og:title" content="K3sEP01——模拟Kine集群部署">
+  <meta property="og:description" content="本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）
+实验环境 本机: macos M2 虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-26T18:51:27+08:00">
+    <meta property="article:modified_time" content="2025-03-26T18:51:27+08:00">
+    <meta property="article:tag" content="RiscV">
+    <meta property="article:tag" content="实验">
+      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:title" content="K3sEP01——模拟Kine集群部署">
+<meta name="twitter:description" content="本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）
 实验环境
 本机: macos M2
-虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"K3sEP01——模拟Kine集群部署","item":"https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"K3sEP01——模拟Kine集群部署","name":"K3sEP01——模拟Kine集群部署","description":"本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）\n实验环境 本机: macos M2 虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。\n","keywords":["RiscV","实验"],"articleBody":"本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）\n实验环境 本机: macos M2 虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。\n一台虚拟机Agent01作为数据库的后端服务器 1G/8G 一台虚拟机Server作为Server 2G/8G 一台虚拟机Agent02作为Agent 1G/4G 操作系统: Ubuntu22.04\n由于是实验环境，我们全部的操作直接在root权限下进行，如果接下来某些操作遇到权限问题请添加 sudo。\n那让我们直接摇滚进来吧！\n部署 以下步骤来自于AI的指导并成功部署运行。\nMYSQL节点 由于k3s的轻量化要求，使用了kine作为存储方案，旨在可以不使用etcd进行集群管理，可以外置其他数据库，例如,sqlLite,mysql,postgresql等。\n数据库里面存放了原本etcd会存放的信息，例如各个节点的信息。\napt update apt install mysql-server -y mysql -u root -p 配置数据库\ncreate database k3s; create user 'k3s' @ '%' identified by 'yourpassword'; # 替换为自己设置的密码 grant all privileges on k3s.* to 'k3s@'%''; flush privileges; 修改Mysql配置文件允许远程连接\nsed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mysql.conf.d/mysqld.cnf systemctl restart mysql 最后，使用hostname -I记录一下这台虚拟机的IP地址，方便后续连接操作。\n使用kine部署k3s server 使用--datastore-endpoint参数指定外接数据库的地址。\ncurl -sfL https://get.k3s.io | sh -s - server \\ --datastore-endpoint=\"mysql://k3s:yourpassword@tcp(yourMysqlIP:3306)/k3s\" # 替换为自己的密码和上一步的IP地址 ps:这个方法可能会遇到网络问题，我们还可以采用离线的方式安装k3s，详情请见另一篇文章\n检查Server的状态\nsystemctl status k3s kubectl get nodes 同时可以回到数据库节点检查表信息。\nuse k3s; show tables; select * from kine limit5 /G; 可以发现有kine这个表。\n部署Agent节点 首先从Server中获取Token，cat /var/lib/rancher/k3s/server/node-token\n将agent加入集群中由Server管理\ncurl -sfL https://get.k3s.io | K3S_URL=\"https://yourServ erIP:6443\" K3S_TOKEN=\"K10eb92a0a28e01cdcb43aebadf54e4c647274509bb903266f8b5753acce221234d::server:ecda1824570feac881c9b27b98584c76\" sh - 验证集群功能 在Server上执行\nkubectl get nodes -o wide 可以看到Server和Agent节点都存在。\n到这里就初步部署成功。\n添加镜像代理 如果我们使用registry模式，即从docker.io,dockerhub上拉取镜像， 我们需要同时在Server和Agent上添加 /etc/rancher/k3s/registries.yaml文件\n在其中添加如下配置，以使代理的方式拉取镜像。其中镜像地址填入 endpoint 下方，目前可用的镜像地址\nmirrors: docker.io: endpoint: - \"https://docker.1ms.run\" 可能出现的问题 在运行过程中如果你的本机IP地址变化，可能会出现数据库Mysql的IP封禁问题\n使用下面命令查看问题所在\nsudo journalctl -u k3s --no-pager --lines=50 可以发现Error 1129: Host '192.168.64.2' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'\"，由于太多次连接Mysql失败触发Mysql的安全机制，封禁了k3s Server的IP地址。\n所以我们需要从数据库层面解禁。\nmysql\u003e FLUSH HOSTS; Query OK, 0 rows affected, 1 warning (0.03 sec) mysql\u003e SELECT host FROM performance_schema.host_cache WHERE host='192.168.64.2'; Empty set (0.06 sec) 之后便可以正常运行了。\n总结 后续文章准备探索离线安装k3s以及在open-Rv这个组合上一系列的k3s适配工作流程展示。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n","wordCount":"1249","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2025-03-26T18:51:27+08:00","dateModified":"2025-03-26T18:51:27+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">K3sEP01——模拟Kine集群部署</h1><div class=post-meta><span title='2025-03-26 18:51:27 +0800 CST'>三月 26, 2025</span>&nbsp;·&nbsp;3 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e5%ae%9e%e9%aa%8c%e7%8e%af%e5%a2%83 aria-label=实验环境>实验环境</a></li><li><a href=#%e9%83%a8%e7%bd%b2 aria-label=部署>部署</a><ul><li><a href=#mysql%e8%8a%82%e7%82%b9 aria-label=MYSQL节点>MYSQL节点</a></li><li><a href=#%e4%bd%bf%e7%94%a8kine%e9%83%a8%e7%bd%b2k3s-server aria-label="使用kine部署k3s server">使用kine部署k3s server</a></li><li><a href=#%e9%83%a8%e7%bd%b2agent%e8%8a%82%e7%82%b9 aria-label=部署Agent节点>部署Agent节点</a></li><li><a href=#%e9%aa%8c%e8%af%81%e9%9b%86%e7%be%a4%e5%8a%9f%e8%83%bd aria-label=验证集群功能>验证集群功能</a></li><li><a href=#%e6%b7%bb%e5%8a%a0%e9%95%9c%e5%83%8f%e4%bb%a3%e7%90%86 aria-label=添加镜像代理>添加镜像代理</a></li></ul></li><li><a href=#%e5%8f%af%e8%83%bd%e5%87%ba%e7%8e%b0%e7%9a%84%e9%97%ae%e9%a2%98 aria-label=可能出现的问题>可能出现的问题</a></li><li><a href=#%e6%80%bb%e7%bb%93 aria-label=总结>总结</a></li></ul></div></details></div><div class=post-content><p>本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）</p><h2 id=实验环境>实验环境<a hidden class=anchor aria-hidden=true href=#实验环境>#</a></h2><p>本机: macos M2
-虚拟机: 采用<a href=https://canonical.com/multipass>Multipass</a>这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。</p><ul><li>一台虚拟机Agent01作为数据库的后端服务器 1G/8G</li><li>一台虚拟机Server作为Server 2G/8G</li><li>一台虚拟机Agent02作为Agent 1G/4G</li></ul><p>操作系统: Ubuntu22.04</p><p>由于是实验环境，我们全部的操作直接在root权限下进行，如果接下来某些操作遇到权限问题请添加 sudo。</p><p>那让我们直接摇滚进来吧！</p><p><img loading=lazy src=/img/jb/coffee.webp></p><h2 id=部署>部署<a hidden class=anchor aria-hidden=true href=#部署>#</a></h2><p>以下步骤来自于AI的指导并成功部署运行。</p><h3 id=mysql节点>MYSQL节点<a hidden class=anchor aria-hidden=true href=#mysql节点>#</a></h3><p>由于k3s的轻量化要求，使用了kine作为存储方案，旨在可以不使用etcd进行集群管理，可以外置其他数据库，例如,sqlLite,mysql,postgresql等。</p><p>数据库里面存放了原本etcd会存放的信息，例如各个节点的信息。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>apt update
-</span></span><span class=line><span class=cl>apt install mysql-server -y
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>mysql -u root -p
-</span></span></code></pre></div><p>配置数据库</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>create</span><span class=w> </span><span class=k>database</span><span class=w> </span><span class=n>k3s</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>create</span><span class=w> </span><span class=k>user</span><span class=w> </span><span class=s1>&#39;k3s&#39;</span><span class=w> </span><span class=o>@</span><span class=w> </span><span class=s1>&#39;%&#39;</span><span class=w> </span><span class=n>identified</span><span class=w> </span><span class=k>by</span><span class=w> </span><span class=s1>&#39;yourpassword&#39;</span><span class=p>;</span><span class=w> </span><span class=o>#</span><span class=w> </span><span class=err>替换为自己设置的密码</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>grant</span><span class=w> </span><span class=k>all</span><span class=w> </span><span class=k>privileges</span><span class=w> </span><span class=k>on</span><span class=w> </span><span class=n>k3s</span><span class=p>.</span><span class=o>*</span><span class=w> </span><span class=k>to</span><span class=w> </span><span class=s1>&#39;k3s@&#39;</span><span class=o>%</span><span class=s1>&#39;&#39;</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>flush</span><span class=w> </span><span class=k>privileges</span><span class=p>;</span><span class=w>
-</span></span></span></code></pre></div><p>修改Mysql配置文件允许远程连接</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sed -i <span class=s1>&#39;s/127.0.0.1/0.0.0.0/g&#39;</span> /etc/mysql/mysql.conf.d/mysqld.cnf
-</span></span><span class=line><span class=cl>systemctl restart mysql
-</span></span></code></pre></div><p>最后，使用<code>hostname -I</code>记录一下这台虚拟机的IP地址，方便后续连接操作。</p><h3 id=使用kine部署k3s-server>使用kine部署k3s server<a hidden class=anchor aria-hidden=true href=#使用kine部署k3s-server>#</a></h3><p>使用<code>--datastore-endpoint</code>参数指定外接数据库的地址。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -sfL https://get.k3s.io <span class=p>|</span> sh -s - server <span class=se>\
-</span></span></span><span class=line><span class=cl><span class=se></span>  --datastore-endpoint<span class=o>=</span><span class=s2>&#34;mysql://k3s:yourpassword@tcp(yourMysqlIP:3306)/k3s&#34;</span> <span class=c1># 替换为自己的密码和上一步的IP地址</span>
-</span></span></code></pre></div><p>ps:这个方法可能会遇到网络问题，我们还可以采用离线的方式安装k3s，详情请见<a href>另一篇文章</a></p><p>检查Server的状态</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>systemctl status k3s
-</span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl>kubectl get nodes
-</span></span></code></pre></div><p>同时可以回到数据库节点检查表信息。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=n>use</span><span class=w> </span><span class=n>k3s</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>show</span><span class=w> </span><span class=n>tables</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>select</span><span class=w> </span><span class=o>*</span><span class=w> </span><span class=k>from</span><span class=w> </span><span class=n>kine</span><span class=w> </span><span class=n>limit5</span><span class=w> </span><span class=o>/</span><span class=k>G</span><span class=p>;</span><span class=w>
-</span></span></span></code></pre></div><p><img loading=lazy src=/img/riscv/kine01.png></p><p>可以发现有kine这个表。</p><h3 id=部署agent节点>部署Agent节点<a hidden class=anchor aria-hidden=true href=#部署agent节点>#</a></h3><p>首先从Server中获取Token，<code>cat /var/lib/rancher/k3s/server/node-token</code></p><p>将agent加入集群中由Server管理</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -sfL https://get.k3s.io <span class=p>|</span> <span class=nv>K3S_URL</span><span class=o>=</span><span class=s2>&#34;https://yourServ erIP:6443&#34;</span> <span class=nv>K3S_TOKEN</span><span class=o>=</span><span class=s2>&#34;K10eb92a0a28e01cdcb43aebadf54e4c647274509bb903266f8b5753acce221234d::server:ecda1824570feac881c9b27b98584c76&#34;</span> sh -
-</span></span></code></pre></div><h3 id=验证集群功能>验证集群功能<a hidden class=anchor aria-hidden=true href=#验证集群功能>#</a></h3><p>在Server上执行</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get nodes -o wide
-</span></span></code></pre></div><p><img loading=lazy src=/img/riscv/kine02.png></p><p>可以看到Server和Agent节点都存在。</p><p>到这里就初步部署成功。</p><h3 id=添加镜像代理>添加镜像代理<a hidden class=anchor aria-hidden=true href=#添加镜像代理>#</a></h3><p>如果我们使用registry模式，即从docker.io,dockerhub上拉取镜像， 我们需要<strong>同时在Server和Agent上添加</strong> <code>/etc/rancher/k3s/registries.yaml</code>文件</p><p>在其中添加如下配置，以使代理的方式拉取镜像。其中镜像地址填入 endpoint 下方，目前<a href=https://github.com/dongyubin/DockerHub>可用的镜像地址</a></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>mirrors</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>docker.io</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>endpoint</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=s2>&#34;https://docker.1ms.run&#34;</span><span class=w>
-</span></span></span></code></pre></div><h2 id=可能出现的问题>可能出现的问题<a hidden class=anchor aria-hidden=true href=#可能出现的问题>#</a></h2><p>在运行过程中如果你的本机IP地址变化，可能会出现数据库Mysql的IP封禁问题</p><p>使用下面命令查看问题所在</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo journalctl -u k3s --no-pager --lines<span class=o>=</span><span class=m>50</span>
-</span></span></code></pre></div><p><img alt=mysql问题 loading=lazy src=/img/riscv/kine03.png></p><p>可以发现<code>Error 1129: Host '192.168.64.2' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'"</code>，由于太多次连接Mysql失败触发Mysql的安全机制，封禁了k3s Server的IP地址。</p><p>所以我们需要从数据库层面解禁。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=n>mysql</span><span class=o>&gt;</span><span class=w> </span><span class=n>FLUSH</span><span class=w> </span><span class=n>HOSTS</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>Query</span><span class=w> </span><span class=n>OK</span><span class=p>,</span><span class=w> </span><span class=mi>0</span><span class=w> </span><span class=k>rows</span><span class=w> </span><span class=n>affected</span><span class=p>,</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=n>warning</span><span class=w> </span><span class=p>(</span><span class=mi>0</span><span class=p>.</span><span class=mi>03</span><span class=w> </span><span class=n>sec</span><span class=p>)</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>mysql</span><span class=o>&gt;</span><span class=w> </span><span class=k>SELECT</span><span class=w> </span><span class=k>host</span><span class=w> </span><span class=k>FROM</span><span class=w> </span><span class=n>performance_schema</span><span class=p>.</span><span class=n>host_cache</span><span class=w> </span><span class=k>WHERE</span><span class=w> </span><span class=k>host</span><span class=o>=</span><span class=s1>&#39;192.168.64.2&#39;</span><span class=p>;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=n>Empty</span><span class=w> </span><span class=k>set</span><span class=w> </span><span class=p>(</span><span class=mi>0</span><span class=p>.</span><span class=mi>06</span><span class=w> </span><span class=n>sec</span><span class=p>)</span><span class=w>
-</span></span></span></code></pre></div><p>之后便可以正常运行了。</p><h2 id=总结>总结<a hidden class=anchor aria-hidden=true href=#总结>#</a></h2><p>后续文章准备探索离线安装k3s以及在open-Rv这个组合上一系列的k3s适配工作流程展示。</p><p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p><p><img loading=lazy src=/img/ys/%E6%8D%82%E5%98%B4%E6%86%8B%E7%AC%91.webp></p></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/riscv/>RiscV</a></li><li><a href=https://LTXWorld.github.io/tags/%E5%AE%9E%E9%AA%8C/>实验</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/><span class=title>« 上一页</span><br><span>K3sEP02——解决RiscV开发板镜像无法拉取问题</span>
-</a><a class=next href=https://LTXWorld.github.io/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/><span class=title>下一页 »</span><br><span>LT的奇思乱想Ep01</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
-<span>Powered by
-<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
-        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-drag-handle data-role=drag-handle title=上下拖动调整位置></div><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
-<span class=ltx-music-artist data-role=artist></span></div><button type=button class=ltx-music-hide data-action=collapse aria-label=隐藏播放器>&#215;</button></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
-<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
-<button type=button data-action=toggle aria-label=播放或暂停>
-<span data-icon=play>▶</span>
-<span data-icon=pause>⏸</span>
-</button>
-<button type=button data-action=next aria-label=下一首>⏭</button>
-<button type=button data-action=mute aria-label=静音或取消静音>
-<span data-icon=unmuted>🔊</span>
-<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><button type=button class=ltx-music-fab id=ltx-music-fab aria-label=显示音乐播放器>&#9835;</button>
-<script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const a=window.LTX_MUSIC_CONFIG||{};if(!a.tracks||!a.tracks.length)return;const e=document.getElementById("ltx-music-player"),t=e.querySelector("audio"),x=e.querySelector('[data-role="title"]'),O=e.querySelector('[data-role="artist"]'),b=e.querySelector('[data-role="progress"]'),A=e.querySelector('[data-role="progress-fill"]'),F=e.querySelector('[data-role="current"]'),M=e.querySelector('[data-role="total"]'),c=e.querySelector('[data-role="tip"]'),r=e.querySelector('[data-role="cover"]'),S=e.querySelector('[data-action="toggle"]'),y=e.querySelector('[data-action="prev"]'),k=e.querySelector('[data-action="next"]'),E=e.querySelector('[data-action="mute"]'),g=e.querySelector('[data-action="collapse"]'),i=e.querySelector('[data-role="drag-handle"]'),o=document.getElementById("ltx-music-fab"),f=(e,t,n)=>Math.min(Math.max(e,t),n),j=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},C=-120,_=220,w=180,s={active:!1,startY:0,startOffset:0,pointerId:null},n={index:0,tracks:a.tracks,autoplay:a.autoplay!==!1,loopPlaylist:a.loopPlaylist!==!1,offset:0,collapsed:!1},h=t=>{n.offset=f(t,C,_),e.style.setProperty("--ltx-offset",`${n.offset}px`)},l=t=>{const s=Boolean(t);n.collapsed=s,e.classList.toggle("ltx-collapsed",s),s?(e.classList.remove("ltx-dragging"),n.offset=0,e.style.removeProperty("--ltx-offset"),o&&(o.classList.add("ltx-visible"),o.setAttribute("aria-hidden","false"),o.tabIndex=0)):(h(0),o&&(o.classList.remove("ltx-visible"),o.setAttribute("aria-hidden","true"),o.tabIndex=-1))},m=()=>{const n=t.muted||t.volume===0;e.classList.toggle("ltx-muted",n)};t.volume=f(a.startVolume??.6,0,1),m(),l(!1);const d=()=>{const e=t.duration||0,n=t.currentTime||0,s=e?n/e*100:0;A.style.width=`${s}%`,F.textContent=j(n),M.textContent=j(e)},u=(s,o={})=>{const l=n.tracks.length;n.index=(s%l+l)%l;const i=n.tracks[n.index];if(!i||!i.file){console.warn("LTX music player: 音频文件缺失",i),c.textContent="音频文件缺失，请检查配置";return}const u=i.cover||a.defaultCover||"";r&&(u?(r.src=u,r.alt=i.title?`${i.title} 封面`:"音乐封面",e.classList.add("ltx-has-cover")):(r.removeAttribute("src"),r.alt="",e.classList.remove("ltx-has-cover"))),x.textContent=i.title||`Track ${n.index+1}`,O.textContent=i.artist||"",t.src=i.file,e.dataset.trackIndex=n.index,c.textContent="",e.classList.remove("ltx-autoplay-blocked"),d(),o.play&&p()},p=()=>{t.play().then(()=>{e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}).catch(()=>{e.classList.add("ltx-autoplay-blocked"),c.textContent="浏览器阻止了自动播放，请点击播放按钮"})},v=(e=!1)=>{const o=!t.paused||e,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){t.currentTime=t.duration||0,t.pause();return}u(s,{play:o})},T=()=>{const e=!t.paused;u(n.index-1,{play:e})};if(g&&g.addEventListener("click",()=>l(!0)),o&&(o.addEventListener("click",()=>l(!1)),o.setAttribute("aria-hidden","true"),o.tabIndex=-1),i){i.style.touchAction="none",i.addEventListener("pointerdown",t=>{if(n.collapsed)return;if(s.active=!0,s.pointerId=t.pointerId,s.startY=t.clientY,s.startOffset=n.offset,i.setPointerCapture)try{i.setPointerCapture(t.pointerId)}catch{}e.classList.add("ltx-dragging")}),i.addEventListener("pointermove",e=>{if(!s.active)return;const t=e.clientY-s.startY;h(s.startOffset+t)});const t=()=>{if(!s.active)return;if(s.pointerId!==null&&i.releasePointerCapture)try{i.releasePointerCapture(s.pointerId)}catch{}s.active=!1,s.pointerId=null,e.classList.remove("ltx-dragging"),n.offset>w?l(!0):h(n.offset)};["pointerup","pointercancel"].forEach(e=>{i.addEventListener(e,t)}),i.addEventListener("pointerleave",()=>{if(!s.active)return;t()})}S.addEventListener("click",()=>{t.paused?p():t.pause()}),y.addEventListener("click",T),k.addEventListener("click",()=>v(!1)),E.addEventListener("click",()=>{t.muted=!t.muted,m()}),b.addEventListener("click",e=>{const n=b.getBoundingClientRect(),s=f((e.clientX-n.left)/n.width,0,1);Number.isFinite(t.duration)&&(t.currentTime=s*t.duration)}),t.addEventListener("timeupdate",d),t.addEventListener("loadedmetadata",d),t.addEventListener("play",()=>{e.classList.add("ltx-playing"),e.classList.remove("ltx-autoplay-blocked"),c.textContent=""}),t.addEventListener("pause",()=>{e.classList.remove("ltx-playing")}),t.addEventListener("ended",()=>{v(!0)}),t.addEventListener("volumechange",m),u(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
+虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "K3sEP01——模拟Kine集群部署",
+      "item": "http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "K3sEP01——模拟Kine集群部署",
+  "name": "K3sEP01——模拟Kine集群部署",
+  "description": "本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）\n实验环境 本机: macos M2 虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。\n",
+  "keywords": [
+    "RiscV", "实验"
+  ],
+  "articleBody": "本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）\n实验环境 本机: macos M2 虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。\n一台虚拟机Agent01作为数据库的后端服务器 1G/8G 一台虚拟机Server作为Server 2G/8G 一台虚拟机Agent02作为Agent 1G/4G 操作系统: Ubuntu22.04\n由于是实验环境，我们全部的操作直接在root权限下进行，如果接下来某些操作遇到权限问题请添加 sudo。\n那让我们直接摇滚进来吧！\n部署 以下步骤来自于AI的指导并成功部署运行。\nMYSQL节点 由于k3s的轻量化要求，使用了kine作为存储方案，旨在可以不使用etcd进行集群管理，可以外置其他数据库，例如,sqlLite,mysql,postgresql等。\n数据库里面存放了原本etcd会存放的信息，例如各个节点的信息。\napt update apt install mysql-server -y mysql -u root -p 配置数据库\ncreate database k3s; create user 'k3s' @ '%' identified by 'yourpassword'; # 替换为自己设置的密码 grant all privileges on k3s.* to 'k3s@'%''; flush privileges; 修改Mysql配置文件允许远程连接\nsed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mysql.conf.d/mysqld.cnf systemctl restart mysql 最后，使用hostname -I记录一下这台虚拟机的IP地址，方便后续连接操作。\n使用kine部署k3s server 使用--datastore-endpoint参数指定外接数据库的地址。\ncurl -sfL https://get.k3s.io | sh -s - server \\ --datastore-endpoint=\"mysql://k3s:yourpassword@tcp(yourMysqlIP:3306)/k3s\" # 替换为自己的密码和上一步的IP地址 ps:这个方法可能会遇到网络问题，我们还可以采用离线的方式安装k3s，详情请见另一篇文章\n检查Server的状态\nsystemctl status k3s kubectl get nodes 同时可以回到数据库节点检查表信息。\nuse k3s; show tables; select * from kine limit5 /G; 可以发现有kine这个表。\n部署Agent节点 首先从Server中获取Token，cat /var/lib/rancher/k3s/server/node-token\n将agent加入集群中由Server管理\ncurl -sfL https://get.k3s.io | K3S_URL=\"https://yourServ erIP:6443\" K3S_TOKEN=\"K10eb92a0a28e01cdcb43aebadf54e4c647274509bb903266f8b5753acce221234d::server:ecda1824570feac881c9b27b98584c76\" sh - 验证集群功能 在Server上执行\nkubectl get nodes -o wide 可以看到Server和Agent节点都存在。\n到这里就初步部署成功。\n添加镜像代理 如果我们使用registry模式，即从docker.io,dockerhub上拉取镜像， 我们需要同时在Server和Agent上添加 /etc/rancher/k3s/registries.yaml文件\n在其中添加如下配置，以使代理的方式拉取镜像。其中镜像地址填入 endpoint 下方，目前可用的镜像地址\nmirrors: docker.io: endpoint: - \"https://docker.1ms.run\" 可能出现的问题 在运行过程中如果你的本机IP地址变化，可能会出现数据库Mysql的IP封禁问题\n使用下面命令查看问题所在\nsudo journalctl -u k3s --no-pager --lines=50 可以发现Error 1129: Host '192.168.64.2' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'\"，由于太多次连接Mysql失败触发Mysql的安全机制，封禁了k3s Server的IP地址。\n所以我们需要从数据库层面解禁。\nmysql\u003e FLUSH HOSTS; Query OK, 0 rows affected, 1 warning (0.03 sec) mysql\u003e SELECT host FROM performance_schema.host_cache WHERE host='192.168.64.2'; Empty set (0.06 sec) 之后便可以正常运行了。\n总结 后续文章准备探索离线安装k3s以及在open-Rv这个组合上一系列的k3s适配工作流程展示。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
+  "wordCount" : "1249",
+  "inLanguage": "zh",
+  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-03-26T18:51:27+08:00",
+  "dateModified": "2025-03-26T18:51:27+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "LTX"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LTX's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.png"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="后花园">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      K3sEP01——模拟Kine集群部署
+    </h1>
+    <div class="post-meta"><span title='2025-03-26 18:51:27 +0800 CST'>三月 26, 2025</span>&nbsp;·&nbsp;3 分钟&nbsp;·&nbsp;LTX
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%ae%9e%e9%aa%8c%e7%8e%af%e5%a2%83" aria-label="实验环境">实验环境</a></li>
+                <li>
+                    <a href="#%e9%83%a8%e7%bd%b2" aria-label="部署">部署</a><ul>
+                        
+                <li>
+                    <a href="#mysql%e8%8a%82%e7%82%b9" aria-label="MYSQL节点">MYSQL节点</a></li>
+                <li>
+                    <a href="#%e4%bd%bf%e7%94%a8kine%e9%83%a8%e7%bd%b2k3s-server" aria-label="使用kine部署k3s server">使用kine部署k3s server</a></li>
+                <li>
+                    <a href="#%e9%83%a8%e7%bd%b2agent%e8%8a%82%e7%82%b9" aria-label="部署Agent节点">部署Agent节点</a></li>
+                <li>
+                    <a href="#%e9%aa%8c%e8%af%81%e9%9b%86%e7%be%a4%e5%8a%9f%e8%83%bd" aria-label="验证集群功能">验证集群功能</a></li>
+                <li>
+                    <a href="#%e6%b7%bb%e5%8a%a0%e9%95%9c%e5%83%8f%e4%bb%a3%e7%90%86" aria-label="添加镜像代理">添加镜像代理</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%8f%af%e8%83%bd%e5%87%ba%e7%8e%b0%e7%9a%84%e9%97%ae%e9%a2%98" aria-label="可能出现的问题">可能出现的问题</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）</p>
+<h2 id="实验环境">实验环境<a hidden class="anchor" aria-hidden="true" href="#实验环境">#</a></h2>
+<p>本机: macos M2
+虚拟机: 采用<a href="https://canonical.com/multipass">Multipass</a>这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。</p>
+<ul>
+<li>一台虚拟机Agent01作为数据库的后端服务器 1G/8G</li>
+<li>一台虚拟机Server作为Server 2G/8G</li>
+<li>一台虚拟机Agent02作为Agent 1G/4G</li>
+</ul>
+<p>操作系统: Ubuntu22.04</p>
+<p>由于是实验环境，我们全部的操作直接在root权限下进行，如果接下来某些操作遇到权限问题请添加 sudo。</p>
+<p>那让我们直接摇滚进来吧！</p>
+<p><img loading="lazy" src="/img/jb/coffee.webp"></p>
+<h2 id="部署">部署<a hidden class="anchor" aria-hidden="true" href="#部署">#</a></h2>
+<p>以下步骤来自于AI的指导并成功部署运行。</p>
+<h3 id="mysql节点">MYSQL节点<a hidden class="anchor" aria-hidden="true" href="#mysql节点">#</a></h3>
+<p>由于k3s的轻量化要求，使用了kine作为存储方案，旨在可以不使用etcd进行集群管理，可以外置其他数据库，例如,sqlLite,mysql,postgresql等。</p>
+<p>数据库里面存放了原本etcd会存放的信息，例如各个节点的信息。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apt update
+</span></span><span class="line"><span class="cl">apt install mysql-server -y
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mysql -u root -p
+</span></span></code></pre></div><p>配置数据库</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">create</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">k3s</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">create</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="s1">&#39;k3s&#39;</span><span class="w"> </span><span class="o">@</span><span class="w"> </span><span class="s1">&#39;%&#39;</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;yourpassword&#39;</span><span class="p">;</span><span class="w"> </span><span class="o">#</span><span class="w"> </span><span class="err">替换为自己设置的密码</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">grant</span><span class="w"> </span><span class="k">all</span><span class="w"> </span><span class="k">privileges</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">k3s</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="s1">&#39;k3s@&#39;</span><span class="o">%</span><span class="s1">&#39;&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">flush</span><span class="w"> </span><span class="k">privileges</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>修改Mysql配置文件允许远程连接</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sed -i <span class="s1">&#39;s/127.0.0.1/0.0.0.0/g&#39;</span> /etc/mysql/mysql.conf.d/mysqld.cnf
+</span></span><span class="line"><span class="cl">systemctl restart mysql
+</span></span></code></pre></div><p>最后，使用<code>hostname -I</code>记录一下这台虚拟机的IP地址，方便后续连接操作。</p>
+<h3 id="使用kine部署k3s-server">使用kine部署k3s server<a hidden class="anchor" aria-hidden="true" href="#使用kine部署k3s-server">#</a></h3>
+<p>使用<code>--datastore-endpoint</code>参数指定外接数据库的地址。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -sfL https://get.k3s.io <span class="p">|</span> sh -s - server <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --datastore-endpoint<span class="o">=</span><span class="s2">&#34;mysql://k3s:yourpassword@tcp(yourMysqlIP:3306)/k3s&#34;</span> <span class="c1"># 替换为自己的密码和上一步的IP地址</span>
+</span></span></code></pre></div><p>ps:这个方法可能会遇到网络问题，我们还可以采用离线的方式安装k3s，详情请见<a href="">另一篇文章</a></p>
+<p>检查Server的状态</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">systemctl status k3s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">kubectl get nodes
+</span></span></code></pre></div><p>同时可以回到数据库节点检查表信息。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">use</span><span class="w"> </span><span class="n">k3s</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">show</span><span class="w"> </span><span class="n">tables</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">kine</span><span class="w"> </span><span class="n">limit5</span><span class="w"> </span><span class="o">/</span><span class="k">G</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p><img loading="lazy" src="/img/riscv/kine01.png"></p>
+<p>可以发现有kine这个表。</p>
+<h3 id="部署agent节点">部署Agent节点<a hidden class="anchor" aria-hidden="true" href="#部署agent节点">#</a></h3>
+<p>首先从Server中获取Token，<code>cat /var/lib/rancher/k3s/server/node-token</code></p>
+<p>将agent加入集群中由Server管理</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -sfL https://get.k3s.io <span class="p">|</span> <span class="nv">K3S_URL</span><span class="o">=</span><span class="s2">&#34;https://yourServ erIP:6443&#34;</span> <span class="nv">K3S_TOKEN</span><span class="o">=</span><span class="s2">&#34;K10eb92a0a28e01cdcb43aebadf54e4c647274509bb903266f8b5753acce221234d::server:ecda1824570feac881c9b27b98584c76&#34;</span> sh -
+</span></span></code></pre></div><h3 id="验证集群功能">验证集群功能<a hidden class="anchor" aria-hidden="true" href="#验证集群功能">#</a></h3>
+<p>在Server上执行</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl get nodes -o wide
+</span></span></code></pre></div><p><img loading="lazy" src="/img/riscv/kine02.png"></p>
+<p>可以看到Server和Agent节点都存在。</p>
+<p>到这里就初步部署成功。</p>
+<h3 id="添加镜像代理">添加镜像代理<a hidden class="anchor" aria-hidden="true" href="#添加镜像代理">#</a></h3>
+<p>如果我们使用registry模式，即从docker.io,dockerhub上拉取镜像， 我们需要<strong>同时在Server和Agent上添加</strong>  <code>/etc/rancher/k3s/registries.yaml</code>文件</p>
+<p>在其中添加如下配置，以使代理的方式拉取镜像。其中镜像地址填入 endpoint 下方，目前<a href="https://github.com/dongyubin/DockerHub">可用的镜像地址</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">mirrors</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">docker.io</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;https://docker.1ms.run&#34;</span><span class="w">
+</span></span></span></code></pre></div><h2 id="可能出现的问题">可能出现的问题<a hidden class="anchor" aria-hidden="true" href="#可能出现的问题">#</a></h2>
+<p>在运行过程中如果你的本机IP地址变化，可能会出现数据库Mysql的IP封禁问题</p>
+<p>使用下面命令查看问题所在</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo journalctl -u k3s --no-pager --lines<span class="o">=</span><span class="m">50</span>
+</span></span></code></pre></div><p><img alt="mysql问题" loading="lazy" src="/img/riscv/kine03.png"></p>
+<p>可以发现<code>Error 1129: Host '192.168.64.2' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'&quot;</code>，由于太多次连接Mysql失败触发Mysql的安全机制，封禁了k3s Server的IP地址。</p>
+<p>所以我们需要从数据库层面解禁。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="n">FLUSH</span><span class="w"> </span><span class="n">HOSTS</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Query</span><span class="w"> </span><span class="n">OK</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">rows</span><span class="w"> </span><span class="n">affected</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">warning</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">03</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">host</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">performance_schema</span><span class="p">.</span><span class="n">host_cache</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">host</span><span class="o">=</span><span class="s1">&#39;192.168.64.2&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Empty</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">06</span><span class="w"> </span><span class="n">sec</span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></div><p>之后便可以正常运行了。</p>
+<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
+<p>后续文章准备探索离线安装k3s以及在open-Rv这个组合上一系列的k3s适配工作流程展示。</p>
+<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
+<p><img loading="lazy" src="/img/ys/%E6%8D%82%E5%98%B4%E6%86%8B%E7%AC%91.webp"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
+      <li><a href="http://localhost:1313/tags/%E5%AE%9E%E9%AA%8C/">实验</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>K3sEP02——解决RiscV开发板镜像无法拉取问题</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>LT的奇思乱想Ep01</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+
+<script>
+
+    
+
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+
+    const setGiscusTheme = () => {
+
+        const sendMessage = (message) => {
+
+            const iframe = document.querySelector('iframe.giscus-frame');
+
+            if (iframe) {
+
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+
+            }
+
+        }
+
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const giscusAttributes = {
+
+            "src": "https://giscus.app/client.js",
+
+            "data-repo": "LTXWorld\/LTXWorld.github.io",
+
+            "data-repo-id": "R_kgDONODUuA",
+
+            "data-category": "Announcements",
+
+            "data-category-id": "DIC_kwDONODUuM4CkMUw",
+
+            "data-mapping": "pathname",
+
+            "data-strict": "0",
+
+            "data-reactions-enabled": "1",
+
+            "data-emit-metadata": "0",
+
+            "data-input-position": "bottom",
+
+            "data-theme": getStoredTheme(),
+
+            "data-lang": "zh-CN",
+
+            "data-loading": "lazy",
+
+            "crossorigin": "anonymous",
+
+        };
+
+
+        
+
+        const giscusScript = document.createElement("script");
+
+        Object.entries(giscusAttributes).forEach(
+
+                ([key, value]) => giscusScript.setAttribute(key, value));
+
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+
+        
+
+        const themeSwitcher = document.querySelector("#theme-toggle");
+
+        if (themeSwitcher) {
+
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+
+        if (themeFloatSwitcher) {
+
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+
+        }
+
+    });
+
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
+  <audio id="ltx-music-audio" preload="metadata"></audio>
+  <div class="ltx-drag-handle" data-role="drag-handle" title="上下拖动调整位置"></div>
+  <div class="ltx-music-header">
+    <div class="ltx-music-visual">
+      <div class="ltx-disc" data-role="disc" aria-hidden="true">
+        <img data-role="cover" alt="" loading="lazy" decoding="async">
+        <div class="ltx-disc-center"></div>
+      </div>
+    </div>
+    <div class="ltx-music-meta">
+      <span class="ltx-music-title" data-role="title"></span>
+      <span class="ltx-music-artist" data-role="artist"></span>
+    </div>
+    <button type="button" class="ltx-music-hide" data-action="collapse" aria-label="隐藏播放器">&#215;</button>
+  </div>
+  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
+    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
+  </div>
+  <div class="ltx-music-time">
+    <span data-role="current">0:00</span>
+    <span data-role="total">--:--</span>
+  </div>
+  <div class="ltx-music-controls">
+    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
+    <button type="button" data-action="toggle" aria-label="播放或暂停">
+      <span data-icon="play">▶</span>
+      <span data-icon="pause">⏸</span>
+    </button>
+    <button type="button" data-action="next" aria-label="下一首">⏭</button>
+    <button type="button" data-action="mute" aria-label="静音或取消静音">
+      <span data-icon="unmuted">🔊</span>
+      <span data-icon="muted">🔇</span>
+    </button>
+  </div>
+  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
+</div>
+<button type="button" class="ltx-music-fab" id="ltx-music-fab" aria-label="显示音乐播放器">&#9835;</button>
+<script>
+  window.LTX_MUSIC_CONFIG = {"autoplay":true,"defaultCover":"","loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
+  (function () {
+    const config = window.LTX_MUSIC_CONFIG || {};
+    if (!config.tracks || !config.tracks.length) {
+      return;
+    }
+
+    const player = document.getElementById('ltx-music-player');
+    const audio = player.querySelector('audio');
+    const titleEl = player.querySelector('[data-role="title"]');
+    const artistEl = player.querySelector('[data-role="artist"]');
+    const progressEl = player.querySelector('[data-role="progress"]');
+    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
+    const currentTimeEl = player.querySelector('[data-role="current"]');
+    const totalTimeEl = player.querySelector('[data-role="total"]');
+    const tipEl = player.querySelector('[data-role="tip"]');
+    const coverEl = player.querySelector('[data-role="cover"]');
+
+    const toggleBtn = player.querySelector('[data-action="toggle"]');
+    const prevBtn = player.querySelector('[data-action="prev"]');
+    const nextBtn = player.querySelector('[data-action="next"]');
+    const muteBtn = player.querySelector('[data-action="mute"]');
+    const collapseBtn = player.querySelector('[data-action="collapse"]');
+    const dragHandle = player.querySelector('[data-role="drag-handle"]');
+    const fabButton = document.getElementById('ltx-music-fab');
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const formatTime = (seconds) => {
+      if (!Number.isFinite(seconds)) {
+        return '--:--';
+      }
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
+    const minOffset = -120;
+    const maxOffset = 220;
+    const hideThreshold = 180;
+    const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+
+    const state = {
+      index: 0,
+      tracks: config.tracks,
+      autoplay: config.autoplay !== false,
+      loopPlaylist: config.loopPlaylist !== false,
+      offset: 0,
+      collapsed: false,
+    };
+
+    const setOffset = (value) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    };
+
+    const setCollapsed = (value) => {
+      const collapsed = Boolean(value);
+      state.collapsed = collapsed;
+      player.classList.toggle('ltx-collapsed', collapsed);
+      if (collapsed) {
+        player.classList.remove('ltx-dragging');
+        state.offset = 0;
+        player.style.removeProperty('--ltx-offset');
+        if (fabButton) {
+          fabButton.classList.add('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'false');
+          fabButton.tabIndex = 0;
+        }
+      } else {
+        setOffset(0);
+        if (fabButton) {
+          fabButton.classList.remove('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'true');
+          fabButton.tabIndex = -1;
+        }
+      }
+    };
+
+    const updateMuteClass = () => {
+      const muted = audio.muted || audio.volume === 0;
+      player.classList.toggle('ltx-muted', muted);
+    };
+
+    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    updateMuteClass();
+    setCollapsed(false);
+
+    const updateProgress = () => {
+      const duration = audio.duration || 0;
+      const current = audio.currentTime || 0;
+      const percentage = duration ? (current / duration) * 100 : 0;
+      progressFillEl.style.width = `${percentage}%`;
+      currentTimeEl.textContent = formatTime(current);
+      totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const setTrack = (nextIndex, options = {}) => {
+      const total = state.tracks.length;
+      state.index = ((nextIndex % total) + total) % total;
+      const track = state.tracks[state.index];
+      if (!track || !track.file) {
+        console.warn('LTX music player: 音频文件缺失', track);
+        tipEl.textContent = '音频文件缺失，请检查配置';
+        return;
+      }
+      const cover = track.cover || config.defaultCover || '';
+      if (coverEl) {
+        if (cover) {
+          coverEl.src = cover;
+          coverEl.alt = track.title ? `${track.title} 封面` : '音乐封面';
+          player.classList.add('ltx-has-cover');
+        } else {
+          coverEl.removeAttribute('src');
+          coverEl.alt = '';
+          player.classList.remove('ltx-has-cover');
+        }
+      }
+      titleEl.textContent = track.title || `Track ${state.index + 1}`;
+      artistEl.textContent = track.artist || '';
+      audio.src = track.file;
+      player.dataset.trackIndex = state.index;
+      tipEl.textContent = '';
+      player.classList.remove('ltx-autoplay-blocked');
+      updateProgress();
+      if (options.play) {
+        attemptPlay();
+      }
+    };
+
+    const attemptPlay = () => {
+      audio.play().then(() => {
+        player.classList.remove('ltx-autoplay-blocked');
+        tipEl.textContent = '';
+      }).catch(() => {
+        player.classList.add('ltx-autoplay-blocked');
+        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
+      });
+    };
+
+    const playNext = (autoTriggered = false) => {
+      const shouldPlay = !audio.paused || autoTriggered;
+      const nextIndex = state.index + 1;
+      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
+        audio.currentTime = audio.duration || 0;
+        audio.pause();
+        return;
+      }
+      setTrack(nextIndex, { play: shouldPlay });
+    };
+
+    const playPrev = () => {
+      const shouldPlay = !audio.paused;
+      setTrack(state.index - 1, { play: shouldPlay });
+    };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', () => setCollapsed(true));
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', () => setCollapsed(false));
+      fabButton.setAttribute('aria-hidden', 'true');
+      fabButton.tabIndex = -1;
+    }
+
+    if (dragHandle) {
+      dragHandle.style.touchAction = 'none';
+      dragHandle.addEventListener('pointerdown', (event) => {
+        if (state.collapsed) {
+          return;
+        }
+        dragState.active = true;
+        dragState.pointerId = event.pointerId;
+        dragState.startY = event.clientY;
+        dragState.startOffset = state.offset;
+        if (dragHandle.setPointerCapture) {
+          try {
+            dragHandle.setPointerCapture(event.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        player.classList.add('ltx-dragging');
+      });
+
+      dragHandle.addEventListener('pointermove', (event) => {
+        if (!dragState.active) {
+          return;
+        }
+        const delta = event.clientY - dragState.startY;
+        setOffset(dragState.startOffset + delta);
+      });
+
+      const finishDrag = () => {
+        if (!dragState.active) {
+          return;
+        }
+        if (dragState.pointerId !== null && dragHandle.releasePointerCapture) {
+          try {
+            dragHandle.releasePointerCapture(dragState.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        dragState.active = false;
+        dragState.pointerId = null;
+        player.classList.remove('ltx-dragging');
+        if (state.offset > hideThreshold) {
+          setCollapsed(true);
+        } else {
+          setOffset(state.offset);
+        }
+      };
+
+      ['pointerup', 'pointercancel'].forEach((eventName) => {
+        dragHandle.addEventListener(eventName, finishDrag);
+      });
+
+      dragHandle.addEventListener('pointerleave', () => {
+        if (!dragState.active) {
+          return;
+        }
+        finishDrag();
+      });
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        attemptPlay();
+      } else {
+        audio.pause();
+      }
+    });
+
+    prevBtn.addEventListener('click', playPrev);
+    nextBtn.addEventListener('click', () => playNext(false));
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      updateMuteClass();
+    });
+
+    progressEl.addEventListener('click', (event) => {
+      const rect = progressEl.getBoundingClientRect();
+      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = ratio * audio.duration;
+      }
+    });
+
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('loadedmetadata', updateProgress);
+
+    audio.addEventListener('play', () => {
+      player.classList.add('ltx-playing');
+      player.classList.remove('ltx-autoplay-blocked');
+      tipEl.textContent = '';
+    });
+
+    audio.addEventListener('pause', () => {
+      player.classList.remove('ltx-playing');
+    });
+
+    audio.addEventListener('ended', () => {
+      playNext(true);
+    });
+
+    audio.addEventListener('volumechange', updateMuteClass);
+
+    setTrack(0, { play: state.autoplay });
+  })();
+</script>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

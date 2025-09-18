@@ -1,5 +1,29 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>软件包管理 on LTX's Blog</title><link>https://LTXWorld.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/</link><description>Recent content in 软件包管理 on LTX's Blog</description><image><title>LTX's Blog</title><url>https://LTXWorld.github.io/images/papermod-cover.png</url><link>https://LTXWorld.github.io/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Thu, 03 Apr 2025 17:07:56 +0800</lastBuildDate><atom:link href="https://LTXWorld.github.io/tags/%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/index.xml" rel="self" type="application/rss+xml"/><item><title>DebugEP02——MacOs系统升级与Homebrew的关系</title><link>https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</link><pubDate>Thu, 03 Apr 2025 17:07:56 +0800</pubDate><guid>https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
-&lt;p>某天我想要在我的macos上使用homebrew安装&lt;a href="https://github.com/riscv-software-src/homebrew-riscv/">riscv编译工具链&lt;/a>为了交叉编译一些镜像文件。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">brew tap riscv-software-src/riscv
-&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">brew install riscv-tools
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>软件包管理 on LTX&#39;s Blog</title>
+    <link>http://localhost:1313/tags/%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/</link>
+    <description>Recent content in 软件包管理 on LTX&#39;s Blog</description>
+    <image>
+      <title>LTX&#39;s Blog</title>
+      <url>http://localhost:1313/images/papermod-cover.png</url>
+      <link>http://localhost:1313/images/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>zh</language>
+    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
+    <lastBuildDate>Thu, 03 Apr 2025 17:07:56 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E8%BD%AF%E4%BB%B6%E5%8C%85%E7%AE%A1%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DebugEP02——MacOs系统升级与Homebrew的关系</title>
+      <link>http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</link>
+      <pubDate>Thu, 03 Apr 2025 17:07:56 +0800</pubDate>
+      <guid>http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</guid>
+      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
+&lt;p&gt;某天我想要在我的macos上使用homebrew安装&lt;a href=&#34;https://github.com/riscv-software-src/homebrew-riscv/&#34;&gt;riscv编译工具链&lt;/a&gt;为了交叉编译一些镜像文件。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew tap riscv-software-src/riscv
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install riscv-tools
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
