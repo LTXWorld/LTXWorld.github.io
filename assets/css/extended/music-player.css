@@ -1,6 +1,6 @@
 .ltx-music-player {
   position: fixed;
-  right: min(24px, 4vw);
+  right: clamp(10px, 2vw, 18px);
   bottom: 24px;
   width: min(290px, calc(100vw - 48px));
   padding: 16px 18px 14px;
@@ -298,7 +298,7 @@ body.dark .ltx-disc {
 
 .ltx-music-fab {
   position: fixed;
-  right: min(24px, 4vw);
+  right: clamp(10px, 2vw, 18px);
   bottom: 24px;
   width: 46px;
   height: 46px;
