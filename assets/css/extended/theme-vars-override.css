@@ -19,24 +19,16 @@
 
 .dark {
     --theme: rgba(29, 30, 32, 0);
-    --entry: rgba(46, 46, 51, 0);
+    --entry: rgb(46, 46, 51);
     --primary: rgb(218, 218, 219);
     --secondary: rgb(155, 156, 157);
     --tertiary: rgb(65, 66, 68);
     --content: rgb(196, 196, 197);
-    --code-block-bg: rgba(46, 46, 51, 0.72);
-    --code-bg: rgba(46, 46, 51, 0.5);
-    --border: rgba(255, 255, 255, 0.18);
+    --code-block-bg: rgb(46, 46, 51);
+    --code-bg: rgb(46, 46, 51);
+    --border: rgb(51, 51, 51);
 }
 
 body.dark {
     background: transparent;
-}
-
-body.dark .post-entry,
-body.dark .first-entry,
-body.dark .post-single,
-body.dark .page,
-body.dark .toc {
-    background-color: transparent;
 }
