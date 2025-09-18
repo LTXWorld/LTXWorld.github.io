@@ -149,6 +149,23 @@ params:
 
       safari_pinned_tab: "favicon.png"
   
+  musicPlayer:
+    enabled: true
+    autoplay: true
+    loopPlaylist: true
+    startVolume: 0.6
+    # 将音乐文件放在 static/audio/ 目录下
+    tracks:
+      - title: "依然爱你"
+        artist: "王力宏"
+        file: "/audio/02 - 依然爱你.mp3"
+      - title: "改变自己"
+        artist: "王力宏"
+        file: "/audio/05 - 改变自己.mp3"
+      - title: "爱错"
+        artist: "王力宏"
+        file: "/audio/11 - 爱错.mp3"
+
   giscus:
     repo: "LTXWorld/LTXWorld.github.io"
 
