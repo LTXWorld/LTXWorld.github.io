@@ -167,6 +167,15 @@ body.dark .ltx-music-player {
     width: auto;
   }
 
+  .ltx-music-header {
+    gap: 12px;
+  }
+
+  .ltx-music-visual {
+    width: 64px;
+    height: 64px;
+  }
+
   .ltx-music-controls button {
     height: 36px;
   }
@@ -177,4 +186,89 @@ body.dark .ltx-music-player {
   .ltx-music-progress-fill {
     transition: none;
   }
+
+  .ltx-music-player.ltx-playing .ltx-disc {
+    animation: none;
+  }
 }
+
+.ltx-music-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ltx-music-visual {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+}
+
+.ltx-disc {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(0, 0, 0, 0.7) 60%, rgba(0, 0, 0, 0.9));
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.35), 0 8px 18px rgba(0, 0, 0, 0.4);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+body.dark .ltx-disc {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.85) 65%, rgba(0, 0, 0, 0.95));
+}
+
+.ltx-disc::before {
+  content: ;
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.8));
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.45);
+}
+
+.ltx-disc img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.ltx-music-player.ltx-has-cover .ltx-disc img {
+  opacity: 1;
+}
+
+.ltx-disc-center {
+  position: relative;
+  width: 22%;
+  padding-bottom: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85), rgba(180, 180, 180, 0.9));
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.45);
+  z-index: 2;
+}
+
+.ltx-music-player.ltx-playing .ltx-disc {
+  animation: ltx-disc-spin 14s linear infinite;
+}
+
+@keyframes ltx-disc-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ltx-music-player.ltx-autoplay-blocked .ltx-disc {
+  animation-play-state: paused;
+}
+

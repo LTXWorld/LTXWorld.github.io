@@ -1,973 +1,204 @@
-<!DOCTYPE html>
-<html lang="zh" dir="auto">
-
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>K3sEP09——初始化开发板环境操作汇总 | LTX&#39;s Blog</title>
-<meta name="keywords" content="K3s, Linux操作, RiscV">
-<meta name="description" content="前瞻
+<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>K3sEP09——初始化开发板环境操作汇总 | LTX's Blog</title>
+<meta name=keywords content="K3s,Linux操作,RiscV"><meta name=description content="前瞻
 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.
 烧录镜像
 关于烧录操作,无需多言,请关注这篇文章.本文主要说一下镜像问题.
 在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
-甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇">
-<meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.87ea10c5eb6cdf9fcc27aa5665a12ed25ef08a46de7d411927d891915eb7ca57.css" integrity="sha256-h&#43;oQxets35/MJ6pWZaEu0l7wikbefUEZJ9iRkV63ylc=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-<script type="text/javascript"
-
-        async
-
-        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-
-MathJax.Hub.Config({
-
-  tex2jax: {
-
-    inlineMath: [['$','$'], ['\\(','\\)']],
-
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-
-    processEscapes: true,
-
-    processEnvironments: true,
-
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-
-         extensions: ["AMSmath.js", "AMSsymbols.js"] }
-
-  }
-
-});
-
-
-MathJax.Hub.Queue(function() {
-
-    
-
-    
-
-    
-
-    var all = MathJax.Hub.getAllJax(), i;
-
-    for(i = 0; i < all.length; i += 1) {
-
-        all[i].SourceElement().parentNode.className += ' has-jax';
-
-    }
-
-});
-
-</script>
-
-
-<style>
-
-code.has-jax {
-
-    font: inherit;
-
-    font-size: 100%;
-
-    background: inherit;
-
-    border: inherit;
-
-    color: #515151;
-
-}
-
-</style><meta property="og:url" content="http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
-  <meta property="og:site_name" content="LTX&#39;s Blog">
-  <meta property="og:title" content="K3sEP09——初始化开发板环境操作汇总">
-  <meta property="og:description" content="前瞻 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.
+甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/><link crossorigin=anonymous href=/assets/css/stylesheet.5f0ddd8622920919e414fdd8cc3f59e09ea98fa129491973ab7d95306b6604d0.css integrity="sha256-Xw3dhiKSCRnkFP3YzD9Z4J6pj6EpSRlzq32VMGtmBNA=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="K3sEP09——初始化开发板环境操作汇总"><meta property="og:description" content="前瞻 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.
 烧录镜像 关于烧录操作,无需多言,请关注这篇文章.本文主要说一下镜像问题.
-在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护; 甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇">
-  <meta property="og:locale" content="zh">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2025-05-14T09:37:37+08:00">
-    <meta property="article:modified_time" content="2025-05-14T09:37:37+08:00">
-    <meta property="article:tag" content="K3s">
-    <meta property="article:tag" content="Linux操作">
-    <meta property="article:tag" content="RiscV">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
-<meta name="twitter:title" content="K3sEP09——初始化开发板环境操作汇总">
-<meta name="twitter:description" content="前瞻
+在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护; 甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-05-14T09:37:37+08:00"><meta property="article:modified_time" content="2025-05-14T09:37:37+08:00"><meta property="article:tag" content="K3s"><meta property="article:tag" content="Linux操作"><meta property="article:tag" content="RiscV"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="K3sEP09——初始化开发板环境操作汇总"><meta name=twitter:description content="前瞻
 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.
 烧录镜像
 关于烧录操作,无需多言,请关注这篇文章.本文主要说一下镜像问题.
 在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
-甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "http://localhost:1313/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "K3sEP09——初始化开发板环境操作汇总",
-      "item": "http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "K3sEP09——初始化开发板环境操作汇总",
-  "name": "K3sEP09——初始化开发板环境操作汇总",
-  "description": "前瞻 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.\n烧录镜像 关于烧录操作,无需多言,请关注这篇文章.本文主要说一下镜像问题.\n在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护; 甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇\n",
-  "keywords": [
-    "K3s", "Linux操作", "RiscV"
-  ],
-  "articleBody": "前瞻 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.\n烧录镜像 关于烧录操作,无需多言,请关注这篇文章.本文主要说一下镜像问题.\n在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护; 甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇\n所以经过我的多次尝试(重新烧录镜像配置环境的折磨)我找到了一款适合实验稳定(暂时稳定)操作的 OS 镜像,RevyOS\n其适配了 LicheePi 4A 和 Milk-V Meles 正好都是我手上有的设备;虽然同样使用的是中科院的镜像管理,但是据我在其 github 页面的观察,其 issue 的时间在最近较多,回复也蛮及时; 同时 ChangeLog 也有稳定的更新,故以此为后续的实验镜像.\n环境搭建 与我们之前想的一样,就像宝塔这样的软件提供了一键部署,一键配置这样的操作,这对重新构建一个开发板上的系统来说真的是很方便;有机会我们可以把下面的操作全部放在一个脚本中,也做到一键操作.\n在第二篇文章中我们说过了如何配置适合容器的 OS 环境, 但是后面在实验中还是遇到了些问题,所以这里重新汇总一下.(并且在实验过程中本文会一直更新)\n更改 DNS 配置 如果你的 DNS 服务器地址无法正确解析,请修改 DNS 设置为 8.8.8.8,1.1.1.1等静态公用地址\n# 换成自己的网络名称 sudo nmcli connection modify \"niuma\" ipv4.ignore-auto-dns yes ipv4.dns \"8.8.8.8 1.1.1.1\" # 重启连接 sudo nmcli connection down \"niuma\" \u0026\u0026 nmcli connection up \"niuma\" 注意,如果你是在 ssh 或者其他远程连接环境下进行这步操作,那么后续会因为 wifi 断开而无法连接,所以我们推荐执行这步操作在有显示器的环境下进行.\nApt 截止2025.05.13,中科院仓库存在 KEY 过期问题,官方给出了解决方案\n我采用的是 ChatGPT 给出的方案,在源地址前面加上[trusted=yes],\nsudo vi /etc/apt/sources.list 最终结果如下:\ndeb [trusted=yes] https://fast-mirror.isrc.ac.cn/revyos/revyos-gles-21 revyos-gles-21 main deb [trusted=yes] https://fast-mirror.isrc.ac.cn/revyos/revyos-addons revyos-addons main deb [trusted=yes] https://fast-mirror.isrc.ac.cn/revyos/revyos-kernels revyos-kernels main deb [trusted=yes] https://fast-mirror.isrc.ac.cn/revyos/revyos-base sid main 之后再进行 apt 操作就可以了.(更新,后续还是建议使用官方的解决方案)\nsudo sh -c 'gpg --keyserver keyserver.ubuntu.com --recv-keys 2FB3A9E77911527E \u0026\u0026 \\ gpg --export 2FB3A9E77911527E \u003e /etc/apt/trusted.gpg.d/revyos-keyring.gpg' sudo apt update; sudo apt upgrade -y 在这个过程中如果遇到 gpg: keyserver receive failed: Server indicated a failure这个问题,通常是网络问题,我们需要先更改 DNS,具体见上方 DNS 操作.\nGCC等构建所需工具 我们写一个脚本来一键检测并安装可能所需的工具.\n#!/bin/bash set -e echo \"🔍 检测当前系统包管理器...\" if command -v apt \u003e/dev/null 2\u003e\u00261; then echo \"✅ 使用 apt 安装依赖...\" sudo apt update sudo apt install -y \\ build-essential \\ make \\ gcc \\ git \\ curl \\ pkg-config \\ libseccomp-dev \\ btrfs-progs \\ iptables \\ libapparmor-dev \\ libgpgme-dev \\ libdevmapper-dev \\ libprotobuf-dev \\ protobuf-compiler \\ libnl-3-dev \\ libnl-route-3-dev \\ libnet-dev \\ libudev-dev \\ libsystemd-dev \\ libtool \\ autoconf \\ automake \\ rsync \\ unzip \\ zstd \\ socat elif command -v dnf \u003e/dev/null 2\u003e\u00261; then echo \"✅ 使用 dnf 安装依赖...\" sudo dnf install -y \\ gcc \\ gcc-c++ \\ git \\ make \\ curl \\ pkgconf-pkg-config \\ libseccomp-devel \\ btrfs-progs-devel \\ iptables \\ libapparmor-devel \\ gpgme-devel \\ device-mapper-devel \\ protobuf-devel \\ protobuf-compiler \\ libnl3-devel \\ libnet-devel \\ systemd-devel \\ libudev-devel \\ libtool \\ autoconf \\ automake \\ rsync \\ unzip \\ socat else echo \"❌ 无法识别的包管理器，请手动安装依赖。\" exit 1 fi echo \"✅ 所有依赖安装完毕。你现在可以构建 K3s。\" 此脚本来自于 ChatGPT.\nGit apt 安装 Git,并配置镜像地址\ngit config --global url.\"https://gh-proxy.com/github.com/\" .insteadOf \"https://github.com/\" cat .gitconfig 得到我们所配置的地址即为正确.\nDocker 第一种安装方式:\nsudo apt install docker.io sudo usermod -aG docker $USER 如果这种不行,请使用这种:(后面的加入 root 组操作是相同的)\nsudo apt-get install docker docker-compose sudo groupadd docker sudo usermod -aG docker $USER newgrp docker 最终执行 docker images hello-world 检测是否成功.\n配置代理镜像:()\n# 修改 vi /etc/docker/daemon.json # 如果没有这个文件，自己手动新建（我当时只有一个key.json文件） # 将下面内容复制进去 { \"registry-mirrors\": [ \"https://docker.1ms.run\", \"https://docker.linkedbus.com\" ] } # 加载配置并重启 sudo systemctl daemon-reload sudo systemctl restart docker # 尝试拉取镜像 docker pull busybox docker run hello-world 注意,这里的代理是对 dockerhub 的代理;不会影响到我们的私有仓库. 🥸 对了,fk GFW ! 如果影响到了私有仓库,请暂时放弃代理.\nGolang 这里我们统一采用 go1.22.8 linux/riscv64 这个版本.原因见这篇文章,根据当前你的 k8s 版本进行对应变化.\n这里默认你已经有了此版本的 tar 文件(我是通过 scp 传过去的)\nsudo tar -C /usr/local -xzf go1.22.8.linux-riscv64.tar.gz sudo vi ~/.bashrc # Go environment export GOROOT=/usr/local/go export PATH=$GOROOT/bin:$PATH export GOPATH=$HOME/go export PATH=$GOPATH/bin:$PATH export GOPROXY=https://goproxy.cn,direct # source ~/.bashrc 使用 go version 检查得到 go1.22.8 这个正确版本.\nyq 用来解析 YAML 的工具,之前文章中也提到过.\n这里我们与 Golang 一样,从源码构建,因为包管理中的版本太老.\nwget https://github.com/mikefarah/yq/releases/download/v4.44.6/yq_linux_riscv64.tar.gz tar -zvxf yq_linux_riscv64.tar.gz mv yq_linux_riscv64.tar.gz yq chmod +x yq mv yq /usr/local/bin yq --version 如果你之前用 apt 安装了 yq,可能会存在错误的缓存,可以用hash -r清理缓存.\n权限问题 为了方便和避免可能出现的权限问题,我们为源码目录赋予 root 权限\nsudo chown -R $(whoami):$(whoami) . 访问仓库网络问题 如果我们访问自己的私有仓库时遇到网络问题,特别是 DNS 解析问题,通常是因为 Network Management 自动为我们设置好了 DNS 服务器地址.\n而这篇文章中我们谈到了这些 DNS 服务器很难不出问题,特别是在解析国外的服务器时.\n所以我们采用一个最简单的方法,修改 /etc/hosts 文件,将服务器的 IP 加入其中.\n# 请换成自己的 ip 与 域名 IP Domain 安装与卸载脚本 实验过程中可能出现问题导致 k3s 不能运行,在此情况下如果我们需要删除 k3s 或者重新安装 k3s,这里给出两种操作的脚本.\n卸载脚本 将其从 systemd 管理中移除.\n#!/bin/bash set -e echo \"🔧 停止 k3s 服务（如在运行）...\" sudo systemctl stop k3s || true echo \"🚫 禁用 k3s 服务开机自启...\" sudo systemctl disable k3s || true echo \"🧹 删除 k3s systemd 服务文件...\" sudo rm -f /etc/systemd/system/k3s.service sudo rm -f /etc/systemd/system/k3s.service.env echo \"🔄 重新加载 systemd 守护进程...\" sudo systemctl daemon-reload echo \"✅ 验证 k3s 服务是否已清除...\" sudo systemctl status k3s || echo \"✅ k3s.service 已被成功移除。\" echo \"🎉 清理完成。\" 安装脚本 将其重新加入 systemd 管理,前提是脚本所在路径与 k3s 二进制文件路径一致,不一致请修改脚本.\n#!/bin/bash set -e echo \"📦 拷贝本地 k3s 到 /usr/local/bin ...\" sudo cp /home/debian/k3s /usr/local/bin/k3s sudo chmod +x /usr/local/bin/k3s echo \"🔧 配置私有镜像仓库 registries.yaml ...\" sudo mkdir -p /etc/rancher/k3s cat \u003c",
-  "wordCount" : "2635",
-  "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-05-14T09:37:37+08:00",
-  "dateModified": "2025-05-14T09:37:37+08:00",
-  "author":{
-    "@type": "Person",
-    "name": "LTX"
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "LTX's Blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    }
-
-</script>
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu">
-            <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
-                    <span>首页</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/archives/" title="归档">
-                    <span>归档</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
-                    <span>分类</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
-                    <span>标签</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/search/" title="搜索">
-                    <span>搜索</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/about/" title="后花园">
-                    <span>关于</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
-    
-    <h1 class="post-title entry-hint-parent">
-      K3sEP09——初始化开发板环境操作汇总
-    </h1>
-    <div class="post-meta"><span title='2025-05-14 09:37:37 +0800 CST'>五月 14, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX
-
-</div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">目录</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#%e5%89%8d%e7%9e%bb" aria-label="前瞻">前瞻</a></li>
-                <li>
-                    <a href="#%e7%83%a7%e5%bd%95%e9%95%9c%e5%83%8f" aria-label="烧录镜像">烧录镜像</a></li>
-                <li>
-                    <a href="#%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba" aria-label="环境搭建">环境搭建</a><ul>
-                        
-                <li>
-                    <a href="#%e6%9b%b4%e6%94%b9-dns-%e9%85%8d%e7%bd%ae" aria-label="更改 DNS 配置">更改 DNS 配置</a></li>
-                <li>
-                    <a href="#apt" aria-label="Apt">Apt</a></li>
-                <li>
-                    <a href="#gcc%e7%ad%89%e6%9e%84%e5%bb%ba%e6%89%80%e9%9c%80%e5%b7%a5%e5%85%b7" aria-label="GCC等构建所需工具">GCC等构建所需工具</a></li>
-                <li>
-                    <a href="#git" aria-label="Git">Git</a></li>
-                <li>
-                    <a href="#docker" aria-label="Docker">Docker</a></li>
-                <li>
-                    <a href="#golang" aria-label="Golang">Golang</a></li>
-                <li>
-                    <a href="#yq" aria-label="yq">yq</a></li>
-                <li>
-                    <a href="#%e6%9d%83%e9%99%90%e9%97%ae%e9%a2%98" aria-label="权限问题">权限问题</a></li>
-                <li>
-                    <a href="#%e8%ae%bf%e9%97%ae%e4%bb%93%e5%ba%93%e7%bd%91%e7%bb%9c%e9%97%ae%e9%a2%98" aria-label="访问仓库网络问题">访问仓库网络问题</a></li></ul>
-                </li>
-                <li>
-                    <a href="#%e5%ae%89%e8%a3%85%e4%b8%8e%e5%8d%b8%e8%bd%bd%e8%84%9a%e6%9c%ac" aria-label="安装与卸载脚本">安装与卸载脚本</a><ul>
-                        
-                <li>
-                    <a href="#%e5%8d%b8%e8%bd%bd%e8%84%9a%e6%9c%ac" aria-label="卸载脚本">卸载脚本</a></li>
-                <li>
-                    <a href="#%e5%ae%89%e8%a3%85%e8%84%9a%e6%9c%ac" aria-label="安装脚本">安装脚本</a></li></ul>
-                </li>
-                <li>
-                    <a href="#%e5%af%b9kubectl%e5%91%bd%e4%bb%a4%e8%bf%9b%e8%a1%8c%e4%bc%98%e5%8c%96" aria-label="对kubectl命令进行优化">对kubectl命令进行优化</a><ul>
-                        
-                <li>
-                    <a href="#%e5%8e%bbsudo%e5%8c%96" aria-label="去sudo化">去sudo化</a></li>
-                <li>
-                    <a href="#%e4%bd%bf%e7%94%a8kubectl-aliases%e7%ae%80%e5%8c%96" aria-label="使用kubectl-aliases简化">使用kubectl-aliases简化</a></li></ul>
-                </li>
-                <li>
-                    <a href="#%e5%90%8e%e7%bb%ad%e6%9b%b4%e6%96%b0" aria-label="后续更新">后续更新</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
-  <div class="post-content"><h2 id="前瞻">前瞻<a hidden class="anchor" aria-hidden="true" href="#前瞻">#</a></h2>
-<p>本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.</p>
-<h2 id="烧录镜像">烧录镜像<a hidden class="anchor" aria-hidden="true" href="#烧录镜像">#</a></h2>
-<p>关于烧录操作,无需多言,请关注这篇<a href="https://www.bfsmlt.top/posts/003li_riscv01/">文章</a>.本文主要说一下镜像问题.</p>
-<p>在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
-甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇</p>
-<p>所以经过我的多次尝试(重新烧录镜像配置环境的折磨)我找到了一款适合实验稳定(暂时稳定)操作的 OS 镜像,<a href="https://docs.revyos.dev/">RevyOS</a></p>
-<p>其适配了 LicheePi 4A 和 Milk-V Meles 正好都是我手上有的设备;虽然同样使用的是中科院的镜像管理,但是据我在其 github 页面的观察,其 issue 的时间在最近较多,回复也蛮及时;
-同时 ChangeLog 也有稳定的更新,故以此为后续的实验镜像.</p>
-<h2 id="环境搭建">环境搭建<a hidden class="anchor" aria-hidden="true" href="#环境搭建">#</a></h2>
-<p>与我们之前想的一样,就像宝塔这样的软件提供了一键部署,一键配置这样的操作,这对重新构建一个开发板上的系统来说真的是很方便;有机会我们可以把下面的操作全部放在一个脚本中,也做到一键操作.</p>
-<p>在<a href="https://www.bfsmlt.top/posts/004risc-v_deployment/">第二篇文章</a>中我们说过了如何配置适合容器的 OS 环境, 但是后面在实验中还是遇到了些问题,所以这里重新汇总一下.(并且在实验过程中本文会一直更新)</p>
-<h3 id="更改-dns-配置">更改 DNS 配置<a hidden class="anchor" aria-hidden="true" href="#更改-dns-配置">#</a></h3>
-<p>如果你的 DNS 服务器地址无法正确解析,请修改 DNS 设置为 <code>8.8.8.8,1.1.1.1</code>等静态公用地址</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 换成自己的网络名称</span>
-</span></span><span class="line"><span class="cl">sudo nmcli connection modify <span class="s2">&#34;niuma&#34;</span>   ipv4.ignore-auto-dns yes   ipv4.dns <span class="s2">&#34;8.8.8.8 1.1.1.1&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 重启连接</span>
-</span></span><span class="line"><span class="cl">sudo nmcli connection down <span class="s2">&#34;niuma&#34;</span> <span class="o">&amp;&amp;</span> nmcli connection up <span class="s2">&#34;niuma&#34;</span>
-</span></span></code></pre></div><p>注意,如果你是在 ssh 或者其他远程连接环境下进行这步操作,那么后续会因为 wifi 断开而无法连接,所以我们推荐执行这步操作在有显示器的环境下进行.</p>
-<h3 id="apt">Apt<a hidden class="anchor" aria-hidden="true" href="#apt">#</a></h3>
-<p>截止2025.05.13,中科院仓库存在 KEY 过期问题,官方给出了<a href="https://github.com/revyos/revyos/issues/125">解决方案</a></p>
-<p>我采用的是 ChatGPT 给出的方案,在源地址前面加上<code>[trusted=yes]</code>,</p>
-<p><code>sudo vi /etc/apt/sources.list</code> 最终结果如下:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">deb <span class="o">[</span><span class="nv">trusted</span><span class="o">=</span>yes<span class="o">]</span> https://fast-mirror.isrc.ac.cn/revyos/revyos-gles-21 revyos-gles-21 main
-</span></span><span class="line"><span class="cl">deb <span class="o">[</span><span class="nv">trusted</span><span class="o">=</span>yes<span class="o">]</span> https://fast-mirror.isrc.ac.cn/revyos/revyos-addons revyos-addons main
-</span></span><span class="line"><span class="cl">deb <span class="o">[</span><span class="nv">trusted</span><span class="o">=</span>yes<span class="o">]</span> https://fast-mirror.isrc.ac.cn/revyos/revyos-kernels revyos-kernels main
-</span></span><span class="line"><span class="cl">deb <span class="o">[</span><span class="nv">trusted</span><span class="o">=</span>yes<span class="o">]</span> https://fast-mirror.isrc.ac.cn/revyos/revyos-base sid main
-</span></span></code></pre></div><p>之后再进行 apt 操作就可以了.(更新,后续还是建议使用官方的解决方案)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo sh -c <span class="s1">&#39;gpg --keyserver keyserver.ubuntu.com --recv-keys 2FB3A9E77911527E &amp;&amp; \
-</span></span></span><span class="line"><span class="cl"><span class="s1">gpg --export 2FB3A9E77911527E &gt; /etc/apt/trusted.gpg.d/revyos-keyring.gpg&#39;</span>
-</span></span><span class="line"><span class="cl">sudo apt update<span class="p">;</span> sudo apt upgrade -y
-</span></span></code></pre></div><p>在这个过程中如果遇到 <code>gpg: keyserver receive failed: Server indicated a failure</code>这个问题,通常是网络问题,我们需要先更改 DNS,具体见上方 DNS 操作.</p>
-<h3 id="gcc等构建所需工具">GCC等构建所需工具<a hidden class="anchor" aria-hidden="true" href="#gcc等构建所需工具">#</a></h3>
-<p>我们写一个脚本来一键检测并安装可能所需的工具.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">set</span> -e
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;🔍 检测当前系统包管理器...&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nb">command</span> -v apt &gt;/dev/null 2&gt;<span class="p">&amp;</span>1<span class="p">;</span> <span class="k">then</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="s2">&#34;✅ 使用 apt 安装依赖...&#34;</span>
-</span></span><span class="line"><span class="cl">    sudo apt update
-</span></span><span class="line"><span class="cl">    sudo apt install -y <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        build-essential <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        make <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        gcc <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        git <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        curl <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        pkg-config <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libseccomp-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        btrfs-progs <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        iptables <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libapparmor-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libgpgme-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libdevmapper-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libprotobuf-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        protobuf-compiler <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libnl-3-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libnl-route-3-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libnet-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libudev-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libsystemd-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libtool <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        autoconf <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        automake <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        rsync <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        unzip <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        zstd  <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        socat
-</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="nb">command</span> -v dnf &gt;/dev/null 2&gt;<span class="p">&amp;</span>1<span class="p">;</span> <span class="k">then</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="s2">&#34;✅ 使用 dnf 安装依赖...&#34;</span>
-</span></span><span class="line"><span class="cl">    sudo dnf install -y <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        gcc <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        gcc-c++ <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        git <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        make <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        curl <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        pkgconf-pkg-config <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libseccomp-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        btrfs-progs-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        iptables <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libapparmor-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        gpgme-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        device-mapper-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        protobuf-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        protobuf-compiler <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libnl3-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libnet-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        systemd-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libudev-devel <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        libtool <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        autoconf <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        automake <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        rsync <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        unzip <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        socat
-</span></span><span class="line"><span class="cl"><span class="k">else</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">echo</span> <span class="s2">&#34;❌ 无法识别的包管理器，请手动安装依赖。&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">exit</span> <span class="m">1</span>
-</span></span><span class="line"><span class="cl"><span class="k">fi</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;✅ 所有依赖安装完毕。你现在可以构建 K3s。&#34;</span>
-</span></span></code></pre></div><p>此脚本来自于 ChatGPT.</p>
-<h3 id="git">Git<a hidden class="anchor" aria-hidden="true" href="#git">#</a></h3>
-<p>apt 安装 Git,并配置镜像地址</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git config --global url.<span class="s2">&#34;https://gh-proxy.com/github.com/&#34;</span> .insteadOf <span class="s2">&#34;https://github.com/&#34;</span>
-</span></span><span class="line"><span class="cl">cat .gitconfig
-</span></span></code></pre></div><p>得到我们所配置的地址即为正确.</p>
-<h3 id="docker">Docker<a hidden class="anchor" aria-hidden="true" href="#docker">#</a></h3>
-<p>第一种安装方式:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install docker.io
-</span></span><span class="line"><span class="cl">sudo usermod -aG docker <span class="nv">$USER</span>
-</span></span></code></pre></div><p>如果这种不行,请使用这种:(后面的加入 root 组操作是相同的)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt-get install docker docker-compose
-</span></span><span class="line"><span class="cl">sudo groupadd docker
-</span></span><span class="line"><span class="cl">sudo usermod -aG docker <span class="nv">$USER</span>
-</span></span><span class="line"><span class="cl">newgrp docker
-</span></span></code></pre></div><p>最终执行 <code>docker images hello-world</code> 检测是否成功.</p>
-<p>配置代理镜像:()</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 修改</span>
-</span></span><span class="line"><span class="cl">vi /etc/docker/daemon.json
-</span></span><span class="line"><span class="cl"><span class="c1"># 如果没有这个文件，自己手动新建（我当时只有一个key.json文件）</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 将下面内容复制进去</span>
-</span></span><span class="line"><span class="cl"><span class="o">{</span>
-</span></span><span class="line"><span class="cl">      <span class="s2">&#34;registry-mirrors&#34;</span>: <span class="o">[</span>
-</span></span><span class="line"><span class="cl">        <span class="s2">&#34;https://docker.1ms.run&#34;</span>,
-</span></span><span class="line"><span class="cl">        <span class="s2">&#34;https://docker.linkedbus.com&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">]</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 加载配置并重启</span>
-</span></span><span class="line"><span class="cl">sudo systemctl daemon-reload
-</span></span><span class="line"><span class="cl">sudo systemctl restart docker
-</span></span><span class="line"><span class="cl"><span class="c1"># 尝试拉取镜像</span>
-</span></span><span class="line"><span class="cl">docker pull busybox
-</span></span><span class="line"><span class="cl">docker run hello-world
+甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"K3sEP09——初始化开发板环境操作汇总","item":"https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"K3sEP09——初始化开发板环境操作汇总","name":"K3sEP09——初始化开发板环境操作汇总","description":"前瞻 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.\n烧录镜像 关于烧录操作,无需多言,请关注这篇文章.本文主要说一下镜像问题.\n在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护; 甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇\n","keywords":["K3s","Linux操作","RiscV"],"articleBody":"前瞻 本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.\n烧录镜像 关于烧录操作,无需多言,请关注这篇文章.本文主要说一下镜像问题.\n在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护; 甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇\n所以经过我的多次尝试(重新烧录镜像配置环境的折磨)我找到了一款适合实验稳定(暂时稳定)操作的 OS 镜像,RevyOS\n其适配了 LicheePi 4A 和 Milk-V Meles 正好都是我手上有的设备;虽然同样使用的是中科院的镜像管理,但是据我在其 github 页面的观察,其 issue 的时间在最近较多,回复也蛮及时; 同时 ChangeLog 也有稳定的更新,故以此为后续的实验镜像.\n环境搭建 与我们之前想的一样,就像宝塔这样的软件提供了一键部署,一键配置这样的操作,这对重新构建一个开发板上的系统来说真的是很方便;有机会我们可以把下面的操作全部放在一个脚本中,也做到一键操作.\n在第二篇文章中我们说过了如何配置适合容器的 OS 环境, 但是后面在实验中还是遇到了些问题,所以这里重新汇总一下.(并且在实验过程中本文会一直更新)\n更改 DNS 配置 如果你的 DNS 服务器地址无法正确解析,请修改 DNS 设置为 8.8.8.8,1.1.1.1等静态公用地址\n# 换成自己的网络名称 sudo nmcli connection modify \"niuma\" ipv4.ignore-auto-dns yes ipv4.dns \"8.8.8.8 1.1.1.1\" # 重启连接 sudo nmcli connection down \"niuma\" \u0026\u0026 nmcli connection up \"niuma\" 注意,如果你是在 ssh 或者其他远程连接环境下进行这步操作,那么后续会因为 wifi 断开而无法连接,所以我们推荐执行这步操作在有显示器的环境下进行.\nApt 截止2025.05.13,中科院仓库存在 KEY 过期问题,官方给出了解决方案\n我采用的是 ChatGPT 给出的方案,在源地址前面加上[trusted=yes],\nsudo vi /etc/apt/sources.list 最终结果如下:\ndeb [trusted=yes] https://fast-mirror.isrc.ac.cn/revyos/revyos-gles-21 revyos-gles-21 main deb [trusted=yes] https://fast-mirror.isrc.ac.cn/revyos/revyos-addons revyos-addons main deb [trusted=yes] https://fast-mirror.isrc.ac.cn/revyos/revyos-kernels revyos-kernels main deb [trusted=yes] https://fast-mirror.isrc.ac.cn/revyos/revyos-base sid main 之后再进行 apt 操作就可以了.(更新,后续还是建议使用官方的解决方案)\nsudo sh -c 'gpg --keyserver keyserver.ubuntu.com --recv-keys 2FB3A9E77911527E \u0026\u0026 \\ gpg --export 2FB3A9E77911527E \u003e /etc/apt/trusted.gpg.d/revyos-keyring.gpg' sudo apt update; sudo apt upgrade -y 在这个过程中如果遇到 gpg: keyserver receive failed: Server indicated a failure这个问题,通常是网络问题,我们需要先更改 DNS,具体见上方 DNS 操作.\nGCC等构建所需工具 我们写一个脚本来一键检测并安装可能所需的工具.\n#!/bin/bash set -e echo \"🔍 检测当前系统包管理器...\" if command -v apt \u003e/dev/null 2\u003e\u00261; then echo \"✅ 使用 apt 安装依赖...\" sudo apt update sudo apt install -y \\ build-essential \\ make \\ gcc \\ git \\ curl \\ pkg-config \\ libseccomp-dev \\ btrfs-progs \\ iptables \\ libapparmor-dev \\ libgpgme-dev \\ libdevmapper-dev \\ libprotobuf-dev \\ protobuf-compiler \\ libnl-3-dev \\ libnl-route-3-dev \\ libnet-dev \\ libudev-dev \\ libsystemd-dev \\ libtool \\ autoconf \\ automake \\ rsync \\ unzip \\ zstd \\ socat elif command -v dnf \u003e/dev/null 2\u003e\u00261; then echo \"✅ 使用 dnf 安装依赖...\" sudo dnf install -y \\ gcc \\ gcc-c++ \\ git \\ make \\ curl \\ pkgconf-pkg-config \\ libseccomp-devel \\ btrfs-progs-devel \\ iptables \\ libapparmor-devel \\ gpgme-devel \\ device-mapper-devel \\ protobuf-devel \\ protobuf-compiler \\ libnl3-devel \\ libnet-devel \\ systemd-devel \\ libudev-devel \\ libtool \\ autoconf \\ automake \\ rsync \\ unzip \\ socat else echo \"❌ 无法识别的包管理器，请手动安装依赖。\" exit 1 fi echo \"✅ 所有依赖安装完毕。你现在可以构建 K3s。\" 此脚本来自于 ChatGPT.\nGit apt 安装 Git,并配置镜像地址\ngit config --global url.\"https://gh-proxy.com/github.com/\" .insteadOf \"https://github.com/\" cat .gitconfig 得到我们所配置的地址即为正确.\nDocker 第一种安装方式:\nsudo apt install docker.io sudo usermod -aG docker $USER 如果这种不行,请使用这种:(后面的加入 root 组操作是相同的)\nsudo apt-get install docker docker-compose sudo groupadd docker sudo usermod -aG docker $USER newgrp docker 最终执行 docker images hello-world 检测是否成功.\n配置代理镜像:()\n# 修改 vi /etc/docker/daemon.json # 如果没有这个文件，自己手动新建（我当时只有一个key.json文件） # 将下面内容复制进去 { \"registry-mirrors\": [ \"https://docker.1ms.run\", \"https://docker.linkedbus.com\" ] } # 加载配置并重启 sudo systemctl daemon-reload sudo systemctl restart docker # 尝试拉取镜像 docker pull busybox docker run hello-world 注意,这里的代理是对 dockerhub 的代理;不会影响到我们的私有仓库. 🥸 对了,fk GFW ! 如果影响到了私有仓库,请暂时放弃代理.\nGolang 这里我们统一采用 go1.22.8 linux/riscv64 这个版本.原因见这篇文章,根据当前你的 k8s 版本进行对应变化.\n这里默认你已经有了此版本的 tar 文件(我是通过 scp 传过去的)\nsudo tar -C /usr/local -xzf go1.22.8.linux-riscv64.tar.gz sudo vi ~/.bashrc # Go environment export GOROOT=/usr/local/go export PATH=$GOROOT/bin:$PATH export GOPATH=$HOME/go export PATH=$GOPATH/bin:$PATH export GOPROXY=https://goproxy.cn,direct # source ~/.bashrc 使用 go version 检查得到 go1.22.8 这个正确版本.\nyq 用来解析 YAML 的工具,之前文章中也提到过.\n这里我们与 Golang 一样,从源码构建,因为包管理中的版本太老.\nwget https://github.com/mikefarah/yq/releases/download/v4.44.6/yq_linux_riscv64.tar.gz tar -zvxf yq_linux_riscv64.tar.gz mv yq_linux_riscv64.tar.gz yq chmod +x yq mv yq /usr/local/bin yq --version 如果你之前用 apt 安装了 yq,可能会存在错误的缓存,可以用hash -r清理缓存.\n权限问题 为了方便和避免可能出现的权限问题,我们为源码目录赋予 root 权限\nsudo chown -R $(whoami):$(whoami) . 访问仓库网络问题 如果我们访问自己的私有仓库时遇到网络问题,特别是 DNS 解析问题,通常是因为 Network Management 自动为我们设置好了 DNS 服务器地址.\n而这篇文章中我们谈到了这些 DNS 服务器很难不出问题,特别是在解析国外的服务器时.\n所以我们采用一个最简单的方法,修改 /etc/hosts 文件,将服务器的 IP 加入其中.\n# 请换成自己的 ip 与 域名 IP Domain 安装与卸载脚本 实验过程中可能出现问题导致 k3s 不能运行,在此情况下如果我们需要删除 k3s 或者重新安装 k3s,这里给出两种操作的脚本.\n卸载脚本 将其从 systemd 管理中移除.\n#!/bin/bash set -e echo \"🔧 停止 k3s 服务（如在运行）...\" sudo systemctl stop k3s || true echo \"🚫 禁用 k3s 服务开机自启...\" sudo systemctl disable k3s || true echo \"🧹 删除 k3s systemd 服务文件...\" sudo rm -f /etc/systemd/system/k3s.service sudo rm -f /etc/systemd/system/k3s.service.env echo \"🔄 重新加载 systemd 守护进程...\" sudo systemctl daemon-reload echo \"✅ 验证 k3s 服务是否已清除...\" sudo systemctl status k3s || echo \"✅ k3s.service 已被成功移除。\" echo \"🎉 清理完成。\" 安装脚本 将其重新加入 systemd 管理,前提是脚本所在路径与 k3s 二进制文件路径一致,不一致请修改脚本.\n#!/bin/bash set -e echo \"📦 拷贝本地 k3s 到 /usr/local/bin ...\" sudo cp /home/debian/k3s /usr/local/bin/k3s sudo chmod +x /usr/local/bin/k3s echo \"🔧 配置私有镜像仓库 registries.yaml ...\" sudo mkdir -p /etc/rancher/k3s cat \u003c","wordCount":"2635","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2025-05-14T09:37:37+08:00","dateModified":"2025-05-14T09:37:37+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">K3sEP09——初始化开发板环境操作汇总</h1><div class=post-meta><span title='2025-05-14 09:37:37 +0800 CST'>五月 14, 2025</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e5%89%8d%e7%9e%bb aria-label=前瞻>前瞻</a></li><li><a href=#%e7%83%a7%e5%bd%95%e9%95%9c%e5%83%8f aria-label=烧录镜像>烧录镜像</a></li><li><a href=#%e7%8e%af%e5%a2%83%e6%90%ad%e5%bb%ba aria-label=环境搭建>环境搭建</a><ul><li><a href=#%e6%9b%b4%e6%94%b9-dns-%e9%85%8d%e7%bd%ae aria-label="更改 DNS 配置">更改 DNS 配置</a></li><li><a href=#apt aria-label=Apt>Apt</a></li><li><a href=#gcc%e7%ad%89%e6%9e%84%e5%bb%ba%e6%89%80%e9%9c%80%e5%b7%a5%e5%85%b7 aria-label=GCC等构建所需工具>GCC等构建所需工具</a></li><li><a href=#git aria-label=Git>Git</a></li><li><a href=#docker aria-label=Docker>Docker</a></li><li><a href=#golang aria-label=Golang>Golang</a></li><li><a href=#yq aria-label=yq>yq</a></li><li><a href=#%e6%9d%83%e9%99%90%e9%97%ae%e9%a2%98 aria-label=权限问题>权限问题</a></li><li><a href=#%e8%ae%bf%e9%97%ae%e4%bb%93%e5%ba%93%e7%bd%91%e7%bb%9c%e9%97%ae%e9%a2%98 aria-label=访问仓库网络问题>访问仓库网络问题</a></li></ul></li><li><a href=#%e5%ae%89%e8%a3%85%e4%b8%8e%e5%8d%b8%e8%bd%bd%e8%84%9a%e6%9c%ac aria-label=安装与卸载脚本>安装与卸载脚本</a><ul><li><a href=#%e5%8d%b8%e8%bd%bd%e8%84%9a%e6%9c%ac aria-label=卸载脚本>卸载脚本</a></li><li><a href=#%e5%ae%89%e8%a3%85%e8%84%9a%e6%9c%ac aria-label=安装脚本>安装脚本</a></li></ul></li><li><a href=#%e5%af%b9kubectl%e5%91%bd%e4%bb%a4%e8%bf%9b%e8%a1%8c%e4%bc%98%e5%8c%96 aria-label=对kubectl命令进行优化>对kubectl命令进行优化</a><ul><li><a href=#%e5%8e%bbsudo%e5%8c%96 aria-label=去sudo化>去sudo化</a></li><li><a href=#%e4%bd%bf%e7%94%a8kubectl-aliases%e7%ae%80%e5%8c%96 aria-label=使用kubectl-aliases简化>使用kubectl-aliases简化</a></li></ul></li><li><a href=#%e5%90%8e%e7%bb%ad%e6%9b%b4%e6%96%b0 aria-label=后续更新>后续更新</a></li></ul></div></details></div><div class=post-content><h2 id=前瞻>前瞻<a hidden class=anchor aria-hidden=true href=#前瞻>#</a></h2><p>本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.</p><h2 id=烧录镜像>烧录镜像<a hidden class=anchor aria-hidden=true href=#烧录镜像>#</a></h2><p>关于烧录操作,无需多言,请关注这篇<a href=https://www.bfsmlt.top/posts/003li_riscv01/>文章</a>.本文主要说一下镜像问题.</p><p>在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
+甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇</p><p>所以经过我的多次尝试(重新烧录镜像配置环境的折磨)我找到了一款适合实验稳定(暂时稳定)操作的 OS 镜像,<a href=https://docs.revyos.dev/>RevyOS</a></p><p>其适配了 LicheePi 4A 和 Milk-V Meles 正好都是我手上有的设备;虽然同样使用的是中科院的镜像管理,但是据我在其 github 页面的观察,其 issue 的时间在最近较多,回复也蛮及时;
+同时 ChangeLog 也有稳定的更新,故以此为后续的实验镜像.</p><h2 id=环境搭建>环境搭建<a hidden class=anchor aria-hidden=true href=#环境搭建>#</a></h2><p>与我们之前想的一样,就像宝塔这样的软件提供了一键部署,一键配置这样的操作,这对重新构建一个开发板上的系统来说真的是很方便;有机会我们可以把下面的操作全部放在一个脚本中,也做到一键操作.</p><p>在<a href=https://www.bfsmlt.top/posts/004risc-v_deployment/>第二篇文章</a>中我们说过了如何配置适合容器的 OS 环境, 但是后面在实验中还是遇到了些问题,所以这里重新汇总一下.(并且在实验过程中本文会一直更新)</p><h3 id=更改-dns-配置>更改 DNS 配置<a hidden class=anchor aria-hidden=true href=#更改-dns-配置>#</a></h3><p>如果你的 DNS 服务器地址无法正确解析,请修改 DNS 设置为 <code>8.8.8.8,1.1.1.1</code>等静态公用地址</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 换成自己的网络名称</span>
+</span></span><span class=line><span class=cl>sudo nmcli connection modify <span class=s2>&#34;niuma&#34;</span>   ipv4.ignore-auto-dns yes   ipv4.dns <span class=s2>&#34;8.8.8.8 1.1.1.1&#34;</span>
+</span></span><span class=line><span class=cl><span class=c1># 重启连接</span>
+</span></span><span class=line><span class=cl>sudo nmcli connection down <span class=s2>&#34;niuma&#34;</span> <span class=o>&amp;&amp;</span> nmcli connection up <span class=s2>&#34;niuma&#34;</span>
+</span></span></code></pre></div><p>注意,如果你是在 ssh 或者其他远程连接环境下进行这步操作,那么后续会因为 wifi 断开而无法连接,所以我们推荐执行这步操作在有显示器的环境下进行.</p><h3 id=apt>Apt<a hidden class=anchor aria-hidden=true href=#apt>#</a></h3><p>截止2025.05.13,中科院仓库存在 KEY 过期问题,官方给出了<a href=https://github.com/revyos/revyos/issues/125>解决方案</a></p><p>我采用的是 ChatGPT 给出的方案,在源地址前面加上<code>[trusted=yes]</code>,</p><p><code>sudo vi /etc/apt/sources.list</code> 最终结果如下:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>deb <span class=o>[</span><span class=nv>trusted</span><span class=o>=</span>yes<span class=o>]</span> https://fast-mirror.isrc.ac.cn/revyos/revyos-gles-21 revyos-gles-21 main
+</span></span><span class=line><span class=cl>deb <span class=o>[</span><span class=nv>trusted</span><span class=o>=</span>yes<span class=o>]</span> https://fast-mirror.isrc.ac.cn/revyos/revyos-addons revyos-addons main
+</span></span><span class=line><span class=cl>deb <span class=o>[</span><span class=nv>trusted</span><span class=o>=</span>yes<span class=o>]</span> https://fast-mirror.isrc.ac.cn/revyos/revyos-kernels revyos-kernels main
+</span></span><span class=line><span class=cl>deb <span class=o>[</span><span class=nv>trusted</span><span class=o>=</span>yes<span class=o>]</span> https://fast-mirror.isrc.ac.cn/revyos/revyos-base sid main
+</span></span></code></pre></div><p>之后再进行 apt 操作就可以了.(更新,后续还是建议使用官方的解决方案)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo sh -c <span class=s1>&#39;gpg --keyserver keyserver.ubuntu.com --recv-keys 2FB3A9E77911527E &amp;&amp; \
+</span></span></span><span class=line><span class=cl><span class=s1>gpg --export 2FB3A9E77911527E &gt; /etc/apt/trusted.gpg.d/revyos-keyring.gpg&#39;</span>
+</span></span><span class=line><span class=cl>sudo apt update<span class=p>;</span> sudo apt upgrade -y
+</span></span></code></pre></div><p>在这个过程中如果遇到 <code>gpg: keyserver receive failed: Server indicated a failure</code>这个问题,通常是网络问题,我们需要先更改 DNS,具体见上方 DNS 操作.</p><h3 id=gcc等构建所需工具>GCC等构建所需工具<a hidden class=anchor aria-hidden=true href=#gcc等构建所需工具>#</a></h3><p>我们写一个脚本来一键检测并安装可能所需的工具.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=nb>set</span> -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;🔍 检测当前系统包管理器...&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nb>command</span> -v apt &gt;/dev/null 2&gt;<span class=p>&amp;</span>1<span class=p>;</span> <span class=k>then</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;✅ 使用 apt 安装依赖...&#34;</span>
+</span></span><span class=line><span class=cl>    sudo apt update
+</span></span><span class=line><span class=cl>    sudo apt install -y <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        build-essential <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        make <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        gcc <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        git <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        curl <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        pkg-config <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libseccomp-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        btrfs-progs <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        iptables <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libapparmor-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libgpgme-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libdevmapper-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libprotobuf-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        protobuf-compiler <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libnl-3-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libnl-route-3-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libnet-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libudev-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libsystemd-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libtool <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        autoconf <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        automake <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        rsync <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        unzip <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        zstd  <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        socat
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=nb>command</span> -v dnf &gt;/dev/null 2&gt;<span class=p>&amp;</span>1<span class=p>;</span> <span class=k>then</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;✅ 使用 dnf 安装依赖...&#34;</span>
+</span></span><span class=line><span class=cl>    sudo dnf install -y <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        gcc <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        gcc-c++ <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        git <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        make <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        curl <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        pkgconf-pkg-config <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libseccomp-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        btrfs-progs-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        iptables <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libapparmor-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        gpgme-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        device-mapper-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        protobuf-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        protobuf-compiler <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libnl3-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libnet-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        systemd-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libudev-devel <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        libtool <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        autoconf <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        automake <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        rsync <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        unzip <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        socat
+</span></span><span class=line><span class=cl><span class=k>else</span>
+</span></span><span class=line><span class=cl>    <span class=nb>echo</span> <span class=s2>&#34;❌ 无法识别的包管理器，请手动安装依赖。&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>exit</span> <span class=m>1</span>
+</span></span><span class=line><span class=cl><span class=k>fi</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;✅ 所有依赖安装完毕。你现在可以构建 K3s。&#34;</span>
+</span></span></code></pre></div><p>此脚本来自于 ChatGPT.</p><h3 id=git>Git<a hidden class=anchor aria-hidden=true href=#git>#</a></h3><p>apt 安装 Git,并配置镜像地址</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git config --global url.<span class=s2>&#34;https://gh-proxy.com/github.com/&#34;</span> .insteadOf <span class=s2>&#34;https://github.com/&#34;</span>
+</span></span><span class=line><span class=cl>cat .gitconfig
+</span></span></code></pre></div><p>得到我们所配置的地址即为正确.</p><h3 id=docker>Docker<a hidden class=anchor aria-hidden=true href=#docker>#</a></h3><p>第一种安装方式:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt install docker.io
+</span></span><span class=line><span class=cl>sudo usermod -aG docker <span class=nv>$USER</span>
+</span></span></code></pre></div><p>如果这种不行,请使用这种:(后面的加入 root 组操作是相同的)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt-get install docker docker-compose
+</span></span><span class=line><span class=cl>sudo groupadd docker
+</span></span><span class=line><span class=cl>sudo usermod -aG docker <span class=nv>$USER</span>
+</span></span><span class=line><span class=cl>newgrp docker
+</span></span></code></pre></div><p>最终执行 <code>docker images hello-world</code> 检测是否成功.</p><p>配置代理镜像:()</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 修改</span>
+</span></span><span class=line><span class=cl>vi /etc/docker/daemon.json
+</span></span><span class=line><span class=cl><span class=c1># 如果没有这个文件，自己手动新建（我当时只有一个key.json文件）</span>
+</span></span><span class=line><span class=cl><span class=c1># 将下面内容复制进去</span>
+</span></span><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>      <span class=s2>&#34;registry-mirrors&#34;</span>: <span class=o>[</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://docker.1ms.run&#34;</span>,
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;https://docker.linkedbus.com&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 加载配置并重启</span>
+</span></span><span class=line><span class=cl>sudo systemctl daemon-reload
+</span></span><span class=line><span class=cl>sudo systemctl restart docker
+</span></span><span class=line><span class=cl><span class=c1># 尝试拉取镜像</span>
+</span></span><span class=line><span class=cl>docker pull busybox
+</span></span><span class=line><span class=cl>docker run hello-world
 </span></span></code></pre></div><p>注意,这里的代理是对 dockerhub 的代理;不会影响到我们的私有仓库. 🥸 对了,fk GFW !
-如果影响到了私有仓库,请暂时放弃代理.</p>
-<h3 id="golang">Golang<a hidden class="anchor" aria-hidden="true" href="#golang">#</a></h3>
-<p>这里我们统一采用 go1.22.8 linux/riscv64 这个版本.原因见<a href="https://www.bfsmlt.top/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/#%e9%81%bf%e5%85%8dgolang%e7%89%88%e6%9c%ac%e6%a3%80%e6%b5%8b">这篇文章</a>,根据当前你的 k8s 版本进行对应变化.</p>
-<p>这里默认你已经有了此版本的 tar 文件(我是通过 scp 传过去的)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo tar -C /usr/local -xzf go1.22.8.linux-riscv64.tar.gz
-</span></span><span class="line"><span class="cl">sudo vi ~/.bashrc
-</span></span><span class="line"><span class="cl"><span class="c1"># Go environment</span>
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOROOT</span><span class="o">=</span>/usr/local/go
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$GOROOT</span>/bin:<span class="nv">$PATH</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOPATH</span><span class="o">=</span><span class="nv">$HOME</span>/go
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$GOPATH</span>/bin:<span class="nv">$PATH</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">GOPROXY</span><span class="o">=</span>https://goproxy.cn,direct
-</span></span><span class="line"><span class="cl"><span class="c1">#</span>
-</span></span><span class="line"><span class="cl"><span class="nb">source</span> ~/.bashrc
-</span></span></code></pre></div><p>使用 <code>go version</code> 检查得到 go1.22.8 这个正确版本.</p>
-<h3 id="yq">yq<a hidden class="anchor" aria-hidden="true" href="#yq">#</a></h3>
-<p>用来解析 YAML 的工具,之前<a href="https://www.bfsmlt.top/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/#yq%e6%9c%aa%e5%ae%89%e8%a3%85">文章</a>中也提到过.</p>
-<p>这里我们与 Golang 一样,从源码构建,因为包管理中的版本太老.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://github.com/mikefarah/yq/releases/download/v4.44.6/yq_linux_riscv64.tar.gz
-</span></span><span class="line"><span class="cl">tar -zvxf yq_linux_riscv64.tar.gz
-</span></span><span class="line"><span class="cl">mv yq_linux_riscv64.tar.gz yq
-</span></span><span class="line"><span class="cl">chmod +x yq
-</span></span><span class="line"><span class="cl">mv yq /usr/local/bin
-</span></span><span class="line"><span class="cl">yq --version
-</span></span></code></pre></div><p>如果你之前用 apt 安装了 yq,可能会存在错误的缓存,可以用<code>hash -r</code>清理缓存.</p>
-<h3 id="权限问题">权限问题<a hidden class="anchor" aria-hidden="true" href="#权限问题">#</a></h3>
-<p>为了方便和避免可能出现的权限问题,我们为源码目录赋予 root 权限</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo chown -R <span class="k">$(</span>whoami<span class="k">)</span>:<span class="k">$(</span>whoami<span class="k">)</span> .
-</span></span></code></pre></div><h3 id="访问仓库网络问题">访问仓库网络问题<a hidden class="anchor" aria-hidden="true" href="#访问仓库网络问题">#</a></h3>
-<p>如果我们访问自己的私有仓库时遇到网络问题,特别是 DNS 解析问题,通常是因为 Network Management 自动为我们设置好了 DNS 服务器地址.</p>
-<p>而这篇<a href="https://www.bfsmlt.top/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/">文章</a>中我们谈到了这些 DNS 服务器很难不出问题,特别是在解析国外的服务器时.</p>
-<p>所以我们采用一个最简单的方法,修改 <code>/etc/hosts</code> 文件,将服务器的 IP 加入其中.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 请换成自己的 ip 与 域名</span>
-</span></span><span class="line"><span class="cl">IP Domain
-</span></span></code></pre></div><h2 id="安装与卸载脚本">安装与卸载脚本<a hidden class="anchor" aria-hidden="true" href="#安装与卸载脚本">#</a></h2>
-<p>实验过程中可能出现问题导致 k3s 不能运行,在此情况下如果我们需要删除 k3s 或者重新安装 k3s,这里给出两种操作的脚本.</p>
-<h3 id="卸载脚本">卸载脚本<a hidden class="anchor" aria-hidden="true" href="#卸载脚本">#</a></h3>
-<p>将其从 systemd 管理中移除.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">set</span> -e
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;🔧 停止 k3s 服务（如在运行）...&#34;</span>
-</span></span><span class="line"><span class="cl">sudo systemctl stop k3s <span class="o">||</span> <span class="nb">true</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;🚫 禁用 k3s 服务开机自启...&#34;</span>
-</span></span><span class="line"><span class="cl">sudo systemctl disable k3s <span class="o">||</span> <span class="nb">true</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;🧹 删除 k3s systemd 服务文件...&#34;</span>
-</span></span><span class="line"><span class="cl">sudo rm -f /etc/systemd/system/k3s.service
-</span></span><span class="line"><span class="cl">sudo rm -f /etc/systemd/system/k3s.service.env
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;🔄 重新加载 systemd 守护进程...&#34;</span>
-</span></span><span class="line"><span class="cl">sudo systemctl daemon-reload
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;✅ 验证 k3s 服务是否已清除...&#34;</span>
-</span></span><span class="line"><span class="cl">sudo systemctl status k3s <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;✅ k3s.service 已被成功移除。&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;🎉 清理完成。&#34;</span>
-</span></span></code></pre></div><h3 id="安装脚本">安装脚本<a hidden class="anchor" aria-hidden="true" href="#安装脚本">#</a></h3>
-<p>将其重新加入 systemd 管理,前提是脚本所在路径与 k3s 二进制文件路径一致,不一致请修改脚本.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">set</span> -e
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;📦 拷贝本地 k3s 到 /usr/local/bin ...&#34;</span>
-</span></span><span class="line"><span class="cl">sudo cp /home/debian/k3s /usr/local/bin/k3s
-</span></span><span class="line"><span class="cl">sudo chmod +x /usr/local/bin/k3s
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;🔧 配置私有镜像仓库 registries.yaml ...&#34;</span>
-</span></span><span class="line"><span class="cl">sudo mkdir -p /etc/rancher/k3s
-</span></span><span class="line"><span class="cl">cat <span class="s">&lt;&lt;EOF | sudo tee /etc/rancher/k3s/registries.yaml
-</span></span></span><span class="line"><span class="cl"><span class="s">mirrors:
-</span></span></span><span class="line"><span class="cl"><span class="s">  docker.io:
-</span></span></span><span class="line"><span class="cl"><span class="s">    endpoint:
-</span></span></span><span class="line"><span class="cl"><span class="s">      - &#34;https://jimlt.bfsmlt.top&#34;
-</span></span></span><span class="line"><span class="cl"><span class="s">EOF</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;📥 获取 k3s 安装脚本 ...&#34;</span>
-</span></span><span class="line"><span class="cl">curl -sfL https://get.k3s.io -o k3s-install.sh
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;🚀 执行安装脚本，使用本地可执行文件 ...&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">INSTALL_K3S_SKIP_DOWNLOAD</span><span class="o">=</span><span class="s2">&#34;true&#34;</span> bash -x k3s-install.sh
-</span></span></code></pre></div><h2 id="对kubectl命令进行优化">对kubectl命令进行优化<a hidden class="anchor" aria-hidden="true" href="#对kubectl命令进行优化">#</a></h2>
-<p>以下两种方法对我们日常使用 kubectl 命令带来了方便。</p>
-<h3 id="去sudo化">去sudo化<a hidden class="anchor" aria-hidden="true" href="#去sudo化">#</a></h3>
-<p>由于默认的 k3s 配置文件在 <code>/etc/rancher/k3s/k3s.yaml</code>，这是一个只有 root 权限才可以访问的路径，这导致每次我们使用 kubectl 命令需要在前面加上 sudo.</p>
-<p>所以我们执行以下步骤将配置文件复制到主用户目录下，并配置好环境变量，使 kubectl 命令默认查找主用户目录下的文件。这样就可以不用再加上 sudo</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p <span class="nv">$HOME</span>/.kube
-</span></span><span class="line"><span class="cl">sudo cp /etc/rancher/k3s/k3s.yaml <span class="nv">$HOME</span>/.kube/config
-</span></span><span class="line"><span class="cl">sudo chmod <span class="m">600</span> <span class="nv">$HOME</span>/.kube/config
-</span></span><span class="line"><span class="cl">sudo chown <span class="k">$(</span>id -u<span class="k">)</span>:<span class="k">$(</span>id -g<span class="k">)</span> <span class="nv">$HOME</span>/.kube/config
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">KUBECONFIG</span><span class="o">=</span><span class="nv">$HOME</span>/.kube/config
-</span></span><span class="line"><span class="cl"><span class="c1"># 将上面的 export 命令添加到您的 shell 配置文件 (例如 ~/.bashrc 或 ~/.zshrc) 中，使其永久生效</span>
-</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s1">&#39;export KUBECONFIG=$HOME/.kube/config&#39;</span> &gt;&gt; ~/.bashrc <span class="c1"># 如果您使用 bash</span>
-</span></span><span class="line"><span class="cl"><span class="nb">source</span> ~/.bashrc <span class="c1"># 使更改立即生效</span>
-</span></span></code></pre></div><h3 id="使用kubectl-aliases简化">使用kubectl-aliases简化<a hidden class="anchor" aria-hidden="true" href="#使用kubectl-aliases简化">#</a></h3>
-<p>这是一个别名操作，可以让我们不再输入繁杂的 kubectl 命令，例如将 <code>kubectl get pod</code> 可以简化为 <code>kgpo</code>,具体操作也很简单，按照<a href="https://github.com/ahmetb/kubectl-aliases">官网</a>的步骤进行即可。</p>
-<h2 id="后续更新">后续更新<a hidden class="anchor" aria-hidden="true" href="#后续更新">#</a></h2>
-<p>后续更新会根据构建 k3s 的进展以及可能的其他应用例如 Mobilenet 进行补充.</p>
-<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
-
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
-      <li><a href="http://localhost:1313/tags/linux%E6%93%8D%E4%BD%9C/">Linux操作</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/">
-    <span class="title">« 上一页</span>
-    <br>
-    <span>K3sEP10——迁移k3s至riscv64开发板的过程记录</span>
-  </a>
-  <a class="next" href="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
-    <span class="title">下一页 »</span>
-    <br>
-    <span>K3sEP08——make后会发生什么?从源码解析构建过程</span>
-  </a>
-</nav>
-
-  </footer><div id="tw-comment"></div>
-
-<script>
-
-    
-
-    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
-
-    const setGiscusTheme = () => {
-
-        const sendMessage = (message) => {
-
-            const iframe = document.querySelector('iframe.giscus-frame');
-
-            if (iframe) {
-
-                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
-
-            }
-
-        }
-
-        sendMessage({setConfig: {theme: getStoredTheme()}})
-
-    }
-
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-        const giscusAttributes = {
-
-            "src": "https://giscus.app/client.js",
-
-            "data-repo": "LTXWorld\/LTXWorld.github.io",
-
-            "data-repo-id": "R_kgDONODUuA",
-
-            "data-category": "Announcements",
-
-            "data-category-id": "DIC_kwDONODUuM4CkMUw",
-
-            "data-mapping": "pathname",
-
-            "data-strict": "0",
-
-            "data-reactions-enabled": "1",
-
-            "data-emit-metadata": "0",
-
-            "data-input-position": "bottom",
-
-            "data-theme": getStoredTheme(),
-
-            "data-lang": "zh-CN",
-
-            "data-loading": "lazy",
-
-            "crossorigin": "anonymous",
-
-        };
-
-
-        
-
-        const giscusScript = document.createElement("script");
-
-        Object.entries(giscusAttributes).forEach(
-
-                ([key, value]) => giscusScript.setAttribute(key, value));
-
-        document.querySelector("#tw-comment").appendChild(giscusScript);
-
-
-        
-
-        const themeSwitcher = document.querySelector("#theme-toggle");
-
-        if (themeSwitcher) {
-
-            themeSwitcher.addEventListener("click", setGiscusTheme);
-
-        }
-
-        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
-
-        if (themeFloatSwitcher) {
-
-            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
-
-        }
-
-    });
-
-</script>
-</article>
-    </main>
-    
-<footer class="footer">
-        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
-
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
-  <audio id="ltx-music-audio" preload="metadata"></audio>
-  <div class="ltx-music-meta">
-    <span class="ltx-music-title" data-role="title"></span>
-    <span class="ltx-music-artist" data-role="artist"></span>
-  </div>
-  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
-    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
-  </div>
-  <div class="ltx-music-time">
-    <span data-role="current">0:00</span>
-    <span data-role="total">--:--</span>
-  </div>
-  <div class="ltx-music-controls">
-    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
-    <button type="button" data-action="toggle" aria-label="播放或暂停">
-      <span data-icon="play">▶</span>
-      <span data-icon="pause">⏸</span>
-    </button>
-    <button type="button" data-action="next" aria-label="下一首">⏭</button>
-    <button type="button" data-action="mute" aria-label="静音或取消静音">
-      <span data-icon="unmuted">🔊</span>
-      <span data-icon="muted">🔇</span>
-    </button>
-  </div>
-  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
-</div>
-<script>
-  window.LTX_MUSIC_CONFIG = {"autoplay":true,"loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
-  (function () {
-    const config = window.LTX_MUSIC_CONFIG || {};
-    if (!config.tracks || !config.tracks.length) {
-      return;
-    }
-
-    const player = document.getElementById('ltx-music-player');
-    const audio = player.querySelector('audio');
-    const titleEl = player.querySelector('[data-role="title"]');
-    const artistEl = player.querySelector('[data-role="artist"]');
-    const progressEl = player.querySelector('[data-role="progress"]');
-    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
-    const currentTimeEl = player.querySelector('[data-role="current"]');
-    const totalTimeEl = player.querySelector('[data-role="total"]');
-    const tipEl = player.querySelector('[data-role="tip"]');
-
-    const toggleBtn = player.querySelector('[data-action="toggle"]');
-    const prevBtn = player.querySelector('[data-action="prev"]');
-    const nextBtn = player.querySelector('[data-action="next"]');
-    const muteBtn = player.querySelector('[data-action="mute"]');
-
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-    const formatTime = (seconds) => {
-      if (!Number.isFinite(seconds)) {
-        return '--:--';
-      }
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
-    };
-
-    const state = {
-      index: 0,
-      tracks: config.tracks,
-      autoplay: config.autoplay !== false,
-      loopPlaylist: config.loopPlaylist !== false,
-    };
-
-    const updateMuteClass = () => {
-      const muted = audio.muted || audio.volume === 0;
-      player.classList.toggle('ltx-muted', muted);
-    };
-
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
-    updateMuteClass();
-
-    const updateProgress = () => {
-      const duration = audio.duration || 0;
-      const current = audio.currentTime || 0;
-      const percentage = duration ? (current / duration) * 100 : 0;
-      progressFillEl.style.width = `${percentage}%`;
-      currentTimeEl.textContent = formatTime(current);
-      totalTimeEl.textContent = formatTime(duration);
-    };
-
-    const setTrack = (nextIndex, options = {}) => {
-      const total = state.tracks.length;
-      state.index = ((nextIndex % total) + total) % total;
-      const track = state.tracks[state.index];
-      if (!track || !track.file) {
-        console.warn('LTX music player: 音频文件缺失', track);
-        tipEl.textContent = '音频文件缺失，请检查配置';
-        return;
-      }
-      titleEl.textContent = track.title || `Track ${state.index + 1}`;
-      artistEl.textContent = track.artist || '';
-      audio.src = track.file;
-      player.dataset.trackIndex = state.index;
-      tipEl.textContent = '';
-      player.classList.remove('ltx-autoplay-blocked');
-      updateProgress();
-      if (options.play) {
-        attemptPlay();
-      }
-    };
-
-    const attemptPlay = () => {
-      audio.play().then(() => {
-        player.classList.remove('ltx-autoplay-blocked');
-        tipEl.textContent = '';
-      }).catch(() => {
-        player.classList.add('ltx-autoplay-blocked');
-        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
-      });
-    };
-
-    const playNext = (autoTriggered = false) => {
-      const shouldPlay = !audio.paused || autoTriggered;
-      const nextIndex = state.index + 1;
-      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
-        audio.currentTime = audio.duration || 0;
-        audio.pause();
-        return;
-      }
-      setTrack(nextIndex, { play: shouldPlay });
-    };
-
-    const playPrev = () => {
-      const shouldPlay = !audio.paused;
-      setTrack(state.index - 1, { play: shouldPlay });
-    };
-
-    toggleBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        attemptPlay();
-      } else {
-        audio.pause();
-      }
-    });
-
-    prevBtn.addEventListener('click', playPrev);
-    nextBtn.addEventListener('click', () => playNext(false));
-
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      updateMuteClass();
-    });
-
-    progressEl.addEventListener('click', (event) => {
-      const rect = progressEl.getBoundingClientRect();
-      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
-      if (Number.isFinite(audio.duration)) {
-        audio.currentTime = ratio * audio.duration;
-      }
-    });
-
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
-
-    audio.addEventListener('play', () => {
-      player.classList.add('ltx-playing');
-      player.classList.remove('ltx-autoplay-blocked');
-      tipEl.textContent = '';
-    });
-
-    audio.addEventListener('pause', () => {
-      player.classList.remove('ltx-playing');
-    });
-
-    audio.addEventListener('ended', () => {
-      playNext(true);
-    });
-
-    audio.addEventListener('volumechange', updateMuteClass);
-
-    setTrack(0, { play: state.autoplay });
-  })();
-</script>
-
-<script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
-</script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            document.body.classList.add('dark');
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '复制';
-
-        function copyingDone() {
-            copybutton.innerHTML = '已复制！';
-            setTimeout(() => {
-                copybutton.innerHTML = '复制';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
-</script>
-</body>
-
-</html>
+如果影响到了私有仓库,请暂时放弃代理.</p><h3 id=golang>Golang<a hidden class=anchor aria-hidden=true href=#golang>#</a></h3><p>这里我们统一采用 go1.22.8 linux/riscv64 这个版本.原因见<a href=https://www.bfsmlt.top/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/#%e9%81%bf%e5%85%8dgolang%e7%89%88%e6%9c%ac%e6%a3%80%e6%b5%8b>这篇文章</a>,根据当前你的 k8s 版本进行对应变化.</p><p>这里默认你已经有了此版本的 tar 文件(我是通过 scp 传过去的)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo tar -C /usr/local -xzf go1.22.8.linux-riscv64.tar.gz
+</span></span><span class=line><span class=cl>sudo vi ~/.bashrc
+</span></span><span class=line><span class=cl><span class=c1># Go environment</span>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GOROOT</span><span class=o>=</span>/usr/local/go
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>PATH</span><span class=o>=</span><span class=nv>$GOROOT</span>/bin:<span class=nv>$PATH</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GOPATH</span><span class=o>=</span><span class=nv>$HOME</span>/go
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>PATH</span><span class=o>=</span><span class=nv>$GOPATH</span>/bin:<span class=nv>$PATH</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>GOPROXY</span><span class=o>=</span>https://goproxy.cn,direct
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=nb>source</span> ~/.bashrc
+</span></span></code></pre></div><p>使用 <code>go version</code> 检查得到 go1.22.8 这个正确版本.</p><h3 id=yq>yq<a hidden class=anchor aria-hidden=true href=#yq>#</a></h3><p>用来解析 YAML 的工具,之前<a href=https://www.bfsmlt.top/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/#yq%e6%9c%aa%e5%ae%89%e8%a3%85>文章</a>中也提到过.</p><p>这里我们与 Golang 一样,从源码构建,因为包管理中的版本太老.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>wget https://github.com/mikefarah/yq/releases/download/v4.44.6/yq_linux_riscv64.tar.gz
+</span></span><span class=line><span class=cl>tar -zvxf yq_linux_riscv64.tar.gz
+</span></span><span class=line><span class=cl>mv yq_linux_riscv64.tar.gz yq
+</span></span><span class=line><span class=cl>chmod +x yq
+</span></span><span class=line><span class=cl>mv yq /usr/local/bin
+</span></span><span class=line><span class=cl>yq --version
+</span></span></code></pre></div><p>如果你之前用 apt 安装了 yq,可能会存在错误的缓存,可以用<code>hash -r</code>清理缓存.</p><h3 id=权限问题>权限问题<a hidden class=anchor aria-hidden=true href=#权限问题>#</a></h3><p>为了方便和避免可能出现的权限问题,我们为源码目录赋予 root 权限</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo chown -R <span class=k>$(</span>whoami<span class=k>)</span>:<span class=k>$(</span>whoami<span class=k>)</span> .
+</span></span></code></pre></div><h3 id=访问仓库网络问题>访问仓库网络问题<a hidden class=anchor aria-hidden=true href=#访问仓库网络问题>#</a></h3><p>如果我们访问自己的私有仓库时遇到网络问题,特别是 DNS 解析问题,通常是因为 Network Management 自动为我们设置好了 DNS 服务器地址.</p><p>而这篇<a href=https://www.bfsmlt.top/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/>文章</a>中我们谈到了这些 DNS 服务器很难不出问题,特别是在解析国外的服务器时.</p><p>所以我们采用一个最简单的方法,修改 <code>/etc/hosts</code> 文件,将服务器的 IP 加入其中.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 请换成自己的 ip 与 域名</span>
+</span></span><span class=line><span class=cl>IP Domain
+</span></span></code></pre></div><h2 id=安装与卸载脚本>安装与卸载脚本<a hidden class=anchor aria-hidden=true href=#安装与卸载脚本>#</a></h2><p>实验过程中可能出现问题导致 k3s 不能运行,在此情况下如果我们需要删除 k3s 或者重新安装 k3s,这里给出两种操作的脚本.</p><h3 id=卸载脚本>卸载脚本<a hidden class=anchor aria-hidden=true href=#卸载脚本>#</a></h3><p>将其从 systemd 管理中移除.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=nb>set</span> -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;🔧 停止 k3s 服务（如在运行）...&#34;</span>
+</span></span><span class=line><span class=cl>sudo systemctl stop k3s <span class=o>||</span> <span class=nb>true</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;🚫 禁用 k3s 服务开机自启...&#34;</span>
+</span></span><span class=line><span class=cl>sudo systemctl disable k3s <span class=o>||</span> <span class=nb>true</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;🧹 删除 k3s systemd 服务文件...&#34;</span>
+</span></span><span class=line><span class=cl>sudo rm -f /etc/systemd/system/k3s.service
+</span></span><span class=line><span class=cl>sudo rm -f /etc/systemd/system/k3s.service.env
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;🔄 重新加载 systemd 守护进程...&#34;</span>
+</span></span><span class=line><span class=cl>sudo systemctl daemon-reload
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;✅ 验证 k3s 服务是否已清除...&#34;</span>
+</span></span><span class=line><span class=cl>sudo systemctl status k3s <span class=o>||</span> <span class=nb>echo</span> <span class=s2>&#34;✅ k3s.service 已被成功移除。&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;🎉 清理完成。&#34;</span>
+</span></span></code></pre></div><h3 id=安装脚本>安装脚本<a hidden class=anchor aria-hidden=true href=#安装脚本>#</a></h3><p>将其重新加入 systemd 管理,前提是脚本所在路径与 k3s 二进制文件路径一致,不一致请修改脚本.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=nb>set</span> -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;📦 拷贝本地 k3s 到 /usr/local/bin ...&#34;</span>
+</span></span><span class=line><span class=cl>sudo cp /home/debian/k3s /usr/local/bin/k3s
+</span></span><span class=line><span class=cl>sudo chmod +x /usr/local/bin/k3s
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;🔧 配置私有镜像仓库 registries.yaml ...&#34;</span>
+</span></span><span class=line><span class=cl>sudo mkdir -p /etc/rancher/k3s
+</span></span><span class=line><span class=cl>cat <span class=s>&lt;&lt;EOF | sudo tee /etc/rancher/k3s/registries.yaml
+</span></span></span><span class=line><span class=cl><span class=s>mirrors:
+</span></span></span><span class=line><span class=cl><span class=s>  docker.io:
+</span></span></span><span class=line><span class=cl><span class=s>    endpoint:
+</span></span></span><span class=line><span class=cl><span class=s>      - &#34;https://jimlt.bfsmlt.top&#34;
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;📥 获取 k3s 安装脚本 ...&#34;</span>
+</span></span><span class=line><span class=cl>curl -sfL https://get.k3s.io -o k3s-install.sh
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;🚀 执行安装脚本，使用本地可执行文件 ...&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>INSTALL_K3S_SKIP_DOWNLOAD</span><span class=o>=</span><span class=s2>&#34;true&#34;</span> bash -x k3s-install.sh
+</span></span></code></pre></div><h2 id=对kubectl命令进行优化>对kubectl命令进行优化<a hidden class=anchor aria-hidden=true href=#对kubectl命令进行优化>#</a></h2><p>以下两种方法对我们日常使用 kubectl 命令带来了方便。</p><h3 id=去sudo化>去sudo化<a hidden class=anchor aria-hidden=true href=#去sudo化>#</a></h3><p>由于默认的 k3s 配置文件在 <code>/etc/rancher/k3s/k3s.yaml</code>，这是一个只有 root 权限才可以访问的路径，这导致每次我们使用 kubectl 命令需要在前面加上 sudo.</p><p>所以我们执行以下步骤将配置文件复制到主用户目录下，并配置好环境变量，使 kubectl 命令默认查找主用户目录下的文件。这样就可以不用再加上 sudo</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mkdir -p <span class=nv>$HOME</span>/.kube
+</span></span><span class=line><span class=cl>sudo cp /etc/rancher/k3s/k3s.yaml <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl>sudo chmod <span class=m>600</span> <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl>sudo chown <span class=k>$(</span>id -u<span class=k>)</span>:<span class=k>$(</span>id -g<span class=k>)</span> <span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl><span class=nb>export</span> <span class=nv>KUBECONFIG</span><span class=o>=</span><span class=nv>$HOME</span>/.kube/config
+</span></span><span class=line><span class=cl><span class=c1># 将上面的 export 命令添加到您的 shell 配置文件 (例如 ~/.bashrc 或 ~/.zshrc) 中，使其永久生效</span>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;export KUBECONFIG=$HOME/.kube/config&#39;</span> &gt;&gt; ~/.bashrc <span class=c1># 如果您使用 bash</span>
+</span></span><span class=line><span class=cl><span class=nb>source</span> ~/.bashrc <span class=c1># 使更改立即生效</span>
+</span></span></code></pre></div><h3 id=使用kubectl-aliases简化>使用kubectl-aliases简化<a hidden class=anchor aria-hidden=true href=#使用kubectl-aliases简化>#</a></h3><p>这是一个别名操作，可以让我们不再输入繁杂的 kubectl 命令，例如将 <code>kubectl get pod</code> 可以简化为 <code>kgpo</code>,具体操作也很简单，按照<a href=https://github.com/ahmetb/kubectl-aliases>官网</a>的步骤进行即可。</p><h2 id=后续更新>后续更新<a hidden class=anchor aria-hidden=true href=#后续更新>#</a></h2><p>后续更新会根据构建 k3s 的进展以及可能的其他应用例如 Mobilenet 进行补充.</p><p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/k3s/>K3s</a></li><li><a href=https://LTXWorld.github.io/tags/linux%E6%93%8D%E4%BD%9C/>Linux操作</a></li><li><a href=https://LTXWorld.github.io/tags/riscv/>RiscV</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/><span class=title>« 上一页</span><br><span>K3sEP10——迁移k3s至riscv64开发板的过程记录</span>
+</a><a class=next href=https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/><span class=title>下一页 »</span><br><span>K3sEP08——make后会发生什么?从源码解析构建过程</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
+<span class=ltx-music-artist data-role=artist></span></div></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
+<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
+<button type=button data-action=toggle aria-label=播放或暂停>
+<span data-icon=play>▶</span>
+<span data-icon=pause>⏸</span>
+</button>
+<button type=button data-action=next aria-label=下一首>⏭</button>
+<button type=button data-action=mute aria-label=静音或取消静音>
+<span data-icon=unmuted>🔊</span>
+<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const s=window.LTX_MUSIC_CONFIG||{};if(!s.tracks||!s.tracks.length)return;const t=document.getElementById("ltx-music-player"),e=t.querySelector("audio"),w=t.querySelector('[data-role="title"]'),_=t.querySelector('[data-role="artist"]'),l=t.querySelector('[data-role="progress"]'),f=t.querySelector('[data-role="progress-fill"]'),y=t.querySelector('[data-role="current"]'),j=t.querySelector('[data-role="total"]'),o=t.querySelector('[data-role="tip"]'),i=t.querySelector('[data-role="cover"]'),b=t.querySelector('[data-action="toggle"]'),v=t.querySelector('[data-action="prev"]'),g=t.querySelector('[data-action="next"]'),p=t.querySelector('[data-action="mute"]'),u=(e,t,n)=>Math.min(Math.max(e,t),n),m=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},n={index:0,tracks:s.tracks,autoplay:s.autoplay!==!1,loopPlaylist:s.loopPlaylist!==!1},c=()=>{const n=e.muted||e.volume===0;t.classList.toggle("ltx-muted",n)};e.volume=u(s.startVolume??.6,0,1),c();const r=()=>{const t=e.duration||0,n=e.currentTime||0,s=t?n/t*100:0;f.style.width=`${s}%`,y.textContent=m(n),j.textContent=m(t)},a=(a,c={})=>{const u=n.tracks.length;n.index=(a%u+u)%u;const l=n.tracks[n.index];if(!l||!l.file){console.warn("LTX music player: 音频文件缺失",l),o.textContent="音频文件缺失，请检查配置";return}const h=l.cover||s.defaultCover||"";i&&(h?(i.src=h,i.alt=l.title?`${l.title} 封面`:"音乐封面",t.classList.add("ltx-has-cover")):(i.removeAttribute("src"),i.alt="",t.classList.remove("ltx-has-cover"))),w.textContent=l.title||`Track ${n.index+1}`,_.textContent=l.artist||"",e.src=l.file,t.dataset.trackIndex=n.index,o.textContent="",t.classList.remove("ltx-autoplay-blocked"),r(),c.play&&d()},d=()=>{e.play().then(()=>{t.classList.remove("ltx-autoplay-blocked"),o.textContent=""}).catch(()=>{t.classList.add("ltx-autoplay-blocked"),o.textContent="浏览器阻止了自动播放，请点击播放按钮"})},h=(t=!1)=>{const o=!e.paused||t,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){e.currentTime=e.duration||0,e.pause();return}a(s,{play:o})},O=()=>{const t=!e.paused;a(n.index-1,{play:t})};b.addEventListener("click",()=>{e.paused?d():e.pause()}),v.addEventListener("click",O),g.addEventListener("click",()=>h(!1)),p.addEventListener("click",()=>{e.muted=!e.muted,c()}),l.addEventListener("click",t=>{const n=l.getBoundingClientRect(),s=u((t.clientX-n.left)/n.width,0,1);Number.isFinite(e.duration)&&(e.currentTime=s*e.duration)}),e.addEventListener("timeupdate",r),e.addEventListener("loadedmetadata",r),e.addEventListener("play",()=>{t.classList.add("ltx-playing"),t.classList.remove("ltx-autoplay-blocked"),o.textContent=""}),e.addEventListener("pause",()=>{t.classList.remove("ltx-playing")}),e.addEventListener("ended",()=>{h(!0)}),e.addEventListener("volumechange",c),a(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

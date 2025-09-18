@@ -1,725 +1,216 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
-  <channel>
-    <title>Posts on LTX&#39;s Blog</title>
-    <link>http://localhost:1313/posts/</link>
-    <description>Recent content in Posts on LTX&#39;s Blog</description>
-    <image>
-      <title>LTX&#39;s Blog</title>
-      <url>http://localhost:1313/images/papermod-cover.png</url>
-      <link>http://localhost:1313/images/papermod-cover.png</link>
-    </image>
-    <generator>Hugo -- 0.145.0</generator>
-    <language>zh</language>
-    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
-    <lastBuildDate>Tue, 16 Sep 2025 16:04:09 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>051vibeCoding</title>
-      <link>http://localhost:1313/posts/051vibecoding/</link>
-      <pubDate>Tue, 16 Sep 2025 16:04:09 +0800</pubDate>
-      <guid>http://localhost:1313/posts/051vibecoding/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;经过一周的 vibe coding 之后，有些感悟，随便聊聊。&lt;/p&gt;
-&lt;p&gt;这周的 vibe coding 中我一开始计划着尽量以一个完全小白的角度去进行，即只告诉 AI 自己想要什么，对话过程中出现的一切有关于代码或者文档的修改全盘接受。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>050LT的奇思乱想EP04——关于秋招</title>
-      <link>http://localhost:1313/posts/050lt%E7%9A%84%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep04%E5%85%B3%E4%BA%8E%E7%A7%8B%E6%8B%9B/</link>
-      <pubDate>Mon, 25 Aug 2025 06:54:48 +0800</pubDate>
-      <guid>http://localhost:1313/posts/050lt%E7%9A%84%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep04%E5%85%B3%E4%BA%8E%E7%A7%8B%E6%8B%9B/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>兴趣八股之计算机网络EP03——CORS浅探</title>
-      <link>http://localhost:1313/posts/049cors/</link>
-      <pubDate>Thu, 21 Aug 2025 18:46:47 +0800</pubDate>
-      <guid>http://localhost:1313/posts/049cors/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。&lt;/p&gt;
-&lt;p&gt;从下面这段简单的跨域中间件代码开始吧&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>048跟着AI学习计算机网络</title>
-      <link>http://localhost:1313/posts/048%E8%B7%9F%E7%9D%80ai%E5%AD%A6%E4%B9%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</link>
-      <pubDate>Mon, 11 Aug 2025 18:45:25 +0800</pubDate>
-      <guid>http://localhost:1313/posts/048%E8%B7%9F%E7%9D%80ai%E5%AD%A6%E4%B9%A0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;h2 id=&#34;记录&#34;&gt;记录&lt;/h2&gt;
-&lt;h3 id=&#34;tcp握手挥手过程&#34;&gt;TCP握手挥手过程&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;sudo tcpdump -i lo -S -v tcp port 7070&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;sudo tcpdump -i lo -S -v tcp port 7070&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;curl http://127.0.0.1:7070&lt;/code&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;sudo tcpdump -i lo -S -v tcp port &lt;span class=&#34;m&#34;&gt;7070&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;tcpdump: listening on lo, link-type EN10MB &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;Ethernet&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, snapshot length &lt;span class=&#34;m&#34;&gt;262144&lt;/span&gt; bytes
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:39:31.097639 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 19239, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 60&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.46136 &amp;gt; localhost.7070: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;S&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe30 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xe79e&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, seq 3564383388, win 65495, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;mss 65495,sackOK,TS val &lt;span class=&#34;m&#34;&gt;3523724659&lt;/span&gt; ecr 0,nop,wscale 7&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:39:31.097671 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 0, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 60&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.7070 &amp;gt; localhost.46136: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;S.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe30 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xa381&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, seq 2807956798, ack 3564383389, win 65483, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;mss 65495,sackOK,TS val &lt;span class=&#34;m&#34;&gt;3523724659&lt;/span&gt; ecr 3523724659,nop,wscale 7&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:39:31.097702 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 19240, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.46136 &amp;gt; localhost.7070: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xca3d&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, ack 2807956799, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523724659&lt;/span&gt; ecr 3523724659&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:39:31.097927 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 19241, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 129&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.46136 &amp;gt; localhost.7070: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;P.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe75 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0x6e9b&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, seq 3564383389:3564383466, ack 2807956799, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523724659&lt;/span&gt; ecr 3523724659&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;77&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:39:31.097956 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 46227, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.7070 &amp;gt; localhost.46136: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xc9f1&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, ack 3564383466, win 511, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523724659&lt;/span&gt; ecr 3523724659&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:40:32.082157 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 19242, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.46136 &amp;gt; localhost.7070: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xdbb7&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, ack 2807956799, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523785644&lt;/span&gt; ecr 3523724659&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:40:32.082178 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 46228, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.7070 &amp;gt; localhost.46136: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xdbb6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, ack 3564383466, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523785644&lt;/span&gt; ecr 3523724659&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:41:33.523205 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 19243, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.46136 &amp;gt; localhost.7070: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xfd7b&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, ack 2807956799, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523847085&lt;/span&gt; ecr 3523785644&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:41:33.523229 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 46229, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.7070 &amp;gt; localhost.46136: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xebb4&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, ack 3564383466, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523847085&lt;/span&gt; ecr 3523724659&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:41:35.723669 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 19244, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.46136 &amp;gt; localhost.7070: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;F.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0x04e0&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, seq 3564383466, ack 2807956799, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523849285&lt;/span&gt; ecr 3523847085&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:41:35.723808 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 46230, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.7070 &amp;gt; localhost.46136: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;F.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xfc46&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, seq 2807956799, ack 3564383467, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523849285&lt;/span&gt; ecr 3523849285&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;18:41:35.723868 IP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;tos 0x0, ttl 64, id 19245, offset 0, flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;DF&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, proto TCP &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;6&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, length 52&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    localhost.46136 &amp;gt; localhost.7070: Flags &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;.&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, cksum 0xfe28 &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;incorrect -&amp;gt; 0xfc46&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;, ack 2807956800, win 512, options &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;nop,nop,TS val &lt;span class=&#34;m&#34;&gt;3523849285&lt;/span&gt; ecr 3523849285&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;, length &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;^C
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;12&lt;/span&gt; packets captured
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;24&lt;/span&gt; packets received by filter
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;m&#34;&gt;0&lt;/span&gt; packets dropped by kernel
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这是一次抓包所产生的结果，分析如下：&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>DebugEP02_私有镜像出问题啦</title>
-      <link>http://localhost:1313/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</link>
-      <pubDate>Mon, 21 Jul 2025 19:08:15 +0800</pubDate>
-      <guid>http://localhost:1313/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在使用私有镜像仓库时突然出现了认证问题，跟着 AI 来回改，在此记录一下改的过程。&lt;/p&gt;
-&lt;p&gt;首先回顾一下之前的那篇构建私有镜像仓库的文章,我们建立了两个容器，&lt;code&gt;registry&lt;/code&gt;用来存放镜像,&lt;code&gt;registry-UI&lt;/code&gt;用来给前端显示。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GolangEP07-Range遍历(上)</title>
-      <link>http://localhost:1313/posts/046golangep07-range%E9%81%8D%E5%8E%86/</link>
-      <pubDate>Sun, 20 Jul 2025 10:16:01 +0800</pubDate>
-      <guid>http://localhost:1313/posts/046golangep07-range%E9%81%8D%E5%8E%86/</guid>
-      <description>&lt;h2&gt;&lt;/h2&gt;
-&lt;h2 id=&#34;value-copy&#34;&gt;Value copy&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;In GO,everything we assign is a copy.&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p&gt;变量的值到底是什么？&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;值类型，&lt;code&gt;string,array,struct&lt;/code&gt;,是数据本身；&lt;/li&gt;
-&lt;li&gt;引用类型，&lt;code&gt;slice,map,channel,pointer,function&lt;/code&gt;,是数据的引用——但仍是值拷贝，只是这个值中带着地址。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;所以本质上二者都是值拷贝。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GolangEP06:关于map-下</title>
-      <link>http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/</link>
-      <pubDate>Wed, 16 Jul 2025 14:44:11 +0800</pubDate>
-      <guid>http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;上一篇文章中留下了两个问题没有解决&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;map 如何扩容&lt;/li&gt;
-&lt;li&gt;为什么原生的 map 线程不安全&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;其实这两个问题是有联系的，所以这篇文章来解决这两个问题。&lt;/p&gt;
-&lt;h2 id=&#34;map-的扩容机制&#34;&gt;map 的扩容机制&lt;/h2&gt;
-&lt;p&gt;本节还是需要用到上一篇文章中的底层 hmap 结构&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GolangEP06:关于map-上</title>
-      <link>http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/</link>
-      <pubDate>Wed, 16 Jul 2025 09:52:36 +0800</pubDate>
-      <guid>http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在做两数之和时，操作 map 遇到了问题，可以看我下面的代码。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;twoSum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;nums&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;target&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;sMap&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;x&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;range&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;nums&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;nx&#34;&gt;sMap&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;kd&#34;&gt;var&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ans&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;y&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;range&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;nums&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;c1&#34;&gt;// 如果另一个值在 map 中存在的话即下标大于等于 0;且要保证不能使用两次相同的元素&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;nx&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;sMap&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;target&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;			&lt;span class=&#34;nx&#34;&gt;ans&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;append&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ans&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;			&lt;span class=&#34;nx&#34;&gt;ans&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;append&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ans&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;			&lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;		&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ans&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;像极了一个 golang 新手的操作，特别是在判断 key 是否存在于哈希表中时，用值（下标）是否大于 0 来判断。（当然前面的哈希表的定义也有问题）&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Git——真是让我欢喜让我忧</title>
-      <link>http://localhost:1313/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/</link>
-      <pubDate>Sun, 13 Jul 2025 18:50:18 +0800</pubDate>
-      <guid>http://localhost:1313/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;说起 Git，正如标题所述，让我欢喜让我忧。回想起本科学材料写毕业论文的时候，根本没有版本控制的概念，改了之后不满意就 ctrl+z 或者再回来 ctrl+shift+z。&lt;/p&gt;
-&lt;p&gt;甚至大三的时候我连 github 都不知道怎么用，还问过别人怎么用，搜过 B 站的教程。现在看来，哈哈，成长的必经之路。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Golang版本更新工具</title>
-      <link>http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/</link>
-      <pubDate>Fri, 11 Jul 2025 11:40:27 +0800</pubDate>
-      <guid>http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在使用 Go 语言开发过程中，我发现经常会遇到想使用的项目的 Go 版本与当前本机的 Go 版本不一致的情况，通常是本地的版本较低。&lt;/p&gt;
-&lt;p&gt;所以每次都需要去手动更新版本，而手动更新的过程是比较繁琐的，需要下载新版本并替换旧版本（听起来也没什么是吧）但是 Go 版本的更新还算是比较频繁的，特别是各种小版本。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP13——遇到的Traedfik问题</title>
-      <link>http://localhost:1313/posts/041traefik/</link>
-      <pubDate>Tue, 03 Jun 2025 09:27:10 +0800</pubDate>
-      <guid>http://localhost:1313/posts/041traefik/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。&lt;/p&gt;
-&lt;p&gt;恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>040K3sEP13关于Pod的一切</title>
-      <link>http://localhost:1313/posts/040k3sep13%E5%85%B3%E4%BA%8Epod%E7%9A%84%E4%B8%80%E5%88%87/</link>
-      <pubDate>Sat, 24 May 2025 19:45:03 +0800</pubDate>
-      <guid>http://localhost:1313/posts/040k3sep13%E5%85%B3%E4%BA%8Epod%E7%9A%84%E4%B8%80%E5%88%87/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;对于 Pod 的一切规则&lt;/p&gt;
-&lt;p&gt;暂时以这些字段进行测试&lt;/p&gt;
-&lt;p&gt;Pod:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;容器&lt;/li&gt;
-&lt;li&gt;卷&lt;/li&gt;
-&lt;li&gt;调度&lt;/li&gt;
-&lt;li&gt;生命周期&lt;/li&gt;
-&lt;li&gt;主机名，主机名字空间&lt;/li&gt;
-&lt;li&gt;服务账号&lt;/li&gt;
-&lt;li&gt;安全上下文&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;容器：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;镜像&lt;/li&gt;
-&lt;li&gt;Entrypoint&lt;/li&gt;
-&lt;li&gt;端口&lt;/li&gt;
-&lt;li&gt;环境变量&lt;/li&gt;
-&lt;li&gt;卷&lt;/li&gt;
-&lt;li&gt;资源&lt;/li&gt;
-&lt;li&gt;生命周期&lt;/li&gt;
-&lt;li&gt;安全上下文&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;lifetime-生命周期&#34;&gt;Lifetime 生命周期&lt;/h2&gt;
-&lt;p&gt;UID&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Mit6.824Lab1流程梳理</title>
-      <link>http://localhost:1313/posts/039mit6.824lab1/</link>
-      <pubDate>Mon, 19 May 2025 17:22:07 +0800</pubDate>
-      <guid>http://localhost:1313/posts/039mit6.824lab1/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;本文记录完成 &lt;a href=&#34;https://pdos.csail.mit.edu/6.824/labs/lab-mr.html&#34;&gt;Lab01 &lt;/a&gt;的过程,跟着 AI 照猫画虎.&lt;/p&gt;
-&lt;h2 id=&#34;mapreduce&#34;&gt;MapReduce&lt;/h2&gt;
-&lt;p&gt;首先我们需要简单了解一下 MapReduce 这篇论文,其提出了分布式的思想,具体如下:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Map:将一个大的问题分解为小问题,应用用户定义的 Map 函数,生成中间键值对——文本分割为单词,输出 &lt;code&gt;{world, 1}&lt;/code&gt; 这样的键值对&lt;/li&gt;
-&lt;li&gt;Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生成最终输出——Reduce 对同一 key 进行计数求和 &lt;code&gt;{word, count}&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;系统可以自动做到&lt;strong&gt;并行,任务调度,负载均衡,容错&lt;/strong&gt;,让用户只需要开发 Map 和 Reduce 这两个函数&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;这样的一个系统由三部分组成&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP12——监控集群的两种方式</title>
-      <link>http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</link>
-      <pubDate>Sun, 18 May 2025 18:29:58 +0800</pubDate>
-      <guid>http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 &lt;a href=&#34;https://github.com/kubernetes-sigs/metrics-server&#34;&gt;metric-server&lt;/a&gt;;
-在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>兴趣八股之计算机网络EP03——Ping命令</title>
-      <link>http://localhost:1313/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</link>
-      <pubDate>Fri, 16 May 2025 15:23:10 +0800</pubDate>
-      <guid>http://localhost:1313/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在与开发板打交道的过程中,网络成为了出现问题最多的地方,之前我们谈过 DNS 的事情,今天我们来说说 Ping 这个命令,每次网络出问题的时候最喜欢的命令就是&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP11——加入agent节点进行集群测试</title>
-      <link>http://localhost:1313/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/</link>
-      <pubDate>Fri, 16 May 2025 14:08:23 +0800</pubDate>
-      <guid>http://localhost:1313/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;继上一篇文章中我们成功迁移了 k3s 到 riscv64 上之后,我们使用另外一个 riscv 开发板作为 agent 节点进行集群化测试.&lt;/p&gt;
-&lt;h2 id=&#34;环境初始化&#34;&gt;环境初始化&lt;/h2&gt;
-&lt;p&gt;仍然按照 EP09 中的步骤进行环境的初始化.&lt;/p&gt;
-&lt;p&gt;执行到安装时,请按照下面的步骤进行,因为 agent 与 server 的步骤略有不同.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP10——迁移k3s至riscv64开发板的过程记录</title>
-      <link>http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
-      <pubDate>Thu, 15 May 2025 13:43:20 +0800</pubDate>
-      <guid>http://localhost:1313/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;系统级别的重要镜像进行适配并可以成功拉取到开发板&lt;/li&gt;
-&lt;li&gt;执行 make 或者 download,build,package-cli 脚本&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP09——初始化开发板环境操作汇总</title>
-      <link>http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</link>
-      <pubDate>Wed, 14 May 2025 09:37:37 +0800</pubDate>
-      <guid>http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</guid>
-      <description>&lt;h2 id=&#34;前瞻&#34;&gt;前瞻&lt;/h2&gt;
-&lt;p&gt;本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.&lt;/p&gt;
-&lt;h2 id=&#34;烧录镜像&#34;&gt;烧录镜像&lt;/h2&gt;
-&lt;p&gt;关于烧录操作,无需多言,请关注这篇&lt;a href=&#34;https://www.bfsmlt.top/posts/003li_riscv01/&#34;&gt;文章&lt;/a&gt;.本文主要说一下镜像问题.&lt;/p&gt;
-&lt;p&gt;在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
-甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP08——make后会发生什么?从源码解析构建过程</title>
-      <link>http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/</link>
-      <pubDate>Tue, 13 May 2025 13:55:39 +0800</pubDate>
-      <guid>http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此&lt;a href=&#34;https://github.com/CARV-ICS-FORTH/kubernetes-riscv64&#34;&gt;仓库&lt;/a&gt;.
-发现其构建 riscv 采用了以下命令&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Build&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;rm -rf bin dist build
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;ARCH&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;riscv64 &lt;span class=&#34;nv&#34;&gt;SKIP_IMAGE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;SKIP_VALIDATE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;SKIP_AIRGAP&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt; make
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Split&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; dist/artifacts
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gzip &amp;lt; k3s-riscv64 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; split -b 20M - k3s-riscv64.gz.
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在此 &lt;a href=&#34;https://github.com/k3s-io/k3s/pull/7778&#34;&gt;pull request&lt;/a&gt; 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP07——配置私有镜像仓库准备构建跨架构镜像</title>
-      <link>http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/</link>
-      <pubDate>Fri, 09 May 2025 16:04:29 +0800</pubDate>
-      <guid>http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.&lt;/p&gt;
-&lt;p&gt;之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持.
-跟随他的足迹,我找到了他已经做出了的&lt;a href=&#34;https://github.com/CARV-ICS-FORTH/kubernetes-riscv64&#34;&gt;适配工作&lt;/a&gt;.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GolangEP05_Go中的并发</title>
-      <link>http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</link>
-      <pubDate>Sat, 03 May 2025 21:04:26 +0800</pubDate>
-      <guid>http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;之前的两篇文章关于&lt;a href=&#34;https://www.bfsmlt.top/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/&#34;&gt;context&lt;/a&gt;和&lt;a href=&#34;https://www.bfsmlt.top/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/&#34;&gt;channel&lt;/a&gt;，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。&lt;/p&gt;
-&lt;p&gt;但是我并没有从宏观的角度上来阐述为什么我们需要并发？为什么要设计这两种结构来处理并发，本着做到&amp;quot;what-how-why&amp;quot;的态度，我们今天来深入讨论一下 Go 中的并发。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>030记录开发收支程序过程</title>
-      <link>http://localhost:1313/posts/030%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E6%94%B6%E6%94%AF%E7%A8%8B%E5%BA%8F%E8%BF%87%E7%A8%8B/</link>
-      <pubDate>Thu, 01 May 2025 15:13:30 +0800</pubDate>
-      <guid>http://localhost:1313/posts/030%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E6%94%B6%E6%94%AF%E7%A8%8B%E5%BA%8F%E8%BF%87%E7%A8%8B/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;心血来潮。&lt;/p&gt;
-&lt;h2 id=&#34;技术栈概览&#34;&gt;技术栈概览&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;Golang&lt;/li&gt;
-&lt;li&gt;Postgresql&lt;/li&gt;
-&lt;li&gt;Gin,Gorm&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;数据库&#34;&gt;数据库&lt;/h2&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;homebrew install postgresql@17
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;export PATH=&amp;#34;/opt/homebrew/opt/postgresql@17/bin:$PATH&amp;#34;&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; ~/.zshrc
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;vi  /opt/homebrew/var/postgresql@17/postgresql.conf
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 修改允许连接地址从localhost到*&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 由于我们用homebrew安装的，所以使用brew控制&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew services start postgresql@17
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 默认安装后的 PostgreSQL 没有设置密码，也不允许远程连接。**你需要创建一个可以远程连接的用户**&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;psql postgres
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;CREATE USER myuser WITH PASSWORD &lt;span class=&#34;s1&#34;&gt;&amp;#39;mypassword&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;ALTER USER myuser WITH SUPERUSER&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;  -- 可选，根据权限需求
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;se&#34;&gt;\q&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# 退出&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 后续连接数据库可以采用&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;psql -U user -d DatabaseName
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 后续检测其运行连接状态可用&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;/opt/homebrew/opt/postgresql@17/bin/pg_isready
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在Navicat上进行本地连接,然后自建数据库PayRecord,建表transactions。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>每月收支回顾EP01_25年</title>
-      <link>http://localhost:1313/posts/029%E6%AF%8F%E6%9C%88%E6%94%B6%E6%94%AF%E5%9B%9E%E9%A1%BEep01-25_04/</link>
-      <pubDate>Thu, 01 May 2025 14:08:05 +0800</pubDate>
-      <guid>http://localhost:1313/posts/029%E6%AF%8F%E6%9C%88%E6%94%B6%E6%94%AF%E5%9B%9E%E9%A1%BEep01-25_04/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;做这个系列的目的也是心血来潮吧，同时也是适配我的奇思乱想系列的第二集消费观那里，每月以此作为警醒和反思，不断塑造自己的消费观。&lt;/p&gt;
-&lt;h2 id=&#34;april&#34;&gt;April&lt;/h2&gt;
-&lt;h3 id=&#34;支出&#34;&gt;支出&lt;/h3&gt;
-&lt;p&gt;我的支出从三个渠道查询，微信支付，支付宝以及银行卡。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>兴趣八股之计算机网络EP02——HTTPS</title>
-      <link>http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/</link>
-      <pubDate>Tue, 29 Apr 2025 19:39:43 +0800</pubDate>
-      <guid>http://localhost:1313/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;1&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/bg/https1.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全.
-那为什么会不安全呢?是因为其网站的证书出现问题了.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>兴趣八股之计算机网络EP01——DNS</title>
-      <link>http://localhost:1313/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/</link>
-      <pubDate>Tue, 29 Apr 2025 14:19:24 +0800</pubDate>
-      <guid>http://localhost:1313/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;当我们不挂梯子的时候访问 &lt;code&gt;www.google.com&lt;/code&gt; 会发生什么？ 没错，大概率是访问不到的,我的火狐浏览器会一直显示在连接但是连接不到，那么这是为什么呢？&lt;/p&gt;
-&lt;p&gt;这是因为我们的 DNS 受到了污染，也有可能遭到了劫持，至于这两者是什么意思，就请慢慢往下看吧。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>LT的奇思乱想EP03——让人上瘾的APP们</title>
-      <link>http://localhost:1313/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/</link>
-      <pubDate>Sun, 27 Apr 2025 14:07:46 +0800</pubDate>
-      <guid>http://localhost:1313/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;看到这个标题，可能你第一个想到的是抖音这个常常被人们说为精神鸦片的软件，刷着刷着时间就走完了。但今天我想聊的是另外两款红色封面的软件，二者的内容呈现形式几乎相同，但是内容格式完全不同，我对于它们的使用也迥然不同。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GolangEP04_string底层原理及注意事项</title>
-      <link>http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
-      <pubDate>Fri, 25 Apr 2025 13:49:43 +0800</pubDate>
-      <guid>http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自&amp;lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)&amp;gt; 书籍的注意事项。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>024Goland操作01_dlv</title>
-      <link>http://localhost:1313/posts/024goland%E6%93%8D%E4%BD%9C01_dlv/</link>
-      <pubDate>Wed, 23 Apr 2025 09:12:19 +0800</pubDate>
-      <guid>http://localhost:1313/posts/024goland%E6%93%8D%E4%BD%9C01_dlv/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;h2 id=&#34;手动更新goland中较旧的delve&#34;&gt;手动更新Goland中较旧的delve&lt;/h2&gt;
-&lt;p&gt;使用delve进行debug,但是在console页面显示警告信息 &amp;ldquo;Version of Delve is too old for Go version 1.23.0 (maximum supported version 1.24)&amp;rdquo;&lt;/p&gt;
-&lt;p&gt;解决方法:下载最新的delve，替换掉Goland之前携带的delve&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP06——从issues上得到的可能尝试</title>
-      <link>http://localhost:1313/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/</link>
-      <pubDate>Sat, 19 Apr 2025 19:13:50 +0800</pubDate>
-      <guid>http://localhost:1313/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在&lt;a href=&#34;https://www.bfsmlt.top/posts/020k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/&#34;&gt;K3sEP04&lt;/a&gt;中最后的总结中我们提到，反思了一下我们的移植过程，开始从k3s的结构看起，再到k8s的书籍，再到重新看二者的架构设计不同点，再到对应的命令，再追踪到k3s的源码，最后再开发板上适配的时候解决出现的一系列问题，我们处理移植问题的思路首先是有问题的。&lt;/p&gt;
-&lt;p&gt;还是引用一句话，大致的意思是，“你所遇到的问题100%都在别人的身上发生过，这意味着只要google，就一定可以找到答案。”但是我在这其中难道没有google过吗？我也不清楚为什么我没有发现对应的issue，直到最近，我才在github中找到了k3s关于支持riscv的相关issue，这证明自己处理此类问题的方法很有问题。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>022GolangStrconv包</title>
-      <link>http://localhost:1313/posts/022golangstrconv%E5%8C%85/</link>
-      <pubDate>Sat, 19 Apr 2025 09:39:47 +0800</pubDate>
-      <guid>http://localhost:1313/posts/022golangstrconv%E5%8C%85/</guid>
-      <description>&lt;p&gt;strconv的ParseInt,Atoi,map下的delete
-开发板go配置&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>LT的奇思乱想EP02精气神——消费观与阅读</title>
-      <link>http://localhost:1313/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/</link>
-      <pubDate>Fri, 18 Apr 2025 08:53:41 +0800</pubDate>
-      <guid>http://localhost:1313/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;又是奇思乱想环节，今天来聊聊自己的消费观和阅读吧。起因在于来自我大学舍友几个月前的一句话“很符合你的消费习惯”，这句话我算是一直记在心里，直到最近关于显示器和键盘的购买上，我发现自己的消费观确实有些困扰自己，所以聊聊；&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP05——开发板上k3s存在的问题02_local-path-provisioner</title>
-      <link>http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</link>
-      <pubDate>Tue, 15 Apr 2025 16:14:08 +0800</pubDate>
-      <guid>http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kubectl get pods -A -o wide
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;NAMESPACE     NAME                                      READY   STATUS             RESTARTS        AGE    IP           NODE                NOMINATED NODE   READINESS GATES
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;default       redis-696579c6c8-v2wns                    1/1     Running            &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;4m10s ago&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;   7d6h   10.42.0.17   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   helm-install-traefik-pv4hv                0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.20   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   local-path-provisioner-7b7dc8d6f5-48jjf   0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.19   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   helm-install-traefik-crd-ktfth            0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.21   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   metrics-server-668d979685-jthzj           0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.22   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running            &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               11s    10.42.0.36   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以发现在 kube-system 命名空间下的这些 Pod 还是处于 ImagePullBackOff 阶段，只有我们上次解决的 CoreDNS 是 Running，
-只是还存在网络问题没有解决,所以并没有 Ready.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GolangEP03_slice底层原理及注意事项</title>
-      <link>http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
-      <pubDate>Fri, 11 Apr 2025 09:44:17 +0800</pubDate>
-      <guid>http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在做力扣的题目时，特别是遇到递归问题，需要传入参数，遇到切片的时候经常遇到需要克隆切片的情况，而遇到普通的int类型的时候却不需要。&lt;/p&gt;
-&lt;p&gt;显而易见，这是一个值传递还是引用传递的问题，所以今天我来总结一下 Golang 中切片的底层原理，为什么在递归中需要克隆它。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像</title>
-      <link>http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</link>
-      <pubDate>Wed, 09 Apr 2025 16:01:58 +0800</pubDate>
-      <guid>http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;解决一些目前k3s在RiscV开发板上存在的问题。&lt;/p&gt;
-&lt;h2 id=&#34;kubectlcrictl&#34;&gt;kubectl&amp;amp;crictl&lt;/h2&gt;
-&lt;p&gt;kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>DebugEP02——MacOs系统升级与Homebrew的关系</title>
-      <link>http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</link>
-      <pubDate>Thu, 03 Apr 2025 17:07:56 +0800</pubDate>
-      <guid>http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;某天我想要在我的macos上使用homebrew安装&lt;a href=&#34;https://github.com/riscv-software-src/homebrew-riscv/&#34;&gt;riscv编译工具链&lt;/a&gt;为了交叉编译一些镜像文件。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew tap riscv-software-src/riscv
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew install riscv-tools
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP03——移植镜像到RiscV开发板</title>
-      <link>http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</link>
-      <pubDate>Wed, 02 Apr 2025 19:10:13 +0800</pubDate>
-      <guid>http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如&lt;code&gt;riscv64/nginx,riscv64/redis&lt;/code&gt;等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
-拿nginx镜像举例:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Tmux终端窗口器</title>
-      <link>http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/</link>
-      <pubDate>Tue, 01 Apr 2025 08:36:54 +0800</pubDate>
-      <guid>http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;开篇提问，大家平时用终端的次数多吗？&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/xm/hdw.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP02——解决RiscV开发板镜像无法拉取问题</title>
-      <link>http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/</link>
-      <pubDate>Fri, 28 Mar 2025 14:19:09 +0800</pubDate>
-      <guid>http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。&lt;/p&gt;
-&lt;p&gt;值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP01——模拟Kine集群部署</title>
-      <link>http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</link>
-      <pubDate>Wed, 26 Mar 2025 18:51:27 +0800</pubDate>
-      <guid>http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</guid>
-      <description>&lt;p&gt;本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）&lt;/p&gt;
-&lt;h2 id=&#34;实验环境&#34;&gt;实验环境&lt;/h2&gt;
-&lt;p&gt;本机: macos M2
-虚拟机: 采用&lt;a href=&#34;https://canonical.com/multipass&#34;&gt;Multipass&lt;/a&gt;这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>LT的奇思乱想Ep01</title>
-      <link>http://localhost:1313/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/</link>
-      <pubDate>Sat, 15 Mar 2025 15:18:35 +0800</pubDate>
-      <guid>http://localhost:1313/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/</guid>
-      <description>&lt;p&gt;这是第一期的奇思乱想，暂且将这个专栏作为我的博客中非技术分类下的随意输出内容，灵感来源于JJLin的专辑《和自己对话》，所以就让我在这个专栏里面真正地与自己对话，每个周六的下午，带上耳机接一杯温水，开始与自己对话，一场完全脱离AI的自我对话。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>总结我的2024</title>
-      <link>http://localhost:1313/posts/011%E6%80%BB%E7%BB%932024/</link>
-      <pubDate>Mon, 24 Feb 2025 18:13:23 +0800</pubDate>
-      <guid>http://localhost:1313/posts/011%E6%80%BB%E7%BB%932024/</guid>
-      <description>&lt;h1 id=&#34;我的2024&#34;&gt;我的2024&lt;/h1&gt;
-&lt;p&gt;时光如梭啊，一转眼2025年都已经过了快两个月了，我才来写这一篇关于我的2024年总结，因为2024的结尾发生了一些事情吧。&lt;/p&gt;
-&lt;p&gt;往年都是以视频的形式，今年，以个人博客的方式来回顾吧。同样也会用回顾朋友圈的形式来辅助实现回顾。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>AIThought02_三周过后，我对于AI的使用习惯发生了什么样的变化</title>
-      <link>http://localhost:1313/posts/010aithought02/</link>
-      <pubDate>Sun, 15 Dec 2024 18:33:14 +0800</pubDate>
-      <guid>http://localhost:1313/posts/010aithought02/</guid>
-      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
-&lt;p&gt;距离第一篇关于“戒用”AI的文章已经过去了将近三周了，也该回来好好说说自己关于AI的一些感悟了，当然还会夹杂关于其他事情的感悟。（所以这是一篇纯主观的文章，类似于流水账）&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>009Golang项目梳理:短链接项目01</title>
-      <link>http://localhost:1313/posts/009golang%E9%A1%B9%E7%9B%AE%E6%A2%B3%E7%90%86%E7%9F%AD%E9%93%BE%E6%8E%A5%E9%A1%B9%E7%9B%AE01/</link>
-      <pubDate>Sun, 08 Dec 2024 10:35:34 +0800</pubDate>
-      <guid>http://localhost:1313/posts/009golang%E9%A1%B9%E7%9B%AE%E6%A2%B3%E7%90%86%E7%9F%AD%E9%93%BE%E6%8E%A5%E9%A1%B9%E7%9B%AE01/</guid>
-      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
-&lt;p&gt;做完了三个Golang小的项目之后，发现自己很难复现出来，所以我反思了一下对于这些项目我要进行一个逐一的复盘，从短链接到GreenLight电影搜索API项目，忘了的部分就再回去看书，我对于自己的告诫是永远不要认为任何东西看一遍就万事大吉了。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>DebugEP01——Postgresql</title>
-      <link>http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</link>
-      <pubDate>Sat, 07 Dec 2024 09:06:52 +0800</pubDate>
-      <guid>http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</guid>
-      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
-&lt;p&gt;欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GolangEP02_并发中的Channel</title>
-      <link>http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</link>
-      <pubDate>Thu, 05 Dec 2024 15:40:56 +0800</pubDate>
-      <guid>http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</guid>
-      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
-&lt;p&gt;让我们看看关于 chan 有哪些常见的操作。&lt;/p&gt;
-&lt;h3 id=&#34;创建channel&#34;&gt;创建channel&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际上调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#makechan%e5%87%bd%e6%95%b0&#34;&gt;makechan&lt;/a&gt;方法&lt;/p&gt;
-&lt;h3 id=&#34;发送数据到channel&#34;&gt;发送数据到channel&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0&#34;&gt;chansend1&lt;/a&gt;,而chansend1最终也是调用&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0&#34;&gt;chansend&lt;/a&gt;,将block参数设置为true——当前发送操作是&lt;strong&gt;阻塞的&lt;/strong&gt;&lt;/p&gt;
-&lt;h3 id=&#34;从channel中读取数据&#34;&gt;从channel中读取数据&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ok&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chanrecv%e5%87%bd%e6%95%b0&#34;&gt;chanrecv1&lt;/a&gt;和chanrecv2，最终都去调用了chanrecv。&lt;/p&gt;
-&lt;h2 id=&#34;源码&#34;&gt;源码&lt;/h2&gt;
-&lt;p&gt;接下来我们进入源码中一探究竟。&lt;/p&gt;
-&lt;h3 id=&#34;hchan结构体&#34;&gt;hchan结构体&lt;/h3&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;hchan&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;qcount&lt;/span&gt;   &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// total data in the queue&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;dataqsiz&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;           &lt;span class=&#34;c1&#34;&gt;// size of the circular queue&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;buf&lt;/span&gt;      &lt;span class=&#34;nx&#34;&gt;unsafe&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Pointer&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// points to an array of dataqsiz elements&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;elemsize&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;uint16&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;synctest&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;bool&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// true if created in a synctest bubble&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;closed&lt;/span&gt;   &lt;span class=&#34;kt&#34;&gt;uint32&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;timer&lt;/span&gt;    &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;timer&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// timer feeding this chan&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;elemtype&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;_type&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// element type&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;sendx&lt;/span&gt;    &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// send index&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;recvx&lt;/span&gt;    &lt;span class=&#34;kt&#34;&gt;uint&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// receive index&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;recvq&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;waitq&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// list of recv waiters&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;sendq&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;waitq&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// list of send waiters&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// lock protects all fields in hchan, as well as several&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// fields in sudogs blocked on this channel.&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;//&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// Do not change another G&amp;#39;s status while holding this lock&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// (in particular, do not ready a G), as this can deadlock&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;// with stack shrinking.&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nx&#34;&gt;lock&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;mutex&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
-&lt;li&gt;qcount:通道中存储的数据元素总数&lt;/li&gt;
-&lt;li&gt;dataqsiz:环形队列大小&lt;/li&gt;
-&lt;li&gt;buf:执行环形队列的内存缓冲区，存放实际数据——环形缓存区域，本质上是一个带有头尾指针的固定长度的数组&lt;/li&gt;
-&lt;li&gt;sendx,recvx:发收操作的队列位置&lt;/li&gt;
-&lt;li&gt;recvq,sendq:等待队列&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;可以发现，hchan 使用&lt;strong&gt;环形队列表示缓冲区&lt;/strong&gt;并且采用 &lt;strong&gt;lock 确保并发访问的安全性&lt;/strong&gt;。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Golang源码小试牛刀:Gorm框架源码小探01</title>
-      <link>http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/</link>
-      <pubDate>Tue, 03 Dec 2024 16:34:41 +0800</pubDate>
-      <guid>http://localhost:1313/posts/006golanggorm%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%8F%8A%E6%BA%90%E7%A0%81/</guid>
-      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
-&lt;h2 id=&#34;gorm框架介绍&#34;&gt;Gorm框架介绍&lt;/h2&gt;
-&lt;h1 id=&#34;日常使用&#34;&gt;日常使用&lt;/h1&gt;
-&lt;h2 id=&#34;使用注意事项&#34;&gt;使用注意事项&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;方法声明顺序&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;查询举例：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Where&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;maps&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Offset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pageNum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Limit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pageSize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Find&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;tags&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Select&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Where&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;name = ?&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;First&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;tag&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;注意这几个方法的调用顺序不能颠倒，因为GORM 按&lt;strong&gt;链式调用的顺序逐步构建 SQL 查询&lt;/strong&gt;。所以在Gorm中查询常见的顺序是——&lt;em&gt;SELECT语句最先，条件方法其次，分页时先用Offset再用Limit，最后执行查询方法例如Find、First、Create、Delete。&lt;/em&gt;&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>GolangEP01_并发之绕不过的context</title>
-      <link>http://localhost:1313/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/</link>
-      <pubDate>Sun, 01 Dec 2024 12:00:57 +0800</pubDate>
-      <guid>http://localhost:1313/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;今天心血来潮，给自己梳理梳理golang中这个十分重要的东东——context，毕竟也是在面试中考察到，但是反问自己的时候却感觉一点也说不出来什么有价值的东西，所以今天我来一次刨根究底。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>玩转RISCV开发板02-配置好容器化环境</title>
-      <link>http://localhost:1313/posts/004risc-v_deployment/</link>
-      <pubDate>Fri, 29 Nov 2024 21:07:21 +0800</pubDate>
-      <guid>http://localhost:1313/posts/004risc-v_deployment/</guid>
-      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
-&lt;p&gt;这里照例列出所用设备配置&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;macbookair&lt;/li&gt;
-&lt;li&gt;LicheePi4A,16+128&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;基础配置&#34;&gt;基础配置&lt;/h2&gt;
-&lt;p&gt;如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>玩转RISCV开发板01-烧录OpenEuler国产镜像</title>
-      <link>http://localhost:1313/posts/003li_riscv01/</link>
-      <pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate>
-      <guid>http://localhost:1313/posts/003li_riscv01/</guid>
-      <description>&lt;h2 id=&#34;本次实验环境&#34;&gt;本次实验环境&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;宿主机:macbook air M2&lt;/li&gt;
-&lt;li&gt;LiCheePi开发板，配置为16+128&lt;/li&gt;
-&lt;li&gt;一根USB-C线&lt;/li&gt;
-&lt;li&gt;一个拓展坞，键鼠，显示器&lt;/li&gt;
-&lt;li&gt;烧录镜像为openEuler/embedded_img/riscv64/lpi4a/&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;实验步骤&#34;&gt;实验步骤&lt;/h2&gt;
-&lt;h3 id=&#34;1下载fastboot&#34;&gt;1.下载fastboot&lt;/h3&gt;
-&lt;p&gt;这里使用homebrew快捷安装&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>How_to_deployment_the_golang_microservices_on_K8s_or_K3s</title>
-      <link>http://localhost:1313/posts/how_to_deployment_the_golang_microservices_on_k8s_or_k3s/</link>
-      <pubDate>Wed, 20 Nov 2024 00:20:59 +0800</pubDate>
-      <guid>http://localhost:1313/posts/how_to_deployment_the_golang_microservices_on_k8s_or_k3s/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Docker_容器网络01</title>
-      <link>http://localhost:1313/posts/docker_networking01/</link>
-      <pubDate>Tue, 19 Nov 2024 14:03:33 +0800</pubDate>
-      <guid>http://localhost:1313/posts/docker_networking01/</guid>
-      <description>&lt;h2 id=&#34;docker容器网络概述&#34;&gt;Docker容器网络概述&lt;/h2&gt;
-&lt;h2 id=&#34;用户定义网络&#34;&gt;用户定义网络&lt;/h2&gt;
-&lt;h3 id=&#34;drivers&#34;&gt;Drivers&lt;/h3&gt;
-&lt;h2 id=&#34;容器网络&#34;&gt;容器网络&lt;/h2&gt;
-&lt;h2 id=&#34;端口&#34;&gt;端口&lt;/h2&gt;
-&lt;h2 id=&#34;ip地址和hostname&#34;&gt;IP地址和hostname&lt;/h2&gt;
-&lt;h2 id=&#34;dns&#34;&gt;DNS&lt;/h2&gt;
-&lt;h3 id=&#34;custom-hosts&#34;&gt;Custom hosts&lt;/h3&gt;
-&lt;h2 id=&#34;代理服务&#34;&gt;代理服务&lt;/h2&gt;</description>
-    </item>
-    <item>
-      <title>玩转Docker系列——数据持久化</title>
-      <link>http://localhost:1313/posts/002docker_volume/</link>
-      <pubDate>Mon, 18 Nov 2024 18:49:09 +0800</pubDate>
-      <guid>http://localhost:1313/posts/002docker_volume/</guid>
-      <description>&lt;h1 id=&#34;docker_storage&#34;&gt;Docker_Storage&lt;/h1&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg&#34;&gt;&lt;/p&gt;
-&lt;p&gt;大家好我是LTX，我猜在使用docker时你或多或少都会有疑问，我的数据被存到哪里去了？（什么?你不用docker?，滚出克😡）docker化之后为什么得到的镜像这么小，比我原始的程序要小这么多？特别是如果我将Mysql容器化，那它保存的记录都去哪里了？&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>AIThought01——让我尝试不依靠AI</title>
-      <link>http://localhost:1313/posts/001aithought/</link>
-      <pubDate>Sun, 17 Nov 2024 13:00:48 +0800</pubDate>
-      <guid>http://localhost:1313/posts/001aithought/</guid>
-      <description>&lt;h1 id=&#34;why&#34;&gt;Why&lt;/h1&gt;
-&lt;h2 id=&#34;起源&#34;&gt;起源&lt;/h2&gt;
-&lt;p&gt;在上周四下午，我的导师给了我一个小任务，开发一个简单地安卓App调用相关的天气，地图API以显示当前位置的温度，由于我的安卓开发水平并不是那么出色并且当晚就要交付，所以我使用AI来帮我完成这个任务。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>My First Post</title>
-      <link>http://localhost:1313/posts/my-first-post/</link>
-      <pubDate>Tue, 12 Nov 2024 16:22:39 +0800</pubDate>
-      <guid>http://localhost:1313/posts/my-first-post/</guid>
-      <description>&lt;p&gt;这是测试&lt;/p&gt;
-&lt;p&gt;如何创建一个新的博客&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hugo new content content/posts/xxxx.md
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;同时注意draft为true时是草稿，暂时不显示在网页上。&lt;/p&gt;
-&lt;p&gt;行内数学公式：$a^2 + b^2 = c^2$。&lt;/p&gt;
-&lt;p&gt;块公式，&lt;/p&gt;
-&lt;p&gt;$$
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on LTX's Blog</title><link>https://LTXWorld.github.io/posts/</link><description>Recent content in Posts on LTX's Blog</description><image><title>LTX's Blog</title><url>https://LTXWorld.github.io/images/papermod-cover.png</url><link>https://LTXWorld.github.io/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Thu, 21 Aug 2025 18:46:47 +0800</lastBuildDate><atom:link href="https://LTXWorld.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>兴趣八股之计算机网络EP03——CORS浅探</title><link>https://LTXWorld.github.io/posts/049cors/</link><pubDate>Thu, 21 Aug 2025 18:46:47 +0800</pubDate><guid>https://LTXWorld.github.io/posts/049cors/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在之前的部署私有镜像仓库项目中，我们遇到过一次跨域请求问题，在 nginx 中添加了有关 CORS 的限制内容，那么这篇文章就来填个坑，梳理一下跨域的原理。&lt;/p>
+&lt;p>从下面这段简单的跨域中间件代码开始吧&lt;/p></description></item><item><title>DebugEP02_私有镜像出问题啦</title><link>https://LTXWorld.github.io/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</link><pubDate>Mon, 21 Jul 2025 19:08:15 +0800</pubDate><guid>https://LTXWorld.github.io/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在使用私有镜像仓库时突然出现了认证问题，跟着 AI 来回改，在此记录一下改的过程。&lt;/p>
+&lt;p>首先回顾一下之前的那篇构建私有镜像仓库的文章,我们建立了两个容器，&lt;code>registry&lt;/code>用来存放镜像,&lt;code>registry-UI&lt;/code>用来给前端显示。&lt;/p></description></item><item><title>GolangEP07-Range遍历(上)</title><link>https://LTXWorld.github.io/posts/046golangep07-range%E9%81%8D%E5%8E%86/</link><pubDate>Sun, 20 Jul 2025 10:16:01 +0800</pubDate><guid>https://LTXWorld.github.io/posts/046golangep07-range%E9%81%8D%E5%8E%86/</guid><description>&lt;h2>&lt;/h2>
+&lt;h2 id="value-copy">Value copy&lt;/h2>
+&lt;blockquote>
+&lt;p>In GO,everything we assign is a copy.&lt;/p>&lt;/blockquote>
+&lt;p>变量的值到底是什么？&lt;/p>
+&lt;ul>
+&lt;li>值类型，&lt;code>string,array,struct&lt;/code>,是数据本身；&lt;/li>
+&lt;li>引用类型，&lt;code>slice,map,channel,pointer,function&lt;/code>,是数据的引用——但仍是值拷贝，只是这个值中带着地址。&lt;/li>
+&lt;/ul>
+&lt;p>所以本质上二者都是值拷贝。&lt;/p></description></item><item><title>GolangEP06:关于map-下</title><link>https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/</link><pubDate>Wed, 16 Jul 2025 14:44:11 +0800</pubDate><guid>https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>上一篇文章中留下了两个问题没有解决&lt;/p>
+&lt;ul>
+&lt;li>map 如何扩容&lt;/li>
+&lt;li>为什么原生的 map 线程不安全&lt;/li>
+&lt;/ul>
+&lt;p>其实这两个问题是有联系的，所以这篇文章来解决这两个问题。&lt;/p>
+&lt;h2 id="map-的扩容机制">map 的扩容机制&lt;/h2>
+&lt;p>本节还是需要用到上一篇文章中的底层 hmap 结构&lt;/p></description></item><item><title>GolangEP06:关于map-上</title><link>https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/</link><pubDate>Wed, 16 Jul 2025 09:52:36 +0800</pubDate><guid>https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在做两数之和时，操作 map 遇到了问题，可以看我下面的代码。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">func&lt;/span> &lt;span class="nf">twoSum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">nums&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">target&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">sMap&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">map&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">x&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">nums&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">sMap&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">x&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">i&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kd">var&lt;/span> &lt;span class="nx">ans&lt;/span> &lt;span class="p">[]&lt;/span>&lt;span class="kt">int&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">y&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="k">range&lt;/span> &lt;span class="nx">nums&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 如果另一个值在 map 中存在的话即下标大于等于 0;且要保证不能使用两次相同的元素&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">p&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nx">sMap&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="nx">target&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="nx">y&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="nx">p&lt;/span> &lt;span class="o">&amp;gt;=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nx">p&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="nx">i&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ans&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ans&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">ans&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nb">append&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">ans&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">p&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">break&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nx">ans&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>像极了一个 golang 新手的操作，特别是在判断 key 是否存在于哈希表中时，用值（下标）是否大于 0 来判断。（当然前面的哈希表的定义也有问题）&lt;/p></description></item><item><title>Git——真是让我欢喜让我忧</title><link>https://LTXWorld.github.io/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/</link><pubDate>Sun, 13 Jul 2025 18:50:18 +0800</pubDate><guid>https://LTXWorld.github.io/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>说起 Git，正如标题所述，让我欢喜让我忧。回想起本科学材料写毕业论文的时候，根本没有版本控制的概念，改了之后不满意就 ctrl+z 或者再回来 ctrl+shift+z。&lt;/p>
+&lt;p>甚至大三的时候我连 github 都不知道怎么用，还问过别人怎么用，搜过 B 站的教程。现在看来，哈哈，成长的必经之路。&lt;/p></description></item><item><title>Golang版本更新工具</title><link>https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/</link><pubDate>Fri, 11 Jul 2025 11:40:27 +0800</pubDate><guid>https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在使用 Go 语言开发过程中，我发现经常会遇到想使用的项目的 Go 版本与当前本机的 Go 版本不一致的情况，通常是本地的版本较低。&lt;/p>
+&lt;p>所以每次都需要去手动更新版本，而手动更新的过程是比较繁琐的，需要下载新版本并替换旧版本（听起来也没什么是吧）但是 Go 版本的更新还算是比较频繁的，特别是各种小版本。&lt;/p></description></item><item><title>K3sEP13——遇到的Traedfik问题</title><link>https://LTXWorld.github.io/posts/041traefik/</link><pubDate>Tue, 03 Jun 2025 09:27:10 +0800</pubDate><guid>https://LTXWorld.github.io/posts/041traefik/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。&lt;/p>
+&lt;p>恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。&lt;/p></description></item><item><title>Mit6.824Lab1流程梳理</title><link>https://LTXWorld.github.io/posts/039mit6.824lab1/</link><pubDate>Mon, 19 May 2025 17:22:07 +0800</pubDate><guid>https://LTXWorld.github.io/posts/039mit6.824lab1/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>本文记录完成 &lt;a href="https://pdos.csail.mit.edu/6.824/labs/lab-mr.html">Lab01 &lt;/a>的过程,跟着 AI 照猫画虎.&lt;/p>
+&lt;h2 id="mapreduce">MapReduce&lt;/h2>
+&lt;p>首先我们需要简单了解一下 MapReduce 这篇论文,其提出了分布式的思想,具体如下:&lt;/p>
+&lt;ul>
+&lt;li>Map:将一个大的问题分解为小问题,应用用户定义的 Map 函数,生成中间键值对——文本分割为单词,输出 &lt;code>{world, 1}&lt;/code> 这样的键值对&lt;/li>
+&lt;li>Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生成最终输出——Reduce 对同一 key 进行计数求和 &lt;code>{word, count}&lt;/code>&lt;/li>
+&lt;li>系统可以自动做到&lt;strong>并行,任务调度,负载均衡,容错&lt;/strong>,让用户只需要开发 Map 和 Reduce 这两个函数&lt;/li>
+&lt;/ul>
+&lt;p>这样的一个系统由三部分组成&lt;/p></description></item><item><title>K3sEP12——监控集群的两种方式</title><link>https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</link><pubDate>Sun, 18 May 2025 18:29:58 +0800</pubDate><guid>https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 &lt;a href="https://github.com/kubernetes-sigs/metrics-server">metric-server&lt;/a>;
+在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.&lt;/p></description></item><item><title>兴趣八股之计算机网络EP03——Ping命令</title><link>https://LTXWorld.github.io/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</link><pubDate>Fri, 16 May 2025 15:23:10 +0800</pubDate><guid>https://LTXWorld.github.io/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在与开发板打交道的过程中,网络成为了出现问题最多的地方,之前我们谈过 DNS 的事情,今天我们来说说 Ping 这个命令,每次网络出问题的时候最喜欢的命令就是&lt;/p></description></item><item><title>K3sEP11——加入agent节点进行集群测试</title><link>https://LTXWorld.github.io/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/</link><pubDate>Fri, 16 May 2025 14:08:23 +0800</pubDate><guid>https://LTXWorld.github.io/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>继上一篇文章中我们成功迁移了 k3s 到 riscv64 上之后,我们使用另外一个 riscv 开发板作为 agent 节点进行集群化测试.&lt;/p>
+&lt;h2 id="环境初始化">环境初始化&lt;/h2>
+&lt;p>仍然按照 EP09 中的步骤进行环境的初始化.&lt;/p>
+&lt;p>执行到安装时,请按照下面的步骤进行,因为 agent 与 server 的步骤略有不同.&lt;/p></description></item><item><title>K3sEP10——迁移k3s至riscv64开发板的过程记录</title><link>https://LTXWorld.github.io/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link><pubDate>Thu, 15 May 2025 13:43:20 +0800</pubDate><guid>https://LTXWorld.github.io/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事&lt;/p>
+&lt;ul>
+&lt;li>系统级别的重要镜像进行适配并可以成功拉取到开发板&lt;/li>
+&lt;li>执行 make 或者 download,build,package-cli 脚本&lt;/li>
+&lt;/ul>
+&lt;p>对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.&lt;/p></description></item><item><title>K3sEP09——初始化开发板环境操作汇总</title><link>https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</link><pubDate>Wed, 14 May 2025 09:37:37 +0800</pubDate><guid>https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</guid><description>&lt;h2 id="前瞻">前瞻&lt;/h2>
+&lt;p>本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.&lt;/p>
+&lt;h2 id="烧录镜像">烧录镜像&lt;/h2>
+&lt;p>关于烧录操作,无需多言,请关注这篇&lt;a href="https://www.bfsmlt.top/posts/003li_riscv01/">文章&lt;/a>.本文主要说一下镜像问题.&lt;/p>
+&lt;p>在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
+甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇&lt;/p></description></item><item><title>K3sEP08——make后会发生什么?从源码解析构建过程</title><link>https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/</link><pubDate>Tue, 13 May 2025 13:55:39 +0800</pubDate><guid>https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此&lt;a href="https://github.com/CARV-ICS-FORTH/kubernetes-riscv64">仓库&lt;/a>.
+发现其构建 riscv 采用了以下命令&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Build&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rm -rf bin dist build
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">ARCH&lt;/span>&lt;span class="o">=&lt;/span>riscv64 &lt;span class="nv">SKIP_IMAGE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nb">true&lt;/span> &lt;span class="nv">SKIP_VALIDATE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nb">true&lt;/span> &lt;span class="nv">SKIP_AIRGAP&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nb">true&lt;/span> make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Split&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> dist/artifacts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">gzip &amp;lt; k3s-riscv64 &lt;span class="p">|&lt;/span> split -b 20M - k3s-riscv64.gz.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在此 &lt;a href="https://github.com/k3s-io/k3s/pull/7778">pull request&lt;/a> 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.&lt;/p></description></item><item><title>K3sEP07——配置私有镜像仓库准备构建跨架构镜像</title><link>https://LTXWorld.github.io/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/</link><pubDate>Fri, 09 May 2025 16:04:29 +0800</pubDate><guid>https://LTXWorld.github.io/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.&lt;/p>
+&lt;p>之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持.
+跟随他的足迹,我找到了他已经做出了的&lt;a href="https://github.com/CARV-ICS-FORTH/kubernetes-riscv64">适配工作&lt;/a>.&lt;/p></description></item><item><title>GolangEP05_Go中的并发</title><link>https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</link><pubDate>Sat, 03 May 2025 21:04:26 +0800</pubDate><guid>https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>之前的两篇文章关于&lt;a href="https://www.bfsmlt.top/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/">context&lt;/a>和&lt;a href="https://www.bfsmlt.top/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">channel&lt;/a>，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。&lt;/p>
+&lt;p>但是我并没有从宏观的角度上来阐述为什么我们需要并发？为什么要设计这两种结构来处理并发，本着做到&amp;quot;what-how-why&amp;quot;的态度，我们今天来深入讨论一下 Go 中的并发。&lt;/p></description></item><item><title>每月收支回顾EP01_25年</title><link>https://LTXWorld.github.io/posts/029%E6%AF%8F%E6%9C%88%E6%94%B6%E6%94%AF%E5%9B%9E%E9%A1%BEep01-25_04/</link><pubDate>Thu, 01 May 2025 14:08:05 +0800</pubDate><guid>https://LTXWorld.github.io/posts/029%E6%AF%8F%E6%9C%88%E6%94%B6%E6%94%AF%E5%9B%9E%E9%A1%BEep01-25_04/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>做这个系列的目的也是心血来潮吧，同时也是适配我的奇思乱想系列的第二集消费观那里，每月以此作为警醒和反思，不断塑造自己的消费观。&lt;/p>
+&lt;h2 id="april">April&lt;/h2>
+&lt;h3 id="支出">支出&lt;/h3>
+&lt;p>我的支出从三个渠道查询，微信支付，支付宝以及银行卡。&lt;/p></description></item><item><title>兴趣八股之计算机网络EP02——HTTPS</title><link>https://LTXWorld.github.io/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/</link><pubDate>Tue, 29 Apr 2025 19:39:43 +0800</pubDate><guid>https://LTXWorld.github.io/posts/028%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C02https/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>HTTPS在我们的日常生活中已经司空见惯,特别是有时我们会遇到这种页面:&lt;/p>
+&lt;p>&lt;img alt="1" loading="lazy" src="https://LTXWorld.github.io/img/bg/https1.png">&lt;/p>
+&lt;p>这是什么意思呢?这个来自浏览器的提示意味着我们访问的 HTTPS 页面并不安全.
+那为什么会不安全呢?是因为其网站的证书出现问题了.&lt;/p></description></item><item><title>兴趣八股之计算机网络EP01——DNS</title><link>https://LTXWorld.github.io/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/</link><pubDate>Tue, 29 Apr 2025 14:19:24 +0800</pubDate><guid>https://LTXWorld.github.io/posts/027%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C01dns/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>当我们不挂梯子的时候访问 &lt;code>www.google.com&lt;/code> 会发生什么？ 没错，大概率是访问不到的,我的火狐浏览器会一直显示在连接但是连接不到，那么这是为什么呢？&lt;/p>
+&lt;p>这是因为我们的 DNS 受到了污染，也有可能遭到了劫持，至于这两者是什么意思，就请慢慢往下看吧。&lt;/p></description></item><item><title>LT的奇思乱想EP03——让人上瘾的APP们</title><link>https://LTXWorld.github.io/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/</link><pubDate>Sun, 27 Apr 2025 14:07:46 +0800</pubDate><guid>https://LTXWorld.github.io/posts/026%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep03%E8%AE%A9%E4%BA%BA%E4%B8%8A%E7%98%BE%E7%9A%84app/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>看到这个标题，可能你第一个想到的是抖音这个常常被人们说为精神鸦片的软件，刷着刷着时间就走完了。但今天我想聊的是另外两款红色封面的软件，二者的内容呈现形式几乎相同，但是内容格式完全不同，我对于它们的使用也迥然不同。&lt;/p></description></item><item><title>GolangEP04_string底层原理及注意事项</title><link>https://LTXWorld.github.io/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link><pubDate>Fri, 25 Apr 2025 13:49:43 +0800</pubDate><guid>https://LTXWorld.github.io/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自&amp;lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)&amp;gt; 书籍的注意事项。&lt;/p></description></item><item><title>K3sEP06——从issues上得到的可能尝试</title><link>https://LTXWorld.github.io/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/</link><pubDate>Sat, 19 Apr 2025 19:13:50 +0800</pubDate><guid>https://LTXWorld.github.io/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在&lt;a href="https://www.bfsmlt.top/posts/020k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/">K3sEP04&lt;/a>中最后的总结中我们提到，反思了一下我们的移植过程，开始从k3s的结构看起，再到k8s的书籍，再到重新看二者的架构设计不同点，再到对应的命令，再追踪到k3s的源码，最后再开发板上适配的时候解决出现的一系列问题，我们处理移植问题的思路首先是有问题的。&lt;/p>
+&lt;p>还是引用一句话，大致的意思是，“你所遇到的问题100%都在别人的身上发生过，这意味着只要google，就一定可以找到答案。”但是我在这其中难道没有google过吗？我也不清楚为什么我没有发现对应的issue，直到最近，我才在github中找到了k3s关于支持riscv的相关issue，这证明自己处理此类问题的方法很有问题。&lt;/p></description></item><item><title>LT的奇思乱想EP02精气神——消费观与阅读</title><link>https://LTXWorld.github.io/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/</link><pubDate>Fri, 18 Apr 2025 08:53:41 +0800</pubDate><guid>https://LTXWorld.github.io/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>又是奇思乱想环节，今天来聊聊自己的消费观和阅读吧。起因在于来自我大学舍友几个月前的一句话“很符合你的消费习惯”，这句话我算是一直记在心里，直到最近关于显示器和键盘的购买上，我发现自己的消费观确实有些困扰自己，所以聊聊；&lt;/p></description></item><item><title>K3sEP05——开发板上k3s存在的问题02_local-path-provisioner</title><link>https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</link><pubDate>Tue, 15 Apr 2025 16:14:08 +0800</pubDate><guid>https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl get pods -A -o wide
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAMESPACE NAME READY STATUS RESTARTS AGE IP NODE NOMINATED NODE READINESS GATES
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">default redis-696579c6c8-v2wns 1/1 Running &lt;span class="m">4&lt;/span> &lt;span class="o">(&lt;/span>4m10s ago&lt;span class="o">)&lt;/span> 7d6h 10.42.0.17 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system helm-install-traefik-pv4hv 0/1 ImagePullBackOff &lt;span class="m">0&lt;/span> 14d 10.42.0.20 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system local-path-provisioner-7b7dc8d6f5-48jjf 0/1 ImagePullBackOff &lt;span class="m">0&lt;/span> 14d 10.42.0.19 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system helm-install-traefik-crd-ktfth 0/1 ImagePullBackOff &lt;span class="m">0&lt;/span> 14d 10.42.0.21 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system metrics-server-668d979685-jthzj 0/1 ImagePullBackOff &lt;span class="m">0&lt;/span> 14d 10.42.0.22 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system coredns-5f8bb7cf9f-5h5kj 0/1 Running &lt;span class="m">0&lt;/span> 11s 10.42.0.36 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>可以发现在 kube-system 命名空间下的这些 Pod 还是处于 ImagePullBackOff 阶段，只有我们上次解决的 CoreDNS 是 Running，
+只是还存在网络问题没有解决,所以并没有 Ready.&lt;/p></description></item><item><title>GolangEP03_slice底层原理及注意事项</title><link>https://LTXWorld.github.io/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link><pubDate>Fri, 11 Apr 2025 09:44:17 +0800</pubDate><guid>https://LTXWorld.github.io/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在做力扣的题目时，特别是遇到递归问题，需要传入参数，遇到切片的时候经常遇到需要克隆切片的情况，而遇到普通的int类型的时候却不需要。&lt;/p>
+&lt;p>显而易见，这是一个值传递还是引用传递的问题，所以今天我来总结一下 Golang 中切片的底层原理，为什么在递归中需要克隆它。&lt;/p></description></item><item><title>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像</title><link>https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</link><pubDate>Wed, 09 Apr 2025 16:01:58 +0800</pubDate><guid>https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>解决一些目前k3s在RiscV开发板上存在的问题。&lt;/p>
+&lt;h2 id="kubectlcrictl">kubectl&amp;amp;crictl&lt;/h2>
+&lt;p>kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。&lt;/p></description></item><item><title>DebugEP02——MacOs系统升级与Homebrew的关系</title><link>https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</link><pubDate>Thu, 03 Apr 2025 17:07:56 +0800</pubDate><guid>https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>某天我想要在我的macos上使用homebrew安装&lt;a href="https://github.com/riscv-software-src/homebrew-riscv/">riscv编译工具链&lt;/a>为了交叉编译一些镜像文件。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">brew tap riscv-software-src/riscv
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">brew install riscv-tools
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>即使其中遇到了一些网络问题，但都可以解决，直到遇到一个在我看来很神奇的问题，Homebrew与Xcode的版本有关，而Xcode的升级又必须依赖macos系统的升级。这就逼迫我这种不太喜欢升级系统的人不得不升级一下macos的系统。&lt;/p></description></item><item><title>K3sEP03——移植镜像到RiscV开发板</title><link>https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</link><pubDate>Wed, 02 Apr 2025 19:10:13 +0800</pubDate><guid>https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如&lt;code>riscv64/nginx,riscv64/redis&lt;/code>等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
+拿nginx镜像举例:&lt;/p></description></item><item><title>Tmux终端窗口器</title><link>https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/</link><pubDate>Tue, 01 Apr 2025 08:36:54 +0800</pubDate><guid>https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>开篇提问，大家平时用终端的次数多吗？&lt;/p>
+&lt;p>&lt;img loading="lazy" src="https://LTXWorld.github.io/img/xm/hdw.png">&lt;/p>
+&lt;p>如果大多数时候你在虚拟机上工作，那不用多说，如果是macos，估计iTerm你已经耳熟能详，如果是windows，也许是Powershell?（本人平时windows只用来打游戏了）&lt;/p></description></item><item><title>K3sEP02——解决RiscV开发板镜像无法拉取问题</title><link>https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/</link><pubDate>Fri, 28 Mar 2025 14:19:09 +0800</pubDate><guid>https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。&lt;/p>
+&lt;p>值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。&lt;/p></description></item><item><title>K3sEP01——模拟Kine集群部署</title><link>https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</link><pubDate>Wed, 26 Mar 2025 18:51:27 +0800</pubDate><guid>https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</guid><description>&lt;p>本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）&lt;/p>
+&lt;h2 id="实验环境">实验环境&lt;/h2>
+&lt;p>本机: macos M2
+虚拟机: 采用&lt;a href="https://canonical.com/multipass">Multipass&lt;/a>这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。&lt;/p></description></item><item><title>LT的奇思乱想Ep01</title><link>https://LTXWorld.github.io/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/</link><pubDate>Sat, 15 Mar 2025 15:18:35 +0800</pubDate><guid>https://LTXWorld.github.io/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/</guid><description>&lt;p>这是第一期的奇思乱想，暂且将这个专栏作为我的博客中非技术分类下的随意输出内容，灵感来源于JJLin的专辑《和自己对话》，所以就让我在这个专栏里面真正地与自己对话，每个周六的下午，带上耳机接一杯温水，开始与自己对话，一场完全脱离AI的自我对话。&lt;/p></description></item><item><title>AIThought02_三周过后，我对于AI的使用习惯发生了什么样的变化</title><link>https://LTXWorld.github.io/posts/010aithought02/</link><pubDate>Sun, 15 Dec 2024 18:33:14 +0800</pubDate><guid>https://LTXWorld.github.io/posts/010aithought02/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>距离第一篇关于“戒用”AI的文章已经过去了将近三周了，也该回来好好说说自己关于AI的一些感悟了，当然还会夹杂关于其他事情的感悟。（所以这是一篇纯主观的文章，类似于流水账）&lt;/p></description></item><item><title>DebugEP01——Postgresql</title><link>https://LTXWorld.github.io/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</link><pubDate>Sat, 07 Dec 2024 09:06:52 +0800</pubDate><guid>https://LTXWorld.github.io/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</guid><description>&lt;h1 id="前言">前言&lt;/h1>
+&lt;p>欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。&lt;/p></description></item><item><title>GolangEP02_并发中的Channel</title><link>https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</link><pubDate>Thu, 05 Dec 2024 15:40:56 +0800</pubDate><guid>https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>让我们看看关于 chan 有哪些常见的操作。&lt;/p>
+&lt;h3 id="创建channel">创建channel&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">ch1&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">ch2&lt;/span> &lt;span class="o">:=&lt;/span> &lt;span class="nb">make&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kd">chan&lt;/span> &lt;span class="kt">int&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>底层实际上调用的是&lt;a href="https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#makechan%e5%87%bd%e6%95%b0">makechan&lt;/a>方法&lt;/p>
+&lt;h3 id="发送数据到channel">发送数据到channel&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">ch&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>底层实际调用的是&lt;a href="https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0">chansend1&lt;/a>,而chansend1最终也是调用&lt;a href="https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0">chansend&lt;/a>,将block参数设置为true——当前发送操作是&lt;strong>阻塞的&lt;/strong>&lt;/p>
+&lt;h3 id="从channel中读取数据">从channel中读取数据&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">i&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nx">ch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">i&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">ok&lt;/span> &lt;span class="o">&amp;lt;-&lt;/span> &lt;span class="nx">ch&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>底层实际调用的是&lt;a href="https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chanrecv%e5%87%bd%e6%95%b0">chanrecv1&lt;/a>和chanrecv2，最终都去调用了chanrecv。&lt;/p>
+&lt;h2 id="源码">源码&lt;/h2>
+&lt;p>接下来我们进入源码中一探究竟。&lt;/p>
+&lt;h3 id="hchan结构体">hchan结构体&lt;/h3>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-go" data-lang="go">&lt;span class="line">&lt;span class="cl">&lt;span class="kd">type&lt;/span> &lt;span class="nx">hchan&lt;/span> &lt;span class="kd">struct&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">qcount&lt;/span> &lt;span class="kt">uint&lt;/span> &lt;span class="c1">// total data in the queue&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">dataqsiz&lt;/span> &lt;span class="kt">uint&lt;/span> &lt;span class="c1">// size of the circular queue&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">buf&lt;/span> &lt;span class="nx">unsafe&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="nx">Pointer&lt;/span> &lt;span class="c1">// points to an array of dataqsiz elements&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">elemsize&lt;/span> &lt;span class="kt">uint16&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">synctest&lt;/span> &lt;span class="kt">bool&lt;/span> &lt;span class="c1">// true if created in a synctest bubble&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">closed&lt;/span> &lt;span class="kt">uint32&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">timer&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">timer&lt;/span> &lt;span class="c1">// timer feeding this chan&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">elemtype&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="nx">_type&lt;/span> &lt;span class="c1">// element type&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">sendx&lt;/span> &lt;span class="kt">uint&lt;/span> &lt;span class="c1">// send index&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">recvx&lt;/span> &lt;span class="kt">uint&lt;/span> &lt;span class="c1">// receive index&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">recvq&lt;/span> &lt;span class="nx">waitq&lt;/span> &lt;span class="c1">// list of recv waiters&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">sendq&lt;/span> &lt;span class="nx">waitq&lt;/span> &lt;span class="c1">// list of send waiters&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// lock protects all fields in hchan, as well as several&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// fields in sudogs blocked on this channel.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">//&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// Do not change another G&amp;#39;s status while holding this lock&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// (in particular, do not ready a G), as this can deadlock&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// with stack shrinking.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">lock&lt;/span> &lt;span class="nx">mutex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>qcount:通道中存储的数据元素总数&lt;/li>
+&lt;li>dataqsiz:环形队列大小&lt;/li>
+&lt;li>buf:执行环形队列的内存缓冲区，存放实际数据——环形缓存区域，本质上是一个带有头尾指针的固定长度的数组&lt;/li>
+&lt;li>sendx,recvx:发收操作的队列位置&lt;/li>
+&lt;li>recvq,sendq:等待队列&lt;/li>
+&lt;/ul>
+&lt;p>可以发现，hchan 使用&lt;strong>环形队列表示缓冲区&lt;/strong>并且采用 &lt;strong>lock 确保并发访问的安全性&lt;/strong>。&lt;/p></description></item><item><title>GolangEP01_并发之绕不过的context</title><link>https://LTXWorld.github.io/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/</link><pubDate>Sun, 01 Dec 2024 12:00:57 +0800</pubDate><guid>https://LTXWorld.github.io/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>今天心血来潮，给自己梳理梳理golang中这个十分重要的东东——context，毕竟也是在面试中考察到，但是反问自己的时候却感觉一点也说不出来什么有价值的东西，所以今天我来一次刨根究底。&lt;/p></description></item><item><title>玩转RISCV开发板02-配置好容器化环境</title><link>https://LTXWorld.github.io/posts/004risc-v_deployment/</link><pubDate>Fri, 29 Nov 2024 21:07:21 +0800</pubDate><guid>https://LTXWorld.github.io/posts/004risc-v_deployment/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>这里照例列出所用设备配置&lt;/p>
+&lt;ul>
+&lt;li>macbookair&lt;/li>
+&lt;li>LicheePi4A,16+128&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img loading="lazy" src="https://LTXWorld.github.io/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg">&lt;/p>
+&lt;h2 id="基础配置">基础配置&lt;/h2>
+&lt;p>如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）&lt;/p></description></item><item><title>玩转RISCV开发板01-烧录OpenEuler国产镜像</title><link>https://LTXWorld.github.io/posts/003li_riscv01/</link><pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate><guid>https://LTXWorld.github.io/posts/003li_riscv01/</guid><description>&lt;h2 id="本次实验环境">本次实验环境&lt;/h2>
+&lt;ul>
+&lt;li>宿主机:macbook air M2&lt;/li>
+&lt;li>LiCheePi开发板，配置为16+128&lt;/li>
+&lt;li>一根USB-C线&lt;/li>
+&lt;li>一个拓展坞，键鼠，显示器&lt;/li>
+&lt;li>烧录镜像为openEuler/embedded_img/riscv64/lpi4a/&lt;/li>
+&lt;/ul>
+&lt;h2 id="实验步骤">实验步骤&lt;/h2>
+&lt;h3 id="1下载fastboot">1.下载fastboot&lt;/h3>
+&lt;p>这里使用homebrew快捷安装&lt;/p></description></item><item><title>玩转Docker系列——数据持久化</title><link>https://LTXWorld.github.io/posts/002docker_volume/</link><pubDate>Mon, 18 Nov 2024 18:49:09 +0800</pubDate><guid>https://LTXWorld.github.io/posts/002docker_volume/</guid><description>&lt;h1 id="docker_storage">Docker_Storage&lt;/h1>
+&lt;p>&lt;img loading="lazy" src="https://LTXWorld.github.io/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg">&lt;/p>
+&lt;p>大家好我是LTX，我猜在使用docker时你或多或少都会有疑问，我的数据被存到哪里去了？（什么?你不用docker?，滚出克😡）docker化之后为什么得到的镜像这么小，比我原始的程序要小这么多？特别是如果我将Mysql容器化，那它保存的记录都去哪里了？&lt;/p></description></item><item><title>AIThought01——让我尝试不依靠AI</title><link>https://LTXWorld.github.io/posts/001aithought/</link><pubDate>Sun, 17 Nov 2024 13:00:48 +0800</pubDate><guid>https://LTXWorld.github.io/posts/001aithought/</guid><description>&lt;h1 id="why">Why&lt;/h1>
+&lt;h2 id="起源">起源&lt;/h2>
+&lt;p>在上周四下午，我的导师给了我一个小任务，开发一个简单地安卓App调用相关的天气，地图API以显示当前位置的温度，由于我的安卓开发水平并不是那么出色并且当晚就要交付，所以我使用AI来帮我完成这个任务。&lt;/p></description></item><item><title>My First Post</title><link>https://LTXWorld.github.io/posts/my-first-post/</link><pubDate>Tue, 12 Nov 2024 16:22:39 +0800</pubDate><guid>https://LTXWorld.github.io/posts/my-first-post/</guid><description>&lt;p>这是测试&lt;/p>
+&lt;p>如何创建一个新的博客&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">hugo new content content/posts/xxxx.md
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>同时注意draft为true时是草稿，暂时不显示在网页上。&lt;/p>
+&lt;p>行内数学公式：$a^2 + b^2 = c^2$。&lt;/p>
+&lt;p>块公式，&lt;/p>
+&lt;p>$$
 a^2 + b^2 = c^2
-$$&lt;/p&gt;
-&lt;!-- raw HTML omitted --&gt;
-&lt;p&gt;$$
-\boldsymbol{x}&lt;em&gt;{i+1}+\boldsymbol{x}&lt;/em&gt;{i+2}=\boldsymbol{x}_{i+3}
-$$&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+$$&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;p>$$
+\boldsymbol{x}&lt;em>{i+1}+\boldsymbol{x}&lt;/em>{i+2}=\boldsymbol{x}_{i+3}
+$$&lt;/p></description></item></channel></rss>

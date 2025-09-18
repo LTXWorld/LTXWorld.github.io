@@ -1,373 +1,48 @@
-<!DOCTYPE html>
-<html lang="zh" dir="auto">
-
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>K3sEP03——移植镜像到RiscV开发板 | LTX&#39;s Blog</title>
-<meta name="keywords" content="Docker, Macos, RiscV">
-<meta name="description" content="引子
+<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>K3sEP03——移植镜像到RiscV开发板 | LTX's Blog</title>
+<meta name=keywords content="Docker,Macos,RiscV"><meta name=description content="引子
 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
-拿nginx镜像举例:">
-<meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.87ea10c5eb6cdf9fcc27aa5665a12ed25ef08a46de7d411927d891915eb7ca57.css" integrity="sha256-h&#43;oQxets35/MJ6pWZaEu0l7wikbefUEZJ9iRkV63ylc=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-<script type="text/javascript"
-
-        async
-
-        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-
-MathJax.Hub.Config({
-
-  tex2jax: {
-
-    inlineMath: [['$','$'], ['\\(','\\)']],
-
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-
-    processEscapes: true,
-
-    processEnvironments: true,
-
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-
-         extensions: ["AMSmath.js", "AMSsymbols.js"] }
-
-  }
-
-});
-
-
-MathJax.Hub.Queue(function() {
-
-    
-
-    
-
-    
-
-    var all = MathJax.Hub.getAllJax(), i;
-
-    for(i = 0; i < all.length; i += 1) {
-
-        all[i].SourceElement().parentNode.className += ' has-jax';
-
-    }
-
-});
-
-</script>
-
-
-<style>
-
-code.has-jax {
-
-    font: inherit;
-
-    font-size: 100%;
-
-    background: inherit;
-
-    border: inherit;
-
-    color: #515151;
-
-}
-
-</style><meta property="og:url" content="http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
-  <meta property="og:site_name" content="LTX&#39;s Blog">
-  <meta property="og:title" content="K3sEP03——移植镜像到RiscV开发板">
-  <meta property="og:description" content="引子 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。 拿nginx镜像举例:">
-  <meta property="og:locale" content="zh">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2025-04-02T19:10:13+08:00">
-    <meta property="article:modified_time" content="2025-04-02T19:10:13+08:00">
-    <meta property="article:tag" content="Docker">
-    <meta property="article:tag" content="Macos">
-    <meta property="article:tag" content="RiscV">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
-<meta name="twitter:title" content="K3sEP03——移植镜像到RiscV开发板">
-<meta name="twitter:description" content="引子
+拿nginx镜像举例:"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/><link crossorigin=anonymous href=/assets/css/stylesheet.5f0ddd8622920919e414fdd8cc3f59e09ea98fa129491973ab7d95306b6604d0.css integrity="sha256-Xw3dhiKSCRnkFP3YzD9Z4J6pj6EpSRlzq32VMGtmBNA=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="K3sEP03——移植镜像到RiscV开发板"><meta property="og:description" content="引子 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。 拿nginx镜像举例:"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-02T19:10:13+08:00"><meta property="article:modified_time" content="2025-04-02T19:10:13+08:00"><meta property="article:tag" content="Docker"><meta property="article:tag" content="Macos"><meta property="article:tag" content="RiscV"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="K3sEP03——移植镜像到RiscV开发板"><meta name=twitter:description content="引子
 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
-拿nginx镜像举例:">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "http://localhost:1313/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "K3sEP03——移植镜像到RiscV开发板",
-      "item": "http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "K3sEP03——移植镜像到RiscV开发板",
-  "name": "K3sEP03——移植镜像到RiscV开发板",
-  "description": "引子 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。 拿nginx镜像举例:\n",
-  "keywords": [
-    "Docker", "Macos", "RiscV"
-  ],
-  "articleBody": "引子 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。 拿nginx镜像举例:\ndocker search riscv64/nginx\n检查是否有可用的镜像\nriscv64/nginx Official build of Nginx. 0 nginx/nginx-ingress NGINX and NGINX Plus Ingress Controllers fo… 102 nginx/nginx-prometheus-exporter NGINX Prometheus Exporter for NGINX and NGIN… 49 nginx/nginx-ingress-operator NGINX Ingress Operator for NGINX and NGINX P… 2 nginx/unit This repository is retired, use the Docker o… 65 nginx/nginx-quic-qns NGINX QUIC interop 1 nginxproxy/nginx-proxy Automated nginx proxy for Docker containers … 161 nginx Official build of Nginx. 20719 [OK] 可以发现riscv64/nginx的Stars数量为0，也不是官方镜像，所以拉取失败。（即使使用代理地址，开发板上也会遇到网络问题，因为代理地址中也没保存非官方的镜像）\n由此可见，自行构建合适的镜像迫在眉睫。\n私有镜像仓库 Docker为用户提供了一种构建私有镜像仓库的能力，利用其registry镜像，我们可以搭建一个私人的镜像仓库，由此我们可以不再依赖于远程拉取镜像，在搭建K3s集群时，可以选择一个节点作为数据存储节点，既存储各个Agent与Server的数据，也存储我们需要的专属镜像数据。\n由于registry这个镜像暂时也不适配RiscV架构（会出现经典的manifest问题）\n所以我们先在arm(macos)上尝试一下私有镜像如何搭建。\n私有镜像搭建实验 本次实验将Mac主机私有镜像库的物理机，一台RiscV开发板作为拉取镜像的机器。\n首先，在Mac上构建Registry容器。\n# 这里我选择6000端口作为本机端口（5000被系统占用，无法彻底杀死） docker run -d -p 6000:5000 --restart=always --name registry registry:2 构建成功后，如果你使用DockerDesktop可以在其中容器部分发现容器已经在正常运行了。我们再进行一下相关测试curl http://:6000/v2/,其会返回\"repository[]\"信息，证明成功。\n这时我们随便拉下来一个镜像进行测试docker pull busybox:latest 对这个镜像进行打标签，并推送到私有仓库中。(打标签操作本质上是复制一份镜像并为其改名)\n# 注意，将后续的macIP改为自己本机的IP地址 # 原本tag命令不需要IP，但是如果指向私有地址，则需要带上私有地址IP docker tag busybox:latest :6000/riscv64/busybox:1 # 将此镜像推送到私有仓库中 docker push :6000/riscv64/busybox:1 结果如下\nThe push refers to repository [192.168.173.76:6000/riscv64/busybox] be632cf9bbb6: Pushed 1: digest: sha256:c109a60479ed80d63b17808a6f993228b6ace6255064160ea82adfa01c36deba size: 527 同理可以使用上面的curl命令测试当前私有仓库中的镜像列表。\n**其次，本次实验为了方便暂时使用HTTP，没有使用HTTPS,即带有TLS的方式。**并且本次实验的主机与开发板连在同一个子网（热点）下，后续我们会探究使用https的方式。\n所以，我们需要在本机与开发板上的docker的配置文件中同时添加\n{ \"insecure-registries\": [\":6000\"] } 然后，重启Dockersudo systemctl restart docker\n最后，来到RiscV开发板上拉取镜像docker pull :6000/riscv64/busybox:1，使用docker images进行检查发现其存在。\n这样我们就做到了从私有仓库拉取了一个我们在开发板上拉取不到的镜像到开发板上，这对于我们日后的集群搭建工作起到了关键的作用。\n融入k3s 由于k3s的容器运行时采用containerd这个轻量化的原生工具而不建议使用docker，所以我们需要针对k3s的registries.yaml文件进行修改,将镜像地址全部修改为我们上面搭建的私有仓库地址。\nmirrors: docker.io: endpoint: - \"http://192.168.173.76:6000\" # 这里后续我们要思考如何将静态的IP地址写成动态或者如何面对IP变化的情况 - \"docker.1ms.run\" # 保险起见设置一个其他的镜像仓库 rewrite: \"^riscv64/(.*)\": \"riscv64/$1\" \"192.168.173.76:6000\": endpoint: - \"http://192.168.173.76:6000\" 之后再使用crictl命令进行拉取时就可以直接crictl pull \u003c镜像名称\u003e,注意，由于我们的镜像前面都是标有仓库地址的，所以在crictl pull时直接使用镜像名称即可。\n常用操作 检查私有仓库中有哪些镜像。\ncurl -X GET http://192.168.173.76:6000/v2/_catalog # 结果如下 {\"repositories\":[\"busybox\",\"mac_riscv64/alpine\",\"riscv64/busybox\"]} 多平台构建适配的镜像 首先我们先抛开k3s,使用docker来进行移植适配操作，毕竟二者没有太大的差异，而docker可以提供更强大的性能。操作流程来自于Docker官方文档中的使用QEMU进行多平台镜像构建方法，这是官方文档中三种方法之一，希望后面我们可以尝试另外两种方法。\n这次我们要适配的镜像是redis和nginx，操作的主机是Macbook M2,使用Docker Desktop方便操作。\n提前配置 根据文档中的说法，我们需要先从classic镜像模式转换为containerd镜像模式，这在Docker Desktop上很好操作。\n操作流程 1.新建目录保存redis等中间件的源码，为其编写的Dockerfile，以及可能自定义的配置文件等文件。\nmkdir -p multi-platform 2.为了防止容器内部下载速度过慢，提前下载好redis的源码文件并解压到本机。\nwget https://download.redis.io/releases/redis-7.2.4.tar.gz tar -xzvf redis-7.2.4.tar.gz 3.编写Dockerfile文件，这里要注意我们使用alpine:latest作为基础镜像，这个镜像是我尝试的几个基础镜像中适配riscv最好的；同时需要替换默认的apk包镜像源，否则会遇到could not connect server问题；为了设置密码等一些自定义配置，我们自行编写一个配置文件到当前目录中redis.conf\n# 允许所有 IP 连接（不要绑定 127.0.0.1） bind 0.0.0.0 # 关闭 protected mode，否则外部无法连接 protected-mode no # 设置访问密码 requirepass password # 设置持久化 RDB 保存策略 save 900 1 save 300 10 save 60 10000 # RDB 文件名 dbfilename dump.rdb # RDB 文件保存路径 dir ./ # 日志级别 loglevel notice # 日志输出到标准输出（容器中建议这样） logfile \"\" # 后台运行，容器中不能开启 daemonize no # 最大连接数（可选） maxclients 10000 # 设置内存上限（可选） # maxmemory 256mb # maxmemory-policy allkeys-lru 这是Dockerfile:\nFROM alpine:latest # 替换默认 apk 源为镜像源 RUN sed -i 's#https\\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装 Redis 构建依赖 RUN apk update \u0026\u0026 apk add --no-cache build-base jemalloc-dev linux-headers # 拷贝 Redis 源码（假设 redis-7.2.4 文件夹和 Dockerfile 同目录） COPY redis-7.2.4 /redis WORKDIR /redis # 编译 Redis RUN make # 拷贝配置文件 COPY redis.conf /etc/redis.conf # 设置默认启动命令 CMD [\"src/redis-server\", \"/etc/redis.conf\"] 4.构建跨平台镜像。这一步本质上用到了buildx和QEMU，但是Docker Desktop为我们把这些底层都封装了起来，所以如果你是用Docker Desktop启动的Docker就不用在意;构建的同时如果遇到网络问题，请在参数中添加--network host命令，这会将宿主机网络作为容器内部网络，绕过网络限制。这个解决思路来自于stackoverflow\n# 这里我们直接-t打好了标签，不用再tag了 docker build --network host --platform=linux/riscv64 -f Dockerfile.redis -t 192.168.173.76:6000/riscv64/redis:1.1 . 5.推送到本地私有镜像仓库中，再从RiscV开发板中拉取该镜像,这一步和上面私有镜像仓库构建相同。\ndocker push 192.168.173.76:6000/riscv64/redis:1.1 # riscv下 docker pull 192.168.173.76:6000/riscv64/redis:1.1 6.运行redis-server容器，并在主机上运行redis-cli来测试\ndocker run -d --name redis-test -p 6379:6379 192.168.173.76:6000/riscv64/redis:1.1 # 主机运行 redis-cli -h -p 6379 \u003e AUTH password \u003e set foo bar \u003e get foo 得到最终结果\"bar\",证明我们成功了！\n同理我们也可以测试一下nginx镜像，下面是其简单的dockerfile\nFROM alpine:latest # 替换源（可选，也可以用清华源） RUN sed -i 's#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g' /etc/apk/repositories \\ \u0026\u0026 apk update \u0026\u0026 apk add --no-cache nginx # 拷贝配置文件和静态资源 COPY nginx.conf /etc/nginx/nginx.conf COPY html/ /usr/share/nginx/html/ # 暴露端口 EXPOSE 80 # 启动 Nginx CMD [\"nginx\", \"-g\", \"daemon off;\"] 其中的nginx.conf\nworker_processes 1; events { worker_connections 1024; } http { include mime.types; default_type application/octet-stream; sendfile on; keepalive_timeout 65; server { listen 80; server_name localhost; location / { root /usr/share/nginx/html; index index.html index.htm; } } } 对应的html文件内容:\n\u003c!DOCTYPE html\u003e \u003chtml lang=\"en\"\u003e \u003chead\u003e \u003cmeta charset=\"UTF-8\"\u003e \u003ctitle\u003eWelcome to RISC-V Nginx!\u003c/title\u003e \u003cstyle\u003e body { font-family: \"Segoe UI\", sans-serif; background-color: #f4f4f4; text-align: center; padding-top: 100px; } h1 { color: #333; } p { color: #777; } .tag { display: inline-block; margin-top: 20px; padding: 8px 16px; background-color: #007acc; color: white; border-radius: 4px; font-weight: bold; } \u003c/style\u003e \u003c/head\u003e \u003cbody\u003e \u003ch1\u003e🚀 Hello from RISC-V Nginx!\u003c/h1\u003e \u003cp\u003eYour nginx server is up and running.\u003c/p\u003e \u003cdiv class=\"tag\"\u003eriscv64 / alpine / nginx\u003c/div\u003e \u003c/body\u003e \u003c/html\u003e 同理打包推送拉取。运行容器后，在我的mac主机上访问http://:8080可以看到上述html文件的效果\n优化镜像 当前redis镜像大小为146MB\n(base) lutao@MagicTech multi-platform % docker images | grep redis 192.168.173.76:6000/riscv64/redis 1.1 e8e1336c3ccf 13 hours ago 146MB 我们可以采用多阶段构建以精简最终镜像，使其不包含构建工具和源代码。\n# ---------- 构建阶段 ---------- FROM alpine:latest AS builder # 使用阿里源加速 RUN sed -i 's#http.*/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装构建依赖 RUN apk update \u0026\u0026 apk add --no-cache build-base jemalloc-dev linux-headers # 拷贝源码 COPY redis-7.2.4 /redis WORKDIR /redis # 编译 Redis RUN make # ---------- 运行阶段 ---------- FROM alpine:latest # 使用阿里源（可选） RUN sed -i 's#http.*/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装运行所需的 jemalloc RUN apk add --no-cache jemalloc # 拷贝 redis-server 和 redis-cli（如果你需要 CLI 工具） COPY --from=builder /redis/src/redis-server /usr/local/bin/ COPY --from=builder /redis/src/redis-cli /usr/local/bin/ # 拷贝配置文件 COPY redis.conf /etc/redis.conf # 设置默认启动命令 CMD [\"redis-server\", \"/etc/redis.conf\"] 最终构建过程花费293.4s\n最终镜像大小只有10.2MB，相较于之前的146MB缩小了许多。\n同时我们也可以构建一个只有redis-cli的镜像，对于融合进k3s集群中或许可以在server节点上使用redis-server镜像，然后在其他agent节点的pod中部署redis-cli对其进行访问。\n总结 搭建了一个简易的私有镜像仓库和移植了redis-server镜像到RiscV机器上，算是迈出了不错的一步，后面的工作主要围绕着如何将其更深入地融入到k3s中以及深入探究docker的多平台构建其底层原理展开。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
-  "wordCount" : "3600",
-  "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-04-02T19:10:13+08:00",
-  "dateModified": "2025-04-02T19:10:13+08:00",
-  "author":{
-    "@type": "Person",
-    "name": "LTX"
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "LTX's Blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    }
-
-</script>
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu">
-            <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
-                    <span>首页</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/archives/" title="归档">
-                    <span>归档</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
-                    <span>分类</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
-                    <span>标签</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/search/" title="搜索">
-                    <span>搜索</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/about/" title="后花园">
-                    <span>关于</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
-    
-    <h1 class="post-title entry-hint-parent">
-      K3sEP03——移植镜像到RiscV开发板
-    </h1>
-    <div class="post-meta"><span title='2025-04-02 19:10:13 +0800 CST'>四月 2, 2025</span>&nbsp;·&nbsp;8 分钟&nbsp;·&nbsp;LTX
-
-</div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">目录</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
-                <li>
-                    <a href="#%e7%a7%81%e6%9c%89%e9%95%9c%e5%83%8f%e4%bb%93%e5%ba%93" aria-label="私有镜像仓库">私有镜像仓库</a><ul>
-                        
-                <li>
-                    <a href="#%e7%a7%81%e6%9c%89%e9%95%9c%e5%83%8f%e6%90%ad%e5%bb%ba%e5%ae%9e%e9%aa%8c" aria-label="私有镜像搭建实验">私有镜像搭建实验</a></li>
-                <li>
-                    <a href="#%e8%9e%8d%e5%85%a5k3s" aria-label="融入k3s">融入k3s</a></li>
-                <li>
-                    <a href="#%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c" aria-label="常用操作">常用操作</a></li></ul>
-                </li>
-                <li>
-                    <a href="#%e5%a4%9a%e5%b9%b3%e5%8f%b0%e6%9e%84%e5%bb%ba%e9%80%82%e9%85%8d%e7%9a%84%e9%95%9c%e5%83%8f" aria-label="多平台构建适配的镜像">多平台构建适配的镜像</a><ul>
-                        
-                <li>
-                    <a href="#%e6%8f%90%e5%89%8d%e9%85%8d%e7%bd%ae" aria-label="提前配置">提前配置</a></li>
-                <li>
-                    <a href="#%e6%93%8d%e4%bd%9c%e6%b5%81%e7%a8%8b" aria-label="操作流程">操作流程</a></li>
-                <li>
-                    <a href="#%e4%bc%98%e5%8c%96%e9%95%9c%e5%83%8f" aria-label="优化镜像">优化镜像</a></li></ul>
-                </li>
-                <li>
-                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
-  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
-<p>了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如<code>riscv64/nginx,riscv64/redis</code>等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
-拿nginx镜像举例:</p>
-<p><code>docker search riscv64/nginx</code></p>
-<p>检查是否有可用的镜像</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">riscv64/nginx                            Official build of Nginx.                         <span class="m">0</span>
-</span></span><span class="line"><span class="cl">nginx/nginx-ingress                      NGINX and  NGINX Plus Ingress Controllers fo…   <span class="m">102</span>
-</span></span><span class="line"><span class="cl">nginx/nginx-prometheus-exporter          NGINX Prometheus Exporter <span class="k">for</span> NGINX and NGIN…   <span class="m">49</span>
-</span></span><span class="line"><span class="cl">nginx/nginx-ingress-operator             NGINX Ingress Operator <span class="k">for</span> NGINX and NGINX P…   <span class="m">2</span>
-</span></span><span class="line"><span class="cl">nginx/unit                               This repository is retired, use the Docker o…   <span class="m">65</span>
-</span></span><span class="line"><span class="cl">nginx/nginx-quic-qns                     NGINX QUIC interop                               <span class="m">1</span>
-</span></span><span class="line"><span class="cl">nginxproxy/nginx-proxy                   Automated nginx proxy <span class="k">for</span> Docker containers …   <span class="m">161</span>
-</span></span><span class="line"><span class="cl">nginx                                    Official build of Nginx.                         <span class="m">20719</span>     <span class="o">[</span>OK<span class="o">]</span>
-</span></span></code></pre></div><p>可以发现<code>riscv64/nginx</code>的Stars数量为0，也不是官方镜像，所以拉取失败。（即使使用代理地址，开发板上也会遇到网络问题，因为代理地址中也没保存非官方的镜像）</p>
-<p>由此可见，自行构建合适的镜像迫在眉睫。</p>
-<h2 id="私有镜像仓库">私有镜像仓库<a hidden class="anchor" aria-hidden="true" href="#私有镜像仓库">#</a></h2>
-<p>Docker为用户提供了一种构建私有镜像仓库的能力，利用其registry镜像，我们可以搭建一个私人的镜像仓库，由此我们可以不再依赖于远程拉取镜像，在搭建K3s集群时，可以选择一个节点作为数据存储节点，既存储各个Agent与Server的数据，也存储我们需要的专属镜像数据。</p>
-<p>由于registry这个镜像暂时也不适配RiscV架构（会出现经典的manifest问题）</p>
-<p>所以我们先在arm(macos)上尝试一下私有镜像如何搭建。</p>
-<h3 id="私有镜像搭建实验">私有镜像搭建实验<a hidden class="anchor" aria-hidden="true" href="#私有镜像搭建实验">#</a></h3>
-<p>本次实验将Mac主机私有镜像库的物理机，一台RiscV开发板作为拉取镜像的机器。</p>
-<p><strong>首先，在Mac上构建Registry容器。</strong></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 这里我选择6000端口作为本机端口（5000被系统占用，无法彻底杀死）</span>
-</span></span><span class="line"><span class="cl">docker run -d -p 6000:5000 --restart<span class="o">=</span>always --name registry registry:2
-</span></span></code></pre></div><p>构建成功后，如果你使用DockerDesktop可以在其中容器部分发现容器已经在正常运行了。我们再进行一下相关测试<code>curl http://&lt;macIP&gt;:6000/v2/</code>,其会返回<code>&quot;repository[]&quot;</code>信息，证明成功。</p>
-<p>这时我们随便拉下来一个镜像进行测试<code>docker pull busybox:latest</code>
-对这个镜像进行打标签，并推送到私有仓库中。(打标签操作本质上是复制一份镜像并为其改名)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 注意，将后续的macIP改为自己本机的IP地址</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># 原本tag命令不需要IP，但是如果指向私有地址，则需要带上私有地址IP</span>
-</span></span><span class="line"><span class="cl">docker tag busybox:latest &lt;macIP&gt;:6000/riscv64/busybox:1
-</span></span><span class="line"><span class="cl"><span class="c1"># 将此镜像推送到私有仓库中</span>
-</span></span><span class="line"><span class="cl">docker push &lt;macIP&gt;:6000/riscv64/busybox:1
-</span></span></code></pre></div><p>结果如下</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">The push refers to repository <span class="o">[</span>192.168.173.76:6000/riscv64/busybox<span class="o">]</span>
-</span></span><span class="line"><span class="cl">be632cf9bbb6: Pushed
-</span></span><span class="line"><span class="cl">1: digest: sha256:c109a60479ed80d63b17808a6f993228b6ace6255064160ea82adfa01c36deba size: <span class="m">527</span>
-</span></span></code></pre></div><p>同理可以使用上面的curl命令测试当前私有仓库中的镜像列表。</p>
-<p>**其次，本次实验为了方便暂时使用HTTP，没有使用HTTPS,即带有TLS的方式。**并且本次实验的主机与开发板连在同一个子网（热点）下，后续我们会探究使用https的方式。</p>
-<p>所以，我们需要在本机与开发板上的docker的配置文件中同时添加</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">{</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;insecure-registries&#34;</span>: <span class="o">[</span><span class="s2">&#34;&lt;macIP&gt;:6000&#34;</span><span class="o">]</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></div><p>然后，重启Docker<code>sudo systemctl restart docker</code></p>
-<p>最后，来到RiscV开发板上拉取镜像<code>docker pull &lt;macIP&gt;:6000/riscv64/busybox:1</code>，使用<code>docker images</code>进行检查发现其存在。</p>
-<p>这样我们就做到了从私有仓库拉取了一个我们在开发板上拉取不到的镜像到开发板上，这对于我们日后的集群搭建工作起到了关键的作用。</p>
-<p><img loading="lazy" src="/img/jb/coffee.webp"></p>
-<h3 id="融入k3s">融入k3s<a hidden class="anchor" aria-hidden="true" href="#融入k3s">#</a></h3>
-<p>由于k3s的容器运行时采用containerd这个轻量化的原生工具而不建议使用docker，所以我们需要针对k3s的<code>registries.yaml</code>文件进行修改,将镜像地址全部修改为我们上面搭建的私有仓库地址。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">mirrors</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">docker.io</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;http://192.168.173.76:6000&#34;</span><span class="w"> </span><span class="c"># 这里后续我们要思考如何将静态的IP地址写成动态或者如何面对IP变化的情况</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;docker.1ms.run&#34;</span><span class="w"> </span><span class="c"># 保险起见设置一个其他的镜像仓库</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">rewrite</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">&#34;^riscv64/(.*)&#34;: </span><span class="s2">&#34;riscv64/$1&#34;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="s2">&#34;192.168.173.76:6000&#34;</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">endpoint</span><span class="p">:</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;http://192.168.173.76:6000&#34;</span><span class="w">
-</span></span></span></code></pre></div><p>之后再使用crictl命令进行拉取时就可以直接<code>crictl pull &lt;镜像名称&gt;</code>,注意，由于我们的镜像前面都是标有仓库地址的，所以在<code>crictl pull</code>时直接使用镜像名称即可。</p>
-<h3 id="常用操作">常用操作<a hidden class="anchor" aria-hidden="true" href="#常用操作">#</a></h3>
-<p>检查私有仓库中有哪些镜像。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -X GET http://192.168.173.76:6000/v2/_catalog
-</span></span><span class="line"><span class="cl"><span class="c1"># 结果如下</span>
-</span></span><span class="line"><span class="cl"><span class="o">{</span><span class="s2">&#34;repositories&#34;</span>:<span class="o">[</span><span class="s2">&#34;busybox&#34;</span>,<span class="s2">&#34;mac_riscv64/alpine&#34;</span>,<span class="s2">&#34;riscv64/busybox&#34;</span><span class="o">]}</span>
-</span></span></code></pre></div><h2 id="多平台构建适配的镜像">多平台构建适配的镜像<a hidden class="anchor" aria-hidden="true" href="#多平台构建适配的镜像">#</a></h2>
-<p>首先我们先抛开k3s,使用docker来进行移植适配操作，毕竟二者没有太大的差异，而docker可以提供更强大的性能。操作流程来自于<a href="https://docs.docker.com/build/building/multi-platform/#simple-multi-platform-build-using-emulation">Docker官方文档</a>中的使用QEMU进行多平台镜像构建方法，这是官方文档中三种方法之一，希望后面我们可以尝试另外两种方法。</p>
-<p>这次我们要适配的镜像是redis和nginx，操作的主机是Macbook M2,使用Docker Desktop方便操作。</p>
-<h3 id="提前配置">提前配置<a hidden class="anchor" aria-hidden="true" href="#提前配置">#</a></h3>
-<p>根据文档中的说法，我们需要先从classic镜像模式转换为containerd镜像模式，这在Docker Desktop上很好操作。</p>
-<h3 id="操作流程">操作流程<a hidden class="anchor" aria-hidden="true" href="#操作流程">#</a></h3>
-<p>1.新建目录保存redis等中间件的源码，为其编写的Dockerfile，以及可能自定义的配置文件等文件。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p multi-platform
-</span></span></code></pre></div><p>2.为了防止容器内部下载速度过慢，提前下载好redis的源码文件并解压到本机。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://download.redis.io/releases/redis-7.2.4.tar.gz
-</span></span><span class="line"><span class="cl">tar -xzvf redis-7.2.4.tar.gz
-</span></span></code></pre></div><p>3.编写Dockerfile文件，这里要注意我们使用<code>alpine:latest</code>作为基础镜像，这个镜像是我尝试的几个基础镜像中适配riscv最好的；同时需要替换默认的apk包镜像源，否则会遇到<code>could not connect server</code>问题；为了设置密码等一些自定义配置，我们自行编写一个配置文件到当前目录中<code>redis.conf</code></p>
-<pre tabindex="0"><code class="language-conf" data-lang="conf"># 允许所有 IP 连接（不要绑定 127.0.0.1）
+拿nginx镜像举例:"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"K3sEP03——移植镜像到RiscV开发板","item":"https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"K3sEP03——移植镜像到RiscV开发板","name":"K3sEP03——移植镜像到RiscV开发板","description":"引子 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。 拿nginx镜像举例:\n","keywords":["Docker","Macos","RiscV"],"articleBody":"引子 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。 拿nginx镜像举例:\ndocker search riscv64/nginx\n检查是否有可用的镜像\nriscv64/nginx Official build of Nginx. 0 nginx/nginx-ingress NGINX and NGINX Plus Ingress Controllers fo… 102 nginx/nginx-prometheus-exporter NGINX Prometheus Exporter for NGINX and NGIN… 49 nginx/nginx-ingress-operator NGINX Ingress Operator for NGINX and NGINX P… 2 nginx/unit This repository is retired, use the Docker o… 65 nginx/nginx-quic-qns NGINX QUIC interop 1 nginxproxy/nginx-proxy Automated nginx proxy for Docker containers … 161 nginx Official build of Nginx. 20719 [OK] 可以发现riscv64/nginx的Stars数量为0，也不是官方镜像，所以拉取失败。（即使使用代理地址，开发板上也会遇到网络问题，因为代理地址中也没保存非官方的镜像）\n由此可见，自行构建合适的镜像迫在眉睫。\n私有镜像仓库 Docker为用户提供了一种构建私有镜像仓库的能力，利用其registry镜像，我们可以搭建一个私人的镜像仓库，由此我们可以不再依赖于远程拉取镜像，在搭建K3s集群时，可以选择一个节点作为数据存储节点，既存储各个Agent与Server的数据，也存储我们需要的专属镜像数据。\n由于registry这个镜像暂时也不适配RiscV架构（会出现经典的manifest问题）\n所以我们先在arm(macos)上尝试一下私有镜像如何搭建。\n私有镜像搭建实验 本次实验将Mac主机私有镜像库的物理机，一台RiscV开发板作为拉取镜像的机器。\n首先，在Mac上构建Registry容器。\n# 这里我选择6000端口作为本机端口（5000被系统占用，无法彻底杀死） docker run -d -p 6000:5000 --restart=always --name registry registry:2 构建成功后，如果你使用DockerDesktop可以在其中容器部分发现容器已经在正常运行了。我们再进行一下相关测试curl http://:6000/v2/,其会返回\"repository[]\"信息，证明成功。\n这时我们随便拉下来一个镜像进行测试docker pull busybox:latest 对这个镜像进行打标签，并推送到私有仓库中。(打标签操作本质上是复制一份镜像并为其改名)\n# 注意，将后续的macIP改为自己本机的IP地址 # 原本tag命令不需要IP，但是如果指向私有地址，则需要带上私有地址IP docker tag busybox:latest :6000/riscv64/busybox:1 # 将此镜像推送到私有仓库中 docker push :6000/riscv64/busybox:1 结果如下\nThe push refers to repository [192.168.173.76:6000/riscv64/busybox] be632cf9bbb6: Pushed 1: digest: sha256:c109a60479ed80d63b17808a6f993228b6ace6255064160ea82adfa01c36deba size: 527 同理可以使用上面的curl命令测试当前私有仓库中的镜像列表。\n**其次，本次实验为了方便暂时使用HTTP，没有使用HTTPS,即带有TLS的方式。**并且本次实验的主机与开发板连在同一个子网（热点）下，后续我们会探究使用https的方式。\n所以，我们需要在本机与开发板上的docker的配置文件中同时添加\n{ \"insecure-registries\": [\":6000\"] } 然后，重启Dockersudo systemctl restart docker\n最后，来到RiscV开发板上拉取镜像docker pull :6000/riscv64/busybox:1，使用docker images进行检查发现其存在。\n这样我们就做到了从私有仓库拉取了一个我们在开发板上拉取不到的镜像到开发板上，这对于我们日后的集群搭建工作起到了关键的作用。\n融入k3s 由于k3s的容器运行时采用containerd这个轻量化的原生工具而不建议使用docker，所以我们需要针对k3s的registries.yaml文件进行修改,将镜像地址全部修改为我们上面搭建的私有仓库地址。\nmirrors: docker.io: endpoint: - \"http://192.168.173.76:6000\" # 这里后续我们要思考如何将静态的IP地址写成动态或者如何面对IP变化的情况 - \"docker.1ms.run\" # 保险起见设置一个其他的镜像仓库 rewrite: \"^riscv64/(.*)\": \"riscv64/$1\" \"192.168.173.76:6000\": endpoint: - \"http://192.168.173.76:6000\" 之后再使用crictl命令进行拉取时就可以直接crictl pull \u003c镜像名称\u003e,注意，由于我们的镜像前面都是标有仓库地址的，所以在crictl pull时直接使用镜像名称即可。\n常用操作 检查私有仓库中有哪些镜像。\ncurl -X GET http://192.168.173.76:6000/v2/_catalog # 结果如下 {\"repositories\":[\"busybox\",\"mac_riscv64/alpine\",\"riscv64/busybox\"]} 多平台构建适配的镜像 首先我们先抛开k3s,使用docker来进行移植适配操作，毕竟二者没有太大的差异，而docker可以提供更强大的性能。操作流程来自于Docker官方文档中的使用QEMU进行多平台镜像构建方法，这是官方文档中三种方法之一，希望后面我们可以尝试另外两种方法。\n这次我们要适配的镜像是redis和nginx，操作的主机是Macbook M2,使用Docker Desktop方便操作。\n提前配置 根据文档中的说法，我们需要先从classic镜像模式转换为containerd镜像模式，这在Docker Desktop上很好操作。\n操作流程 1.新建目录保存redis等中间件的源码，为其编写的Dockerfile，以及可能自定义的配置文件等文件。\nmkdir -p multi-platform 2.为了防止容器内部下载速度过慢，提前下载好redis的源码文件并解压到本机。\nwget https://download.redis.io/releases/redis-7.2.4.tar.gz tar -xzvf redis-7.2.4.tar.gz 3.编写Dockerfile文件，这里要注意我们使用alpine:latest作为基础镜像，这个镜像是我尝试的几个基础镜像中适配riscv最好的；同时需要替换默认的apk包镜像源，否则会遇到could not connect server问题；为了设置密码等一些自定义配置，我们自行编写一个配置文件到当前目录中redis.conf\n# 允许所有 IP 连接（不要绑定 127.0.0.1） bind 0.0.0.0 # 关闭 protected mode，否则外部无法连接 protected-mode no # 设置访问密码 requirepass password # 设置持久化 RDB 保存策略 save 900 1 save 300 10 save 60 10000 # RDB 文件名 dbfilename dump.rdb # RDB 文件保存路径 dir ./ # 日志级别 loglevel notice # 日志输出到标准输出（容器中建议这样） logfile \"\" # 后台运行，容器中不能开启 daemonize no # 最大连接数（可选） maxclients 10000 # 设置内存上限（可选） # maxmemory 256mb # maxmemory-policy allkeys-lru 这是Dockerfile:\nFROM alpine:latest # 替换默认 apk 源为镜像源 RUN sed -i 's#https\\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装 Redis 构建依赖 RUN apk update \u0026\u0026 apk add --no-cache build-base jemalloc-dev linux-headers # 拷贝 Redis 源码（假设 redis-7.2.4 文件夹和 Dockerfile 同目录） COPY redis-7.2.4 /redis WORKDIR /redis # 编译 Redis RUN make # 拷贝配置文件 COPY redis.conf /etc/redis.conf # 设置默认启动命令 CMD [\"src/redis-server\", \"/etc/redis.conf\"] 4.构建跨平台镜像。这一步本质上用到了buildx和QEMU，但是Docker Desktop为我们把这些底层都封装了起来，所以如果你是用Docker Desktop启动的Docker就不用在意;构建的同时如果遇到网络问题，请在参数中添加--network host命令，这会将宿主机网络作为容器内部网络，绕过网络限制。这个解决思路来自于stackoverflow\n# 这里我们直接-t打好了标签，不用再tag了 docker build --network host --platform=linux/riscv64 -f Dockerfile.redis -t 192.168.173.76:6000/riscv64/redis:1.1 . 5.推送到本地私有镜像仓库中，再从RiscV开发板中拉取该镜像,这一步和上面私有镜像仓库构建相同。\ndocker push 192.168.173.76:6000/riscv64/redis:1.1 # riscv下 docker pull 192.168.173.76:6000/riscv64/redis:1.1 6.运行redis-server容器，并在主机上运行redis-cli来测试\ndocker run -d --name redis-test -p 6379:6379 192.168.173.76:6000/riscv64/redis:1.1 # 主机运行 redis-cli -h -p 6379 \u003e AUTH password \u003e set foo bar \u003e get foo 得到最终结果\"bar\",证明我们成功了！\n同理我们也可以测试一下nginx镜像，下面是其简单的dockerfile\nFROM alpine:latest # 替换源（可选，也可以用清华源） RUN sed -i 's#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g' /etc/apk/repositories \\ \u0026\u0026 apk update \u0026\u0026 apk add --no-cache nginx # 拷贝配置文件和静态资源 COPY nginx.conf /etc/nginx/nginx.conf COPY html/ /usr/share/nginx/html/ # 暴露端口 EXPOSE 80 # 启动 Nginx CMD [\"nginx\", \"-g\", \"daemon off;\"] 其中的nginx.conf\nworker_processes 1; events { worker_connections 1024; } http { include mime.types; default_type application/octet-stream; sendfile on; keepalive_timeout 65; server { listen 80; server_name localhost; location / { root /usr/share/nginx/html; index index.html index.htm; } } } 对应的html文件内容:\n\u003c!DOCTYPE html\u003e \u003chtml lang=\"en\"\u003e \u003chead\u003e \u003cmeta charset=\"UTF-8\"\u003e \u003ctitle\u003eWelcome to RISC-V Nginx!\u003c/title\u003e \u003cstyle\u003e body { font-family: \"Segoe UI\", sans-serif; background-color: #f4f4f4; text-align: center; padding-top: 100px; } h1 { color: #333; } p { color: #777; } .tag { display: inline-block; margin-top: 20px; padding: 8px 16px; background-color: #007acc; color: white; border-radius: 4px; font-weight: bold; } \u003c/style\u003e \u003c/head\u003e \u003cbody\u003e \u003ch1\u003e🚀 Hello from RISC-V Nginx!\u003c/h1\u003e \u003cp\u003eYour nginx server is up and running.\u003c/p\u003e \u003cdiv class=\"tag\"\u003eriscv64 / alpine / nginx\u003c/div\u003e \u003c/body\u003e \u003c/html\u003e 同理打包推送拉取。运行容器后，在我的mac主机上访问http://:8080可以看到上述html文件的效果\n优化镜像 当前redis镜像大小为146MB\n(base) lutao@MagicTech multi-platform % docker images | grep redis 192.168.173.76:6000/riscv64/redis 1.1 e8e1336c3ccf 13 hours ago 146MB 我们可以采用多阶段构建以精简最终镜像，使其不包含构建工具和源代码。\n# ---------- 构建阶段 ---------- FROM alpine:latest AS builder # 使用阿里源加速 RUN sed -i 's#http.*/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装构建依赖 RUN apk update \u0026\u0026 apk add --no-cache build-base jemalloc-dev linux-headers # 拷贝源码 COPY redis-7.2.4 /redis WORKDIR /redis # 编译 Redis RUN make # ---------- 运行阶段 ---------- FROM alpine:latest # 使用阿里源（可选） RUN sed -i 's#http.*/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装运行所需的 jemalloc RUN apk add --no-cache jemalloc # 拷贝 redis-server 和 redis-cli（如果你需要 CLI 工具） COPY --from=builder /redis/src/redis-server /usr/local/bin/ COPY --from=builder /redis/src/redis-cli /usr/local/bin/ # 拷贝配置文件 COPY redis.conf /etc/redis.conf # 设置默认启动命令 CMD [\"redis-server\", \"/etc/redis.conf\"] 最终构建过程花费293.4s\n最终镜像大小只有10.2MB，相较于之前的146MB缩小了许多。\n同时我们也可以构建一个只有redis-cli的镜像，对于融合进k3s集群中或许可以在server节点上使用redis-server镜像，然后在其他agent节点的pod中部署redis-cli对其进行访问。\n总结 搭建了一个简易的私有镜像仓库和移植了redis-server镜像到RiscV机器上，算是迈出了不错的一步，后面的工作主要围绕着如何将其更深入地融入到k3s中以及深入探究docker的多平台构建其底层原理展开。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n","wordCount":"3600","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2025-04-02T19:10:13+08:00","dateModified":"2025-04-02T19:10:13+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">K3sEP03——移植镜像到RiscV开发板</h1><div class=post-meta><span title='2025-04-02 19:10:13 +0800 CST'>四月 2, 2025</span>&nbsp;·&nbsp;8 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e5%bc%95%e5%ad%90 aria-label=引子>引子</a></li><li><a href=#%e7%a7%81%e6%9c%89%e9%95%9c%e5%83%8f%e4%bb%93%e5%ba%93 aria-label=私有镜像仓库>私有镜像仓库</a><ul><li><a href=#%e7%a7%81%e6%9c%89%e9%95%9c%e5%83%8f%e6%90%ad%e5%bb%ba%e5%ae%9e%e9%aa%8c aria-label=私有镜像搭建实验>私有镜像搭建实验</a></li><li><a href=#%e8%9e%8d%e5%85%a5k3s aria-label=融入k3s>融入k3s</a></li><li><a href=#%e5%b8%b8%e7%94%a8%e6%93%8d%e4%bd%9c aria-label=常用操作>常用操作</a></li></ul></li><li><a href=#%e5%a4%9a%e5%b9%b3%e5%8f%b0%e6%9e%84%e5%bb%ba%e9%80%82%e9%85%8d%e7%9a%84%e9%95%9c%e5%83%8f aria-label=多平台构建适配的镜像>多平台构建适配的镜像</a><ul><li><a href=#%e6%8f%90%e5%89%8d%e9%85%8d%e7%bd%ae aria-label=提前配置>提前配置</a></li><li><a href=#%e6%93%8d%e4%bd%9c%e6%b5%81%e7%a8%8b aria-label=操作流程>操作流程</a></li><li><a href=#%e4%bc%98%e5%8c%96%e9%95%9c%e5%83%8f aria-label=优化镜像>优化镜像</a></li></ul></li><li><a href=#%e6%80%bb%e7%bb%93 aria-label=总结>总结</a></li></ul></div></details></div><div class=post-content><h2 id=引子>引子<a hidden class=anchor aria-hidden=true href=#引子>#</a></h2><p>了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如<code>riscv64/nginx,riscv64/redis</code>等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
+拿nginx镜像举例:</p><p><code>docker search riscv64/nginx</code></p><p>检查是否有可用的镜像</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>riscv64/nginx                            Official build of Nginx.                         <span class=m>0</span>
+</span></span><span class=line><span class=cl>nginx/nginx-ingress                      NGINX and  NGINX Plus Ingress Controllers fo…   <span class=m>102</span>
+</span></span><span class=line><span class=cl>nginx/nginx-prometheus-exporter          NGINX Prometheus Exporter <span class=k>for</span> NGINX and NGIN…   <span class=m>49</span>
+</span></span><span class=line><span class=cl>nginx/nginx-ingress-operator             NGINX Ingress Operator <span class=k>for</span> NGINX and NGINX P…   <span class=m>2</span>
+</span></span><span class=line><span class=cl>nginx/unit                               This repository is retired, use the Docker o…   <span class=m>65</span>
+</span></span><span class=line><span class=cl>nginx/nginx-quic-qns                     NGINX QUIC interop                               <span class=m>1</span>
+</span></span><span class=line><span class=cl>nginxproxy/nginx-proxy                   Automated nginx proxy <span class=k>for</span> Docker containers …   <span class=m>161</span>
+</span></span><span class=line><span class=cl>nginx                                    Official build of Nginx.                         <span class=m>20719</span>     <span class=o>[</span>OK<span class=o>]</span>
+</span></span></code></pre></div><p>可以发现<code>riscv64/nginx</code>的Stars数量为0，也不是官方镜像，所以拉取失败。（即使使用代理地址，开发板上也会遇到网络问题，因为代理地址中也没保存非官方的镜像）</p><p>由此可见，自行构建合适的镜像迫在眉睫。</p><h2 id=私有镜像仓库>私有镜像仓库<a hidden class=anchor aria-hidden=true href=#私有镜像仓库>#</a></h2><p>Docker为用户提供了一种构建私有镜像仓库的能力，利用其registry镜像，我们可以搭建一个私人的镜像仓库，由此我们可以不再依赖于远程拉取镜像，在搭建K3s集群时，可以选择一个节点作为数据存储节点，既存储各个Agent与Server的数据，也存储我们需要的专属镜像数据。</p><p>由于registry这个镜像暂时也不适配RiscV架构（会出现经典的manifest问题）</p><p>所以我们先在arm(macos)上尝试一下私有镜像如何搭建。</p><h3 id=私有镜像搭建实验>私有镜像搭建实验<a hidden class=anchor aria-hidden=true href=#私有镜像搭建实验>#</a></h3><p>本次实验将Mac主机私有镜像库的物理机，一台RiscV开发板作为拉取镜像的机器。</p><p><strong>首先，在Mac上构建Registry容器。</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 这里我选择6000端口作为本机端口（5000被系统占用，无法彻底杀死）</span>
+</span></span><span class=line><span class=cl>docker run -d -p 6000:5000 --restart<span class=o>=</span>always --name registry registry:2
+</span></span></code></pre></div><p>构建成功后，如果你使用DockerDesktop可以在其中容器部分发现容器已经在正常运行了。我们再进行一下相关测试<code>curl http://&lt;macIP>:6000/v2/</code>,其会返回<code>"repository[]"</code>信息，证明成功。</p><p>这时我们随便拉下来一个镜像进行测试<code>docker pull busybox:latest</code>
+对这个镜像进行打标签，并推送到私有仓库中。(打标签操作本质上是复制一份镜像并为其改名)</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 注意，将后续的macIP改为自己本机的IP地址</span>
+</span></span><span class=line><span class=cl><span class=c1># 原本tag命令不需要IP，但是如果指向私有地址，则需要带上私有地址IP</span>
+</span></span><span class=line><span class=cl>docker tag busybox:latest &lt;macIP&gt;:6000/riscv64/busybox:1
+</span></span><span class=line><span class=cl><span class=c1># 将此镜像推送到私有仓库中</span>
+</span></span><span class=line><span class=cl>docker push &lt;macIP&gt;:6000/riscv64/busybox:1
+</span></span></code></pre></div><p>结果如下</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>The push refers to repository <span class=o>[</span>192.168.173.76:6000/riscv64/busybox<span class=o>]</span>
+</span></span><span class=line><span class=cl>be632cf9bbb6: Pushed
+</span></span><span class=line><span class=cl>1: digest: sha256:c109a60479ed80d63b17808a6f993228b6ace6255064160ea82adfa01c36deba size: <span class=m>527</span>
+</span></span></code></pre></div><p>同理可以使用上面的curl命令测试当前私有仓库中的镜像列表。</p><p>**其次，本次实验为了方便暂时使用HTTP，没有使用HTTPS,即带有TLS的方式。**并且本次实验的主机与开发板连在同一个子网（热点）下，后续我们会探究使用https的方式。</p><p>所以，我们需要在本机与开发板上的docker的配置文件中同时添加</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;insecure-registries&#34;</span>: <span class=o>[</span><span class=s2>&#34;&lt;macIP&gt;:6000&#34;</span><span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></div><p>然后，重启Docker<code>sudo systemctl restart docker</code></p><p>最后，来到RiscV开发板上拉取镜像<code>docker pull &lt;macIP>:6000/riscv64/busybox:1</code>，使用<code>docker images</code>进行检查发现其存在。</p><p>这样我们就做到了从私有仓库拉取了一个我们在开发板上拉取不到的镜像到开发板上，这对于我们日后的集群搭建工作起到了关键的作用。</p><p><img loading=lazy src=/img/jb/coffee.webp></p><h3 id=融入k3s>融入k3s<a hidden class=anchor aria-hidden=true href=#融入k3s>#</a></h3><p>由于k3s的容器运行时采用containerd这个轻量化的原生工具而不建议使用docker，所以我们需要针对k3s的<code>registries.yaml</code>文件进行修改,将镜像地址全部修改为我们上面搭建的私有仓库地址。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>mirrors</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>docker.io</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>endpoint</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=s2>&#34;http://192.168.173.76:6000&#34;</span><span class=w> </span><span class=c># 这里后续我们要思考如何将静态的IP地址写成动态或者如何面对IP变化的情况</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=s2>&#34;docker.1ms.run&#34;</span><span class=w> </span><span class=c># 保险起见设置一个其他的镜像仓库</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>rewrite</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>&#34;^riscv64/(.*)&#34;: </span><span class=s2>&#34;riscv64/$1&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=s2>&#34;192.168.173.76:6000&#34;</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>endpoint</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=s2>&#34;http://192.168.173.76:6000&#34;</span><span class=w>
+</span></span></span></code></pre></div><p>之后再使用crictl命令进行拉取时就可以直接<code>crictl pull &lt;镜像名称></code>,注意，由于我们的镜像前面都是标有仓库地址的，所以在<code>crictl pull</code>时直接使用镜像名称即可。</p><h3 id=常用操作>常用操作<a hidden class=anchor aria-hidden=true href=#常用操作>#</a></h3><p>检查私有仓库中有哪些镜像。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>curl -X GET http://192.168.173.76:6000/v2/_catalog
+</span></span><span class=line><span class=cl><span class=c1># 结果如下</span>
+</span></span><span class=line><span class=cl><span class=o>{</span><span class=s2>&#34;repositories&#34;</span>:<span class=o>[</span><span class=s2>&#34;busybox&#34;</span>,<span class=s2>&#34;mac_riscv64/alpine&#34;</span>,<span class=s2>&#34;riscv64/busybox&#34;</span><span class=o>]}</span>
+</span></span></code></pre></div><h2 id=多平台构建适配的镜像>多平台构建适配的镜像<a hidden class=anchor aria-hidden=true href=#多平台构建适配的镜像>#</a></h2><p>首先我们先抛开k3s,使用docker来进行移植适配操作，毕竟二者没有太大的差异，而docker可以提供更强大的性能。操作流程来自于<a href=https://docs.docker.com/build/building/multi-platform/#simple-multi-platform-build-using-emulation>Docker官方文档</a>中的使用QEMU进行多平台镜像构建方法，这是官方文档中三种方法之一，希望后面我们可以尝试另外两种方法。</p><p>这次我们要适配的镜像是redis和nginx，操作的主机是Macbook M2,使用Docker Desktop方便操作。</p><h3 id=提前配置>提前配置<a hidden class=anchor aria-hidden=true href=#提前配置>#</a></h3><p>根据文档中的说法，我们需要先从classic镜像模式转换为containerd镜像模式，这在Docker Desktop上很好操作。</p><h3 id=操作流程>操作流程<a hidden class=anchor aria-hidden=true href=#操作流程>#</a></h3><p>1.新建目录保存redis等中间件的源码，为其编写的Dockerfile，以及可能自定义的配置文件等文件。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mkdir -p multi-platform
+</span></span></code></pre></div><p>2.为了防止容器内部下载速度过慢，提前下载好redis的源码文件并解压到本机。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>wget https://download.redis.io/releases/redis-7.2.4.tar.gz
+</span></span><span class=line><span class=cl>tar -xzvf redis-7.2.4.tar.gz
+</span></span></code></pre></div><p>3.编写Dockerfile文件，这里要注意我们使用<code>alpine:latest</code>作为基础镜像，这个镜像是我尝试的几个基础镜像中适配riscv最好的；同时需要替换默认的apk包镜像源，否则会遇到<code>could not connect server</code>问题；为了设置密码等一些自定义配置，我们自行编写一个配置文件到当前目录中<code>redis.conf</code></p><pre tabindex=0><code class=language-conf data-lang=conf># 允许所有 IP 连接（不要绑定 127.0.0.1）
 bind 0.0.0.0
 
 # 关闭 protected mode，否则外部无法连接
@@ -402,579 +77,158 @@ maxclients 10000
 # 设置内存上限（可选）
 # maxmemory 256mb
 # maxmemory-policy allkeys-lru
-</code></pre><p>这是Dockerfile:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine:latest</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 替换默认 apk 源为镜像源</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> sed -i <span class="s1">&#39;s#https\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g&#39;</span> /etc/apk/repositories<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 安装 Redis 构建依赖</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apk update <span class="o">&amp;&amp;</span> apk add --no-cache build-base jemalloc-dev linux-headers<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 拷贝 Redis 源码（假设 redis-7.2.4 文件夹和 Dockerfile 同目录）</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> redis-7.2.4 /redis<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /redis</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 编译 Redis</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> make<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 拷贝配置文件</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> redis.conf /etc/redis.conf<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 设置默认启动命令</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;src/redis-server&#34;</span><span class="p">,</span> <span class="s2">&#34;/etc/redis.conf&#34;</span><span class="p">]</span><span class="err">
-</span></span></span></code></pre></div><p>4.构建跨平台镜像。这一步本质上用到了buildx和QEMU，但是Docker Desktop为我们把这些底层都封装了起来，所以如果你是用Docker Desktop启动的Docker就不用在意;构建的同时如果遇到网络问题，请在参数中添加<code>--network host</code>命令，这会将宿主机网络作为容器内部网络，绕过网络限制。这个解决思路来自于<a href="https://stackoverflow.com/questions/53710206/docker-cant-build-because-of-alpine-error">stackoverflow</a></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 这里我们直接-t打好了标签，不用再tag了</span>
-</span></span><span class="line"><span class="cl">docker build --network host --platform<span class="o">=</span>linux/riscv64 -f Dockerfile.redis -t 192.168.173.76:6000/riscv64/redis:1.1 .
-</span></span></code></pre></div><p>5.推送到本地私有镜像仓库中，再从RiscV开发板中拉取该镜像,这一步和上面私有镜像仓库构建相同。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker push 192.168.173.76:6000/riscv64/redis:1.1
-</span></span><span class="line"><span class="cl"><span class="c1"># riscv下</span>
-</span></span><span class="line"><span class="cl">docker pull 192.168.173.76:6000/riscv64/redis:1.1
-</span></span></code></pre></div><p>6.运行redis-server容器，并在主机上运行redis-cli来测试</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -d --name redis-test -p 6379:6379 192.168.173.76:6000/riscv64/redis:1.1
-</span></span><span class="line"><span class="cl"><span class="c1"># 主机运行</span>
-</span></span><span class="line"><span class="cl">redis-cli -h &lt;riscvIP&gt; -p <span class="m">6379</span>
-</span></span><span class="line"><span class="cl">&gt; AUTH password
-</span></span><span class="line"><span class="cl">&gt; <span class="nb">set</span> foo bar
-</span></span><span class="line"><span class="cl">&gt; get foo
-</span></span></code></pre></div><p>得到最终结果&quot;bar&quot;,证明我们成功了！</p>
-<p>同理我们也可以测试一下nginx镜像，下面是其简单的dockerfile</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine:latest</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 替换源（可选，也可以用清华源）</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> sed -i <span class="s1">&#39;s#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g&#39;</span> /etc/apk/repositories <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> apk update <span class="o">&amp;&amp;</span> apk add --no-cache nginx<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 拷贝配置文件和静态资源</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> nginx.conf /etc/nginx/nginx.conf<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> html/ /usr/share/nginx/html/<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 暴露端口</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 80</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 启动 Nginx</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;nginx&#34;</span><span class="p">,</span> <span class="s2">&#34;-g&#34;</span><span class="p">,</span> <span class="s2">&#34;daemon off;&#34;</span><span class="p">]</span><span class="err">
-</span></span></span></code></pre></div><p>其中的nginx.conf</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">worker_processes 1<span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">events <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    worker_connections 1024<span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">http <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    include       mime.types<span class="p">;</span>
-</span></span><span class="line"><span class="cl">    default_type  application/octet-stream<span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    sendfile        on<span class="p">;</span>
-</span></span><span class="line"><span class="cl">    keepalive_timeout  65<span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    server <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        listen       80<span class="p">;</span>
-</span></span><span class="line"><span class="cl">        server_name  localhost<span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        location / <span class="o">{</span>
-</span></span><span class="line"><span class="cl">            root   /usr/share/nginx/html<span class="p">;</span>
-</span></span><span class="line"><span class="cl">            index  index.html index.htm<span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="o">}</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></div><p>对应的html文件内容:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE html&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&#34;en&#34;</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&#34;UTF-8&#34;</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Welcome to RISC-V Nginx!<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">body</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">font-family</span><span class="p">:</span> <span class="s2">&#34;Segoe UI&#34;</span><span class="p">,</span> <span class="kc">sans-serif</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">background-color</span><span class="p">:</span> <span class="mh">#f4f4f4</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">text-align</span><span class="p">:</span> <span class="kc">center</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">padding-top</span><span class="p">:</span> <span class="mi">100</span><span class="kt">px</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">h1</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">color</span><span class="p">:</span> <span class="mh">#333</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="nt">p</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">color</span><span class="p">:</span> <span class="mh">#777</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="nc">tag</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">display</span><span class="p">:</span> <span class="kc">inline-block</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">margin-top</span><span class="p">:</span> <span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">padding</span><span class="p">:</span> <span class="mi">8</span><span class="kt">px</span> <span class="mi">16</span><span class="kt">px</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">background-color</span><span class="p">:</span> <span class="mh">#007acc</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">color</span><span class="p">:</span> <span class="kc">white</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">border-radius</span><span class="p">:</span> <span class="mi">4</span><span class="kt">px</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="k">font-weight</span><span class="p">:</span> <span class="kc">bold</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>🚀 Hello from RISC-V Nginx!<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Your nginx server is up and running.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&#34;tag&#34;</span><span class="p">&gt;</span>riscv64 / alpine / nginx<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
-</span></span></code></pre></div><p>同理打包推送拉取。运行容器后，在我的mac主机上访问<code>http://&lt;riscvIP&gt;:8080</code>可以看到上述html文件的效果</p>
-<p><img loading="lazy" src="/img/riscv/nginx01.png"></p>
-<h3 id="优化镜像">优化镜像<a hidden class="anchor" aria-hidden="true" href="#优化镜像">#</a></h3>
-<p>当前redis镜像大小为146MB</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">(</span>base<span class="o">)</span> lutao@MagicTech multi-platform % docker images <span class="p">|</span> grep redis
-</span></span><span class="line"><span class="cl">192.168.173.76:6000/riscv64/redis     1.1       e8e1336c3ccf   <span class="m">13</span> hours ago    146MB
-</span></span></code></pre></div><p>我们可以采用多阶段构建以精简最终镜像，使其不包含构建工具和源代码。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="c"># ---------- 构建阶段 ----------</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> alpine:latest AS builder</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 使用阿里源加速</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> sed -i <span class="s1">&#39;s#http.*/alpine#http://mirrors.aliyun.com/alpine#g&#39;</span> /etc/apk/repositories<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 安装构建依赖</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apk update <span class="o">&amp;&amp;</span> apk add --no-cache build-base jemalloc-dev linux-headers<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 拷贝源码</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> redis-7.2.4 /redis<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /redis</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 编译 Redis</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> make<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># ---------- 运行阶段 ----------</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> alpine:latest</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 使用阿里源（可选）</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> sed -i <span class="s1">&#39;s#http.*/alpine#http://mirrors.aliyun.com/alpine#g&#39;</span> /etc/apk/repositories<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 安装运行所需的 jemalloc</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> apk add --no-cache jemalloc<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 拷贝 redis-server 和 redis-cli（如果你需要 CLI 工具）</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>builder /redis/src/redis-server /usr/local/bin/<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> --from<span class="o">=</span>builder /redis/src/redis-cli /usr/local/bin/<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 拷贝配置文件</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> redis.conf /etc/redis.conf<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 设置默认启动命令</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;redis-server&#34;</span><span class="p">,</span> <span class="s2">&#34;/etc/redis.conf&#34;</span><span class="p">]</span><span class="err">
-</span></span></span></code></pre></div><p>最终构建过程花费293.4s</p>
-<p><img loading="lazy" src="/img/riscv/redis01.png"></p>
-<p>最终镜像大小只有10.2MB，相较于之前的146MB缩小了许多。</p>
-<p><img loading="lazy" src="/img/riscv/redis02.png"></p>
-<p>同时我们也可以构建一个只有redis-cli的镜像，对于融合进k3s集群中或许可以在server节点上使用redis-server镜像，然后在其他agent节点的pod中部署redis-cli对其进行访问。</p>
-<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
-<p>搭建了一个简易的私有镜像仓库和移植了redis-server镜像到RiscV机器上，算是迈出了不错的一步，后面的工作主要围绕着如何将其更深入地融入到k3s中以及深入探究docker的多平台构建其底层原理展开。</p>
-<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
-
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/docker/">Docker</a></li>
-      <li><a href="http://localhost:1313/tags/macos/">Macos</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/">
-    <span class="title">« 上一页</span>
-    <br>
-    <span>DebugEP02——MacOs系统升级与Homebrew的关系</span>
-  </a>
-  <a class="next" href="http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/">
-    <span class="title">下一页 »</span>
-    <br>
-    <span>Tmux终端窗口器</span>
-  </a>
-</nav>
-
-  </footer><div id="tw-comment"></div>
-
-<script>
-
-    
-
-    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
-
-    const setGiscusTheme = () => {
-
-        const sendMessage = (message) => {
-
-            const iframe = document.querySelector('iframe.giscus-frame');
-
-            if (iframe) {
-
-                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
-
-            }
-
-        }
-
-        sendMessage({setConfig: {theme: getStoredTheme()}})
-
-    }
-
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-        const giscusAttributes = {
-
-            "src": "https://giscus.app/client.js",
-
-            "data-repo": "LTXWorld\/LTXWorld.github.io",
-
-            "data-repo-id": "R_kgDONODUuA",
-
-            "data-category": "Announcements",
-
-            "data-category-id": "DIC_kwDONODUuM4CkMUw",
-
-            "data-mapping": "pathname",
-
-            "data-strict": "0",
-
-            "data-reactions-enabled": "1",
-
-            "data-emit-metadata": "0",
-
-            "data-input-position": "bottom",
-
-            "data-theme": getStoredTheme(),
-
-            "data-lang": "zh-CN",
-
-            "data-loading": "lazy",
-
-            "crossorigin": "anonymous",
-
-        };
-
-
-        
-
-        const giscusScript = document.createElement("script");
-
-        Object.entries(giscusAttributes).forEach(
-
-                ([key, value]) => giscusScript.setAttribute(key, value));
-
-        document.querySelector("#tw-comment").appendChild(giscusScript);
-
-
-        
-
-        const themeSwitcher = document.querySelector("#theme-toggle");
-
-        if (themeSwitcher) {
-
-            themeSwitcher.addEventListener("click", setGiscusTheme);
-
-        }
-
-        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
-
-        if (themeFloatSwitcher) {
-
-            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
-
-        }
-
-    });
-
-</script>
-</article>
-    </main>
-    
-<footer class="footer">
-        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
-
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
-  <audio id="ltx-music-audio" preload="metadata"></audio>
-  <div class="ltx-music-meta">
-    <span class="ltx-music-title" data-role="title"></span>
-    <span class="ltx-music-artist" data-role="artist"></span>
-  </div>
-  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
-    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
-  </div>
-  <div class="ltx-music-time">
-    <span data-role="current">0:00</span>
-    <span data-role="total">--:--</span>
-  </div>
-  <div class="ltx-music-controls">
-    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
-    <button type="button" data-action="toggle" aria-label="播放或暂停">
-      <span data-icon="play">▶</span>
-      <span data-icon="pause">⏸</span>
-    </button>
-    <button type="button" data-action="next" aria-label="下一首">⏭</button>
-    <button type="button" data-action="mute" aria-label="静音或取消静音">
-      <span data-icon="unmuted">🔊</span>
-      <span data-icon="muted">🔇</span>
-    </button>
-  </div>
-  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
-</div>
-<script>
-  window.LTX_MUSIC_CONFIG = {"autoplay":true,"loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
-  (function () {
-    const config = window.LTX_MUSIC_CONFIG || {};
-    if (!config.tracks || !config.tracks.length) {
-      return;
-    }
-
-    const player = document.getElementById('ltx-music-player');
-    const audio = player.querySelector('audio');
-    const titleEl = player.querySelector('[data-role="title"]');
-    const artistEl = player.querySelector('[data-role="artist"]');
-    const progressEl = player.querySelector('[data-role="progress"]');
-    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
-    const currentTimeEl = player.querySelector('[data-role="current"]');
-    const totalTimeEl = player.querySelector('[data-role="total"]');
-    const tipEl = player.querySelector('[data-role="tip"]');
-
-    const toggleBtn = player.querySelector('[data-action="toggle"]');
-    const prevBtn = player.querySelector('[data-action="prev"]');
-    const nextBtn = player.querySelector('[data-action="next"]');
-    const muteBtn = player.querySelector('[data-action="mute"]');
-
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-    const formatTime = (seconds) => {
-      if (!Number.isFinite(seconds)) {
-        return '--:--';
-      }
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
-    };
-
-    const state = {
-      index: 0,
-      tracks: config.tracks,
-      autoplay: config.autoplay !== false,
-      loopPlaylist: config.loopPlaylist !== false,
-    };
-
-    const updateMuteClass = () => {
-      const muted = audio.muted || audio.volume === 0;
-      player.classList.toggle('ltx-muted', muted);
-    };
-
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
-    updateMuteClass();
-
-    const updateProgress = () => {
-      const duration = audio.duration || 0;
-      const current = audio.currentTime || 0;
-      const percentage = duration ? (current / duration) * 100 : 0;
-      progressFillEl.style.width = `${percentage}%`;
-      currentTimeEl.textContent = formatTime(current);
-      totalTimeEl.textContent = formatTime(duration);
-    };
-
-    const setTrack = (nextIndex, options = {}) => {
-      const total = state.tracks.length;
-      state.index = ((nextIndex % total) + total) % total;
-      const track = state.tracks[state.index];
-      if (!track || !track.file) {
-        console.warn('LTX music player: 音频文件缺失', track);
-        tipEl.textContent = '音频文件缺失，请检查配置';
-        return;
-      }
-      titleEl.textContent = track.title || `Track ${state.index + 1}`;
-      artistEl.textContent = track.artist || '';
-      audio.src = track.file;
-      player.dataset.trackIndex = state.index;
-      tipEl.textContent = '';
-      player.classList.remove('ltx-autoplay-blocked');
-      updateProgress();
-      if (options.play) {
-        attemptPlay();
-      }
-    };
-
-    const attemptPlay = () => {
-      audio.play().then(() => {
-        player.classList.remove('ltx-autoplay-blocked');
-        tipEl.textContent = '';
-      }).catch(() => {
-        player.classList.add('ltx-autoplay-blocked');
-        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
-      });
-    };
-
-    const playNext = (autoTriggered = false) => {
-      const shouldPlay = !audio.paused || autoTriggered;
-      const nextIndex = state.index + 1;
-      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
-        audio.currentTime = audio.duration || 0;
-        audio.pause();
-        return;
-      }
-      setTrack(nextIndex, { play: shouldPlay });
-    };
-
-    const playPrev = () => {
-      const shouldPlay = !audio.paused;
-      setTrack(state.index - 1, { play: shouldPlay });
-    };
-
-    toggleBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        attemptPlay();
-      } else {
-        audio.pause();
-      }
-    });
-
-    prevBtn.addEventListener('click', playPrev);
-    nextBtn.addEventListener('click', () => playNext(false));
-
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      updateMuteClass();
-    });
-
-    progressEl.addEventListener('click', (event) => {
-      const rect = progressEl.getBoundingClientRect();
-      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
-      if (Number.isFinite(audio.duration)) {
-        audio.currentTime = ratio * audio.duration;
-      }
-    });
-
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
-
-    audio.addEventListener('play', () => {
-      player.classList.add('ltx-playing');
-      player.classList.remove('ltx-autoplay-blocked');
-      tipEl.textContent = '';
-    });
-
-    audio.addEventListener('pause', () => {
-      player.classList.remove('ltx-playing');
-    });
-
-    audio.addEventListener('ended', () => {
-      playNext(true);
-    });
-
-    audio.addEventListener('volumechange', updateMuteClass);
-
-    setTrack(0, { play: state.autoplay });
-  })();
-</script>
-
-<script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
-</script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            document.body.classList.add('dark');
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '复制';
-
-        function copyingDone() {
-            copybutton.innerHTML = '已复制！';
-            setTimeout(() => {
-                copybutton.innerHTML = '复制';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
-</script>
-</body>
-
-</html>
+</code></pre><p>这是Dockerfile:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dockerfile data-lang=dockerfile><span class=line><span class=cl><span class=k>FROM</span><span class=s> alpine:latest</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 替换默认 apk 源为镜像源</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> sed -i <span class=s1>&#39;s#https\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g&#39;</span> /etc/apk/repositories<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 安装 Redis 构建依赖</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> apk update <span class=o>&amp;&amp;</span> apk add --no-cache build-base jemalloc-dev linux-headers<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 拷贝 Redis 源码（假设 redis-7.2.4 文件夹和 Dockerfile 同目录）</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> redis-7.2.4 /redis<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>WORKDIR</span><span class=s> /redis</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 编译 Redis</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> make<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 拷贝配置文件</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> redis.conf /etc/redis.conf<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 设置默认启动命令</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>CMD</span> <span class=p>[</span><span class=s2>&#34;src/redis-server&#34;</span><span class=p>,</span> <span class=s2>&#34;/etc/redis.conf&#34;</span><span class=p>]</span><span class=err>
+</span></span></span></code></pre></div><p>4.构建跨平台镜像。这一步本质上用到了buildx和QEMU，但是Docker Desktop为我们把这些底层都封装了起来，所以如果你是用Docker Desktop启动的Docker就不用在意;构建的同时如果遇到网络问题，请在参数中添加<code>--network host</code>命令，这会将宿主机网络作为容器内部网络，绕过网络限制。这个解决思路来自于<a href=https://stackoverflow.com/questions/53710206/docker-cant-build-because-of-alpine-error>stackoverflow</a></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 这里我们直接-t打好了标签，不用再tag了</span>
+</span></span><span class=line><span class=cl>docker build --network host --platform<span class=o>=</span>linux/riscv64 -f Dockerfile.redis -t 192.168.173.76:6000/riscv64/redis:1.1 .
+</span></span></code></pre></div><p>5.推送到本地私有镜像仓库中，再从RiscV开发板中拉取该镜像,这一步和上面私有镜像仓库构建相同。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker push 192.168.173.76:6000/riscv64/redis:1.1
+</span></span><span class=line><span class=cl><span class=c1># riscv下</span>
+</span></span><span class=line><span class=cl>docker pull 192.168.173.76:6000/riscv64/redis:1.1
+</span></span></code></pre></div><p>6.运行redis-server容器，并在主机上运行redis-cli来测试</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker run -d --name redis-test -p 6379:6379 192.168.173.76:6000/riscv64/redis:1.1
+</span></span><span class=line><span class=cl><span class=c1># 主机运行</span>
+</span></span><span class=line><span class=cl>redis-cli -h &lt;riscvIP&gt; -p <span class=m>6379</span>
+</span></span><span class=line><span class=cl>&gt; AUTH password
+</span></span><span class=line><span class=cl>&gt; <span class=nb>set</span> foo bar
+</span></span><span class=line><span class=cl>&gt; get foo
+</span></span></code></pre></div><p>得到最终结果"bar",证明我们成功了！</p><p>同理我们也可以测试一下nginx镜像，下面是其简单的dockerfile</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dockerfile data-lang=dockerfile><span class=line><span class=cl><span class=k>FROM</span><span class=s> alpine:latest</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 替换源（可选，也可以用清华源）</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> sed -i <span class=s1>&#39;s#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g&#39;</span> /etc/apk/repositories <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=o>&amp;&amp;</span> apk update <span class=o>&amp;&amp;</span> apk add --no-cache nginx<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 拷贝配置文件和静态资源</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> nginx.conf /etc/nginx/nginx.conf<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> html/ /usr/share/nginx/html/<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 暴露端口</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>EXPOSE</span><span class=s> 80</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 启动 Nginx</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>CMD</span> <span class=p>[</span><span class=s2>&#34;nginx&#34;</span><span class=p>,</span> <span class=s2>&#34;-g&#34;</span><span class=p>,</span> <span class=s2>&#34;daemon off;&#34;</span><span class=p>]</span><span class=err>
+</span></span></span></code></pre></div><p>其中的nginx.conf</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>worker_processes 1<span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>events <span class=o>{</span>
+</span></span><span class=line><span class=cl>    worker_connections 1024<span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>http <span class=o>{</span>
+</span></span><span class=line><span class=cl>    include       mime.types<span class=p>;</span>
+</span></span><span class=line><span class=cl>    default_type  application/octet-stream<span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    sendfile        on<span class=p>;</span>
+</span></span><span class=line><span class=cl>    keepalive_timeout  65<span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    server <span class=o>{</span>
+</span></span><span class=line><span class=cl>        listen       80<span class=p>;</span>
+</span></span><span class=line><span class=cl>        server_name  localhost<span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        location / <span class=o>{</span>
+</span></span><span class=line><span class=cl>            root   /usr/share/nginx/html<span class=p>;</span>
+</span></span><span class=line><span class=cl>            index  index.html index.htm<span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=o>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></div><p>对应的html文件内容:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl><span class=cp>&lt;!DOCTYPE html&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>html</span> <span class=na>lang</span><span class=o>=</span><span class=s>&#34;en&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>head</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>meta</span> <span class=na>charset</span><span class=o>=</span><span class=s>&#34;UTF-8&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>title</span><span class=p>&gt;</span>Welcome to RISC-V Nginx!<span class=p>&lt;/</span><span class=nt>title</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>style</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=nt>body</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>font-family</span><span class=p>:</span> <span class=s2>&#34;Segoe UI&#34;</span><span class=p>,</span> <span class=kc>sans-serif</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>background-color</span><span class=p>:</span> <span class=mh>#f4f4f4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>text-align</span><span class=p>:</span> <span class=kc>center</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>padding-top</span><span class=p>:</span> <span class=mi>100</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nt>h1</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>color</span><span class=p>:</span> <span class=mh>#333</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nt>p</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>color</span><span class=p>:</span> <span class=mh>#777</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>.</span><span class=nc>tag</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>display</span><span class=p>:</span> <span class=kc>inline-block</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>margin-top</span><span class=p>:</span> <span class=mi>20</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>padding</span><span class=p>:</span> <span class=mi>8</span><span class=kt>px</span> <span class=mi>16</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>background-color</span><span class=p>:</span> <span class=mh>#007acc</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>color</span><span class=p>:</span> <span class=kc>white</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>border-radius</span><span class=p>:</span> <span class=mi>4</span><span class=kt>px</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>font-weight</span><span class=p>:</span> <span class=kc>bold</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;/</span><span class=nt>style</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>head</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>body</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>h1</span><span class=p>&gt;</span>🚀 Hello from RISC-V Nginx!<span class=p>&lt;/</span><span class=nt>h1</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>p</span><span class=p>&gt;</span>Your nginx server is up and running.<span class=p>&lt;/</span><span class=nt>p</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>&lt;</span><span class=nt>div</span> <span class=na>class</span><span class=o>=</span><span class=s>&#34;tag&#34;</span><span class=p>&gt;</span>riscv64 / alpine / nginx<span class=p>&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>body</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl><span class=p>&lt;/</span><span class=nt>html</span><span class=p>&gt;</span>
+</span></span></code></pre></div><p>同理打包推送拉取。运行容器后，在我的mac主机上访问<code>http://&lt;riscvIP>:8080</code>可以看到上述html文件的效果</p><p><img loading=lazy src=/img/riscv/nginx01.png></p><h3 id=优化镜像>优化镜像<a hidden class=anchor aria-hidden=true href=#优化镜像>#</a></h3><p>当前redis镜像大小为146MB</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>(</span>base<span class=o>)</span> lutao@MagicTech multi-platform % docker images <span class=p>|</span> grep redis
+</span></span><span class=line><span class=cl>192.168.173.76:6000/riscv64/redis     1.1       e8e1336c3ccf   <span class=m>13</span> hours ago    146MB
+</span></span></code></pre></div><p>我们可以采用多阶段构建以精简最终镜像，使其不包含构建工具和源代码。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dockerfile data-lang=dockerfile><span class=line><span class=cl><span class=c># ---------- 构建阶段 ----------</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>FROM</span><span class=s> alpine:latest AS builder</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 使用阿里源加速</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> sed -i <span class=s1>&#39;s#http.*/alpine#http://mirrors.aliyun.com/alpine#g&#39;</span> /etc/apk/repositories<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 安装构建依赖</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> apk update <span class=o>&amp;&amp;</span> apk add --no-cache build-base jemalloc-dev linux-headers<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 拷贝源码</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> redis-7.2.4 /redis<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>WORKDIR</span><span class=s> /redis</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 编译 Redis</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> make<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># ---------- 运行阶段 ----------</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>FROM</span><span class=s> alpine:latest</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 使用阿里源（可选）</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> sed -i <span class=s1>&#39;s#http.*/alpine#http://mirrors.aliyun.com/alpine#g&#39;</span> /etc/apk/repositories<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 安装运行所需的 jemalloc</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> apk add --no-cache jemalloc<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 拷贝 redis-server 和 redis-cli（如果你需要 CLI 工具）</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> --from<span class=o>=</span>builder /redis/src/redis-server /usr/local/bin/<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> --from<span class=o>=</span>builder /redis/src/redis-cli /usr/local/bin/<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 拷贝配置文件</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> redis.conf /etc/redis.conf<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 设置默认启动命令</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>CMD</span> <span class=p>[</span><span class=s2>&#34;redis-server&#34;</span><span class=p>,</span> <span class=s2>&#34;/etc/redis.conf&#34;</span><span class=p>]</span><span class=err>
+</span></span></span></code></pre></div><p>最终构建过程花费293.4s</p><p><img loading=lazy src=/img/riscv/redis01.png></p><p>最终镜像大小只有10.2MB，相较于之前的146MB缩小了许多。</p><p><img loading=lazy src=/img/riscv/redis02.png></p><p>同时我们也可以构建一个只有redis-cli的镜像，对于融合进k3s集群中或许可以在server节点上使用redis-server镜像，然后在其他agent节点的pod中部署redis-cli对其进行访问。</p><h2 id=总结>总结<a hidden class=anchor aria-hidden=true href=#总结>#</a></h2><p>搭建了一个简易的私有镜像仓库和移植了redis-server镜像到RiscV机器上，算是迈出了不错的一步，后面的工作主要围绕着如何将其更深入地融入到k3s中以及深入探究docker的多平台构建其底层原理展开。</p><p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/docker/>Docker</a></li><li><a href=https://LTXWorld.github.io/tags/macos/>Macos</a></li><li><a href=https://LTXWorld.github.io/tags/riscv/>RiscV</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/><span class=title>« 上一页</span><br><span>DebugEP02——MacOs系统升级与Homebrew的关系</span>
+</a><a class=next href=https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/><span class=title>下一页 »</span><br><span>Tmux终端窗口器</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
+<span class=ltx-music-artist data-role=artist></span></div></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
+<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
+<button type=button data-action=toggle aria-label=播放或暂停>
+<span data-icon=play>▶</span>
+<span data-icon=pause>⏸</span>
+</button>
+<button type=button data-action=next aria-label=下一首>⏭</button>
+<button type=button data-action=mute aria-label=静音或取消静音>
+<span data-icon=unmuted>🔊</span>
+<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const s=window.LTX_MUSIC_CONFIG||{};if(!s.tracks||!s.tracks.length)return;const t=document.getElementById("ltx-music-player"),e=t.querySelector("audio"),w=t.querySelector('[data-role="title"]'),_=t.querySelector('[data-role="artist"]'),l=t.querySelector('[data-role="progress"]'),f=t.querySelector('[data-role="progress-fill"]'),y=t.querySelector('[data-role="current"]'),j=t.querySelector('[data-role="total"]'),o=t.querySelector('[data-role="tip"]'),i=t.querySelector('[data-role="cover"]'),b=t.querySelector('[data-action="toggle"]'),v=t.querySelector('[data-action="prev"]'),g=t.querySelector('[data-action="next"]'),p=t.querySelector('[data-action="mute"]'),u=(e,t,n)=>Math.min(Math.max(e,t),n),m=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},n={index:0,tracks:s.tracks,autoplay:s.autoplay!==!1,loopPlaylist:s.loopPlaylist!==!1},c=()=>{const n=e.muted||e.volume===0;t.classList.toggle("ltx-muted",n)};e.volume=u(s.startVolume??.6,0,1),c();const r=()=>{const t=e.duration||0,n=e.currentTime||0,s=t?n/t*100:0;f.style.width=`${s}%`,y.textContent=m(n),j.textContent=m(t)},a=(a,c={})=>{const u=n.tracks.length;n.index=(a%u+u)%u;const l=n.tracks[n.index];if(!l||!l.file){console.warn("LTX music player: 音频文件缺失",l),o.textContent="音频文件缺失，请检查配置";return}const h=l.cover||s.defaultCover||"";i&&(h?(i.src=h,i.alt=l.title?`${l.title} 封面`:"音乐封面",t.classList.add("ltx-has-cover")):(i.removeAttribute("src"),i.alt="",t.classList.remove("ltx-has-cover"))),w.textContent=l.title||`Track ${n.index+1}`,_.textContent=l.artist||"",e.src=l.file,t.dataset.trackIndex=n.index,o.textContent="",t.classList.remove("ltx-autoplay-blocked"),r(),c.play&&d()},d=()=>{e.play().then(()=>{t.classList.remove("ltx-autoplay-blocked"),o.textContent=""}).catch(()=>{t.classList.add("ltx-autoplay-blocked"),o.textContent="浏览器阻止了自动播放，请点击播放按钮"})},h=(t=!1)=>{const o=!e.paused||t,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){e.currentTime=e.duration||0,e.pause();return}a(s,{play:o})},O=()=>{const t=!e.paused;a(n.index-1,{play:t})};b.addEventListener("click",()=>{e.paused?d():e.pause()}),v.addEventListener("click",O),g.addEventListener("click",()=>h(!1)),p.addEventListener("click",()=>{e.muted=!e.muted,c()}),l.addEventListener("click",t=>{const n=l.getBoundingClientRect(),s=u((t.clientX-n.left)/n.width,0,1);Number.isFinite(e.duration)&&(e.currentTime=s*e.duration)}),e.addEventListener("timeupdate",r),e.addEventListener("loadedmetadata",r),e.addEventListener("play",()=>{t.classList.add("ltx-playing"),t.classList.remove("ltx-autoplay-blocked"),o.textContent=""}),e.addEventListener("pause",()=>{t.classList.remove("ltx-playing")}),e.addEventListener("ended",()=>{h(!0)}),e.addEventListener("volumechange",c),a(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

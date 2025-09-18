@@ -2,12 +2,20 @@
 {{- $tracks := default (slice) $player.tracks -}}
 {{- $enabled := default true $player.enabled -}}
 {{- if and $enabled (gt (len $tracks) 0) -}}
-{{- $config := dict "autoplay" (default true $player.autoplay) "loopPlaylist" (default true $player.loopPlaylist) "startVolume" (default 0.6 $player.startVolume) "tracks" $tracks -}}
+{{- $config := dict "autoplay" (default true $player.autoplay) "loopPlaylist" (default true $player.loopPlaylist) "startVolume" (default 0.6 $player.startVolume) "defaultCover" (default "" $player.defaultCover) "tracks" $tracks -}}
 <div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
   <audio id="ltx-music-audio" preload="metadata"></audio>
-  <div class="ltx-music-meta">
-    <span class="ltx-music-title" data-role="title"></span>
-    <span class="ltx-music-artist" data-role="artist"></span>
+  <div class="ltx-music-header">
+    <div class="ltx-music-visual">
+      <div class="ltx-disc" data-role="disc" aria-hidden="true">
+        <img data-role="cover" alt="" loading="lazy" decoding="async">
+        <div class="ltx-disc-center"></div>
+      </div>
+    </div>
+    <div class="ltx-music-meta">
+      <span class="ltx-music-title" data-role="title"></span>
+      <span class="ltx-music-artist" data-role="artist"></span>
+    </div>
   </div>
   <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
     <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
@@ -47,6 +55,7 @@
     const currentTimeEl = player.querySelector('[data-role="current"]');
     const totalTimeEl = player.querySelector('[data-role="total"]');
     const tipEl = player.querySelector('[data-role="tip"]');
+    const coverEl = player.querySelector('[data-role="cover"]');
 
     const toggleBtn = player.querySelector('[data-action="toggle"]');
     const prevBtn = player.querySelector('[data-action="prev"]');
@@ -95,6 +104,18 @@
         console.warn('LTX music player: 音频文件缺失', track);
         tipEl.textContent = '音频文件缺失，请检查配置';
         return;
+      }
+      const cover = track.cover || config.defaultCover || '';
+      if (coverEl) {
+        if (cover) {
+          coverEl.src = cover;
+          coverEl.alt = track.title ? `${track.title} 封面` : '音乐封面';
+          player.classList.add('ltx-has-cover');
+        } else {
+          coverEl.removeAttribute('src');
+          coverEl.alt = '';
+          player.classList.remove('ltx-has-cover');
+        }
       }
       titleEl.textContent = track.title || `Track ${state.index + 1}`;
       artistEl.textContent = track.artist || '';

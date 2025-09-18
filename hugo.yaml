@@ -154,6 +154,7 @@ params:
     autoplay: true
     loopPlaylist: true
     startVolume: 0.6
+    defaultCover: "" # 可选：未提供封面时使用的图片，例如 /img/disc-default.png
     # 将音乐文件放在 static/audio/ 目录下
     tracks:
       - title: "依然爱你"

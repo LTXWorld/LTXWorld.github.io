@@ -1,965 +1,190 @@
-<!DOCTYPE html>
-<html lang="zh" dir="auto">
-
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像 | LTX&#39;s Blog</title>
-<meta name="keywords" content="K3s, DNS, RiscV">
-<meta name="description" content="引子
+<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像 | LTX's Blog</title>
+<meta name=keywords content="K3s,DNS,RiscV"><meta name=description content="引子
 解决一些目前k3s在RiscV开发板上存在的问题。
 kubectl&amp;crictl
-kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。">
-<meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.87ea10c5eb6cdf9fcc27aa5665a12ed25ef08a46de7d411927d891915eb7ca57.css" integrity="sha256-h&#43;oQxets35/MJ6pWZaEu0l7wikbefUEZJ9iRkV63ylc=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-<script type="text/javascript"
-
-        async
-
-        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-
-MathJax.Hub.Config({
-
-  tex2jax: {
-
-    inlineMath: [['$','$'], ['\\(','\\)']],
-
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-
-    processEscapes: true,
-
-    processEnvironments: true,
-
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-
-         extensions: ["AMSmath.js", "AMSsymbols.js"] }
-
-  }
-
-});
-
-
-MathJax.Hub.Queue(function() {
-
-    
-
-    
-
-    
-
-    var all = MathJax.Hub.getAllJax(), i;
-
-    for(i = 0; i < all.length; i += 1) {
-
-        all[i].SourceElement().parentNode.className += ' has-jax';
-
-    }
-
-});
-
-</script>
-
-
-<style>
-
-code.has-jax {
-
-    font: inherit;
-
-    font-size: 100%;
-
-    background: inherit;
-
-    border: inherit;
-
-    color: #515151;
-
-}
-
-</style><meta property="og:url" content="http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/">
-  <meta property="og:site_name" content="LTX&#39;s Blog">
-  <meta property="og:title" content="K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像">
-  <meta property="og:description" content="引子 解决一些目前k3s在RiscV开发板上存在的问题。
-kubectl&amp;crictl kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。">
-  <meta property="og:locale" content="zh">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2025-04-09T16:01:58+08:00">
-    <meta property="article:modified_time" content="2025-04-09T16:01:58+08:00">
-    <meta property="article:tag" content="K3s">
-    <meta property="article:tag" content="DNS">
-    <meta property="article:tag" content="RiscV">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
-<meta name="twitter:title" content="K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像">
-<meta name="twitter:description" content="引子
+kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。"><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/><link crossorigin=anonymous href=/assets/css/stylesheet.5f0ddd8622920919e414fdd8cc3f59e09ea98fa129491973ab7d95306b6604d0.css integrity="sha256-Xw3dhiKSCRnkFP3YzD9Z4J6pj6EpSRlzq32VMGtmBNA=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像"><meta property="og:description" content="引子 解决一些目前k3s在RiscV开发板上存在的问题。
+kubectl&amp;crictl kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-04-09T16:01:58+08:00"><meta property="article:modified_time" content="2025-04-09T16:01:58+08:00"><meta property="article:tag" content="K3s"><meta property="article:tag" content="DNS"><meta property="article:tag" content="RiscV"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像"><meta name=twitter:description content="引子
 解决一些目前k3s在RiscV开发板上存在的问题。
 kubectl&amp;crictl
-kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "http://localhost:1313/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像",
-      "item": "http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像",
-  "name": "K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像",
-  "description": "引子 解决一些目前k3s在RiscV开发板上存在的问题。\nkubectl\u0026amp;crictl kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。\n",
-  "keywords": [
-    "K3s", "DNS", "RiscV"
-  ],
-  "articleBody": "引子 解决一些目前k3s在RiscV开发板上存在的问题。\nkubectl\u0026crictl kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。\n不过需要提前强调的是，kubectl命令是从kubelet的角度看的逻辑状态，而crictl是从底层容器运行时的视角看的底层容器状态。\n这是kubectl get pods的结果\nkubectl get pods NAME READY STATUS RESTARTS AGE redis-696579c6c8-v2wns 1/1 Running 1 (7m57s ago) 30h b6 0/1 ErrImagePull 0 (6d23h ago) 7d19h 这是crictl pods的结果\nPOD ID CREATED STATE NAME NAMESPACE ATTEMPT RUNTIME cf657c901892e 5 minutes ago Ready helm-install-traefik-pv4hv kube-system 5 (default) c60416658550d 5 minutes ago Ready local-path-provisioner-7b7dc8d6f5-48jjf kube-system 5 (default) 33c39dd34daff 5 minutes ago Ready helm-install-traefik-crd-ktfth kube-system 5 (default) 294e3dec339e2 5 minutes ago Ready metrics-server-668d979685-jthzj kube-system 5 (default) 8b67484f1bfe4 5 minutes ago Ready redis-696579c6c8-v2wns default 1 (default) 04ff59ad5464f 5 minutes ago Ready b6 default 5 (default) 2e1c2f055fb3e 5 minutes ago Ready coredns-b96499967-cpbrk kube-system 5 (default) e0a0516a940da 30 hours ago NotReady redis-696579c6c8-v2wns default 0 (default) ec8be446fcabf 7 days ago NotReady b6 default 0 (default) 首先从结果字段中来看,这些字段的含义如下：\n可以注意到，crictl pods中所获得的pods，并不是我们想象中的业务pods，而是Pod sandbox，这一点我们可以根据获取Pod的UID来判断——我们都知道每个Pod都会有自己的UID来进行区分。\nkubectl get pod redis-696579c6c8-v2wns -o jsonpath='{.metadata.uid}{\"\\n\"}' a72e1056-01c3-4f74-80d9-3a7ed79fb3c2 可以发现其UID与当前crictl中的PodID根本不同，也进一步印证了我们的想法。同时，使用crictl inspectp 可以查到相同的uid，再次印证。\ncrictl inspectp 8b67484f1bfe4 { \"status\": { \"id\": \"8b67484f1bfe48c4de3cd5b8ee5f343013ae6236491622ee82fb8e865fce0d7f\", \"metadata\": { \"attempt\": 1, \"name\": \"redis-696579c6c8-v2wns\", \"namespace\": \"default\", \"uid\": \"a72e1056-01c3-4f74-80d9-3a7ed79fb3c2\" }, \"state\": \"SANDBOX_READY\", ..... 而其中的state完整结果其实是SANDBOX_READY,又证实了我们之前说的，crictl获得的是Pod sandbox。\n所以我会问为什么呢？这一定跟k3s中pod的启动流程有关吧。这里我们简单地描述一下pod的启动流程，后续会根据源码进行剖析。\nkubectl apply -f xx.yaml kubenetes API Server 调度Scheduled kubelet检测到新Pod启动 kubelet调用容器运行时(containerd) containerd创建Pod Sandbox 拉取业务容器镜像，启动容器 kubelet监听容器状态，返回给API Server 而Pod Sandbox是运行时为Pod所创建的一个隔离环境，在这个环境中要有network namespace,一个最小的容器pause容器作为网络占位符，只有这样，Pod内的多个容器才可以共享一个网络空间。\n所以回到最初，这两条命令的视角就不同，crictl是从容器运行时出发，关注的是Sandbox的状态；而kubectl是从更高的视角出发，其关注的是业务pods（包括业务容器）的运行状态，是从kubectl那里汇报的最新状态。\n检查关键组件容器状态 journalctl -u k3s -f # 结果 peneuler-riscv64 k3s[2438]: E0409 18:38:08.359021 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"metrics-server\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"rancher/mirrored-metrics-server:v0.5.2\\\\\\\"\\\"\" pod=\"kube-system/metrics-server-668d979685-jthzj\" podUID=e7c219e4-2701-4924-9d7b-84fea6f8274b 4月 09 18:38:08 openeuler-riscv64 k3s[2438]: E0409 18:38:08.359159 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"helm\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"rancher/klipper-helm:v0.7.3-build20220613\\\\\\\"\\\"\" pod=\"kube-system/helm-install-traefik-crd-ktfth\" podUID=3192257c-7e69-4c14-9b4e-d607ce188a88 4月 09 18:38:08 openeuler-riscv64 k3s[2438]: E0409 18:38:08.359193 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"busybox\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"riscv64/busybox:latest\\\\\\\"\\\"\" pod=\"default/b6\" podUID=e423f26e-efd9-44bd-a65b-41dc722f3eb2 4月 09 18:38:09 openeuler-riscv64 k3s[2438]: E0409 18:38:09.604483 2438 resource_quota_controller.go:413] unable to retrieve the complete list of server APIs: metrics.k8s.io/v1beta1: the server is currently unable to handle the request 4月 09 18:38:09 openeuler-riscv64 k3s[2438]: W0409 18:38:09.639045 2438 garbagecollector.go:747] failed to discover some groups: map[metrics.k8s.io/v1beta1:the server is currently unable to handle the request] 4月 09 18:38:11 openeuler-riscv64 k3s[2438]: E0409 18:38:11.357904 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"local-path-provisioner\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"rancher/local-path-provisioner:v0.0.21\\\\\\\"\\\"\" pod=\"kube-system/local-path-provisioner-7b7dc8d6f5-48jjf\" podUID=a4b291fd-db16-498d-a136-9a1432f4649f 4月 09 18:38:14 openeuler-riscv64 k3s[2438]: E0409 18:38:14.357404 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"coredns\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"rancher/mirrored-coredns-coredns:1.9.1\\\\\\\"\\\"\" pod=\"kube-system/coredns-b96499967-cpbrk\" podUID=04219540-713f-44d1-9d2d-7d5acf08222c ...... ps:pod_workers.go来自于k8s的源码\n可以发现首先存在的问题是有一些系统镜像在kube-system下的例如helm-install-traefik-crd-ktfth等存在镜像拉取失败问题，在K3sEP02解决RiscV开发板镜像无法拉取问题这篇文章中，我们解决了pause镜像拉取失败问题，当时pause镜像作为最基础的镜像如果拉取失败会导致整个节点无法使用crictl命令拉取镜像。\n而这些系统镜像虽然没有直接影响我们k3s的启动，但对于后续的操作产生了较大的影响例如无法暴露服务，Pod间无法进行通信等等问题。\n使用以下命令查看pod状态，发现有几个处于镜像拉取失败，并且可以与上面我们使用crictl pods命令的结果对应上。\nkubectl get pods -A -o wide NAMESPACE NAME READY STATUS RESTARTS AGE IP NODE NOMINATED NODE READINESS GATES default redis-696579c6c8-v2wns 1/1 Running 1 (148m ago) 32h 10.42.0.35 openeuler-riscv64 kube-system helm-install-traefik-crd-ktfth 0/1 ImagePullBackOff 0 8d 10.42.0.37 openeuler-riscv64 kube-system coredns-b96499967-cpbrk 0/1 ImagePullBackOff 0 8d 10.42.0.33 openeuler-riscv64 kube-system metrics-server-668d979685-jthzj 0/1 ImagePullBackOff 0 8d 10.42.0.36 openeuler-riscv64 kube-system helm-install-traefik-pv4hv 0/1 ImagePullBackOff 0 8d 10.42.0.39 openeuler-riscv64 kube-system local-path-provisioner-7b7dc8d6f5-48jjf 0/1 ImagePullBackOff 0 8d 10.42.0.38 openeuler-riscv64 default b6 0/1 ImagePullBackOff 0 (7d1h ago) 7d21h 10.42.0.34 openeuler-riscv64 其中CoreDNS是一个很核心的系统组件，如果没有它，我们的Pod间无法进行通信，所以接下来我们先处理CoreDNS镜像的拉取失败问题。\nCoreDNS镜像 CoreDNS作为Namespace为kube-system的系统级别镜像，用来实现动态可靠的服务发现. 两个Pod之间进行通信无需硬编码 Pod IP,只需要通过服务名称 service.default.svc.cluster.local 就可以发起请求 这其中 CoreDNS 会与 API Server 交互以获取服务信息——API Server 返回该 Service 的 ClusterIP 和端口。\nPodA 发起 DNS 查询-\u003e CoreDNS -\u003e查询调用 API Server -\u003e API Server 响应 PodB 的 JSON 信息-\u003e CoreDNS 构造 DNS 响应返回给 PodA 与此同时，如果某些 Pod 发生了重启或者迁移，CoreDNS 也会自动更新DNS记录。\n接下来我们看看如何将 CoreDNS 镜像移植到我们的开发板上。\n首先执行命令确定发现 Coredns 服务并不存在于当前的 k3s 中。\nkubectl -n kube-system get svc coredns Error from server (NotFound): services \"coredns\" not found 我们默认的 k3s 会去拉取 rancher/mirrored-coredns-coredns:1.9.1 这个镜像，所以我们要自己构建这个镜像在我们的私有仓库中，然后在开发板上拉取这个镜像进行替换使用。 类似于我们当时处理 pause 镜像，不同的是，pause 镜像在 k8s 的源码中是有其源码的，而 coreDNS 本质上是一个外部项目，所以我们需要从其 Github 的源码入手。\n1.方法一：本地交叉编译\n因为 CoreDNS 是用 Golang 编写的，而 Go 是可以指定架构进行编译的，并且支持 riscv64，所以我的初步思路是将其源码下载到我的mac上并指定为riscv64进行交叉编译。\ngit clone git@github.com:coredns/coredns.git git checkout v1.9.1 GOOS=linux GOARCH=riscv64 make 但是这样在构建的过程中会遇到问题\nlink: golang.org/x/net/internal/socket: invalid reference to syscall.recvmsg make: *** [coredns] Error 1 GOARCH=riscv64 时，Go 编译器在交叉编译时找不到适用于 RISC-V 架构的某些 syscall 实现，比如 syscall.recvmsg，这是 CoreDNS 或其依赖包 golang.org/x/net/internal/socket 里的系统调用。 这样的问题在网络上也很常见，如这个例子，可以发现 Go 标准库并没有做到实现所有架构的 syscall 支持，特别是一些底层的网络系统调用。\n下面给出源码中的 Makefile,可以发现其在构建时会去执行go get，这就是为什么会去找这个系统调用，也是为什么我选择先在mac上进行交叉编译（因为开发板的网络问题）\n# Makefile for building CoreDNS GITCOMMIT?=$(shell git describe --dirty --always) BINARY:=coredns SYSTEM:= CHECKS:=check BUILDOPTS?=-v GOPATH?=$(HOME)/go MAKEPWD:=$(dir $(realpath $(firstword $(MAKEFILE_LIST)))) CGO_ENABLED?=0 GOLANG_VERSION ?= $(shell cat .go-version) export GOSUMDB = sum.golang.org export GOTOOLCHAIN = go$(GOLANG_VERSION) .PHONY: all all: coredns .PHONY: coredns coredns: $(CHECKS) CGO_ENABLED=$(CGO_ENABLED) $(SYSTEM) go build $(BUILDOPTS) -ldflags=\"-s -w -X github.com/coredns/coredns/coremain.GitCommit=$(GITCOMMIT)\" -o $(BINARY) .PHONY: check check: core/plugin/zplugin.go core/dnsserver/zdirectives.go core/plugin/zplugin.go core/dnsserver/zdirectives.go: plugin.cfg go generate coredns.go go get .PHONY: gen gen: go generate coredns.go go get .PHONY: pb pb: $(MAKE) -C pb .PHONY: clean clean: go clean rm -f coredns 如何解决呢？可能得去修改 coreDNS 的源码关于系统调用这块了，但是本着不入侵编程的思想（懒比的思想）我们去找其他方法。\n2.方法二：找到官方提供的支持riscv的Release\n你别说，还真有，只是版本较新，来到了v1.12.1,所以我们暂时先用这个新版本，后续看是否会与开发板上需要的v1.9.1发生冲突。\nwget https://github.com/coredns/coredns/releases/download/v1.12.1/coredns_1.12.1_linux_riscv64.tgz tar -zxvf coredns_1.12.1_linux_riscv64.tgz 构建Docker镜像\nFROM alpine:latest # 换源 RUN sed -i 's#https\\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories WORKDIR /root COPY coredns /coredns CMD [\"/coredns\"] 构建镜像并推送至私有仓库，关于私有仓库见移植镜像这篇文章。\ndocker build --network host --platform=linux/riscv64 -f Dockerfile.coredns -t 192.168.173.76:6000/riscv64/coredns:1.0 . docker push 192.168.173.76:6000/riscv64/coredns:1.0 然后我们回到开发板上进行拉取并进行类似于pause镜像的适配crictl pull riscv64/coredns:1.0\n首先看看当前镜像Pod的描述状态\nkubectl get pods -n kube-system -l k8s-app=kube-dns kubectl describe pod -n kube-system 得到的结果如下:\nWarning Failed 17m kubelet Failed to pull image \"rancher/mirrored-coredns-coredns:1.9.1\": rpc error: code = DeadlineExceeded desc = failed to pull and unpack image \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\": failed to resolve reference \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\": failed to do request: Head \"https://registry-1.docker.io/v2/rancher/mirrored-coredns-coredns/manifests/1.9.1\": dial tcp [2a03:2880:f134:83:face:b00c:0:25de]:443: i/o timeout Warning Failed 15m kubelet Failed to pull image \"rancher/mirrored-coredns-coredns:1.9.1\": rpc error: code = DeadlineExceeded desc = failed to pull and unpack image \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\": failed to resolve reference \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\": failed to do request: Head \"https://registry-1.docker.io/v2/rancher/mirrored-coredns-coredns/manifests/1.9.1\": dial tcp [2a03:2880:f136:83:face:b00c:0:25de]:443: i/o timeout Warning Failed 15m (x4 over 19m) kubelet Error: ErrImagePull Warning Failed 15m (x6 over 18m) kubelet Error: ImagePullBackOff Normal Pulling 14m (x5 over 19m) kubelet Pulling image \"rancher/mirrored-coredns-coredns:1.9.1\" Normal BackOff 4m24s (x47 over 18m) kubelet Back-off pulling image \"rancher/mirrored-coredns-coredns:1.9.1\" 从k3s的源码 manifests 得知,这些系统级别的镜像（容器）例如traefik,coredns 都在这个目录中以 yaml 文件的形式存在. 这会在 k3s 启动时自动对其进行 Pod 的构建，相当于这是 k3s 自带的 Pod 们。\n具体在开发板上的路径是/var/lib/rancher/k3s/server/manifests\n现在，我们的思路变成——修改coredns.yaml文件使k3s在构建coredns容器时使用我们私有镜像仓库中的构建的来自于官方v1.12.1中适合riscv64的镜像。 于是我先将其打标签\n# 可以用crictl images | grep coredns查看 ctr -n k8s.io images tag \u003c拉取下来的镜像名\u003e docker.io/rancher/mirrored-coredns-coredns:1.9.1 非常值得注意的是，这里打标签前面必须要有docker.io,如果没有的话可能会出现无法识别本地镜像的问题.具体见Github上的相关问题。\n之后修改coredns.yaml,将其中镜像名称改为 docker.io/rancher/mirrored-coredns-coredns:1.9.1,拉取策略改为 Never ,并且在arg参数上面添加一行command: [\"/coredns\"]\n最后，删除对应的Pod，k3s会自动重新拉取镜像并构建此Pod，再来检查其运行状态与构建过程。\nkubectl delete pod -n kube-system -l k8s-app=kube-dns kubectl get pods -n kube-system -l k8s-app=kube-dns kubectl describe pod -n kube-system 最终得到结果如下\nEvents: Type Reason Age From Message ---- ------ ---- ---- ------- Normal Scheduled 34s default-scheduler Successfully assigned kube-system/coredns-fcc987b6f-nkn92 to openeuler-riscv64 Normal Pulled 33s kubelet Container image \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\" already present on machine Normal Created 33s kubelet Created container coredns Normal Started 33s kubelet Started container coredns Warning Unhealthy 2s (x18 over 33s) kubelet Readiness probe failed: HTTP probe failed with statuscode: 503 这里虽然出现503错误但是只是健康检测出现问题，可能是配置有误或者插件失败，但是至少容器coredns创建成功了. 并且再次执行journalctl -u k3s -f后可以发现之前的 coredns 创建失败的日志不见了。\n解决遗留问题 上面只是解决了CoreDNS组件的镜像拉取问题，但是拉取下来之后其还存在一些其他问题，如果你在上面的构建过程中也遇到了类似问题，请见下方处理方案。\n问题1：启动覆盖问题 首先，如果我们下一次重启k3s，就会发现 Coredns 这个容器又构建失败了，并且原因正是我们修改过的 coredns.yaml 文件。\nWarning Failed 72s (x2 over 73s) kubelet Error: failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: \"-conf\": executable file not found in $PATH: unknown 这是因为k3s会在重启时自动恢复一些核心组件的yaml文件为默认值，覆盖掉我们的更改。 在K3s官方的Issue中也有类似的问题,而官方文档中的说法也提到了Auto-Deploying Manifests。\n所以，根据官方文档中的内容，我们应该先去更改k3s的启动命令，而我们的k3s是由systemd启动的，所以执行sudo systemctl edit k3s，在ExecStart的最后添加上--disable=coredns\nFor example, to disable traefik from being installed on a new cluster, or to uninstall it and remove the manifest from an existing cluster, you can start K3s with –disable=traefik. Multiple items can be disabled by separating their names with commas, or by repeating the flag.\nExecStart=/usr/local/bin/k3s \\ server \\ --disable=coredns \\ 修改 yaml 文件使得 k3s 在启动时使用我们自定义的 yaml 文件。修改内容同上，在 arg 前加一行command[\"/coredns\"]\ncp coredns.yaml custom-coredns.yaml 重启服务\nsudo systemctl daemon-reexec sudo systemctl daemon-reload sudo systemctl restart k3s 至此，可以解决启动覆盖问题，即k3s不会在每次启动时都用默认的coredns.yaml来启动corednsPod,而是使用我们自定义的custom-coredns.yaml文件来进行。\n如果后续我们自己从头构建适合 riscv 的k3s可执行文件,直接从源码层面修改镜像名称即可,不用这么麻烦.\n问题2:Readiness probe failed 虽然我们使用了本地镜像并且修改了 k3s 默认的关于 coreDNS 的配置，但是仍然会遇到问题. 即上面提到的这个 Readiness probe 的网络问题.\nReadiness probe failed: HTTP probe failed with statuscode: 503 对于这个问题，目前我还没有找到合适的解决方法，我个人倾向于是开发板 iptables 的问题，在这里我放一些排查的手段以供后面的操作。\n# 查看当前的Corefile内容 kubectl -n kube-system get configmap coredns -o yaml # 进入Pod调试（但是当前的Pod不断地重启） kubectl -n kube-system exec -it -- sh curl -v localhost:8080/health # /etc/resolv.conf配置可能出现问题，无法访问到其中的DNS,如果可以进入Pod，检查是否可以访问设置的DNS wget -O- http://192.168.173.153 # 检查kube-proxy是否生效 kubectl -n kube-system get pods -l k8s-app=kube-proxy 故我们先继续解决其他系统 Pod 以及 Iptables 等问题。\n总结 对于 CoreDNS 系统组件,我们发现其官方给出了支持 riscv 的版本,所以无需我们自己重新编译. 我们选择的方法是本地构建对应的镜像并拉取到开发板上,并修改掉源码中的名称为我们构建的名称,最终实现了镜像的替换.\n但是这是否太过于依赖于本地的构建?我们应该能做到从某个能够拉取的地址自动拉取,可以将docker.io这个修改为我们自己的服务器吗? 这是我们后续要探索的方向之一.\nexport INSTALL_K3S_EXEC=\"--system-default-registry=your.registry.com\" INSTALL_K3S_SKIP_DOWNLOAD=true bash k3s-install.sh 后续更新 最近在 k3s 的官方源码 fork 中找到了一位大佬的 fork,其对于 coredns.yaml 只进行了以下的修改:\nimage: \"%{SYSTEM_DEFAULT_REGISTRY}%rancher/mirrored-coredns-coredns:1.11.3\" image: \"%{SYSTEM_DEFAULT_REGISTRY}%coredns/coredns:1.11.3\" 系统默认镜像一般是docker.io,所以其只是改了个名字?\n后续我们在自行构建的时候,暂时决定将这些系统镜像全部放在自己的私有镜像仓库中, 然后在启动 k3s 的时候指定默认仓库为私有镜像仓库.\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
-  "wordCount" : "4907",
-  "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-04-09T16:01:58+08:00",
-  "dateModified": "2025-04-09T16:01:58+08:00",
-  "author":{
-    "@type": "Person",
-    "name": "LTX"
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "LTX's Blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    }
-
-</script>
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu">
-            <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
-                    <span>首页</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/archives/" title="归档">
-                    <span>归档</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
-                    <span>分类</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
-                    <span>标签</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/search/" title="搜索">
-                    <span>搜索</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/about/" title="后花园">
-                    <span>关于</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
-    
-    <h1 class="post-title entry-hint-parent">
-      K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像
-    </h1>
-    <div class="post-meta"><span title='2025-04-09 16:01:58 +0800 CST'>四月 9, 2025</span>&nbsp;·&nbsp;10 分钟&nbsp;·&nbsp;LTX
-
-</div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">目录</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
-                <li>
-                    <a href="#kubectlcrictl" aria-label="kubectl&amp;crictl">kubectl&amp;crictl</a></li>
-                <li>
-                    <a href="#%e6%a3%80%e6%9f%a5%e5%85%b3%e9%94%ae%e7%bb%84%e4%bb%b6%e5%ae%b9%e5%99%a8%e7%8a%b6%e6%80%81" aria-label="检查关键组件容器状态">检查关键组件容器状态</a><ul>
-                        
-                <li>
-                    <a href="#coredns%e9%95%9c%e5%83%8f" aria-label="CoreDNS镜像">CoreDNS镜像</a></li>
-                <li>
-                    <a href="#%e8%a7%a3%e5%86%b3%e9%81%97%e7%95%99%e9%97%ae%e9%a2%98" aria-label="解决遗留问题">解决遗留问题</a><ul>
-                        
-                <li>
-                    <a href="#%e9%97%ae%e9%a2%981%e5%90%af%e5%8a%a8%e8%a6%86%e7%9b%96%e9%97%ae%e9%a2%98" aria-label="问题1：启动覆盖问题">问题1：启动覆盖问题</a></li>
-                <li>
-                    <a href="#%e9%97%ae%e9%a2%982readiness-probe-failed" aria-label="问题2:Readiness probe failed">问题2:Readiness probe failed</a></li></ul>
-                </li></ul>
-                </li>
-                <li>
-                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a><ul>
-                        
-                <li>
-                    <a href="#%e5%90%8e%e7%bb%ad%e6%9b%b4%e6%96%b0" aria-label="后续更新">后续更新</a>
-                </li>
-            </ul>
-            </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
-  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
-<p>解决一些目前k3s在RiscV开发板上存在的问题。</p>
-<h2 id="kubectlcrictl">kubectl&amp;crictl<a hidden class="anchor" aria-hidden="true" href="#kubectlcrictl">#</a></h2>
-<p>kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。</p>
-<p>不过需要提前强调的是，kubectl命令是从kubelet的角度看的逻辑状态，而crictl是从底层容器运行时的视角看的底层容器状态。</p>
-<p>这是<code>kubectl get pods</code>的结果</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl get pods
-</span></span><span class="line"><span class="cl">NAME                     READY   STATUS         RESTARTS        AGE
-</span></span><span class="line"><span class="cl">redis-696579c6c8-v2wns   1/1     Running        <span class="m">1</span> <span class="o">(</span>7m57s ago<span class="o">)</span>   30h
-</span></span><span class="line"><span class="cl">b6                       0/1     ErrImagePull   <span class="m">0</span> <span class="o">(</span>6d23h ago<span class="o">)</span>   7d19h
-</span></span></code></pre></div><p>这是<code>crictl pods</code>的结果</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">POD ID              CREATED             STATE               NAME                                      NAMESPACE           ATTEMPT             RUNTIME
-</span></span><span class="line"><span class="cl">cf657c901892e       <span class="m">5</span> minutes ago       Ready               helm-install-traefik-pv4hv                kube-system         <span class="m">5</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span><span class="line"><span class="cl">c60416658550d       <span class="m">5</span> minutes ago       Ready               local-path-provisioner-7b7dc8d6f5-48jjf   kube-system         <span class="m">5</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span><span class="line"><span class="cl">33c39dd34daff       <span class="m">5</span> minutes ago       Ready               helm-install-traefik-crd-ktfth            kube-system         <span class="m">5</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span><span class="line"><span class="cl">294e3dec339e2       <span class="m">5</span> minutes ago       Ready               metrics-server-668d979685-jthzj           kube-system         <span class="m">5</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span><span class="line"><span class="cl">8b67484f1bfe4       <span class="m">5</span> minutes ago       Ready               redis-696579c6c8-v2wns                    default             <span class="m">1</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span><span class="line"><span class="cl">04ff59ad5464f       <span class="m">5</span> minutes ago       Ready               b6                                        default             <span class="m">5</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span><span class="line"><span class="cl">2e1c2f055fb3e       <span class="m">5</span> minutes ago       Ready               coredns-b96499967-cpbrk                   kube-system         <span class="m">5</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span><span class="line"><span class="cl">e0a0516a940da       <span class="m">30</span> hours ago        NotReady            redis-696579c6c8-v2wns                    default             <span class="m">0</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span><span class="line"><span class="cl">ec8be446fcabf       <span class="m">7</span> days ago          NotReady            b6                                        default             <span class="m">0</span>                   <span class="o">(</span>default<span class="o">)</span>
-</span></span></code></pre></div><p>首先从结果字段中来看,这些字段的含义如下：</p>
-<p><img loading="lazy" src="/img/riscv/crictl01.png"></p>
-<p>可以注意到，crictl pods中所获得的pods，并不是我们想象中的业务pods，而是<strong>Pod sandbox</strong>，这一点我们可以根据获取Pod的UID来判断——我们都知道每个Pod都会有自己的UID来进行区分。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">kubectl get pod redis-696579c6c8-v2wns -o <span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.metadata.uid}{&#34;\n&#34;}&#39;</span>
-</span></span><span class="line"><span class="cl">a72e1056-01c3-4f74-80d9-3a7ed79fb3c2
-</span></span></code></pre></div><p>可以发现其UID与当前crictl中的PodID根本不同，也进一步印证了我们的想法。同时，使用<code>crictl inspectp &lt;PODID&gt;</code>可以查到相同的uid，再次印证。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> crictl inspectp 8b67484f1bfe4
-</span></span><span class="line"><span class="cl"><span class="o">{</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;status&#34;</span>: <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;id&#34;</span>: <span class="s2">&#34;8b67484f1bfe48c4de3cd5b8ee5f343013ae6236491622ee82fb8e865fce0d7f&#34;</span>,
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;metadata&#34;</span>: <span class="o">{</span>
-</span></span><span class="line"><span class="cl">      <span class="s2">&#34;attempt&#34;</span>: 1,
-</span></span><span class="line"><span class="cl">      <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;redis-696579c6c8-v2wns&#34;</span>,
-</span></span><span class="line"><span class="cl">      <span class="s2">&#34;namespace&#34;</span>: <span class="s2">&#34;default&#34;</span>,
-</span></span><span class="line"><span class="cl">      <span class="s2">&#34;uid&#34;</span>: <span class="s2">&#34;a72e1056-01c3-4f74-80d9-3a7ed79fb3c2&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>,
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;state&#34;</span>: <span class="s2">&#34;SANDBOX_READY&#34;</span>,
-</span></span><span class="line"><span class="cl">.....
-</span></span></code></pre></div><p>而其中的state完整结果其实是SANDBOX_READY,又证实了我们之前说的，crictl获得的是Pod sandbox。</p>
-<p>所以我会问为什么呢？这一定跟k3s中pod的启动流程有关吧。这里我们简单地描述一下pod的启动流程，后续会根据源码进行剖析。</p>
-<ul>
-<li>kubectl apply -f xx.yaml</li>
-<li>kubenetes API Server</li>
-<li>调度Scheduled</li>
-<li>kubelet检测到新Pod启动</li>
-<li>kubelet调用容器运行时(containerd)</li>
-<li>containerd创建Pod Sandbox</li>
-<li>拉取业务容器镜像，启动容器</li>
-<li>kubelet监听容器状态，返回给API Server</li>
-</ul>
-<p>而Pod Sandbox是运行时为Pod所创建的一个<strong>隔离环境</strong>，在这个环境中要有<strong>network namespace,一个最小的容器pause容器作为网络占位符</strong>，只有这样，Pod内的多个容器才可以共享一个网络空间。</p>
-<p>所以回到最初，这两条命令的视角就不同，crictl是从容器运行时出发，关注的是Sandbox的状态；而kubectl是从更高的视角出发，其关注的是业务pods（包括业务容器）的运行状态，是从kubectl那里汇报的最新状态。</p>
-<h2 id="检查关键组件容器状态">检查关键组件容器状态<a hidden class="anchor" aria-hidden="true" href="#检查关键组件容器状态">#</a></h2>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">journalctl -u k3s -f
-</span></span><span class="line"><span class="cl"><span class="c1"># 结果</span>
-</span></span><span class="line"><span class="cl">peneuler-riscv64 k3s<span class="o">[</span>2438<span class="o">]</span>: E0409 18:38:08.359021    <span class="m">2438</span> pod_workers.go:951<span class="o">]</span> <span class="s2">&#34;Error syncing pod, skipping&#34;</span> <span class="nv">err</span><span class="o">=</span><span class="s2">&#34;failed to \&#34;StartContainer\&#34; for \&#34;metrics-server\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;rancher/mirrored-metrics-server:v0.5.2\\\&#34;\&#34;&#34;</span> <span class="nv">pod</span><span class="o">=</span><span class="s2">&#34;kube-system/metrics-server-668d979685-jthzj&#34;</span> <span class="nv">podUID</span><span class="o">=</span>e7c219e4-2701-4924-9d7b-84fea6f8274b
-</span></span><span class="line"><span class="cl">4月 <span class="m">09</span> 18:38:08 openeuler-riscv64 k3s<span class="o">[</span>2438<span class="o">]</span>: E0409 18:38:08.359159    <span class="m">2438</span> pod_workers.go:951<span class="o">]</span> <span class="s2">&#34;Error syncing pod, skipping&#34;</span> <span class="nv">err</span><span class="o">=</span><span class="s2">&#34;failed to \&#34;StartContainer\&#34; for \&#34;helm\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;rancher/klipper-helm:v0.7.3-build20220613\\\&#34;\&#34;&#34;</span> <span class="nv">pod</span><span class="o">=</span><span class="s2">&#34;kube-system/helm-install-traefik-crd-ktfth&#34;</span> <span class="nv">podUID</span><span class="o">=</span>3192257c-7e69-4c14-9b4e-d607ce188a88
-</span></span><span class="line"><span class="cl">4月 <span class="m">09</span> 18:38:08 openeuler-riscv64 k3s<span class="o">[</span>2438<span class="o">]</span>: E0409 18:38:08.359193    <span class="m">2438</span> pod_workers.go:951<span class="o">]</span> <span class="s2">&#34;Error syncing pod, skipping&#34;</span> <span class="nv">err</span><span class="o">=</span><span class="s2">&#34;failed to \&#34;StartContainer\&#34; for \&#34;busybox\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;riscv64/busybox:latest\\\&#34;\&#34;&#34;</span> <span class="nv">pod</span><span class="o">=</span><span class="s2">&#34;default/b6&#34;</span> <span class="nv">podUID</span><span class="o">=</span>e423f26e-efd9-44bd-a65b-41dc722f3eb2
-</span></span><span class="line"><span class="cl">4月 <span class="m">09</span> 18:38:09 openeuler-riscv64 k3s<span class="o">[</span>2438<span class="o">]</span>: E0409 18:38:09.604483    <span class="m">2438</span> resource_quota_controller.go:413<span class="o">]</span> unable to retrieve the <span class="nb">complete</span> list of server APIs: metrics.k8s.io/v1beta1: the server is currently unable to handle the request
-</span></span><span class="line"><span class="cl">4月 <span class="m">09</span> 18:38:09 openeuler-riscv64 k3s<span class="o">[</span>2438<span class="o">]</span>: W0409 18:38:09.639045    <span class="m">2438</span> garbagecollector.go:747<span class="o">]</span> failed to discover some groups: map<span class="o">[</span>metrics.k8s.io/v1beta1:the server is currently unable to handle the request<span class="o">]</span>
-</span></span><span class="line"><span class="cl">4月 <span class="m">09</span> 18:38:11 openeuler-riscv64 k3s<span class="o">[</span>2438<span class="o">]</span>: E0409 18:38:11.357904    <span class="m">2438</span> pod_workers.go:951<span class="o">]</span> <span class="s2">&#34;Error syncing pod, skipping&#34;</span> <span class="nv">err</span><span class="o">=</span><span class="s2">&#34;failed to \&#34;StartContainer\&#34; for \&#34;local-path-provisioner\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;rancher/local-path-provisioner:v0.0.21\\\&#34;\&#34;&#34;</span> <span class="nv">pod</span><span class="o">=</span><span class="s2">&#34;kube-system/local-path-provisioner-7b7dc8d6f5-48jjf&#34;</span> <span class="nv">podUID</span><span class="o">=</span>a4b291fd-db16-498d-a136-9a1432f4649f
-</span></span><span class="line"><span class="cl">4月 <span class="m">09</span> 18:38:14 openeuler-riscv64 k3s<span class="o">[</span>2438<span class="o">]</span>: E0409 18:38:14.357404    <span class="m">2438</span> pod_workers.go:951<span class="o">]</span> <span class="s2">&#34;Error syncing pod, skipping&#34;</span> <span class="nv">err</span><span class="o">=</span><span class="s2">&#34;failed to \&#34;StartContainer\&#34; for \&#34;coredns\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;rancher/mirrored-coredns-coredns:1.9.1\\\&#34;\&#34;&#34;</span> <span class="nv">pod</span><span class="o">=</span><span class="s2">&#34;kube-system/coredns-b96499967-cpbrk&#34;</span> <span class="nv">podUID</span><span class="o">=</span>04219540-713f-44d1-9d2d-7d5acf08222c
-</span></span><span class="line"><span class="cl">......
-</span></span></code></pre></div><p>ps:<code>pod_workers.go</code>来自于k8s的源码</p>
-<p>可以发现首先存在的问题是有一些系统镜像在kube-system下的例如<code>helm-install-traefik-crd-ktfth</code>等存在镜像拉取失败问题，在<a href="https://www.bfsmlt.top/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/">K3sEP02解决RiscV开发板镜像无法拉取问题</a>这篇文章中，我们解决了pause镜像拉取失败问题，当时pause镜像作为最基础的镜像如果拉取失败会导致整个节点无法使用crictl命令拉取镜像。</p>
-<p>而这些系统镜像虽然没有直接影响我们k3s的启动，但对于后续的操作产生了较大的影响例如无法暴露服务，Pod间无法进行通信等等问题。</p>
-<p>使用以下命令查看pod状态，发现有几个处于镜像拉取失败，并且可以与上面我们使用<code>crictl pods</code>命令的结果对应上。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl get pods -A -o wide
-</span></span><span class="line"><span class="cl">NAMESPACE     NAME                                      READY   STATUS             RESTARTS       AGE     IP           NODE                NOMINATED NODE   READINESS GATES
-</span></span><span class="line"><span class="cl">default       redis-696579c6c8-v2wns                    1/1     Running            <span class="m">1</span> <span class="o">(</span>148m ago<span class="o">)</span>   32h     10.42.0.35   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
-</span></span><span class="line"><span class="cl">kube-system   helm-install-traefik-crd-ktfth            0/1     ImagePullBackOff   <span class="m">0</span>              8d      10.42.0.37   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
-</span></span><span class="line"><span class="cl">kube-system   coredns-b96499967-cpbrk                   0/1     ImagePullBackOff   <span class="m">0</span>              8d      10.42.0.33   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
-</span></span><span class="line"><span class="cl">kube-system   metrics-server-668d979685-jthzj           0/1     ImagePullBackOff   <span class="m">0</span>              8d      10.42.0.36   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
-</span></span><span class="line"><span class="cl">kube-system   helm-install-traefik-pv4hv                0/1     ImagePullBackOff   <span class="m">0</span>              8d      10.42.0.39   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
-</span></span><span class="line"><span class="cl">kube-system   local-path-provisioner-7b7dc8d6f5-48jjf   0/1     ImagePullBackOff   <span class="m">0</span>              8d      10.42.0.38   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
-</span></span><span class="line"><span class="cl">default       b6                                        0/1     ImagePullBackOff   <span class="m">0</span> <span class="o">(</span>7d1h ago<span class="o">)</span>   7d21h   10.42.0.34   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
-</span></span></code></pre></div><p>其中CoreDNS是一个很核心的系统组件，如果没有它，我们的Pod间无法进行通信，所以接下来我们先处理CoreDNS镜像的拉取失败问题。</p>
-<h3 id="coredns镜像">CoreDNS镜像<a hidden class="anchor" aria-hidden="true" href="#coredns镜像">#</a></h3>
-<p>CoreDNS作为Namespace为kube-system的系统级别镜像，用来实现动态可靠的服务发现.
+kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像","item":"https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像","name":"K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像","description":"引子 解决一些目前k3s在RiscV开发板上存在的问题。\nkubectl\u0026amp;crictl kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。\n","keywords":["K3s","DNS","RiscV"],"articleBody":"引子 解决一些目前k3s在RiscV开发板上存在的问题。\nkubectl\u0026crictl kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。\n不过需要提前强调的是，kubectl命令是从kubelet的角度看的逻辑状态，而crictl是从底层容器运行时的视角看的底层容器状态。\n这是kubectl get pods的结果\nkubectl get pods NAME READY STATUS RESTARTS AGE redis-696579c6c8-v2wns 1/1 Running 1 (7m57s ago) 30h b6 0/1 ErrImagePull 0 (6d23h ago) 7d19h 这是crictl pods的结果\nPOD ID CREATED STATE NAME NAMESPACE ATTEMPT RUNTIME cf657c901892e 5 minutes ago Ready helm-install-traefik-pv4hv kube-system 5 (default) c60416658550d 5 minutes ago Ready local-path-provisioner-7b7dc8d6f5-48jjf kube-system 5 (default) 33c39dd34daff 5 minutes ago Ready helm-install-traefik-crd-ktfth kube-system 5 (default) 294e3dec339e2 5 minutes ago Ready metrics-server-668d979685-jthzj kube-system 5 (default) 8b67484f1bfe4 5 minutes ago Ready redis-696579c6c8-v2wns default 1 (default) 04ff59ad5464f 5 minutes ago Ready b6 default 5 (default) 2e1c2f055fb3e 5 minutes ago Ready coredns-b96499967-cpbrk kube-system 5 (default) e0a0516a940da 30 hours ago NotReady redis-696579c6c8-v2wns default 0 (default) ec8be446fcabf 7 days ago NotReady b6 default 0 (default) 首先从结果字段中来看,这些字段的含义如下：\n可以注意到，crictl pods中所获得的pods，并不是我们想象中的业务pods，而是Pod sandbox，这一点我们可以根据获取Pod的UID来判断——我们都知道每个Pod都会有自己的UID来进行区分。\nkubectl get pod redis-696579c6c8-v2wns -o jsonpath='{.metadata.uid}{\"\\n\"}' a72e1056-01c3-4f74-80d9-3a7ed79fb3c2 可以发现其UID与当前crictl中的PodID根本不同，也进一步印证了我们的想法。同时，使用crictl inspectp 可以查到相同的uid，再次印证。\ncrictl inspectp 8b67484f1bfe4 { \"status\": { \"id\": \"8b67484f1bfe48c4de3cd5b8ee5f343013ae6236491622ee82fb8e865fce0d7f\", \"metadata\": { \"attempt\": 1, \"name\": \"redis-696579c6c8-v2wns\", \"namespace\": \"default\", \"uid\": \"a72e1056-01c3-4f74-80d9-3a7ed79fb3c2\" }, \"state\": \"SANDBOX_READY\", ..... 而其中的state完整结果其实是SANDBOX_READY,又证实了我们之前说的，crictl获得的是Pod sandbox。\n所以我会问为什么呢？这一定跟k3s中pod的启动流程有关吧。这里我们简单地描述一下pod的启动流程，后续会根据源码进行剖析。\nkubectl apply -f xx.yaml kubenetes API Server 调度Scheduled kubelet检测到新Pod启动 kubelet调用容器运行时(containerd) containerd创建Pod Sandbox 拉取业务容器镜像，启动容器 kubelet监听容器状态，返回给API Server 而Pod Sandbox是运行时为Pod所创建的一个隔离环境，在这个环境中要有network namespace,一个最小的容器pause容器作为网络占位符，只有这样，Pod内的多个容器才可以共享一个网络空间。\n所以回到最初，这两条命令的视角就不同，crictl是从容器运行时出发，关注的是Sandbox的状态；而kubectl是从更高的视角出发，其关注的是业务pods（包括业务容器）的运行状态，是从kubectl那里汇报的最新状态。\n检查关键组件容器状态 journalctl -u k3s -f # 结果 peneuler-riscv64 k3s[2438]: E0409 18:38:08.359021 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"metrics-server\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"rancher/mirrored-metrics-server:v0.5.2\\\\\\\"\\\"\" pod=\"kube-system/metrics-server-668d979685-jthzj\" podUID=e7c219e4-2701-4924-9d7b-84fea6f8274b 4月 09 18:38:08 openeuler-riscv64 k3s[2438]: E0409 18:38:08.359159 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"helm\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"rancher/klipper-helm:v0.7.3-build20220613\\\\\\\"\\\"\" pod=\"kube-system/helm-install-traefik-crd-ktfth\" podUID=3192257c-7e69-4c14-9b4e-d607ce188a88 4月 09 18:38:08 openeuler-riscv64 k3s[2438]: E0409 18:38:08.359193 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"busybox\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"riscv64/busybox:latest\\\\\\\"\\\"\" pod=\"default/b6\" podUID=e423f26e-efd9-44bd-a65b-41dc722f3eb2 4月 09 18:38:09 openeuler-riscv64 k3s[2438]: E0409 18:38:09.604483 2438 resource_quota_controller.go:413] unable to retrieve the complete list of server APIs: metrics.k8s.io/v1beta1: the server is currently unable to handle the request 4月 09 18:38:09 openeuler-riscv64 k3s[2438]: W0409 18:38:09.639045 2438 garbagecollector.go:747] failed to discover some groups: map[metrics.k8s.io/v1beta1:the server is currently unable to handle the request] 4月 09 18:38:11 openeuler-riscv64 k3s[2438]: E0409 18:38:11.357904 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"local-path-provisioner\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"rancher/local-path-provisioner:v0.0.21\\\\\\\"\\\"\" pod=\"kube-system/local-path-provisioner-7b7dc8d6f5-48jjf\" podUID=a4b291fd-db16-498d-a136-9a1432f4649f 4月 09 18:38:14 openeuler-riscv64 k3s[2438]: E0409 18:38:14.357404 2438 pod_workers.go:951] \"Error syncing pod, skipping\" err=\"failed to \\\"StartContainer\\\" for \\\"coredns\\\" with ImagePullBackOff: \\\"Back-off pulling image \\\\\\\"rancher/mirrored-coredns-coredns:1.9.1\\\\\\\"\\\"\" pod=\"kube-system/coredns-b96499967-cpbrk\" podUID=04219540-713f-44d1-9d2d-7d5acf08222c ...... ps:pod_workers.go来自于k8s的源码\n可以发现首先存在的问题是有一些系统镜像在kube-system下的例如helm-install-traefik-crd-ktfth等存在镜像拉取失败问题，在K3sEP02解决RiscV开发板镜像无法拉取问题这篇文章中，我们解决了pause镜像拉取失败问题，当时pause镜像作为最基础的镜像如果拉取失败会导致整个节点无法使用crictl命令拉取镜像。\n而这些系统镜像虽然没有直接影响我们k3s的启动，但对于后续的操作产生了较大的影响例如无法暴露服务，Pod间无法进行通信等等问题。\n使用以下命令查看pod状态，发现有几个处于镜像拉取失败，并且可以与上面我们使用crictl pods命令的结果对应上。\nkubectl get pods -A -o wide NAMESPACE NAME READY STATUS RESTARTS AGE IP NODE NOMINATED NODE READINESS GATES default redis-696579c6c8-v2wns 1/1 Running 1 (148m ago) 32h 10.42.0.35 openeuler-riscv64 kube-system helm-install-traefik-crd-ktfth 0/1 ImagePullBackOff 0 8d 10.42.0.37 openeuler-riscv64 kube-system coredns-b96499967-cpbrk 0/1 ImagePullBackOff 0 8d 10.42.0.33 openeuler-riscv64 kube-system metrics-server-668d979685-jthzj 0/1 ImagePullBackOff 0 8d 10.42.0.36 openeuler-riscv64 kube-system helm-install-traefik-pv4hv 0/1 ImagePullBackOff 0 8d 10.42.0.39 openeuler-riscv64 kube-system local-path-provisioner-7b7dc8d6f5-48jjf 0/1 ImagePullBackOff 0 8d 10.42.0.38 openeuler-riscv64 default b6 0/1 ImagePullBackOff 0 (7d1h ago) 7d21h 10.42.0.34 openeuler-riscv64 其中CoreDNS是一个很核心的系统组件，如果没有它，我们的Pod间无法进行通信，所以接下来我们先处理CoreDNS镜像的拉取失败问题。\nCoreDNS镜像 CoreDNS作为Namespace为kube-system的系统级别镜像，用来实现动态可靠的服务发现. 两个Pod之间进行通信无需硬编码 Pod IP,只需要通过服务名称 service.default.svc.cluster.local 就可以发起请求 这其中 CoreDNS 会与 API Server 交互以获取服务信息——API Server 返回该 Service 的 ClusterIP 和端口。\nPodA 发起 DNS 查询-\u003e CoreDNS -\u003e查询调用 API Server -\u003e API Server 响应 PodB 的 JSON 信息-\u003e CoreDNS 构造 DNS 响应返回给 PodA 与此同时，如果某些 Pod 发生了重启或者迁移，CoreDNS 也会自动更新DNS记录。\n接下来我们看看如何将 CoreDNS 镜像移植到我们的开发板上。\n首先执行命令确定发现 Coredns 服务并不存在于当前的 k3s 中。\nkubectl -n kube-system get svc coredns Error from server (NotFound): services \"coredns\" not found 我们默认的 k3s 会去拉取 rancher/mirrored-coredns-coredns:1.9.1 这个镜像，所以我们要自己构建这个镜像在我们的私有仓库中，然后在开发板上拉取这个镜像进行替换使用。 类似于我们当时处理 pause 镜像，不同的是，pause 镜像在 k8s 的源码中是有其源码的，而 coreDNS 本质上是一个外部项目，所以我们需要从其 Github 的源码入手。\n1.方法一：本地交叉编译\n因为 CoreDNS 是用 Golang 编写的，而 Go 是可以指定架构进行编译的，并且支持 riscv64，所以我的初步思路是将其源码下载到我的mac上并指定为riscv64进行交叉编译。\ngit clone git@github.com:coredns/coredns.git git checkout v1.9.1 GOOS=linux GOARCH=riscv64 make 但是这样在构建的过程中会遇到问题\nlink: golang.org/x/net/internal/socket: invalid reference to syscall.recvmsg make: *** [coredns] Error 1 GOARCH=riscv64 时，Go 编译器在交叉编译时找不到适用于 RISC-V 架构的某些 syscall 实现，比如 syscall.recvmsg，这是 CoreDNS 或其依赖包 golang.org/x/net/internal/socket 里的系统调用。 这样的问题在网络上也很常见，如这个例子，可以发现 Go 标准库并没有做到实现所有架构的 syscall 支持，特别是一些底层的网络系统调用。\n下面给出源码中的 Makefile,可以发现其在构建时会去执行go get，这就是为什么会去找这个系统调用，也是为什么我选择先在mac上进行交叉编译（因为开发板的网络问题）\n# Makefile for building CoreDNS GITCOMMIT?=$(shell git describe --dirty --always) BINARY:=coredns SYSTEM:= CHECKS:=check BUILDOPTS?=-v GOPATH?=$(HOME)/go MAKEPWD:=$(dir $(realpath $(firstword $(MAKEFILE_LIST)))) CGO_ENABLED?=0 GOLANG_VERSION ?= $(shell cat .go-version) export GOSUMDB = sum.golang.org export GOTOOLCHAIN = go$(GOLANG_VERSION) .PHONY: all all: coredns .PHONY: coredns coredns: $(CHECKS) CGO_ENABLED=$(CGO_ENABLED) $(SYSTEM) go build $(BUILDOPTS) -ldflags=\"-s -w -X github.com/coredns/coredns/coremain.GitCommit=$(GITCOMMIT)\" -o $(BINARY) .PHONY: check check: core/plugin/zplugin.go core/dnsserver/zdirectives.go core/plugin/zplugin.go core/dnsserver/zdirectives.go: plugin.cfg go generate coredns.go go get .PHONY: gen gen: go generate coredns.go go get .PHONY: pb pb: $(MAKE) -C pb .PHONY: clean clean: go clean rm -f coredns 如何解决呢？可能得去修改 coreDNS 的源码关于系统调用这块了，但是本着不入侵编程的思想（懒比的思想）我们去找其他方法。\n2.方法二：找到官方提供的支持riscv的Release\n你别说，还真有，只是版本较新，来到了v1.12.1,所以我们暂时先用这个新版本，后续看是否会与开发板上需要的v1.9.1发生冲突。\nwget https://github.com/coredns/coredns/releases/download/v1.12.1/coredns_1.12.1_linux_riscv64.tgz tar -zxvf coredns_1.12.1_linux_riscv64.tgz 构建Docker镜像\nFROM alpine:latest # 换源 RUN sed -i 's#https\\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories WORKDIR /root COPY coredns /coredns CMD [\"/coredns\"] 构建镜像并推送至私有仓库，关于私有仓库见移植镜像这篇文章。\ndocker build --network host --platform=linux/riscv64 -f Dockerfile.coredns -t 192.168.173.76:6000/riscv64/coredns:1.0 . docker push 192.168.173.76:6000/riscv64/coredns:1.0 然后我们回到开发板上进行拉取并进行类似于pause镜像的适配crictl pull riscv64/coredns:1.0\n首先看看当前镜像Pod的描述状态\nkubectl get pods -n kube-system -l k8s-app=kube-dns kubectl describe pod -n kube-system 得到的结果如下:\nWarning Failed 17m kubelet Failed to pull image \"rancher/mirrored-coredns-coredns:1.9.1\": rpc error: code = DeadlineExceeded desc = failed to pull and unpack image \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\": failed to resolve reference \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\": failed to do request: Head \"https://registry-1.docker.io/v2/rancher/mirrored-coredns-coredns/manifests/1.9.1\": dial tcp [2a03:2880:f134:83:face:b00c:0:25de]:443: i/o timeout Warning Failed 15m kubelet Failed to pull image \"rancher/mirrored-coredns-coredns:1.9.1\": rpc error: code = DeadlineExceeded desc = failed to pull and unpack image \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\": failed to resolve reference \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\": failed to do request: Head \"https://registry-1.docker.io/v2/rancher/mirrored-coredns-coredns/manifests/1.9.1\": dial tcp [2a03:2880:f136:83:face:b00c:0:25de]:443: i/o timeout Warning Failed 15m (x4 over 19m) kubelet Error: ErrImagePull Warning Failed 15m (x6 over 18m) kubelet Error: ImagePullBackOff Normal Pulling 14m (x5 over 19m) kubelet Pulling image \"rancher/mirrored-coredns-coredns:1.9.1\" Normal BackOff 4m24s (x47 over 18m) kubelet Back-off pulling image \"rancher/mirrored-coredns-coredns:1.9.1\" 从k3s的源码 manifests 得知,这些系统级别的镜像（容器）例如traefik,coredns 都在这个目录中以 yaml 文件的形式存在. 这会在 k3s 启动时自动对其进行 Pod 的构建，相当于这是 k3s 自带的 Pod 们。\n具体在开发板上的路径是/var/lib/rancher/k3s/server/manifests\n现在，我们的思路变成——修改coredns.yaml文件使k3s在构建coredns容器时使用我们私有镜像仓库中的构建的来自于官方v1.12.1中适合riscv64的镜像。 于是我先将其打标签\n# 可以用crictl images | grep coredns查看 ctr -n k8s.io images tag \u003c拉取下来的镜像名\u003e docker.io/rancher/mirrored-coredns-coredns:1.9.1 非常值得注意的是，这里打标签前面必须要有docker.io,如果没有的话可能会出现无法识别本地镜像的问题.具体见Github上的相关问题。\n之后修改coredns.yaml,将其中镜像名称改为 docker.io/rancher/mirrored-coredns-coredns:1.9.1,拉取策略改为 Never ,并且在arg参数上面添加一行command: [\"/coredns\"]\n最后，删除对应的Pod，k3s会自动重新拉取镜像并构建此Pod，再来检查其运行状态与构建过程。\nkubectl delete pod -n kube-system -l k8s-app=kube-dns kubectl get pods -n kube-system -l k8s-app=kube-dns kubectl describe pod -n kube-system 最终得到结果如下\nEvents: Type Reason Age From Message ---- ------ ---- ---- ------- Normal Scheduled 34s default-scheduler Successfully assigned kube-system/coredns-fcc987b6f-nkn92 to openeuler-riscv64 Normal Pulled 33s kubelet Container image \"docker.io/rancher/mirrored-coredns-coredns:1.9.1\" already present on machine Normal Created 33s kubelet Created container coredns Normal Started 33s kubelet Started container coredns Warning Unhealthy 2s (x18 over 33s) kubelet Readiness probe failed: HTTP probe failed with statuscode: 503 这里虽然出现503错误但是只是健康检测出现问题，可能是配置有误或者插件失败，但是至少容器coredns创建成功了. 并且再次执行journalctl -u k3s -f后可以发现之前的 coredns 创建失败的日志不见了。\n解决遗留问题 上面只是解决了CoreDNS组件的镜像拉取问题，但是拉取下来之后其还存在一些其他问题，如果你在上面的构建过程中也遇到了类似问题，请见下方处理方案。\n问题1：启动覆盖问题 首先，如果我们下一次重启k3s，就会发现 Coredns 这个容器又构建失败了，并且原因正是我们修改过的 coredns.yaml 文件。\nWarning Failed 72s (x2 over 73s) kubelet Error: failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: \"-conf\": executable file not found in $PATH: unknown 这是因为k3s会在重启时自动恢复一些核心组件的yaml文件为默认值，覆盖掉我们的更改。 在K3s官方的Issue中也有类似的问题,而官方文档中的说法也提到了Auto-Deploying Manifests。\n所以，根据官方文档中的内容，我们应该先去更改k3s的启动命令，而我们的k3s是由systemd启动的，所以执行sudo systemctl edit k3s，在ExecStart的最后添加上--disable=coredns\nFor example, to disable traefik from being installed on a new cluster, or to uninstall it and remove the manifest from an existing cluster, you can start K3s with –disable=traefik. Multiple items can be disabled by separating their names with commas, or by repeating the flag.\nExecStart=/usr/local/bin/k3s \\ server \\ --disable=coredns \\ 修改 yaml 文件使得 k3s 在启动时使用我们自定义的 yaml 文件。修改内容同上，在 arg 前加一行command[\"/coredns\"]\ncp coredns.yaml custom-coredns.yaml 重启服务\nsudo systemctl daemon-reexec sudo systemctl daemon-reload sudo systemctl restart k3s 至此，可以解决启动覆盖问题，即k3s不会在每次启动时都用默认的coredns.yaml来启动corednsPod,而是使用我们自定义的custom-coredns.yaml文件来进行。\n如果后续我们自己从头构建适合 riscv 的k3s可执行文件,直接从源码层面修改镜像名称即可,不用这么麻烦.\n问题2:Readiness probe failed 虽然我们使用了本地镜像并且修改了 k3s 默认的关于 coreDNS 的配置，但是仍然会遇到问题. 即上面提到的这个 Readiness probe 的网络问题.\nReadiness probe failed: HTTP probe failed with statuscode: 503 对于这个问题，目前我还没有找到合适的解决方法，我个人倾向于是开发板 iptables 的问题，在这里我放一些排查的手段以供后面的操作。\n# 查看当前的Corefile内容 kubectl -n kube-system get configmap coredns -o yaml # 进入Pod调试（但是当前的Pod不断地重启） kubectl -n kube-system exec -it -- sh curl -v localhost:8080/health # /etc/resolv.conf配置可能出现问题，无法访问到其中的DNS,如果可以进入Pod，检查是否可以访问设置的DNS wget -O- http://192.168.173.153 # 检查kube-proxy是否生效 kubectl -n kube-system get pods -l k8s-app=kube-proxy 故我们先继续解决其他系统 Pod 以及 Iptables 等问题。\n总结 对于 CoreDNS 系统组件,我们发现其官方给出了支持 riscv 的版本,所以无需我们自己重新编译. 我们选择的方法是本地构建对应的镜像并拉取到开发板上,并修改掉源码中的名称为我们构建的名称,最终实现了镜像的替换.\n但是这是否太过于依赖于本地的构建?我们应该能做到从某个能够拉取的地址自动拉取,可以将docker.io这个修改为我们自己的服务器吗? 这是我们后续要探索的方向之一.\nexport INSTALL_K3S_EXEC=\"--system-default-registry=your.registry.com\" INSTALL_K3S_SKIP_DOWNLOAD=true bash k3s-install.sh 后续更新 最近在 k3s 的官方源码 fork 中找到了一位大佬的 fork,其对于 coredns.yaml 只进行了以下的修改:\nimage: \"%{SYSTEM_DEFAULT_REGISTRY}%rancher/mirrored-coredns-coredns:1.11.3\" image: \"%{SYSTEM_DEFAULT_REGISTRY}%coredns/coredns:1.11.3\" 系统默认镜像一般是docker.io,所以其只是改了个名字?\n后续我们在自行构建的时候,暂时决定将这些系统镜像全部放在自己的私有镜像仓库中, 然后在启动 k3s 的时候指定默认仓库为私有镜像仓库.\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n","wordCount":"4907","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2025-04-09T16:01:58+08:00","dateModified":"2025-04-09T16:01:58+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像</h1><div class=post-meta><span title='2025-04-09 16:01:58 +0800 CST'>四月 9, 2025</span>&nbsp;·&nbsp;10 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e5%bc%95%e5%ad%90 aria-label=引子>引子</a></li><li><a href=#kubectlcrictl aria-label=kubectl&amp;crictl>kubectl&amp;crictl</a></li><li><a href=#%e6%a3%80%e6%9f%a5%e5%85%b3%e9%94%ae%e7%bb%84%e4%bb%b6%e5%ae%b9%e5%99%a8%e7%8a%b6%e6%80%81 aria-label=检查关键组件容器状态>检查关键组件容器状态</a><ul><li><a href=#coredns%e9%95%9c%e5%83%8f aria-label=CoreDNS镜像>CoreDNS镜像</a></li><li><a href=#%e8%a7%a3%e5%86%b3%e9%81%97%e7%95%99%e9%97%ae%e9%a2%98 aria-label=解决遗留问题>解决遗留问题</a><ul><li><a href=#%e9%97%ae%e9%a2%981%e5%90%af%e5%8a%a8%e8%a6%86%e7%9b%96%e9%97%ae%e9%a2%98 aria-label=问题1：启动覆盖问题>问题1：启动覆盖问题</a></li><li><a href=#%e9%97%ae%e9%a2%982readiness-probe-failed aria-label="问题2:Readiness probe failed">问题2:Readiness probe failed</a></li></ul></li></ul></li><li><a href=#%e6%80%bb%e7%bb%93 aria-label=总结>总结</a><ul><li><a href=#%e5%90%8e%e7%bb%ad%e6%9b%b4%e6%96%b0 aria-label=后续更新>后续更新</a></li></ul></li></ul></div></details></div><div class=post-content><h2 id=引子>引子<a hidden class=anchor aria-hidden=true href=#引子>#</a></h2><p>解决一些目前k3s在RiscV开发板上存在的问题。</p><h2 id=kubectlcrictl>kubectl&amp;crictl<a hidden class=anchor aria-hidden=true href=#kubectlcrictl>#</a></h2><p>kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。</p><p>不过需要提前强调的是，kubectl命令是从kubelet的角度看的逻辑状态，而crictl是从底层容器运行时的视角看的底层容器状态。</p><p>这是<code>kubectl get pods</code>的结果</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pods
+</span></span><span class=line><span class=cl>NAME                     READY   STATUS         RESTARTS        AGE
+</span></span><span class=line><span class=cl>redis-696579c6c8-v2wns   1/1     Running        <span class=m>1</span> <span class=o>(</span>7m57s ago<span class=o>)</span>   30h
+</span></span><span class=line><span class=cl>b6                       0/1     ErrImagePull   <span class=m>0</span> <span class=o>(</span>6d23h ago<span class=o>)</span>   7d19h
+</span></span></code></pre></div><p>这是<code>crictl pods</code>的结果</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>POD ID              CREATED             STATE               NAME                                      NAMESPACE           ATTEMPT             RUNTIME
+</span></span><span class=line><span class=cl>cf657c901892e       <span class=m>5</span> minutes ago       Ready               helm-install-traefik-pv4hv                kube-system         <span class=m>5</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span><span class=line><span class=cl>c60416658550d       <span class=m>5</span> minutes ago       Ready               local-path-provisioner-7b7dc8d6f5-48jjf   kube-system         <span class=m>5</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span><span class=line><span class=cl>33c39dd34daff       <span class=m>5</span> minutes ago       Ready               helm-install-traefik-crd-ktfth            kube-system         <span class=m>5</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span><span class=line><span class=cl>294e3dec339e2       <span class=m>5</span> minutes ago       Ready               metrics-server-668d979685-jthzj           kube-system         <span class=m>5</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span><span class=line><span class=cl>8b67484f1bfe4       <span class=m>5</span> minutes ago       Ready               redis-696579c6c8-v2wns                    default             <span class=m>1</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span><span class=line><span class=cl>04ff59ad5464f       <span class=m>5</span> minutes ago       Ready               b6                                        default             <span class=m>5</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span><span class=line><span class=cl>2e1c2f055fb3e       <span class=m>5</span> minutes ago       Ready               coredns-b96499967-cpbrk                   kube-system         <span class=m>5</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span><span class=line><span class=cl>e0a0516a940da       <span class=m>30</span> hours ago        NotReady            redis-696579c6c8-v2wns                    default             <span class=m>0</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span><span class=line><span class=cl>ec8be446fcabf       <span class=m>7</span> days ago          NotReady            b6                                        default             <span class=m>0</span>                   <span class=o>(</span>default<span class=o>)</span>
+</span></span></code></pre></div><p>首先从结果字段中来看,这些字段的含义如下：</p><p><img loading=lazy src=/img/riscv/crictl01.png></p><p>可以注意到，crictl pods中所获得的pods，并不是我们想象中的业务pods，而是<strong>Pod sandbox</strong>，这一点我们可以根据获取Pod的UID来判断——我们都知道每个Pod都会有自己的UID来进行区分。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>kubectl get pod redis-696579c6c8-v2wns -o <span class=nv>jsonpath</span><span class=o>=</span><span class=s1>&#39;{.metadata.uid}{&#34;\n&#34;}&#39;</span>
+</span></span><span class=line><span class=cl>a72e1056-01c3-4f74-80d9-3a7ed79fb3c2
+</span></span></code></pre></div><p>可以发现其UID与当前crictl中的PodID根本不同，也进一步印证了我们的想法。同时，使用<code>crictl inspectp &lt;PODID></code>可以查到相同的uid，再次印证。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl> crictl inspectp 8b67484f1bfe4
+</span></span><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>  <span class=s2>&#34;status&#34;</span>: <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;id&#34;</span>: <span class=s2>&#34;8b67484f1bfe48c4de3cd5b8ee5f343013ae6236491622ee82fb8e865fce0d7f&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;metadata&#34;</span>: <span class=o>{</span>
+</span></span><span class=line><span class=cl>      <span class=s2>&#34;attempt&#34;</span>: 1,
+</span></span><span class=line><span class=cl>      <span class=s2>&#34;name&#34;</span>: <span class=s2>&#34;redis-696579c6c8-v2wns&#34;</span>,
+</span></span><span class=line><span class=cl>      <span class=s2>&#34;namespace&#34;</span>: <span class=s2>&#34;default&#34;</span>,
+</span></span><span class=line><span class=cl>      <span class=s2>&#34;uid&#34;</span>: <span class=s2>&#34;a72e1056-01c3-4f74-80d9-3a7ed79fb3c2&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;state&#34;</span>: <span class=s2>&#34;SANDBOX_READY&#34;</span>,
+</span></span><span class=line><span class=cl>.....
+</span></span></code></pre></div><p>而其中的state完整结果其实是SANDBOX_READY,又证实了我们之前说的，crictl获得的是Pod sandbox。</p><p>所以我会问为什么呢？这一定跟k3s中pod的启动流程有关吧。这里我们简单地描述一下pod的启动流程，后续会根据源码进行剖析。</p><ul><li>kubectl apply -f xx.yaml</li><li>kubenetes API Server</li><li>调度Scheduled</li><li>kubelet检测到新Pod启动</li><li>kubelet调用容器运行时(containerd)</li><li>containerd创建Pod Sandbox</li><li>拉取业务容器镜像，启动容器</li><li>kubelet监听容器状态，返回给API Server</li></ul><p>而Pod Sandbox是运行时为Pod所创建的一个<strong>隔离环境</strong>，在这个环境中要有<strong>network namespace,一个最小的容器pause容器作为网络占位符</strong>，只有这样，Pod内的多个容器才可以共享一个网络空间。</p><p>所以回到最初，这两条命令的视角就不同，crictl是从容器运行时出发，关注的是Sandbox的状态；而kubectl是从更高的视角出发，其关注的是业务pods（包括业务容器）的运行状态，是从kubectl那里汇报的最新状态。</p><h2 id=检查关键组件容器状态>检查关键组件容器状态<a hidden class=anchor aria-hidden=true href=#检查关键组件容器状态>#</a></h2><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>journalctl -u k3s -f
+</span></span><span class=line><span class=cl><span class=c1># 结果</span>
+</span></span><span class=line><span class=cl>peneuler-riscv64 k3s<span class=o>[</span>2438<span class=o>]</span>: E0409 18:38:08.359021    <span class=m>2438</span> pod_workers.go:951<span class=o>]</span> <span class=s2>&#34;Error syncing pod, skipping&#34;</span> <span class=nv>err</span><span class=o>=</span><span class=s2>&#34;failed to \&#34;StartContainer\&#34; for \&#34;metrics-server\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;rancher/mirrored-metrics-server:v0.5.2\\\&#34;\&#34;&#34;</span> <span class=nv>pod</span><span class=o>=</span><span class=s2>&#34;kube-system/metrics-server-668d979685-jthzj&#34;</span> <span class=nv>podUID</span><span class=o>=</span>e7c219e4-2701-4924-9d7b-84fea6f8274b
+</span></span><span class=line><span class=cl>4月 <span class=m>09</span> 18:38:08 openeuler-riscv64 k3s<span class=o>[</span>2438<span class=o>]</span>: E0409 18:38:08.359159    <span class=m>2438</span> pod_workers.go:951<span class=o>]</span> <span class=s2>&#34;Error syncing pod, skipping&#34;</span> <span class=nv>err</span><span class=o>=</span><span class=s2>&#34;failed to \&#34;StartContainer\&#34; for \&#34;helm\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;rancher/klipper-helm:v0.7.3-build20220613\\\&#34;\&#34;&#34;</span> <span class=nv>pod</span><span class=o>=</span><span class=s2>&#34;kube-system/helm-install-traefik-crd-ktfth&#34;</span> <span class=nv>podUID</span><span class=o>=</span>3192257c-7e69-4c14-9b4e-d607ce188a88
+</span></span><span class=line><span class=cl>4月 <span class=m>09</span> 18:38:08 openeuler-riscv64 k3s<span class=o>[</span>2438<span class=o>]</span>: E0409 18:38:08.359193    <span class=m>2438</span> pod_workers.go:951<span class=o>]</span> <span class=s2>&#34;Error syncing pod, skipping&#34;</span> <span class=nv>err</span><span class=o>=</span><span class=s2>&#34;failed to \&#34;StartContainer\&#34; for \&#34;busybox\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;riscv64/busybox:latest\\\&#34;\&#34;&#34;</span> <span class=nv>pod</span><span class=o>=</span><span class=s2>&#34;default/b6&#34;</span> <span class=nv>podUID</span><span class=o>=</span>e423f26e-efd9-44bd-a65b-41dc722f3eb2
+</span></span><span class=line><span class=cl>4月 <span class=m>09</span> 18:38:09 openeuler-riscv64 k3s<span class=o>[</span>2438<span class=o>]</span>: E0409 18:38:09.604483    <span class=m>2438</span> resource_quota_controller.go:413<span class=o>]</span> unable to retrieve the <span class=nb>complete</span> list of server APIs: metrics.k8s.io/v1beta1: the server is currently unable to handle the request
+</span></span><span class=line><span class=cl>4月 <span class=m>09</span> 18:38:09 openeuler-riscv64 k3s<span class=o>[</span>2438<span class=o>]</span>: W0409 18:38:09.639045    <span class=m>2438</span> garbagecollector.go:747<span class=o>]</span> failed to discover some groups: map<span class=o>[</span>metrics.k8s.io/v1beta1:the server is currently unable to handle the request<span class=o>]</span>
+</span></span><span class=line><span class=cl>4月 <span class=m>09</span> 18:38:11 openeuler-riscv64 k3s<span class=o>[</span>2438<span class=o>]</span>: E0409 18:38:11.357904    <span class=m>2438</span> pod_workers.go:951<span class=o>]</span> <span class=s2>&#34;Error syncing pod, skipping&#34;</span> <span class=nv>err</span><span class=o>=</span><span class=s2>&#34;failed to \&#34;StartContainer\&#34; for \&#34;local-path-provisioner\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;rancher/local-path-provisioner:v0.0.21\\\&#34;\&#34;&#34;</span> <span class=nv>pod</span><span class=o>=</span><span class=s2>&#34;kube-system/local-path-provisioner-7b7dc8d6f5-48jjf&#34;</span> <span class=nv>podUID</span><span class=o>=</span>a4b291fd-db16-498d-a136-9a1432f4649f
+</span></span><span class=line><span class=cl>4月 <span class=m>09</span> 18:38:14 openeuler-riscv64 k3s<span class=o>[</span>2438<span class=o>]</span>: E0409 18:38:14.357404    <span class=m>2438</span> pod_workers.go:951<span class=o>]</span> <span class=s2>&#34;Error syncing pod, skipping&#34;</span> <span class=nv>err</span><span class=o>=</span><span class=s2>&#34;failed to \&#34;StartContainer\&#34; for \&#34;coredns\&#34; with ImagePullBackOff: \&#34;Back-off pulling image \\\&#34;rancher/mirrored-coredns-coredns:1.9.1\\\&#34;\&#34;&#34;</span> <span class=nv>pod</span><span class=o>=</span><span class=s2>&#34;kube-system/coredns-b96499967-cpbrk&#34;</span> <span class=nv>podUID</span><span class=o>=</span>04219540-713f-44d1-9d2d-7d5acf08222c
+</span></span><span class=line><span class=cl>......
+</span></span></code></pre></div><p>ps:<code>pod_workers.go</code>来自于k8s的源码</p><p>可以发现首先存在的问题是有一些系统镜像在kube-system下的例如<code>helm-install-traefik-crd-ktfth</code>等存在镜像拉取失败问题，在<a href=https://www.bfsmlt.top/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/>K3sEP02解决RiscV开发板镜像无法拉取问题</a>这篇文章中，我们解决了pause镜像拉取失败问题，当时pause镜像作为最基础的镜像如果拉取失败会导致整个节点无法使用crictl命令拉取镜像。</p><p>而这些系统镜像虽然没有直接影响我们k3s的启动，但对于后续的操作产生了较大的影响例如无法暴露服务，Pod间无法进行通信等等问题。</p><p>使用以下命令查看pod状态，发现有几个处于镜像拉取失败，并且可以与上面我们使用<code>crictl pods</code>命令的结果对应上。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pods -A -o wide
+</span></span><span class=line><span class=cl>NAMESPACE     NAME                                      READY   STATUS             RESTARTS       AGE     IP           NODE                NOMINATED NODE   READINESS GATES
+</span></span><span class=line><span class=cl>default       redis-696579c6c8-v2wns                    1/1     Running            <span class=m>1</span> <span class=o>(</span>148m ago<span class=o>)</span>   32h     10.42.0.35   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
+</span></span><span class=line><span class=cl>kube-system   helm-install-traefik-crd-ktfth            0/1     ImagePullBackOff   <span class=m>0</span>              8d      10.42.0.37   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
+</span></span><span class=line><span class=cl>kube-system   coredns-b96499967-cpbrk                   0/1     ImagePullBackOff   <span class=m>0</span>              8d      10.42.0.33   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
+</span></span><span class=line><span class=cl>kube-system   metrics-server-668d979685-jthzj           0/1     ImagePullBackOff   <span class=m>0</span>              8d      10.42.0.36   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
+</span></span><span class=line><span class=cl>kube-system   helm-install-traefik-pv4hv                0/1     ImagePullBackOff   <span class=m>0</span>              8d      10.42.0.39   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
+</span></span><span class=line><span class=cl>kube-system   local-path-provisioner-7b7dc8d6f5-48jjf   0/1     ImagePullBackOff   <span class=m>0</span>              8d      10.42.0.38   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
+</span></span><span class=line><span class=cl>default       b6                                        0/1     ImagePullBackOff   <span class=m>0</span> <span class=o>(</span>7d1h ago<span class=o>)</span>   7d21h   10.42.0.34   openeuler-riscv64   &lt;none&gt;           &lt;none&gt;
+</span></span></code></pre></div><p>其中CoreDNS是一个很核心的系统组件，如果没有它，我们的Pod间无法进行通信，所以接下来我们先处理CoreDNS镜像的拉取失败问题。</p><h3 id=coredns镜像>CoreDNS镜像<a hidden class=anchor aria-hidden=true href=#coredns镜像>#</a></h3><p>CoreDNS作为Namespace为kube-system的系统级别镜像，用来实现动态可靠的服务发现.
 两个Pod之间进行通信无需硬编码 Pod IP,只需要通过服务名称 <code>service.default.svc.cluster.local</code> 就可以发起请求
-这其中 CoreDNS 会与 API Server 交互以获取服务信息——API Server 返回该 Service 的 ClusterIP 和端口。</p>
-<ul>
-<li>PodA 发起 DNS 查询-&gt; CoreDNS -&gt;查询调用 API Server -&gt; API Server 响应 PodB 的 JSON 信息-&gt; CoreDNS 构造 DNS 响应返回给 PodA</li>
-</ul>
-<p>与此同时，如果某些 Pod 发生了重启或者迁移，CoreDNS 也会自动更新DNS记录。</p>
-<p>接下来我们看看如何将 CoreDNS 镜像移植到我们的开发板上。</p>
-<p>首先执行命令确定发现 Coredns 服务并不存在于当前的 k3s 中。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl -n kube-system get svc coredns
-</span></span><span class="line"><span class="cl">Error from server <span class="o">(</span>NotFound<span class="o">)</span>: services <span class="s2">&#34;coredns&#34;</span> not found
+这其中 CoreDNS 会与 API Server 交互以获取服务信息——API Server 返回该 Service 的 ClusterIP 和端口。</p><ul><li>PodA 发起 DNS 查询-> CoreDNS ->查询调用 API Server -> API Server 响应 PodB 的 JSON 信息-> CoreDNS 构造 DNS 响应返回给 PodA</li></ul><p>与此同时，如果某些 Pod 发生了重启或者迁移，CoreDNS 也会自动更新DNS记录。</p><p>接下来我们看看如何将 CoreDNS 镜像移植到我们的开发板上。</p><p>首先执行命令确定发现 Coredns 服务并不存在于当前的 k3s 中。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl -n kube-system get svc coredns
+</span></span><span class=line><span class=cl>Error from server <span class=o>(</span>NotFound<span class=o>)</span>: services <span class=s2>&#34;coredns&#34;</span> not found
 </span></span></code></pre></div><p>我们默认的 k3s 会去拉取 <code>rancher/mirrored-coredns-coredns:1.9.1</code> 这个镜像，所以我们要自己构建这个镜像在我们的私有仓库中，然后在开发板上拉取这个镜像进行替换使用。
-类似于我们当时处理 pause 镜像，不同的是，pause 镜像在 k8s 的源码中是有其源码的，而 coreDNS 本质上是一个外部项目，所以我们需要从其 Github 的源码入手。</p>
-<p>1.方法一：本地交叉编译</p>
-<p>因为 CoreDNS 是用 Golang 编写的，而 Go 是可以指定架构进行编译的，并且支持 riscv64，所以我的初步思路是将其源码下载到我的mac上并指定为riscv64进行交叉编译。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone git@github.com:coredns/coredns.git
-</span></span><span class="line"><span class="cl">git checkout v1.9.1
-</span></span><span class="line"><span class="cl"><span class="nv">GOOS</span><span class="o">=</span>linux <span class="nv">GOARCH</span><span class="o">=</span>riscv64 make
-</span></span></code></pre></div><p>但是这样在构建的过程中会遇到问题</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">link: golang.org/x/net/internal/socket: invalid reference to syscall.recvmsg
-</span></span><span class="line"><span class="cl">make: *** <span class="o">[</span>coredns<span class="o">]</span> Error <span class="m">1</span>
+类似于我们当时处理 pause 镜像，不同的是，pause 镜像在 k8s 的源码中是有其源码的，而 coreDNS 本质上是一个外部项目，所以我们需要从其 Github 的源码入手。</p><p>1.方法一：本地交叉编译</p><p>因为 CoreDNS 是用 Golang 编写的，而 Go 是可以指定架构进行编译的，并且支持 riscv64，所以我的初步思路是将其源码下载到我的mac上并指定为riscv64进行交叉编译。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>git clone git@github.com:coredns/coredns.git
+</span></span><span class=line><span class=cl>git checkout v1.9.1
+</span></span><span class=line><span class=cl><span class=nv>GOOS</span><span class=o>=</span>linux <span class=nv>GOARCH</span><span class=o>=</span>riscv64 make
+</span></span></code></pre></div><p>但是这样在构建的过程中会遇到问题</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>link: golang.org/x/net/internal/socket: invalid reference to syscall.recvmsg
+</span></span><span class=line><span class=cl>make: *** <span class=o>[</span>coredns<span class=o>]</span> Error <span class=m>1</span>
 </span></span></code></pre></div><p>GOARCH=riscv64 时，Go 编译器在交叉编译时找不到适用于 RISC-V 架构的某些 syscall 实现，比如 syscall.recvmsg，这是 CoreDNS 或其依赖包 golang.org/x/net/internal/socket 里的系统调用。
-这样的问题在网络上也很常见，如这个<a href="https://blog.csdn.net/Three_dog/article/details/94640507">例子</a>，可以发现 Go 标准库并没有做到实现所有架构的 syscall 支持，特别是一些底层的网络系统调用。</p>
-<p>下面给出源码中的 Makefile,可以发现其在构建时会去执行<code>go get</code>，这就是为什么会去找这个系统调用，也是为什么我选择先在mac上进行交叉编译（因为开发板的网络问题）</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="c"># Makefile for building CoreDNS
-</span></span></span><span class="line"><span class="cl"><span class="c"></span><span class="nv">GITCOMMIT</span><span class="o">?=</span><span class="k">$(</span>shell git describe --dirty --always<span class="k">)</span>
-</span></span><span class="line"><span class="cl"><span class="nv">BINARY</span><span class="o">:=</span>coredns
-</span></span><span class="line"><span class="cl"><span class="nv">SYSTEM</span><span class="o">:=</span>
-</span></span><span class="line"><span class="cl"><span class="nv">CHECKS</span><span class="o">:=</span>check
-</span></span><span class="line"><span class="cl"><span class="nv">BUILDOPTS</span><span class="o">?=</span>-v
-</span></span><span class="line"><span class="cl"><span class="nv">GOPATH</span><span class="o">?=</span><span class="k">$(</span>HOME<span class="k">)</span>/go
-</span></span><span class="line"><span class="cl"><span class="nv">MAKEPWD</span><span class="o">:=</span><span class="k">$(</span>dir <span class="k">$(</span>realpath <span class="k">$(</span>firstword <span class="k">$(</span>MAKEFILE_LIST<span class="k">))))</span>
-</span></span><span class="line"><span class="cl"><span class="nv">CGO_ENABLED</span><span class="o">?=</span><span class="m">0</span>
-</span></span><span class="line"><span class="cl"><span class="nv">GOLANG_VERSION</span> <span class="o">?=</span> <span class="k">$(</span>shell cat .go-version<span class="k">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">export </span><span class="nv">GOSUMDB</span> <span class="o">=</span> sum.golang.org
-</span></span><span class="line"><span class="cl"><span class="k">export </span><span class="nv">GOTOOLCHAIN</span> <span class="o">=</span> go<span class="k">$(</span>GOLANG_VERSION<span class="k">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">all</span>
-</span></span><span class="line"><span class="cl"><span class="nf">all</span><span class="o">:</span> <span class="n">coredns</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">coredns</span>
-</span></span><span class="line"><span class="cl"><span class="nf">coredns</span><span class="o">:</span> <span class="k">$(</span><span class="nv">CHECKS</span><span class="k">)</span>
-</span></span><span class="line"><span class="cl"> <span class="nv">CGO_ENABLED</span><span class="o">=</span><span class="k">$(</span>CGO_ENABLED<span class="k">)</span> <span class="k">$(</span>SYSTEM<span class="k">)</span> go build <span class="k">$(</span>BUILDOPTS<span class="k">)</span> -ldflags<span class="o">=</span><span class="s2">&#34;-s -w -X github.com/coredns/coredns/coremain.GitCommit=</span><span class="k">$(</span>GITCOMMIT<span class="k">)</span><span class="s2">&#34;</span> -o <span class="k">$(</span>BINARY<span class="k">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">check</span>
-</span></span><span class="line"><span class="cl"><span class="nf">check</span><span class="o">:</span> <span class="n">core</span>/<span class="n">plugin</span>/<span class="n">zplugin</span>.<span class="n">go</span> <span class="n">core</span>/<span class="n">dnsserver</span>/<span class="n">zdirectives</span>.<span class="n">go</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">core/plugin/zplugin.go core/dnsserver/zdirectives.go</span><span class="o">:</span> <span class="n">plugin</span>.<span class="n">cfg</span>
-</span></span><span class="line"><span class="cl"> go generate coredns.go
-</span></span><span class="line"><span class="cl"> go get
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">gen</span>
-</span></span><span class="line"><span class="cl"><span class="nf">gen</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl"> go generate coredns.go
-</span></span><span class="line"><span class="cl"> go get
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">pb</span>
-</span></span><span class="line"><span class="cl"><span class="nf">pb</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl"> <span class="k">$(</span>MAKE<span class="k">)</span> -C pb
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">clean</span>
-</span></span><span class="line"><span class="cl"><span class="nf">clean</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl"> go clean
-</span></span><span class="line"><span class="cl"> rm -f coredns
-</span></span></code></pre></div><p>如何解决呢？可能得去修改 coreDNS 的源码关于系统调用这块了，但是本着不入侵编程的思想（懒比的思想）我们去找其他方法。</p>
-<p>2.方法二：找到官方提供的支持riscv的Release</p>
-<p>你别说，还真有，只是版本较新，来到了<a href="https://github.com/coredns/coredns/releases?page=1">v1.12.1</a>,所以我们暂时先用这个新版本，后续看是否会与开发板上需要的v1.9.1发生冲突。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">wget https://github.com/coredns/coredns/releases/download/v1.12.1/coredns_1.12.1_linux_riscv64.tgz
-</span></span><span class="line"><span class="cl">tar -zxvf coredns_1.12.1_linux_riscv64.tgz
-</span></span></code></pre></div><p>构建Docker镜像</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="k">FROM</span><span class="s"> alpine:latest</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 换源</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">RUN</span> sed -i <span class="s1">&#39;s#https\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g&#39;</span> /etc/apk/repositories<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /root</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> coredns /coredns<span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;/coredns&#34;</span><span class="p">]</span><span class="err">
-</span></span></span></code></pre></div><p>构建镜像并推送至私有仓库，关于私有仓库见移植镜像<a href="https://www.bfsmlt.top/posts/016%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">这篇文章</a>。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker build --network host --platform<span class="o">=</span>linux/riscv64 -f Dockerfile.coredns -t 192.168.173.76:6000/riscv64/coredns:1.0 .
-</span></span><span class="line"><span class="cl">docker push 192.168.173.76:6000/riscv64/coredns:1.0
-</span></span></code></pre></div><p>然后我们回到开发板上进行拉取并进行类似于pause镜像的适配<code>crictl pull riscv64/coredns:1.0</code></p>
-<p>首先看看当前镜像Pod的描述状态</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl get pods -n kube-system -l k8s-app<span class="o">=</span>kube-dns
-</span></span><span class="line"><span class="cl">kubectl describe pod &lt;corednsPodName&gt; -n kube-system
-</span></span></code></pre></div><p>得到的结果如下:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Warning  Failed          17m                   kubelet  Failed to pull image <span class="s2">&#34;rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: rpc error: <span class="nv">code</span> <span class="o">=</span> DeadlineExceeded <span class="nv">desc</span> <span class="o">=</span> failed to pull and unpack image <span class="s2">&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: failed to resolve reference <span class="s2">&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: failed to <span class="k">do</span> request: Head <span class="s2">&#34;https://registry-1.docker.io/v2/rancher/mirrored-coredns-coredns/manifests/1.9.1&#34;</span>: dial tcp <span class="o">[</span>2a03:2880:f134:83:face:b00c:0:25de<span class="o">]</span>:443: i/o timeout
-</span></span><span class="line"><span class="cl">  Warning  Failed          15m                   kubelet  Failed to pull image <span class="s2">&#34;rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: rpc error: <span class="nv">code</span> <span class="o">=</span> DeadlineExceeded <span class="nv">desc</span> <span class="o">=</span> failed to pull and unpack image <span class="s2">&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: failed to resolve reference <span class="s2">&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: failed to <span class="k">do</span> request: Head <span class="s2">&#34;https://registry-1.docker.io/v2/rancher/mirrored-coredns-coredns/manifests/1.9.1&#34;</span>: dial tcp <span class="o">[</span>2a03:2880:f136:83:face:b00c:0:25de<span class="o">]</span>:443: i/o timeout
-</span></span><span class="line"><span class="cl">  Warning  Failed          15m <span class="o">(</span>x4 over 19m<span class="o">)</span>     kubelet  Error: ErrImagePull
-</span></span><span class="line"><span class="cl">  Warning  Failed          15m <span class="o">(</span>x6 over 18m<span class="o">)</span>     kubelet  Error: ImagePullBackOff
-</span></span><span class="line"><span class="cl">  Normal   Pulling         14m <span class="o">(</span>x5 over 19m<span class="o">)</span>     kubelet  Pulling image <span class="s2">&#34;rancher/mirrored-coredns-coredns:1.9.1&#34;</span>
-</span></span><span class="line"><span class="cl">  Normal   BackOff         4m24s <span class="o">(</span>x47 over 18m<span class="o">)</span>  kubelet  Back-off pulling image <span class="s2">&#34;rancher/mirrored-coredns-coredns:1.9.1&#34;</span>
+这样的问题在网络上也很常见，如这个<a href=https://blog.csdn.net/Three_dog/article/details/94640507>例子</a>，可以发现 Go 标准库并没有做到实现所有架构的 syscall 支持，特别是一些底层的网络系统调用。</p><p>下面给出源码中的 Makefile,可以发现其在构建时会去执行<code>go get</code>，这就是为什么会去找这个系统调用，也是为什么我选择先在mac上进行交叉编译（因为开发板的网络问题）</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=c># Makefile for building CoreDNS
+</span></span></span><span class=line><span class=cl><span class=c></span><span class=nv>GITCOMMIT</span><span class=o>?=</span><span class=k>$(</span>shell git describe --dirty --always<span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nv>BINARY</span><span class=o>:=</span>coredns
+</span></span><span class=line><span class=cl><span class=nv>SYSTEM</span><span class=o>:=</span>
+</span></span><span class=line><span class=cl><span class=nv>CHECKS</span><span class=o>:=</span>check
+</span></span><span class=line><span class=cl><span class=nv>BUILDOPTS</span><span class=o>?=</span>-v
+</span></span><span class=line><span class=cl><span class=nv>GOPATH</span><span class=o>?=</span><span class=k>$(</span>HOME<span class=k>)</span>/go
+</span></span><span class=line><span class=cl><span class=nv>MAKEPWD</span><span class=o>:=</span><span class=k>$(</span>dir <span class=k>$(</span>realpath <span class=k>$(</span>firstword <span class=k>$(</span>MAKEFILE_LIST<span class=k>))))</span>
+</span></span><span class=line><span class=cl><span class=nv>CGO_ENABLED</span><span class=o>?=</span><span class=m>0</span>
+</span></span><span class=line><span class=cl><span class=nv>GOLANG_VERSION</span> <span class=o>?=</span> <span class=k>$(</span>shell cat .go-version<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>export </span><span class=nv>GOSUMDB</span> <span class=o>=</span> sum.golang.org
+</span></span><span class=line><span class=cl><span class=k>export </span><span class=nv>GOTOOLCHAIN</span> <span class=o>=</span> go<span class=k>$(</span>GOLANG_VERSION<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>all</span>
+</span></span><span class=line><span class=cl><span class=nf>all</span><span class=o>:</span> <span class=n>coredns</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>coredns</span>
+</span></span><span class=line><span class=cl><span class=nf>coredns</span><span class=o>:</span> <span class=k>$(</span><span class=nv>CHECKS</span><span class=k>)</span>
+</span></span><span class=line><span class=cl> <span class=nv>CGO_ENABLED</span><span class=o>=</span><span class=k>$(</span>CGO_ENABLED<span class=k>)</span> <span class=k>$(</span>SYSTEM<span class=k>)</span> go build <span class=k>$(</span>BUILDOPTS<span class=k>)</span> -ldflags<span class=o>=</span><span class=s2>&#34;-s -w -X github.com/coredns/coredns/coremain.GitCommit=</span><span class=k>$(</span>GITCOMMIT<span class=k>)</span><span class=s2>&#34;</span> -o <span class=k>$(</span>BINARY<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>check</span>
+</span></span><span class=line><span class=cl><span class=nf>check</span><span class=o>:</span> <span class=n>core</span>/<span class=n>plugin</span>/<span class=n>zplugin</span>.<span class=n>go</span> <span class=n>core</span>/<span class=n>dnsserver</span>/<span class=n>zdirectives</span>.<span class=n>go</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>core/plugin/zplugin.go core/dnsserver/zdirectives.go</span><span class=o>:</span> <span class=n>plugin</span>.<span class=n>cfg</span>
+</span></span><span class=line><span class=cl> go generate coredns.go
+</span></span><span class=line><span class=cl> go get
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>gen</span>
+</span></span><span class=line><span class=cl><span class=nf>gen</span><span class=o>:</span>
+</span></span><span class=line><span class=cl> go generate coredns.go
+</span></span><span class=line><span class=cl> go get
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>pb</span>
+</span></span><span class=line><span class=cl><span class=nf>pb</span><span class=o>:</span>
+</span></span><span class=line><span class=cl> <span class=k>$(</span>MAKE<span class=k>)</span> -C pb
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>clean</span>
+</span></span><span class=line><span class=cl><span class=nf>clean</span><span class=o>:</span>
+</span></span><span class=line><span class=cl> go clean
+</span></span><span class=line><span class=cl> rm -f coredns
+</span></span></code></pre></div><p>如何解决呢？可能得去修改 coreDNS 的源码关于系统调用这块了，但是本着不入侵编程的思想（懒比的思想）我们去找其他方法。</p><p>2.方法二：找到官方提供的支持riscv的Release</p><p>你别说，还真有，只是版本较新，来到了<a href="https://github.com/coredns/coredns/releases?page=1">v1.12.1</a>,所以我们暂时先用这个新版本，后续看是否会与开发板上需要的v1.9.1发生冲突。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>wget https://github.com/coredns/coredns/releases/download/v1.12.1/coredns_1.12.1_linux_riscv64.tgz
+</span></span><span class=line><span class=cl>tar -zxvf coredns_1.12.1_linux_riscv64.tgz
+</span></span></code></pre></div><p>构建Docker镜像</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-dockerfile data-lang=dockerfile><span class=line><span class=cl><span class=k>FROM</span><span class=s> alpine:latest</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=c># 换源</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>RUN</span> sed -i <span class=s1>&#39;s#https\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g&#39;</span> /etc/apk/repositories<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>WORKDIR</span><span class=s> /root</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>COPY</span> coredns /coredns<span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err></span><span class=k>CMD</span> <span class=p>[</span><span class=s2>&#34;/coredns&#34;</span><span class=p>]</span><span class=err>
+</span></span></span></code></pre></div><p>构建镜像并推送至私有仓库，关于私有仓库见移植镜像<a href=https://www.bfsmlt.top/posts/016%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/>这篇文章</a>。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>docker build --network host --platform<span class=o>=</span>linux/riscv64 -f Dockerfile.coredns -t 192.168.173.76:6000/riscv64/coredns:1.0 .
+</span></span><span class=line><span class=cl>docker push 192.168.173.76:6000/riscv64/coredns:1.0
+</span></span></code></pre></div><p>然后我们回到开发板上进行拉取并进行类似于pause镜像的适配<code>crictl pull riscv64/coredns:1.0</code></p><p>首先看看当前镜像Pod的描述状态</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl get pods -n kube-system -l k8s-app<span class=o>=</span>kube-dns
+</span></span><span class=line><span class=cl>kubectl describe pod &lt;corednsPodName&gt; -n kube-system
+</span></span></code></pre></div><p>得到的结果如下:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Warning  Failed          17m                   kubelet  Failed to pull image <span class=s2>&#34;rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: rpc error: <span class=nv>code</span> <span class=o>=</span> DeadlineExceeded <span class=nv>desc</span> <span class=o>=</span> failed to pull and unpack image <span class=s2>&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: failed to resolve reference <span class=s2>&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: failed to <span class=k>do</span> request: Head <span class=s2>&#34;https://registry-1.docker.io/v2/rancher/mirrored-coredns-coredns/manifests/1.9.1&#34;</span>: dial tcp <span class=o>[</span>2a03:2880:f134:83:face:b00c:0:25de<span class=o>]</span>:443: i/o timeout
+</span></span><span class=line><span class=cl>  Warning  Failed          15m                   kubelet  Failed to pull image <span class=s2>&#34;rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: rpc error: <span class=nv>code</span> <span class=o>=</span> DeadlineExceeded <span class=nv>desc</span> <span class=o>=</span> failed to pull and unpack image <span class=s2>&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: failed to resolve reference <span class=s2>&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span>: failed to <span class=k>do</span> request: Head <span class=s2>&#34;https://registry-1.docker.io/v2/rancher/mirrored-coredns-coredns/manifests/1.9.1&#34;</span>: dial tcp <span class=o>[</span>2a03:2880:f136:83:face:b00c:0:25de<span class=o>]</span>:443: i/o timeout
+</span></span><span class=line><span class=cl>  Warning  Failed          15m <span class=o>(</span>x4 over 19m<span class=o>)</span>     kubelet  Error: ErrImagePull
+</span></span><span class=line><span class=cl>  Warning  Failed          15m <span class=o>(</span>x6 over 18m<span class=o>)</span>     kubelet  Error: ImagePullBackOff
+</span></span><span class=line><span class=cl>  Normal   Pulling         14m <span class=o>(</span>x5 over 19m<span class=o>)</span>     kubelet  Pulling image <span class=s2>&#34;rancher/mirrored-coredns-coredns:1.9.1&#34;</span>
+</span></span><span class=line><span class=cl>  Normal   BackOff         4m24s <span class=o>(</span>x47 over 18m<span class=o>)</span>  kubelet  Back-off pulling image <span class=s2>&#34;rancher/mirrored-coredns-coredns:1.9.1&#34;</span>
 </span></span></code></pre></div><p>从k3s的源码 manifests 得知,这些系统级别的镜像（容器）例如traefik,coredns 都在这个目录中以 yaml 文件的形式存在.
-这会在 k3s 启动时自动对其进行 Pod 的构建，相当于这是 k3s 自带的 Pod 们。</p>
-<p><img alt="coredns01" loading="lazy" src="/img/riscv/coredns01.png"></p>
-<p>具体在开发板上的路径是<code>/var/lib/rancher/k3s/server/manifests</code></p>
-<p>现在，我们的思路变成——<strong>修改coredns.yaml文件使k3s在构建coredns容器时使用我们私有镜像仓库中的构建的来自于官方v1.12.1中适合riscv64的镜像</strong>。
-于是我先将其打标签</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 可以用crictl images | grep coredns查看</span>
-</span></span><span class="line"><span class="cl">ctr -n k8s.io images tag &lt;拉取下来的镜像名&gt;  docker.io/rancher/mirrored-coredns-coredns:1.9.1
-</span></span></code></pre></div><p>非常值得注意的是，这里打标签前面必须要有docker.io,如果没有的话可能会出现无法识别本地镜像的问题.具体见Github上的<a href="https://github.com/k3s-io/k3s/issues/7015">相关问题</a>。</p>
-<p>之后修改coredns.yaml,将其中镜像名称改为 <code>docker.io/rancher/mirrored-coredns-coredns:1.9.1</code>,拉取策略改为 Never ,并且在arg参数上面添加一行<code>command: [&quot;/coredns&quot;]</code></p>
-<p>最后，删除对应的Pod，k3s会自动重新拉取镜像并构建此Pod，再来检查其运行状态与构建过程。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kubectl delete pod -n kube-system -l k8s-app<span class="o">=</span>kube-dns
-</span></span><span class="line"><span class="cl">kubectl get pods -n kube-system -l k8s-app<span class="o">=</span>kube-dns
-</span></span><span class="line"><span class="cl">kubectl describe pod &lt;corednsPodName&gt; -n kube-system
-</span></span></code></pre></div><p>最终得到结果如下</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Events:
-</span></span><span class="line"><span class="cl">  Type     Reason     Age                From               Message
-</span></span><span class="line"><span class="cl">  ----     ------     ----               ----               -------
-</span></span><span class="line"><span class="cl">  Normal   Scheduled  34s                default-scheduler  Successfully assigned kube-system/coredns-fcc987b6f-nkn92 to openeuler-riscv64
-</span></span><span class="line"><span class="cl">  Normal   Pulled     33s                kubelet            Container image <span class="s2">&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span> already present on machine
-</span></span><span class="line"><span class="cl">  Normal   Created    33s                kubelet            Created container coredns
-</span></span><span class="line"><span class="cl">  Normal   Started    33s                kubelet            Started container coredns
-</span></span><span class="line"><span class="cl">  Warning  Unhealthy  2s <span class="o">(</span>x18 over 33s<span class="o">)</span>  kubelet            Readiness probe failed: HTTP probe failed with statuscode: <span class="m">503</span>
+这会在 k3s 启动时自动对其进行 Pod 的构建，相当于这是 k3s 自带的 Pod 们。</p><p><img alt=coredns01 loading=lazy src=/img/riscv/coredns01.png></p><p>具体在开发板上的路径是<code>/var/lib/rancher/k3s/server/manifests</code></p><p>现在，我们的思路变成——<strong>修改coredns.yaml文件使k3s在构建coredns容器时使用我们私有镜像仓库中的构建的来自于官方v1.12.1中适合riscv64的镜像</strong>。
+于是我先将其打标签</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 可以用crictl images | grep coredns查看</span>
+</span></span><span class=line><span class=cl>ctr -n k8s.io images tag &lt;拉取下来的镜像名&gt;  docker.io/rancher/mirrored-coredns-coredns:1.9.1
+</span></span></code></pre></div><p>非常值得注意的是，这里打标签前面必须要有docker.io,如果没有的话可能会出现无法识别本地镜像的问题.具体见Github上的<a href=https://github.com/k3s-io/k3s/issues/7015>相关问题</a>。</p><p>之后修改coredns.yaml,将其中镜像名称改为 <code>docker.io/rancher/mirrored-coredns-coredns:1.9.1</code>,拉取策略改为 Never ,并且在arg参数上面添加一行<code>command: ["/coredns"]</code></p><p>最后，删除对应的Pod，k3s会自动重新拉取镜像并构建此Pod，再来检查其运行状态与构建过程。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>kubectl delete pod -n kube-system -l k8s-app<span class=o>=</span>kube-dns
+</span></span><span class=line><span class=cl>kubectl get pods -n kube-system -l k8s-app<span class=o>=</span>kube-dns
+</span></span><span class=line><span class=cl>kubectl describe pod &lt;corednsPodName&gt; -n kube-system
+</span></span></code></pre></div><p>最终得到结果如下</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Events:
+</span></span><span class=line><span class=cl>  Type     Reason     Age                From               Message
+</span></span><span class=line><span class=cl>  ----     ------     ----               ----               -------
+</span></span><span class=line><span class=cl>  Normal   Scheduled  34s                default-scheduler  Successfully assigned kube-system/coredns-fcc987b6f-nkn92 to openeuler-riscv64
+</span></span><span class=line><span class=cl>  Normal   Pulled     33s                kubelet            Container image <span class=s2>&#34;docker.io/rancher/mirrored-coredns-coredns:1.9.1&#34;</span> already present on machine
+</span></span><span class=line><span class=cl>  Normal   Created    33s                kubelet            Created container coredns
+</span></span><span class=line><span class=cl>  Normal   Started    33s                kubelet            Started container coredns
+</span></span><span class=line><span class=cl>  Warning  Unhealthy  2s <span class=o>(</span>x18 over 33s<span class=o>)</span>  kubelet            Readiness probe failed: HTTP probe failed with statuscode: <span class=m>503</span>
 </span></span></code></pre></div><p>这里虽然出现503错误但是只是健康检测出现问题，可能是配置有误或者插件失败，但是至少容器coredns创建成功了.
-并且再次执行<code>journalctl -u k3s -f</code>后可以发现之前的 coredns 创建失败的日志不见了。</p>
-<h3 id="解决遗留问题">解决遗留问题<a hidden class="anchor" aria-hidden="true" href="#解决遗留问题">#</a></h3>
-<p>上面只是解决了CoreDNS组件的镜像拉取问题，但是拉取下来之后其还存在一些其他问题，如果你在上面的构建过程中也遇到了类似问题，请见下方处理方案。</p>
-<h4 id="问题1启动覆盖问题">问题1：启动覆盖问题<a hidden class="anchor" aria-hidden="true" href="#问题1启动覆盖问题">#</a></h4>
-<p>首先，如果我们下一次重启k3s，就会发现 Coredns 这个容器又构建失败了，并且原因正是我们修改过的 coredns.yaml 文件。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Warning  Failed     72s <span class="o">(</span>x2 over 73s<span class="o">)</span>  kubelet            Error: failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: <span class="s2">&#34;-conf&#34;</span>: executable file not found in <span class="nv">$PATH</span>: unknown
+并且再次执行<code>journalctl -u k3s -f</code>后可以发现之前的 coredns 创建失败的日志不见了。</p><h3 id=解决遗留问题>解决遗留问题<a hidden class=anchor aria-hidden=true href=#解决遗留问题>#</a></h3><p>上面只是解决了CoreDNS组件的镜像拉取问题，但是拉取下来之后其还存在一些其他问题，如果你在上面的构建过程中也遇到了类似问题，请见下方处理方案。</p><h4 id=问题1启动覆盖问题>问题1：启动覆盖问题<a hidden class=anchor aria-hidden=true href=#问题1启动覆盖问题>#</a></h4><p>首先，如果我们下一次重启k3s，就会发现 Coredns 这个容器又构建失败了，并且原因正是我们修改过的 coredns.yaml 文件。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Warning  Failed     72s <span class=o>(</span>x2 over 73s<span class=o>)</span>  kubelet            Error: failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: <span class=s2>&#34;-conf&#34;</span>: executable file not found in <span class=nv>$PATH</span>: unknown
 </span></span></code></pre></div><p>这是因为k3s会在重启时自动恢复一些核心组件的yaml文件为默认值，覆盖掉我们的更改。
-在K3s官方的Issue中也有<a href="https://github.com/k3s-io/k3s/issues/9223">类似的问题</a>,而官方文档中的说法也提到了<a href="https://docs.k3s.io/zh/installation/packaged-components">Auto-Deploying Manifests</a>。</p>
-<p>所以，根据官方文档中的内容，我们应该先去更改k3s的启动命令，而我们的k3s是由systemd启动的，所以执行<code>sudo systemctl edit k3s</code>，在ExecStart的最后添加上<code>--disable=coredns</code></p>
-<blockquote>
-<p>For example, to disable traefik from being installed on a new cluster, or to uninstall it and remove the manifest from an existing cluster, you can start K3s with &ndash;disable=traefik. Multiple items can be disabled by separating their names with commas, or by repeating the flag.</p></blockquote>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">ExecStart</span><span class="o">=</span>/usr/local/bin/k3s <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    server <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --disable<span class="o">=</span>coredns <span class="se">\
-</span></span></span></code></pre></div><p>修改 yaml 文件使得 k3s 在启动时使用我们自定义的 yaml 文件。修改内容同上，在 arg 前加一行<code>command[&quot;/coredns&quot;]</code></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp coredns.yaml custom-coredns.yaml
-</span></span></code></pre></div><p>重启服务</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo systemctl daemon-reexec
-</span></span><span class="line"><span class="cl">sudo systemctl daemon-reload
-</span></span><span class="line"><span class="cl">sudo systemctl restart k3s
-</span></span></code></pre></div><p>至此，可以解决启动覆盖问题，即k3s不会在每次启动时都用默认的coredns.yaml来启动corednsPod,而是使用我们自定义的<strong>custom-coredns.yaml</strong>文件来进行。</p>
-<p>如果后续我们自己从头构建适合 riscv 的k3s可执行文件,直接从源码层面修改镜像名称即可,不用这么麻烦.</p>
-<h4 id="问题2readiness-probe-failed">问题2:Readiness probe failed<a hidden class="anchor" aria-hidden="true" href="#问题2readiness-probe-failed">#</a></h4>
-<p>虽然我们使用了本地镜像并且修改了 k3s 默认的关于 coreDNS 的配置，但是仍然会遇到问题.
-即上面提到的这个 Readiness probe 的网络问题.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Readiness probe failed: HTTP probe failed with statuscode: <span class="m">503</span>
-</span></span></code></pre></div><p>对于这个问题，目前我还没有找到合适的解决方法，我个人倾向于是开发板 iptables 的问题，在这里我放一些排查的手段以供后面的操作。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看当前的Corefile内容</span>
-</span></span><span class="line"><span class="cl">kubectl -n kube-system get configmap coredns -o yaml
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 进入Pod调试（但是当前的Pod不断地重启）</span>
-</span></span><span class="line"><span class="cl">kubectl -n kube-system <span class="nb">exec</span> -it &lt;coredns-pod-name&gt; -- sh
-</span></span><span class="line"><span class="cl">curl -v localhost:8080/health
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># /etc/resolv.conf配置可能出现问题，无法访问到其中的DNS,如果可以进入Pod，检查是否可以访问设置的DNS</span>
-</span></span><span class="line"><span class="cl">wget -O- http://192.168.173.153
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># 检查kube-proxy是否生效</span>
-</span></span><span class="line"><span class="cl">kubectl -n kube-system get pods -l k8s-app<span class="o">=</span>kube-proxy
-</span></span></code></pre></div><p>故我们先继续解决其他系统 Pod 以及 Iptables 等问题。</p>
-<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
-<p>对于 CoreDNS 系统组件,我们发现其官方给出了支持 riscv 的版本,所以无需我们自己重新编译.
-我们选择的方法是本地构建对应的镜像并拉取到开发板上,并修改掉源码中的名称为我们构建的名称,最终实现了镜像的替换.</p>
-<p>但是这是否太过于依赖于本地的构建?我们应该能做到从某个能够拉取的地址自动拉取,可以将<code>docker.io</code>这个修改为我们自己的服务器吗?
-这是我们后续要探索的方向之一.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">INSTALL_K3S_EXEC</span><span class="o">=</span><span class="s2">&#34;--system-default-registry=your.registry.com&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">INSTALL_K3S_SKIP_DOWNLOAD</span><span class="o">=</span><span class="nb">true</span> bash k3s-install.sh
-</span></span></code></pre></div><h3 id="后续更新">后续更新<a hidden class="anchor" aria-hidden="true" href="#后续更新">#</a></h3>
-<p>最近在 k3s 的官方源码 fork 中找到了一位大佬的 fork,其对于 <code>coredns.yaml</code> 只进行了以下的修改:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;%{SYSTEM_DEFAULT_REGISTRY}%rancher/mirrored-coredns-coredns:1.11.3&#34;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;%{SYSTEM_DEFAULT_REGISTRY}%coredns/coredns:1.11.3&#34;</span><span class="w">
-</span></span></span></code></pre></div><p>系统默认镜像一般是<code>docker.io</code>,所以其只是改了个名字?</p>
-<p>后续我们在自行构建的时候,暂时决定将这些系统镜像全部放在自己的私有镜像仓库中,
-然后在启动 k3s 的时候指定默认仓库为私有镜像仓库.</p>
-<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
-
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
-      <li><a href="http://localhost:1313/tags/dns/">DNS</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
-    <span class="title">« 上一页</span>
-    <br>
-    <span>GolangEP03_slice底层原理及注意事项</span>
-  </a>
-  <a class="next" href="http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/">
-    <span class="title">下一页 »</span>
-    <br>
-    <span>DebugEP02——MacOs系统升级与Homebrew的关系</span>
-  </a>
-</nav>
-
-  </footer><div id="tw-comment"></div>
-
-<script>
-
-    
-
-    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
-
-    const setGiscusTheme = () => {
-
-        const sendMessage = (message) => {
-
-            const iframe = document.querySelector('iframe.giscus-frame');
-
-            if (iframe) {
-
-                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
-
-            }
-
-        }
-
-        sendMessage({setConfig: {theme: getStoredTheme()}})
-
-    }
-
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-        const giscusAttributes = {
-
-            "src": "https://giscus.app/client.js",
-
-            "data-repo": "LTXWorld\/LTXWorld.github.io",
-
-            "data-repo-id": "R_kgDONODUuA",
-
-            "data-category": "Announcements",
-
-            "data-category-id": "DIC_kwDONODUuM4CkMUw",
-
-            "data-mapping": "pathname",
-
-            "data-strict": "0",
-
-            "data-reactions-enabled": "1",
-
-            "data-emit-metadata": "0",
-
-            "data-input-position": "bottom",
-
-            "data-theme": getStoredTheme(),
-
-            "data-lang": "zh-CN",
-
-            "data-loading": "lazy",
-
-            "crossorigin": "anonymous",
-
-        };
-
-
-        
-
-        const giscusScript = document.createElement("script");
-
-        Object.entries(giscusAttributes).forEach(
-
-                ([key, value]) => giscusScript.setAttribute(key, value));
-
-        document.querySelector("#tw-comment").appendChild(giscusScript);
-
-
-        
-
-        const themeSwitcher = document.querySelector("#theme-toggle");
-
-        if (themeSwitcher) {
-
-            themeSwitcher.addEventListener("click", setGiscusTheme);
-
-        }
-
-        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
-
-        if (themeFloatSwitcher) {
-
-            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
-
-        }
-
-    });
-
-</script>
-</article>
-    </main>
-    
-<footer class="footer">
-        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
-
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
-  <audio id="ltx-music-audio" preload="metadata"></audio>
-  <div class="ltx-music-meta">
-    <span class="ltx-music-title" data-role="title"></span>
-    <span class="ltx-music-artist" data-role="artist"></span>
-  </div>
-  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
-    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
-  </div>
-  <div class="ltx-music-time">
-    <span data-role="current">0:00</span>
-    <span data-role="total">--:--</span>
-  </div>
-  <div class="ltx-music-controls">
-    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
-    <button type="button" data-action="toggle" aria-label="播放或暂停">
-      <span data-icon="play">▶</span>
-      <span data-icon="pause">⏸</span>
-    </button>
-    <button type="button" data-action="next" aria-label="下一首">⏭</button>
-    <button type="button" data-action="mute" aria-label="静音或取消静音">
-      <span data-icon="unmuted">🔊</span>
-      <span data-icon="muted">🔇</span>
-    </button>
-  </div>
-  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
-</div>
-<script>
-  window.LTX_MUSIC_CONFIG = {"autoplay":true,"loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
-  (function () {
-    const config = window.LTX_MUSIC_CONFIG || {};
-    if (!config.tracks || !config.tracks.length) {
-      return;
-    }
-
-    const player = document.getElementById('ltx-music-player');
-    const audio = player.querySelector('audio');
-    const titleEl = player.querySelector('[data-role="title"]');
-    const artistEl = player.querySelector('[data-role="artist"]');
-    const progressEl = player.querySelector('[data-role="progress"]');
-    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
-    const currentTimeEl = player.querySelector('[data-role="current"]');
-    const totalTimeEl = player.querySelector('[data-role="total"]');
-    const tipEl = player.querySelector('[data-role="tip"]');
-
-    const toggleBtn = player.querySelector('[data-action="toggle"]');
-    const prevBtn = player.querySelector('[data-action="prev"]');
-    const nextBtn = player.querySelector('[data-action="next"]');
-    const muteBtn = player.querySelector('[data-action="mute"]');
-
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-    const formatTime = (seconds) => {
-      if (!Number.isFinite(seconds)) {
-        return '--:--';
-      }
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
-    };
-
-    const state = {
-      index: 0,
-      tracks: config.tracks,
-      autoplay: config.autoplay !== false,
-      loopPlaylist: config.loopPlaylist !== false,
-    };
-
-    const updateMuteClass = () => {
-      const muted = audio.muted || audio.volume === 0;
-      player.classList.toggle('ltx-muted', muted);
-    };
-
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
-    updateMuteClass();
-
-    const updateProgress = () => {
-      const duration = audio.duration || 0;
-      const current = audio.currentTime || 0;
-      const percentage = duration ? (current / duration) * 100 : 0;
-      progressFillEl.style.width = `${percentage}%`;
-      currentTimeEl.textContent = formatTime(current);
-      totalTimeEl.textContent = formatTime(duration);
-    };
-
-    const setTrack = (nextIndex, options = {}) => {
-      const total = state.tracks.length;
-      state.index = ((nextIndex % total) + total) % total;
-      const track = state.tracks[state.index];
-      if (!track || !track.file) {
-        console.warn('LTX music player: 音频文件缺失', track);
-        tipEl.textContent = '音频文件缺失，请检查配置';
-        return;
-      }
-      titleEl.textContent = track.title || `Track ${state.index + 1}`;
-      artistEl.textContent = track.artist || '';
-      audio.src = track.file;
-      player.dataset.trackIndex = state.index;
-      tipEl.textContent = '';
-      player.classList.remove('ltx-autoplay-blocked');
-      updateProgress();
-      if (options.play) {
-        attemptPlay();
-      }
-    };
-
-    const attemptPlay = () => {
-      audio.play().then(() => {
-        player.classList.remove('ltx-autoplay-blocked');
-        tipEl.textContent = '';
-      }).catch(() => {
-        player.classList.add('ltx-autoplay-blocked');
-        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
-      });
-    };
-
-    const playNext = (autoTriggered = false) => {
-      const shouldPlay = !audio.paused || autoTriggered;
-      const nextIndex = state.index + 1;
-      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
-        audio.currentTime = audio.duration || 0;
-        audio.pause();
-        return;
-      }
-      setTrack(nextIndex, { play: shouldPlay });
-    };
-
-    const playPrev = () => {
-      const shouldPlay = !audio.paused;
-      setTrack(state.index - 1, { play: shouldPlay });
-    };
-
-    toggleBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        attemptPlay();
-      } else {
-        audio.pause();
-      }
-    });
-
-    prevBtn.addEventListener('click', playPrev);
-    nextBtn.addEventListener('click', () => playNext(false));
-
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      updateMuteClass();
-    });
-
-    progressEl.addEventListener('click', (event) => {
-      const rect = progressEl.getBoundingClientRect();
-      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
-      if (Number.isFinite(audio.duration)) {
-        audio.currentTime = ratio * audio.duration;
-      }
-    });
-
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
-
-    audio.addEventListener('play', () => {
-      player.classList.add('ltx-playing');
-      player.classList.remove('ltx-autoplay-blocked');
-      tipEl.textContent = '';
-    });
-
-    audio.addEventListener('pause', () => {
-      player.classList.remove('ltx-playing');
-    });
-
-    audio.addEventListener('ended', () => {
-      playNext(true);
-    });
-
-    audio.addEventListener('volumechange', updateMuteClass);
-
-    setTrack(0, { play: state.autoplay });
-  })();
-</script>
-
-<script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
-</script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            document.body.classList.add('dark');
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '复制';
-
-        function copyingDone() {
-            copybutton.innerHTML = '已复制！';
-            setTimeout(() => {
-                copybutton.innerHTML = '复制';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
-</script>
-</body>
-
-</html>
+在K3s官方的Issue中也有<a href=https://github.com/k3s-io/k3s/issues/9223>类似的问题</a>,而官方文档中的说法也提到了<a href=https://docs.k3s.io/zh/installation/packaged-components>Auto-Deploying Manifests</a>。</p><p>所以，根据官方文档中的内容，我们应该先去更改k3s的启动命令，而我们的k3s是由systemd启动的，所以执行<code>sudo systemctl edit k3s</code>，在ExecStart的最后添加上<code>--disable=coredns</code></p><blockquote><p>For example, to disable traefik from being installed on a new cluster, or to uninstall it and remove the manifest from an existing cluster, you can start K3s with &ndash;disable=traefik. Multiple items can be disabled by separating their names with commas, or by repeating the flag.</p></blockquote><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>ExecStart</span><span class=o>=</span>/usr/local/bin/k3s <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    server <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    --disable<span class=o>=</span>coredns <span class=se>\
+</span></span></span></code></pre></div><p>修改 yaml 文件使得 k3s 在启动时使用我们自定义的 yaml 文件。修改内容同上，在 arg 前加一行<code>command["/coredns"]</code></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cp coredns.yaml custom-coredns.yaml
+</span></span></code></pre></div><p>重启服务</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo systemctl daemon-reexec
+</span></span><span class=line><span class=cl>sudo systemctl daemon-reload
+</span></span><span class=line><span class=cl>sudo systemctl restart k3s
+</span></span></code></pre></div><p>至此，可以解决启动覆盖问题，即k3s不会在每次启动时都用默认的coredns.yaml来启动corednsPod,而是使用我们自定义的<strong>custom-coredns.yaml</strong>文件来进行。</p><p>如果后续我们自己从头构建适合 riscv 的k3s可执行文件,直接从源码层面修改镜像名称即可,不用这么麻烦.</p><h4 id=问题2readiness-probe-failed>问题2:Readiness probe failed<a hidden class=anchor aria-hidden=true href=#问题2readiness-probe-failed>#</a></h4><p>虽然我们使用了本地镜像并且修改了 k3s 默认的关于 coreDNS 的配置，但是仍然会遇到问题.
+即上面提到的这个 Readiness probe 的网络问题.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Readiness probe failed: HTTP probe failed with statuscode: <span class=m>503</span>
+</span></span></code></pre></div><p>对于这个问题，目前我还没有找到合适的解决方法，我个人倾向于是开发板 iptables 的问题，在这里我放一些排查的手段以供后面的操作。</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 查看当前的Corefile内容</span>
+</span></span><span class=line><span class=cl>kubectl -n kube-system get configmap coredns -o yaml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 进入Pod调试（但是当前的Pod不断地重启）</span>
+</span></span><span class=line><span class=cl>kubectl -n kube-system <span class=nb>exec</span> -it &lt;coredns-pod-name&gt; -- sh
+</span></span><span class=line><span class=cl>curl -v localhost:8080/health
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># /etc/resolv.conf配置可能出现问题，无法访问到其中的DNS,如果可以进入Pod，检查是否可以访问设置的DNS</span>
+</span></span><span class=line><span class=cl>wget -O- http://192.168.173.153
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 检查kube-proxy是否生效</span>
+</span></span><span class=line><span class=cl>kubectl -n kube-system get pods -l k8s-app<span class=o>=</span>kube-proxy
+</span></span></code></pre></div><p>故我们先继续解决其他系统 Pod 以及 Iptables 等问题。</p><h2 id=总结>总结<a hidden class=anchor aria-hidden=true href=#总结>#</a></h2><p>对于 CoreDNS 系统组件,我们发现其官方给出了支持 riscv 的版本,所以无需我们自己重新编译.
+我们选择的方法是本地构建对应的镜像并拉取到开发板上,并修改掉源码中的名称为我们构建的名称,最终实现了镜像的替换.</p><p>但是这是否太过于依赖于本地的构建?我们应该能做到从某个能够拉取的地址自动拉取,可以将<code>docker.io</code>这个修改为我们自己的服务器吗?
+这是我们后续要探索的方向之一.</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>export</span> <span class=nv>INSTALL_K3S_EXEC</span><span class=o>=</span><span class=s2>&#34;--system-default-registry=your.registry.com&#34;</span>
+</span></span><span class=line><span class=cl><span class=nv>INSTALL_K3S_SKIP_DOWNLOAD</span><span class=o>=</span><span class=nb>true</span> bash k3s-install.sh
+</span></span></code></pre></div><h3 id=后续更新>后续更新<a hidden class=anchor aria-hidden=true href=#后续更新>#</a></h3><p>最近在 k3s 的官方源码 fork 中找到了一位大佬的 fork,其对于 <code>coredns.yaml</code> 只进行了以下的修改:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=w>        </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%{SYSTEM_DEFAULT_REGISTRY}%rancher/mirrored-coredns-coredns:1.11.3&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;%{SYSTEM_DEFAULT_REGISTRY}%coredns/coredns:1.11.3&#34;</span><span class=w>
+</span></span></span></code></pre></div><p>系统默认镜像一般是<code>docker.io</code>,所以其只是改了个名字?</p><p>后续我们在自行构建的时候,暂时决定将这些系统镜像全部放在自己的私有镜像仓库中,
+然后在启动 k3s 的时候指定默认仓库为私有镜像仓库.</p><p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/k3s/>K3s</a></li><li><a href=https://LTXWorld.github.io/tags/dns/>DNS</a></li><li><a href=https://LTXWorld.github.io/tags/riscv/>RiscV</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/><span class=title>« 上一页</span><br><span>GolangEP03_slice底层原理及注意事项</span>
+</a><a class=next href=https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/><span class=title>下一页 »</span><br><span>DebugEP02——MacOs系统升级与Homebrew的关系</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
+<span class=ltx-music-artist data-role=artist></span></div></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
+<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
+<button type=button data-action=toggle aria-label=播放或暂停>
+<span data-icon=play>▶</span>
+<span data-icon=pause>⏸</span>
+</button>
+<button type=button data-action=next aria-label=下一首>⏭</button>
+<button type=button data-action=mute aria-label=静音或取消静音>
+<span data-icon=unmuted>🔊</span>
+<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const s=window.LTX_MUSIC_CONFIG||{};if(!s.tracks||!s.tracks.length)return;const t=document.getElementById("ltx-music-player"),e=t.querySelector("audio"),w=t.querySelector('[data-role="title"]'),_=t.querySelector('[data-role="artist"]'),l=t.querySelector('[data-role="progress"]'),f=t.querySelector('[data-role="progress-fill"]'),y=t.querySelector('[data-role="current"]'),j=t.querySelector('[data-role="total"]'),o=t.querySelector('[data-role="tip"]'),i=t.querySelector('[data-role="cover"]'),b=t.querySelector('[data-action="toggle"]'),v=t.querySelector('[data-action="prev"]'),g=t.querySelector('[data-action="next"]'),p=t.querySelector('[data-action="mute"]'),u=(e,t,n)=>Math.min(Math.max(e,t),n),m=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},n={index:0,tracks:s.tracks,autoplay:s.autoplay!==!1,loopPlaylist:s.loopPlaylist!==!1},c=()=>{const n=e.muted||e.volume===0;t.classList.toggle("ltx-muted",n)};e.volume=u(s.startVolume??.6,0,1),c();const r=()=>{const t=e.duration||0,n=e.currentTime||0,s=t?n/t*100:0;f.style.width=`${s}%`,y.textContent=m(n),j.textContent=m(t)},a=(a,c={})=>{const u=n.tracks.length;n.index=(a%u+u)%u;const l=n.tracks[n.index];if(!l||!l.file){console.warn("LTX music player: 音频文件缺失",l),o.textContent="音频文件缺失，请检查配置";return}const h=l.cover||s.defaultCover||"";i&&(h?(i.src=h,i.alt=l.title?`${l.title} 封面`:"音乐封面",t.classList.add("ltx-has-cover")):(i.removeAttribute("src"),i.alt="",t.classList.remove("ltx-has-cover"))),w.textContent=l.title||`Track ${n.index+1}`,_.textContent=l.artist||"",e.src=l.file,t.dataset.trackIndex=n.index,o.textContent="",t.classList.remove("ltx-autoplay-blocked"),r(),c.play&&d()},d=()=>{e.play().then(()=>{t.classList.remove("ltx-autoplay-blocked"),o.textContent=""}).catch(()=>{t.classList.add("ltx-autoplay-blocked"),o.textContent="浏览器阻止了自动播放，请点击播放按钮"})},h=(t=!1)=>{const o=!e.paused||t,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){e.currentTime=e.duration||0,e.pause();return}a(s,{play:o})},O=()=>{const t=!e.paused;a(n.index-1,{play:t})};b.addEventListener("click",()=>{e.paused?d():e.pause()}),v.addEventListener("click",O),g.addEventListener("click",()=>h(!1)),p.addEventListener("click",()=>{e.muted=!e.muted,c()}),l.addEventListener("click",t=>{const n=l.getBoundingClientRect(),s=u((t.clientX-n.left)/n.width,0,1);Number.isFinite(e.duration)&&(e.currentTime=s*e.duration)}),e.addEventListener("timeupdate",r),e.addEventListener("loadedmetadata",r),e.addEventListener("play",()=>{t.classList.add("ltx-playing"),t.classList.remove("ltx-autoplay-blocked"),o.textContent=""}),e.addEventListener("pause",()=>{t.classList.remove("ltx-playing")}),e.addEventListener("ended",()=>{h(!0)}),e.addEventListener("volumechange",c),a(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>

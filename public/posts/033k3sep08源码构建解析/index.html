@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="zh" dir="auto">
-
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>K3sEP08——make后会发生什么?从源码解析构建过程 | LTX&#39;s Blog</title>
-<meta name="keywords" content="K3s, 源码, RiscV">
-<meta name="description" content="引子
+<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>K3sEP08——make后会发生什么?从源码解析构建过程 | LTX's Blog</title>
+<meta name=keywords content="K3s,源码,RiscV"><meta name=description content="引子
 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库.
 发现其构建 riscv 采用了以下命令
 # Build
@@ -16,114 +8,9 @@ ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make
 
 # Split
 cd dist/artifacts
-gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
-在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.">
-<meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.87ea10c5eb6cdf9fcc27aa5665a12ed25ef08a46de7d411927d891915eb7ca57.css" integrity="sha256-h&#43;oQxets35/MJ6pWZaEu0l7wikbefUEZJ9iRkV63ylc=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-<script type="text/javascript"
-
-        async
-
-        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-
-MathJax.Hub.Config({
-
-  tex2jax: {
-
-    inlineMath: [['$','$'], ['\\(','\\)']],
-
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-
-    processEscapes: true,
-
-    processEnvironments: true,
-
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-
-         extensions: ["AMSmath.js", "AMSsymbols.js"] }
-
-  }
-
-});
-
-
-MathJax.Hub.Queue(function() {
-
-    
-
-    
-
-    
-
-    var all = MathJax.Hub.getAllJax(), i;
-
-    for(i = 0; i < all.length; i += 1) {
-
-        all[i].SourceElement().parentNode.className += ' has-jax';
-
-    }
-
-});
-
-</script>
-
-
-<style>
-
-code.has-jax {
-
-    font: inherit;
-
-    font-size: 100%;
-
-    background: inherit;
-
-    border: inherit;
-
-    color: #515151;
-
-}
-
-</style><meta property="og:url" content="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
-  <meta property="og:site_name" content="LTX&#39;s Blog">
-  <meta property="og:title" content="K3sEP08——make后会发生什么?从源码解析构建过程">
-  <meta property="og:description" content="引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令
-# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.">
-  <meta property="og:locale" content="zh">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2025-05-13T13:55:39+08:00">
-    <meta property="article:modified_time" content="2025-05-13T13:55:39+08:00">
-    <meta property="article:tag" content="K3s">
-    <meta property="article:tag" content="源码">
-    <meta property="article:tag" content="RiscV">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
-<meta name="twitter:title" content="K3sEP08——make后会发生什么?从源码解析构建过程">
-<meta name="twitter:description" content="引子
+gzip < k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
+在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像."><meta name=author content="LTX"><link rel=canonical href=https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/><link crossorigin=anonymous href=/assets/css/stylesheet.5f0ddd8622920919e414fdd8cc3f59e09ea98fa129491973ab7d95306b6604d0.css integrity="sha256-Xw3dhiKSCRnkFP3YzD9Z4J6pj6EpSRlzq32VMGtmBNA=" rel="preload stylesheet" as=style><link rel=icon href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=16x16 href=https://LTXWorld.github.io/favicon.png><link rel=icon type=image/png sizes=32x32 href=https://LTXWorld.github.io/favicon.png><link rel=apple-touch-icon href=https://LTXWorld.github.io/favicon.png><link rel=mask-icon href=https://LTXWorld.github.io/favicon.png><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel=stylesheet><script type=text/javascript async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">MathJax.Hub.Config({tex2jax:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["[[","]]"]],processEscapes:!0,processEnvironments:!0,skipTags:["script","noscript","style","textarea","pre"],TeX:{equationNumbers:{autoNumber:"AMS"},extensions:["AMSmath.js","AMSsymbols.js"]}}}),MathJax.Hub.Queue(function(){var e,t=MathJax.Hub.getAllJax();for(e=0;e<t.length;e+=1)t[e].SourceElement().parentNode.className+=" has-jax"})</script><style>code.has-jax{font:inherit;font-size:100%;background:inherit;border:inherit;color:#515151}</style><meta property="og:url" content="https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"><meta property="og:site_name" content="LTX's Blog"><meta property="og:title" content="K3sEP08——make后会发生什么?从源码解析构建过程"><meta property="og:description" content="引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令
+# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip < k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像."><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-05-13T13:55:39+08:00"><meta property="article:modified_time" content="2025-05-13T13:55:39+08:00"><meta property="article:tag" content="K3s"><meta property="article:tag" content="源码"><meta property="article:tag" content="RiscV"><meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://LTXWorld.github.io/images/papermod-cover.png"><meta name=twitter:title content="K3sEP08——make后会发生什么?从源码解析构建过程"><meta name=twitter:description content="引子
 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库.
 发现其构建 riscv 采用了以下命令
 # Build
@@ -132,805 +19,136 @@ ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make
 
 # Split
 cd dist/artifacts
-gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
-在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.">
-
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "http://localhost:1313/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "K3sEP08——make后会发生什么?从源码解析构建过程",
-      "item": "http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "K3sEP08——make后会发生什么?从源码解析构建过程",
-  "name": "K3sEP08——make后会发生什么?从源码解析构建过程",
-  "description": "引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令\n# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip \u0026lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.\n",
-  "keywords": [
-    "K3s", "源码", "RiscV"
-  ],
-  "articleBody": "引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令\n# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip \u003c k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.\n所以这篇文章中我们要做的是,弄明白它的构建过程,包括其 Makefile 与 Dockerfile.dapper\nMakefile 源码 分段解释此 Makefile\nTARGETS := $(shell ls scripts | grep -v \\\\.sh) GO_FILES ?= $$(find . -name '*.go' | grep -v generated) 通过 shell 命令列出 scripts 目录下所有不以 .sh 结尾的文件 查找项目中所有 .go 文件,排除 generated目录 .dapper: @echo Downloading dapper @curl -sL https://releases.rancher.com/dapper/v0.6.0/dapper-$$(uname -s)-$$(uname -m) \u003e .dapper.tmp @@chmod +x .dapper.tmp @./.dapper.tmp -v @mv .dapper.tmp .dapper 下载 dapper 工具,根据系统类型下载对应版本 添加执行权限并验证版本 重命名为 .dapper $(TARGETS): .dapper DAPPER_DEBUG=1 DAPPER_DOCKER_BUILD_ARGS=\"--network host\" ./.dapper $@ 为上面不以 .sh 结尾的文件创建目标 每个目标依赖 .dapper 执行时使用 dapper 运行脚本 .PHONY: deps deps: go mod tidy 清理整理 go 依赖 release: ./scripts/release.sh 执行发布脚本 .DEFAULT_GOAL := ci .PHONY: $(TARGETS) build/data: mkdir -p $@ 设置默认目标为 ci 声明伪目标 创建 build/data 目录 .PHONY: binary-size-check binary-size-check: scripts/binary_size_check.sh .PHONY: image-scan image-scan: scripts/image_scan.sh $(IMAGE) format: gofmt -s -l -w $(GO_FILES) goimports -w $(GO_FILES) 检查二进制文件大小 扫描指定的镜像 格式化 Go 代码 .PHONY: local local: DOCKER_BUILDKIT=1 docker build \\ --build-arg=\"REPO TAG GITHUB_TOKEN GOLANG GOCOVER DEBUG\" \\ -t k3s-local -f Dockerfile.local --output=. . 使用Docker BuildKit 构建本地开发镜像 可以发现,我们可以在 make 后跟local,format,build/data,release这些参数,执行不同的运行逻辑.\n执行过程 当我们执行 make 时,默认执行 make ci,而 ci 是 Target 中的目标, 正是 script/ 下的一个文件,内容如下\n#!/bin/bash set -e SCRIPT_DIR=$(dirname $0) pushd $SCRIPT_DIR ./download ./validate ./build ./package popd $SCRIPT_DIR/binary_size_check.sh 又因为 Target 依赖于 .dapper,故如果 .dapper不存在,它会执行 .dapper 的逻辑(下载dapper)\n最终回到 DAPPER_DEBUG=1 DAPPER_DOCKER_BUILD_ARGS=\"--network host\" ./.dapper ci, 关于dapper我们下面来讲.\nDockerfile.dapper 什么是 dapper Dapper is a tool to wrap any existing build tool in an consistent environment. This allows people to build your software from source or modify it without worrying about setting up a build environment. The approach is very simple and taken from a common pattern that has adopted by many open source projects. Create a file called Dockerfile.dapper in the root of your repository. Dapper will build that Dockerfile and then execute a container based off of the resulting image. Dapper will also copy in source files and copy out resulting artifacts or will use bind mounting if you choose.\n.dapper 是一个可执行的构建工具，它会运行一个构建容器，然后在容器里执行 scripts/ci; 而看到上面 ci 文件中的内容会发现,其执行了 download、validate、build、package 这几个脚本.\n这不就和之前我们在 issue 中看到的情况有点像, 他直接自己本地执行的 download,build,package-cli\ndapper 源码 分段解释一下 Dockerfile.dapper 的源码\nARG GOLANG=golang:1.23.3-alpine3.20 FROM ${GOLANG} 基于此镜像作为基础镜像 # Set proxy environment variables ARG http_proxy ARG https_proxy ARG no_proxy ENV http_proxy=${http_proxy} \\ https_proxy=${https_proxy} \\ no_proxy=${no_proxy} 传递代理设置,这里可能会引发网络问题,除非你可以保证代理地址可以从容器内访问 RUN apk -U --no-cache add \\ bash git gcc musl-dev docker vim less file curl wget ca-certificates jq linux-headers \\ zlib-dev tar zip squashfs-tools npm coreutils python3 py3-pip openssl-dev libffi-dev libseccomp \\ libseccomp-dev libseccomp-static make libuv-static sqlite-dev sqlite-static libselinux \\ libselinux-dev zlib-dev zlib-static zstd pigz alpine-sdk binutils-gold btrfs-progs-dev \\ btrfs-progs-static gawk yq pipx \\ \u0026\u0026 [ \"$(go env GOARCH)\" = \"amd64\" ] \u0026\u0026 apk -U --no-cache add mingw-w64-gcc || true 安装编译和工具链所需的依赖 ENV TRIVY_VERSION=\"0.56.2\" RUN case \"$(go env GOARCH)\" in \\ arm64) TRIVY_ARCH=\"ARM64\" ;; \\ amd64) TRIVY_ARCH=\"64bit\" ;; \\ s390x) TRIVY_ARCH=\"s390x\" ;; \\ *) TRIVY_ARCH=\"\" ;; \\ esac RUN if [ -n \"${TRIVY_ARCH}\" ]; then \\ wget --no-verbose \"https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz\" \\ \u0026\u0026 tar -zxvf \"trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz\" \\ \u0026\u0026 mv trivy /usr/local/bin; \\ fi 安装 Trivy 安全扫描工具 RUN GOPROXY=https://goproxy.cn,direct go install golang.org/x/tools/cmd/goimports@latest RUN rm -rf /go/src /go/pkg RUN if [ \"$(go env GOARCH)\" = \"amd64\" ]; then \\ curl -sL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.55.2; \\ fi ARG SELINUX=true ENV SELINUX=${SELINUX} 安装 goimports 工具 清理缓存 仅对于 amd64 进行静态分析 控制是否启用 SELinux ENV DAPPER_RUN_ARGS=\"--privileged -v k3s-cache:/go/src/github.com/k3s-io/k3s/.cache -v trivy-cache:/root/.cache/trivy\" \\ DAPPER_ENV=\"REPO TAG DRONE_TAG IMAGE_NAME SKIP_VALIDATE SKIP_IMAGE SKIP_AIRGAP AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID GITHUB_TOKEN GOLANG GOCOVER DEBUG\" \\ DAPPER_SOURCE=\"/go/src/github.com/k3s-io/k3s/\" \\ DAPPER_OUTPUT=\"./bin ./dist ./build/out ./build/static ./pkg/static ./pkg/deploy\" \\ DAPPER_DOCKER_SOCKET=true \\ CROSS=true \\ STATIC_BUILD=true 设置 Dapper 运行时配置 ENV HOME=${DAPPER_SOURCE} WORKDIR ${DAPPER_SOURCE} ENTRYPOINT [\"./scripts/entry.sh\"] CMD [\"ci\"] 设置工作目录为源码中的路径 执行 ./scripts/entry.sh ci,启动构建流程 entry.sh #!/bin/bash set -e mkdir -p bin dist if [ -e ./scripts/$1 ]; then ./scripts/\"$@\" else exec \"$@\" fi chown -R $DAPPER_UID:$DAPPER_GID . 如果 scripts/ci 存在，那就执行它(因为 $1 是传给 entry.sh 的第一个参数 ci) $@ 是所有参数 总结 所以当我们在终端按下make 的时候,发生的是:\nmake ci ./.dapper ci dapper 启动一个 Docker 容器，挂载当前代码目录，并在容器中执行构建命令（如 ci） 容器内执行 ./scripts/entry.sh ci 容器内执行 download,validate,build,package 在开发板上构建的时候,因为下载 dapper 这个过程可能会遇到网络问题(我没找到怎么解决)\n所以我们可以跳过 dapper 这个过程,直接在网络好的本机进行 download,然后将 download 得到的 build 目录传给开发板,在开发板上执行 build、package-cli 命令. 又回到了之前这篇文章中说过的过程了,只是这次我们修改了内部的镜像并使用了私有镜像仓库.\n在此之前我们 fork 出一个仓库上传到 gitee 然后在开发板上拉取源码进行构建.git clone https://gitee.com/ltxworld/k3s-riscv64.git\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
-  "wordCount" : "1584",
-  "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-05-13T13:55:39+08:00",
-  "dateModified": "2025-05-13T13:55:39+08:00",
-  "author":{
-    "@type": "Person",
-    "name": "LTX"
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "LTX's Blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
-    }
-  }
-}
-</script>
-</head>
-
-<body class=" dark" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    }
-
-</script>
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu">
-            <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
-                    <span>首页</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/archives/" title="归档">
-                    <span>归档</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
-                    <span>分类</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
-                    <span>标签</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/search/" title="搜索">
-                    <span>搜索</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/about/" title="后花园">
-                    <span>关于</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-</header>
-<main class="main">
-
-<article class="post-single">
-  <header class="post-header">
-    
-    <h1 class="post-title entry-hint-parent">
-      K3sEP08——make后会发生什么?从源码解析构建过程
-    </h1>
-    <div class="post-meta"><span title='2025-05-13 13:55:39 +0800 CST'>五月 13, 2025</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX
-
-</div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">目录</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#%e5%bc%95%e5%ad%90" aria-label="引子">引子</a></li>
-                <li>
-                    <a href="#makefile" aria-label="Makefile">Makefile</a><ul>
-                        
-                <li>
-                    <a href="#%e6%ba%90%e7%a0%81" aria-label="源码">源码</a></li>
-                <li>
-                    <a href="#%e6%89%a7%e8%a1%8c%e8%bf%87%e7%a8%8b" aria-label="执行过程">执行过程</a></li></ul>
-                </li>
-                <li>
-                    <a href="#dockerfiledapper" aria-label="Dockerfile.dapper">Dockerfile.dapper</a><ul>
-                        
-                <li>
-                    <a href="#%e4%bb%80%e4%b9%88%e6%98%af-dapper" aria-label="什么是 dapper">什么是 dapper</a></li>
-                <li>
-                    <a href="#dapper-%e6%ba%90%e7%a0%81" aria-label="dapper 源码">dapper 源码</a></li>
-                <li>
-                    <a href="#entrysh" aria-label="entry.sh">entry.sh</a></li></ul>
-                </li>
-                <li>
-                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
-  <div class="post-content"><h2 id="引子">引子<a hidden class="anchor" aria-hidden="true" href="#引子">#</a></h2>
-<p>从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此<a href="https://github.com/CARV-ICS-FORTH/kubernetes-riscv64">仓库</a>.
-发现其构建 riscv 采用了以下命令</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Build</span>
-</span></span><span class="line"><span class="cl">rm -rf bin dist build
-</span></span><span class="line"><span class="cl"><span class="nv">ARCH</span><span class="o">=</span>riscv64 <span class="nv">SKIP_IMAGE</span><span class="o">=</span><span class="nb">true</span> <span class="nv">SKIP_VALIDATE</span><span class="o">=</span><span class="nb">true</span> <span class="nv">SKIP_AIRGAP</span><span class="o">=</span><span class="nb">true</span> make
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># Split</span>
-</span></span><span class="line"><span class="cl"><span class="nb">cd</span> dist/artifacts
-</span></span><span class="line"><span class="cl">gzip &lt; k3s-riscv64 <span class="p">|</span> split -b 20M - k3s-riscv64.gz.
-</span></span></code></pre></div><p>在此 <a href="https://github.com/k3s-io/k3s/pull/7778">pull request</a> 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.</p>
-<p>所以这篇文章中我们要做的是,弄明白它的构建过程,包括其 Makefile 与 Dockerfile.dapper</p>
-<h2 id="makefile">Makefile<a hidden class="anchor" aria-hidden="true" href="#makefile">#</a></h2>
-<h3 id="源码">源码<a hidden class="anchor" aria-hidden="true" href="#源码">#</a></h3>
-<p>分段解释此 Makefile</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nv">TARGETS</span> <span class="o">:=</span> <span class="k">$(</span>shell ls scripts <span class="p">|</span> grep -v <span class="se">\\</span>.sh<span class="k">)</span> 
-</span></span><span class="line"><span class="cl"><span class="nv">GO_FILES</span> <span class="o">?=</span> <span class="nv">$$</span><span class="o">(</span>find . -name <span class="s1">&#39;*.go&#39;</span> <span class="p">|</span> grep -v generated<span class="o">)</span>
-</span></span></code></pre></div><ul>
-<li>通过 shell 命令列出 scripts 目录下所有<strong>不以 <code>.sh</code> 结尾的文件</strong></li>
-<li>查找项目中所有 <code>.go</code> 文件,排除 generated目录</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nf">.dapper</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	@echo Downloading dapper
-</span></span><span class="line"><span class="cl">	@curl -sL https://releases.rancher.com/dapper/v0.6.0/dapper-<span class="nv">$$</span><span class="o">(</span>uname -s<span class="o">)</span>-<span class="nv">$$</span><span class="o">(</span>uname -m<span class="o">)</span> &gt; .dapper.tmp
-</span></span><span class="line"><span class="cl">	@@chmod +x .dapper.tmp
-</span></span><span class="line"><span class="cl">	@./.dapper.tmp -v
-</span></span><span class="line"><span class="cl">	@mv .dapper.tmp .dapper
-</span></span></code></pre></div><ul>
-<li>下载 dapper 工具,根据系统类型下载对应版本</li>
-<li>添加执行权限并验证版本</li>
-<li>重命名为 <code>.dapper</code></li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nf">$(TARGETS)</span><span class="o">:</span> .<span class="n">dapper</span>
-</span></span><span class="line"><span class="cl">	<span class="nv">DAPPER_DEBUG</span><span class="o">=</span><span class="m">1</span> <span class="nv">DAPPER_DOCKER_BUILD_ARGS</span><span class="o">=</span><span class="s2">&#34;--network host&#34;</span> ./.dapper <span class="nv">$@</span>
-</span></span></code></pre></div><ul>
-<li>为上面不以 <code>.sh</code> 结尾的文件创建目标</li>
-<li>每个目标依赖 <code>.dapper</code></li>
-<li>执行时使用 dapper 运行脚本</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">deps</span>
-</span></span><span class="line"><span class="cl"><span class="nf">deps</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	go mod tidy
-</span></span></code></pre></div><ul>
-<li>清理整理 go 依赖</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nf">release</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	./scripts/release.sh
-</span></span></code></pre></div><ul>
-<li>执行发布脚本</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nv">.DEFAULT_GOAL</span> <span class="o">:=</span> ci
-</span></span><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="k">$(</span><span class="nv">TARGETS</span><span class="k">)</span>
-</span></span><span class="line"><span class="cl"><span class="nf">build/data</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	mkdir -p <span class="nv">$@</span>
-</span></span></code></pre></div><ul>
-<li>设置默认目标为 ci</li>
-<li>声明伪目标</li>
-<li>创建 build/data 目录</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">binary</span>-<span class="n">size</span>-<span class="n">check</span>
-</span></span><span class="line"><span class="cl"><span class="nf">binary-size-check</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	scripts/binary_size_check.sh
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">image</span>-<span class="n">scan</span>
-</span></span><span class="line"><span class="cl"><span class="nf">image-scan</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	scripts/image_scan.sh <span class="k">$(</span>IMAGE<span class="k">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">format</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	gofmt -s -l -w <span class="k">$(</span>GO_FILES<span class="k">)</span>
-</span></span><span class="line"><span class="cl">	goimports -w <span class="k">$(</span>GO_FILES<span class="k">)</span>
-</span></span></code></pre></div><ul>
-<li>检查二进制文件大小</li>
-<li>扫描指定的镜像</li>
-<li>格式化 Go 代码</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-makefile" data-lang="makefile"><span class="line"><span class="cl"><span class="nf">.PHONY</span><span class="o">:</span> <span class="n">local</span>
-</span></span><span class="line"><span class="cl"><span class="nf">local</span><span class="o">:</span>
-</span></span><span class="line"><span class="cl">	<span class="nv">DOCKER_BUILDKIT</span><span class="o">=</span><span class="m">1</span> docker build <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>		--build-arg<span class="o">=</span><span class="s2">&#34;REPO TAG GITHUB_TOKEN GOLANG GOCOVER DEBUG&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>		-t k3s-local -f Dockerfile.local --output<span class="o">=</span>. .
-</span></span></code></pre></div><ul>
-<li>使用Docker BuildKit 构建本地开发镜像</li>
-</ul>
-<p>可以发现,我们可以在 make 后跟<code>local,format,build/data,release</code>这些参数,执行不同的运行逻辑.</p>
-<h3 id="执行过程">执行过程<a hidden class="anchor" aria-hidden="true" href="#执行过程">#</a></h3>
-<p>当我们执行 make 时,默认执行 <code>make ci</code>,而 ci 是 Target 中的目标, 正是 script/ 下的一个文件,内容如下</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">set</span> -e
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">SCRIPT_DIR</span><span class="o">=</span><span class="k">$(</span>dirname <span class="nv">$0</span><span class="k">)</span>
-</span></span><span class="line"><span class="cl"><span class="nb">pushd</span> <span class="nv">$SCRIPT_DIR</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">./download
-</span></span><span class="line"><span class="cl">./validate
-</span></span><span class="line"><span class="cl">./build
-</span></span><span class="line"><span class="cl">./package
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nb">popd</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nv">$SCRIPT_DIR</span>/binary_size_check.sh
-</span></span></code></pre></div><p>又因为 Target 依赖于 .dapper,故如果 <code>.dapper</code>不存在,它会执行 <code>.dapper</code> 的逻辑(下载dapper)</p>
-<p>最终回到 <code>DAPPER_DEBUG=1 DAPPER_DOCKER_BUILD_ARGS=&quot;--network host&quot; ./.dapper ci</code>, 关于dapper我们下面来讲.</p>
-<h2 id="dockerfiledapper">Dockerfile.dapper<a hidden class="anchor" aria-hidden="true" href="#dockerfiledapper">#</a></h2>
-<h3 id="什么是-dapper">什么是 dapper<a hidden class="anchor" aria-hidden="true" href="#什么是-dapper">#</a></h3>
-<blockquote>
-<p>Dapper is a tool to wrap any existing build tool in an consistent environment. This allows people to build your software from source or modify it without worrying about setting up a build environment. The approach is very simple and taken from a common pattern that has adopted by many open source projects. Create a file called Dockerfile.dapper in the root of your repository. Dapper will build that Dockerfile and then execute a container based off of the resulting image. Dapper will also copy in source files and copy out resulting artifacts or will use bind mounting if you choose.</p></blockquote>
-<p>.dapper 是一个可执行的构建工具，它会运行一个构建容器，然后在容器里执行 <code>scripts/ci</code>;
-而看到上面 ci 文件中的内容会发现,其执行了 download、validate、build、package 这几个脚本.</p>
-<p>这不就和之前我们在 <a href="https://github.com/k3s-io/k3s/issues/7151#issuecomment-2320863329">issue</a> 中看到的情况有点像,
-他直接自己本地执行的 download,build,package-cli</p>
-<h3 id="dapper-源码">dapper 源码<a hidden class="anchor" aria-hidden="true" href="#dapper-源码">#</a></h3>
-<p>分段解释一下 Dockerfile.dapper 的源码</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ARG <span class="nv">GOLANG</span><span class="o">=</span>golang:1.23.3-alpine3.20
-</span></span><span class="line"><span class="cl">FROM <span class="si">${</span><span class="nv">GOLANG</span><span class="si">}</span>
-</span></span></code></pre></div><ul>
-<li>基于此镜像作为基础镜像</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Set proxy environment variables</span>
-</span></span><span class="line"><span class="cl">ARG http_proxy
-</span></span><span class="line"><span class="cl">ARG https_proxy
-</span></span><span class="line"><span class="cl">ARG no_proxy
-</span></span><span class="line"><span class="cl">ENV <span class="nv">http_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">http_proxy</span><span class="si">}</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">https_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">https_proxy</span><span class="si">}</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">no_proxy</span><span class="o">=</span><span class="si">${</span><span class="nv">no_proxy</span><span class="si">}</span>
-</span></span></code></pre></div><ul>
-<li>传递代理设置,这里可能会引发网络问题,除非你可以保证代理地址可以从容器内访问</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">RUN apk -U --no-cache add <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    bash git gcc musl-dev docker vim less file curl wget ca-certificates jq linux-headers <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    zlib-dev tar zip squashfs-tools npm coreutils python3 py3-pip openssl-dev libffi-dev libseccomp <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    libseccomp-dev libseccomp-static make libuv-static sqlite-dev sqlite-static libselinux <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    libselinux-dev zlib-dev zlib-static zstd pigz alpine-sdk binutils-gold btrfs-progs-dev <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    btrfs-progs-static gawk yq pipx <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="k">$(</span>go env GOARCH<span class="k">)</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s2">&#34;amd64&#34;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> apk -U --no-cache add mingw-w64-gcc <span class="o">||</span> <span class="nb">true</span>
-</span></span></code></pre></div><ul>
-<li>安装编译和工具链所需的依赖</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ENV <span class="nv">TRIVY_VERSION</span><span class="o">=</span><span class="s2">&#34;0.56.2&#34;</span>
-</span></span><span class="line"><span class="cl">RUN <span class="k">case</span> <span class="s2">&#34;</span><span class="k">$(</span>go env GOARCH<span class="k">)</span><span class="s2">&#34;</span> in <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    arm64<span class="o">)</span> <span class="nv">TRIVY_ARCH</span><span class="o">=</span><span class="s2">&#34;ARM64&#34;</span> <span class="p">;;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    amd64<span class="o">)</span> <span class="nv">TRIVY_ARCH</span><span class="o">=</span><span class="s2">&#34;64bit&#34;</span> <span class="p">;;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    s390x<span class="o">)</span> <span class="nv">TRIVY_ARCH</span><span class="o">=</span><span class="s2">&#34;s390x&#34;</span> <span class="p">;;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    *<span class="o">)</span> <span class="nv">TRIVY_ARCH</span><span class="o">=</span><span class="s2">&#34;&#34;</span> <span class="p">;;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="k">esac</span>
-</span></span><span class="line"><span class="cl">RUN <span class="k">if</span> <span class="o">[</span> -n <span class="s2">&#34;</span><span class="si">${</span><span class="nv">TRIVY_ARCH</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="se">\ </span>
-</span></span><span class="line"><span class="cl">        wget --no-verbose <span class="s2">&#34;https://github.com/aquasecurity/trivy/releases/download/v</span><span class="si">${</span><span class="nv">TRIVY_VERSION</span><span class="si">}</span><span class="s2">/trivy_</span><span class="si">${</span><span class="nv">TRIVY_VERSION</span><span class="si">}</span><span class="s2">_Linux-</span><span class="si">${</span><span class="nv">TRIVY_ARCH</span><span class="si">}</span><span class="s2">.tar.gz&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        <span class="o">&amp;&amp;</span> tar -zxvf <span class="s2">&#34;trivy_</span><span class="si">${</span><span class="nv">TRIVY_VERSION</span><span class="si">}</span><span class="s2">_Linux-</span><span class="si">${</span><span class="nv">TRIVY_ARCH</span><span class="si">}</span><span class="s2">.tar.gz&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>        <span class="o">&amp;&amp;</span> mv trivy /usr/local/bin<span class="p">;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="k">fi</span>
-</span></span></code></pre></div><ul>
-<li>安装 Trivy 安全扫描工具</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">RUN <span class="nv">GOPROXY</span><span class="o">=</span>https://goproxy.cn,direct go install golang.org/x/tools/cmd/goimports@latest
-</span></span><span class="line"><span class="cl">RUN rm -rf /go/src /go/pkg
-</span></span><span class="line"><span class="cl">RUN <span class="k">if</span> <span class="o">[</span> <span class="s2">&#34;</span><span class="k">$(</span>go env GOARCH<span class="k">)</span><span class="s2">&#34;</span> <span class="o">=</span> <span class="s2">&#34;amd64&#34;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    curl -sL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh <span class="p">|</span> sh -s v1.55.2<span class="p">;</span>  <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="k">fi</span>
-</span></span><span class="line"><span class="cl">ARG <span class="nv">SELINUX</span><span class="o">=</span><span class="nb">true</span>
-</span></span><span class="line"><span class="cl">ENV <span class="nv">SELINUX</span><span class="o">=</span><span class="si">${</span><span class="nv">SELINUX</span><span class="si">}</span>
-</span></span></code></pre></div><ul>
-<li>安装 goimports 工具</li>
-<li>清理缓存</li>
-<li>仅对于 amd64 进行静态分析</li>
-<li>控制是否启用 SELinux</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ENV <span class="nv">DAPPER_RUN_ARGS</span><span class="o">=</span><span class="s2">&#34;--privileged -v k3s-cache:/go/src/github.com/k3s-io/k3s/.cache -v trivy-cache:/root/.cache/trivy&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">DAPPER_ENV</span><span class="o">=</span><span class="s2">&#34;REPO TAG DRONE_TAG IMAGE_NAME SKIP_VALIDATE SKIP_IMAGE SKIP_AIRGAP AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID GITHUB_TOKEN GOLANG GOCOVER DEBUG&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">DAPPER_SOURCE</span><span class="o">=</span><span class="s2">&#34;/go/src/github.com/k3s-io/k3s/&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">DAPPER_OUTPUT</span><span class="o">=</span><span class="s2">&#34;./bin ./dist ./build/out ./build/static ./pkg/static ./pkg/deploy&#34;</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">DAPPER_DOCKER_SOCKET</span><span class="o">=</span><span class="nb">true</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">CROSS</span><span class="o">=</span><span class="nb">true</span> <span class="se">\
-</span></span></span><span class="line"><span class="cl"><span class="se"></span>    <span class="nv">STATIC_BUILD</span><span class="o">=</span><span class="nb">true</span>
-</span></span></code></pre></div><ul>
-<li>设置 Dapper 运行时配置</li>
-</ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ENV <span class="nv">HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">DAPPER_SOURCE</span><span class="si">}</span>
-</span></span><span class="line"><span class="cl">WORKDIR <span class="si">${</span><span class="nv">DAPPER_SOURCE</span><span class="si">}</span>
-</span></span><span class="line"><span class="cl">ENTRYPOINT <span class="o">[</span><span class="s2">&#34;./scripts/entry.sh&#34;</span><span class="o">]</span>
-</span></span><span class="line"><span class="cl">CMD <span class="o">[</span><span class="s2">&#34;ci&#34;</span><span class="o">]</span>
-</span></span></code></pre></div><ul>
-<li>设置工作目录为源码中的路径</li>
-<li>执行 <code>./scripts/entry.sh ci</code>,启动构建流程</li>
-</ul>
-<h3 id="entrysh">entry.sh<a hidden class="anchor" aria-hidden="true" href="#entrysh">#</a></h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="nb">set</span> -e
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">mkdir -p bin dist
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="o">[</span> -e ./scripts/<span class="nv">$1</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-</span></span><span class="line"><span class="cl">    ./scripts/<span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="k">else</span>
-</span></span><span class="line"><span class="cl">    <span class="nb">exec</span> <span class="s2">&#34;</span><span class="nv">$@</span><span class="s2">&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="k">fi</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">chown -R <span class="nv">$DAPPER_UID</span>:<span class="nv">$DAPPER_GID</span> .
-</span></span></code></pre></div><ul>
-<li>如果 scripts/ci 存在，那就执行它(因为 $1 是传给 entry.sh 的第一个参数 ci)</li>
-<li><code>$@</code> 是所有参数</li>
-</ul>
-<h2 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h2>
-<p>所以当我们在终端按下<code>make</code> 的时候,发生的是:</p>
-<ol>
-<li>make ci</li>
-<li>./.dapper ci</li>
-<li>dapper <strong>启动一个 Docker 容器，挂载当前代码目录，并在容器中执行构建命令</strong>（如 ci）</li>
-<li>容器内执行 <code>./scripts/entry.sh ci</code></li>
-<li>容器内执行 <code>download,validate,build,package</code></li>
-</ol>
-<p>在开发板上构建的时候,因为下载 dapper 这个过程可能会遇到网络问题(我没找到怎么解决)</p>
-<p>所以我们可以跳过 dapper 这个过程,直接在网络好的本机进行 download,然后将 download 得到的 build 目录传给开发板,在开发板上执行 build、package-cli 命令.
-又回到了之前<a href="https://www.bfsmlt.top/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/">这篇文章</a>中说过的过程了,只是这次我们修改了内部的镜像并使用了私有镜像仓库.</p>
-<p>在此之前我们 fork 出一个仓库上传到 gitee 然后在开发板上拉取源码进行构建.<code>git clone https://gitee.com/ltxworld/k3s-riscv64.git</code></p>
-<p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p>
-
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
-      <li><a href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
-    <span class="title">« 上一页</span>
-    <br>
-    <span>K3sEP09——初始化开发板环境操作汇总</span>
-  </a>
-  <a class="next" href="http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">
-    <span class="title">下一页 »</span>
-    <br>
-    <span>K3sEP07——配置私有镜像仓库准备构建跨架构镜像</span>
-  </a>
-</nav>
-
-  </footer><div id="tw-comment"></div>
-
-<script>
-
-    
-
-    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
-
-    const setGiscusTheme = () => {
-
-        const sendMessage = (message) => {
-
-            const iframe = document.querySelector('iframe.giscus-frame');
-
-            if (iframe) {
-
-                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
-
-            }
-
-        }
-
-        sendMessage({setConfig: {theme: getStoredTheme()}})
-
-    }
-
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-        const giscusAttributes = {
-
-            "src": "https://giscus.app/client.js",
-
-            "data-repo": "LTXWorld\/LTXWorld.github.io",
-
-            "data-repo-id": "R_kgDONODUuA",
-
-            "data-category": "Announcements",
-
-            "data-category-id": "DIC_kwDONODUuM4CkMUw",
-
-            "data-mapping": "pathname",
-
-            "data-strict": "0",
-
-            "data-reactions-enabled": "1",
-
-            "data-emit-metadata": "0",
-
-            "data-input-position": "bottom",
-
-            "data-theme": getStoredTheme(),
-
-            "data-lang": "zh-CN",
-
-            "data-loading": "lazy",
-
-            "crossorigin": "anonymous",
-
-        };
-
-
-        
-
-        const giscusScript = document.createElement("script");
-
-        Object.entries(giscusAttributes).forEach(
-
-                ([key, value]) => giscusScript.setAttribute(key, value));
-
-        document.querySelector("#tw-comment").appendChild(giscusScript);
-
-
-        
-
-        const themeSwitcher = document.querySelector("#theme-toggle");
-
-        if (themeSwitcher) {
-
-            themeSwitcher.addEventListener("click", setGiscusTheme);
-
-        }
-
-        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
-
-        if (themeFloatSwitcher) {
-
-            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
-
-        }
-
-    });
-
-</script>
-</article>
-    </main>
-    
-<footer class="footer">
-        <span><a href="https://LTXWorld.github.io/">©2025 LTX&rsquo;s Blog</a></span> · 
-
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
-  <audio id="ltx-music-audio" preload="metadata"></audio>
-  <div class="ltx-music-meta">
-    <span class="ltx-music-title" data-role="title"></span>
-    <span class="ltx-music-artist" data-role="artist"></span>
-  </div>
-  <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
-    <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
-  </div>
-  <div class="ltx-music-time">
-    <span data-role="current">0:00</span>
-    <span data-role="total">--:--</span>
-  </div>
-  <div class="ltx-music-controls">
-    <button type="button" data-action="prev" aria-label="上一首">⏮</button>
-    <button type="button" data-action="toggle" aria-label="播放或暂停">
-      <span data-icon="play">▶</span>
-      <span data-icon="pause">⏸</span>
-    </button>
-    <button type="button" data-action="next" aria-label="下一首">⏭</button>
-    <button type="button" data-action="mute" aria-label="静音或取消静音">
-      <span data-icon="unmuted">🔊</span>
-      <span data-icon="muted">🔇</span>
-    </button>
-  </div>
-  <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
-</div>
-<script>
-  window.LTX_MUSIC_CONFIG = {"autoplay":true,"loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
-  (function () {
-    const config = window.LTX_MUSIC_CONFIG || {};
-    if (!config.tracks || !config.tracks.length) {
-      return;
-    }
-
-    const player = document.getElementById('ltx-music-player');
-    const audio = player.querySelector('audio');
-    const titleEl = player.querySelector('[data-role="title"]');
-    const artistEl = player.querySelector('[data-role="artist"]');
-    const progressEl = player.querySelector('[data-role="progress"]');
-    const progressFillEl = player.querySelector('[data-role="progress-fill"]');
-    const currentTimeEl = player.querySelector('[data-role="current"]');
-    const totalTimeEl = player.querySelector('[data-role="total"]');
-    const tipEl = player.querySelector('[data-role="tip"]');
-
-    const toggleBtn = player.querySelector('[data-action="toggle"]');
-    const prevBtn = player.querySelector('[data-action="prev"]');
-    const nextBtn = player.querySelector('[data-action="next"]');
-    const muteBtn = player.querySelector('[data-action="mute"]');
-
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-    const formatTime = (seconds) => {
-      if (!Number.isFinite(seconds)) {
-        return '--:--';
-      }
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
-    };
-
-    const state = {
-      index: 0,
-      tracks: config.tracks,
-      autoplay: config.autoplay !== false,
-      loopPlaylist: config.loopPlaylist !== false,
-    };
-
-    const updateMuteClass = () => {
-      const muted = audio.muted || audio.volume === 0;
-      player.classList.toggle('ltx-muted', muted);
-    };
-
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
-    updateMuteClass();
-
-    const updateProgress = () => {
-      const duration = audio.duration || 0;
-      const current = audio.currentTime || 0;
-      const percentage = duration ? (current / duration) * 100 : 0;
-      progressFillEl.style.width = `${percentage}%`;
-      currentTimeEl.textContent = formatTime(current);
-      totalTimeEl.textContent = formatTime(duration);
-    };
-
-    const setTrack = (nextIndex, options = {}) => {
-      const total = state.tracks.length;
-      state.index = ((nextIndex % total) + total) % total;
-      const track = state.tracks[state.index];
-      if (!track || !track.file) {
-        console.warn('LTX music player: 音频文件缺失', track);
-        tipEl.textContent = '音频文件缺失，请检查配置';
-        return;
-      }
-      titleEl.textContent = track.title || `Track ${state.index + 1}`;
-      artistEl.textContent = track.artist || '';
-      audio.src = track.file;
-      player.dataset.trackIndex = state.index;
-      tipEl.textContent = '';
-      player.classList.remove('ltx-autoplay-blocked');
-      updateProgress();
-      if (options.play) {
-        attemptPlay();
-      }
-    };
-
-    const attemptPlay = () => {
-      audio.play().then(() => {
-        player.classList.remove('ltx-autoplay-blocked');
-        tipEl.textContent = '';
-      }).catch(() => {
-        player.classList.add('ltx-autoplay-blocked');
-        tipEl.textContent = '浏览器阻止了自动播放，请点击播放按钮';
-      });
-    };
-
-    const playNext = (autoTriggered = false) => {
-      const shouldPlay = !audio.paused || autoTriggered;
-      const nextIndex = state.index + 1;
-      if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
-        audio.currentTime = audio.duration || 0;
-        audio.pause();
-        return;
-      }
-      setTrack(nextIndex, { play: shouldPlay });
-    };
-
-    const playPrev = () => {
-      const shouldPlay = !audio.paused;
-      setTrack(state.index - 1, { play: shouldPlay });
-    };
-
-    toggleBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        attemptPlay();
-      } else {
-        audio.pause();
-      }
-    });
-
-    prevBtn.addEventListener('click', playPrev);
-    nextBtn.addEventListener('click', () => playNext(false));
-
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      updateMuteClass();
-    });
-
-    progressEl.addEventListener('click', (event) => {
-      const rect = progressEl.getBoundingClientRect();
-      const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
-      if (Number.isFinite(audio.duration)) {
-        audio.currentTime = ratio * audio.duration;
-      }
-    });
-
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
-
-    audio.addEventListener('play', () => {
-      player.classList.add('ltx-playing');
-      player.classList.remove('ltx-autoplay-blocked');
-      tipEl.textContent = '';
-    });
-
-    audio.addEventListener('pause', () => {
-      player.classList.remove('ltx-playing');
-    });
-
-    audio.addEventListener('ended', () => {
-      playNext(true);
-    });
-
-    audio.addEventListener('volumechange', updateMuteClass);
-
-    setTrack(0, { play: state.autoplay });
-  })();
-</script>
-
-<script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
-
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
-
-</script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            document.body.classList.add('dark');
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = '复制';
-
-        function copyingDone() {
-            copybutton.innerHTML = '已复制！';
-            setTimeout(() => {
-                copybutton.innerHTML = '复制';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
-</script>
-</body>
-
-</html>
+gzip < k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
+在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://LTXWorld.github.io/posts/"},{"@type":"ListItem","position":2,"name":"K3sEP08——make后会发生什么?从源码解析构建过程","item":"https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"K3sEP08——make后会发生什么?从源码解析构建过程","name":"K3sEP08——make后会发生什么?从源码解析构建过程","description":"引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令\n# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip \u0026lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.\n","keywords":["K3s","源码","RiscV"],"articleBody":"引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令\n# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip \u003c k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.\n所以这篇文章中我们要做的是,弄明白它的构建过程,包括其 Makefile 与 Dockerfile.dapper\nMakefile 源码 分段解释此 Makefile\nTARGETS := $(shell ls scripts | grep -v \\\\.sh) GO_FILES ?= $$(find . -name '*.go' | grep -v generated) 通过 shell 命令列出 scripts 目录下所有不以 .sh 结尾的文件 查找项目中所有 .go 文件,排除 generated目录 .dapper: @echo Downloading dapper @curl -sL https://releases.rancher.com/dapper/v0.6.0/dapper-$$(uname -s)-$$(uname -m) \u003e .dapper.tmp @@chmod +x .dapper.tmp @./.dapper.tmp -v @mv .dapper.tmp .dapper 下载 dapper 工具,根据系统类型下载对应版本 添加执行权限并验证版本 重命名为 .dapper $(TARGETS): .dapper DAPPER_DEBUG=1 DAPPER_DOCKER_BUILD_ARGS=\"--network host\" ./.dapper $@ 为上面不以 .sh 结尾的文件创建目标 每个目标依赖 .dapper 执行时使用 dapper 运行脚本 .PHONY: deps deps: go mod tidy 清理整理 go 依赖 release: ./scripts/release.sh 执行发布脚本 .DEFAULT_GOAL := ci .PHONY: $(TARGETS) build/data: mkdir -p $@ 设置默认目标为 ci 声明伪目标 创建 build/data 目录 .PHONY: binary-size-check binary-size-check: scripts/binary_size_check.sh .PHONY: image-scan image-scan: scripts/image_scan.sh $(IMAGE) format: gofmt -s -l -w $(GO_FILES) goimports -w $(GO_FILES) 检查二进制文件大小 扫描指定的镜像 格式化 Go 代码 .PHONY: local local: DOCKER_BUILDKIT=1 docker build \\ --build-arg=\"REPO TAG GITHUB_TOKEN GOLANG GOCOVER DEBUG\" \\ -t k3s-local -f Dockerfile.local --output=. . 使用Docker BuildKit 构建本地开发镜像 可以发现,我们可以在 make 后跟local,format,build/data,release这些参数,执行不同的运行逻辑.\n执行过程 当我们执行 make 时,默认执行 make ci,而 ci 是 Target 中的目标, 正是 script/ 下的一个文件,内容如下\n#!/bin/bash set -e SCRIPT_DIR=$(dirname $0) pushd $SCRIPT_DIR ./download ./validate ./build ./package popd $SCRIPT_DIR/binary_size_check.sh 又因为 Target 依赖于 .dapper,故如果 .dapper不存在,它会执行 .dapper 的逻辑(下载dapper)\n最终回到 DAPPER_DEBUG=1 DAPPER_DOCKER_BUILD_ARGS=\"--network host\" ./.dapper ci, 关于dapper我们下面来讲.\nDockerfile.dapper 什么是 dapper Dapper is a tool to wrap any existing build tool in an consistent environment. This allows people to build your software from source or modify it without worrying about setting up a build environment. The approach is very simple and taken from a common pattern that has adopted by many open source projects. Create a file called Dockerfile.dapper in the root of your repository. Dapper will build that Dockerfile and then execute a container based off of the resulting image. Dapper will also copy in source files and copy out resulting artifacts or will use bind mounting if you choose.\n.dapper 是一个可执行的构建工具，它会运行一个构建容器，然后在容器里执行 scripts/ci; 而看到上面 ci 文件中的内容会发现,其执行了 download、validate、build、package 这几个脚本.\n这不就和之前我们在 issue 中看到的情况有点像, 他直接自己本地执行的 download,build,package-cli\ndapper 源码 分段解释一下 Dockerfile.dapper 的源码\nARG GOLANG=golang:1.23.3-alpine3.20 FROM ${GOLANG} 基于此镜像作为基础镜像 # Set proxy environment variables ARG http_proxy ARG https_proxy ARG no_proxy ENV http_proxy=${http_proxy} \\ https_proxy=${https_proxy} \\ no_proxy=${no_proxy} 传递代理设置,这里可能会引发网络问题,除非你可以保证代理地址可以从容器内访问 RUN apk -U --no-cache add \\ bash git gcc musl-dev docker vim less file curl wget ca-certificates jq linux-headers \\ zlib-dev tar zip squashfs-tools npm coreutils python3 py3-pip openssl-dev libffi-dev libseccomp \\ libseccomp-dev libseccomp-static make libuv-static sqlite-dev sqlite-static libselinux \\ libselinux-dev zlib-dev zlib-static zstd pigz alpine-sdk binutils-gold btrfs-progs-dev \\ btrfs-progs-static gawk yq pipx \\ \u0026\u0026 [ \"$(go env GOARCH)\" = \"amd64\" ] \u0026\u0026 apk -U --no-cache add mingw-w64-gcc || true 安装编译和工具链所需的依赖 ENV TRIVY_VERSION=\"0.56.2\" RUN case \"$(go env GOARCH)\" in \\ arm64) TRIVY_ARCH=\"ARM64\" ;; \\ amd64) TRIVY_ARCH=\"64bit\" ;; \\ s390x) TRIVY_ARCH=\"s390x\" ;; \\ *) TRIVY_ARCH=\"\" ;; \\ esac RUN if [ -n \"${TRIVY_ARCH}\" ]; then \\ wget --no-verbose \"https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz\" \\ \u0026\u0026 tar -zxvf \"trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz\" \\ \u0026\u0026 mv trivy /usr/local/bin; \\ fi 安装 Trivy 安全扫描工具 RUN GOPROXY=https://goproxy.cn,direct go install golang.org/x/tools/cmd/goimports@latest RUN rm -rf /go/src /go/pkg RUN if [ \"$(go env GOARCH)\" = \"amd64\" ]; then \\ curl -sL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.55.2; \\ fi ARG SELINUX=true ENV SELINUX=${SELINUX} 安装 goimports 工具 清理缓存 仅对于 amd64 进行静态分析 控制是否启用 SELinux ENV DAPPER_RUN_ARGS=\"--privileged -v k3s-cache:/go/src/github.com/k3s-io/k3s/.cache -v trivy-cache:/root/.cache/trivy\" \\ DAPPER_ENV=\"REPO TAG DRONE_TAG IMAGE_NAME SKIP_VALIDATE SKIP_IMAGE SKIP_AIRGAP AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID GITHUB_TOKEN GOLANG GOCOVER DEBUG\" \\ DAPPER_SOURCE=\"/go/src/github.com/k3s-io/k3s/\" \\ DAPPER_OUTPUT=\"./bin ./dist ./build/out ./build/static ./pkg/static ./pkg/deploy\" \\ DAPPER_DOCKER_SOCKET=true \\ CROSS=true \\ STATIC_BUILD=true 设置 Dapper 运行时配置 ENV HOME=${DAPPER_SOURCE} WORKDIR ${DAPPER_SOURCE} ENTRYPOINT [\"./scripts/entry.sh\"] CMD [\"ci\"] 设置工作目录为源码中的路径 执行 ./scripts/entry.sh ci,启动构建流程 entry.sh #!/bin/bash set -e mkdir -p bin dist if [ -e ./scripts/$1 ]; then ./scripts/\"$@\" else exec \"$@\" fi chown -R $DAPPER_UID:$DAPPER_GID . 如果 scripts/ci 存在，那就执行它(因为 $1 是传给 entry.sh 的第一个参数 ci) $@ 是所有参数 总结 所以当我们在终端按下make 的时候,发生的是:\nmake ci ./.dapper ci dapper 启动一个 Docker 容器，挂载当前代码目录，并在容器中执行构建命令（如 ci） 容器内执行 ./scripts/entry.sh ci 容器内执行 download,validate,build,package 在开发板上构建的时候,因为下载 dapper 这个过程可能会遇到网络问题(我没找到怎么解决)\n所以我们可以跳过 dapper 这个过程,直接在网络好的本机进行 download,然后将 download 得到的 build 目录传给开发板,在开发板上执行 build、package-cli 命令. 又回到了之前这篇文章中说过的过程了,只是这次我们修改了内部的镜像并使用了私有镜像仓库.\n在此之前我们 fork 出一个仓库上传到 gitee 然后在开发板上拉取源码进行构建.git clone https://gitee.com/ltxworld/k3s-riscv64.git\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n","wordCount":"1584","inLanguage":"zh","image":"https://LTXWorld.github.io/images/papermod-cover.png","datePublished":"2025-05-13T13:55:39+08:00","dateModified":"2025-05-13T13:55:39+08:00","author":{"@type":"Person","name":"LTX"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"},"publisher":{"@type":"Organization","name":"LTX's Blog","logo":{"@type":"ImageObject","url":"https://LTXWorld.github.io/favicon.png"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://LTXWorld.github.io/ accesskey=h title="LTX's Blog (Alt + H)">LTX's Blog</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://LTXWorld.github.io/ title="LTX's Blog"><span>首页</span></a></li><li><a href=https://LTXWorld.github.io/archives/ title=归档><span>归档</span></a></li><li><a href=https://LTXWorld.github.io/categories/ title=Categories><span>分类</span></a></li><li><a href=https://LTXWorld.github.io/tags/ title=Tags><span>标签</span></a></li><li><a href=https://LTXWorld.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://LTXWorld.github.io/about/ title=后花园><span>关于</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">K3sEP08——make后会发生什么?从源码解析构建过程</h1><div class=post-meta><span title='2025-05-13 13:55:39 +0800 CST'>五月 13, 2025</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;LTX</div></header><div class=toc><details><summary accesskey=c title="(Alt + C)"><span class=details>目录</span></summary><div class=inner><ul><li><a href=#%e5%bc%95%e5%ad%90 aria-label=引子>引子</a></li><li><a href=#makefile aria-label=Makefile>Makefile</a><ul><li><a href=#%e6%ba%90%e7%a0%81 aria-label=源码>源码</a></li><li><a href=#%e6%89%a7%e8%a1%8c%e8%bf%87%e7%a8%8b aria-label=执行过程>执行过程</a></li></ul></li><li><a href=#dockerfiledapper aria-label=Dockerfile.dapper>Dockerfile.dapper</a><ul><li><a href=#%e4%bb%80%e4%b9%88%e6%98%af-dapper aria-label="什么是 dapper">什么是 dapper</a></li><li><a href=#dapper-%e6%ba%90%e7%a0%81 aria-label="dapper 源码">dapper 源码</a></li><li><a href=#entrysh aria-label=entry.sh>entry.sh</a></li></ul></li><li><a href=#%e6%80%bb%e7%bb%93 aria-label=总结>总结</a></li></ul></div></details></div><div class=post-content><h2 id=引子>引子<a hidden class=anchor aria-hidden=true href=#引子>#</a></h2><p>从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此<a href=https://github.com/CARV-ICS-FORTH/kubernetes-riscv64>仓库</a>.
+发现其构建 riscv 采用了以下命令</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Build</span>
+</span></span><span class=line><span class=cl>rm -rf bin dist build
+</span></span><span class=line><span class=cl><span class=nv>ARCH</span><span class=o>=</span>riscv64 <span class=nv>SKIP_IMAGE</span><span class=o>=</span><span class=nb>true</span> <span class=nv>SKIP_VALIDATE</span><span class=o>=</span><span class=nb>true</span> <span class=nv>SKIP_AIRGAP</span><span class=o>=</span><span class=nb>true</span> make
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Split</span>
+</span></span><span class=line><span class=cl><span class=nb>cd</span> dist/artifacts
+</span></span><span class=line><span class=cl>gzip &lt; k3s-riscv64 <span class=p>|</span> split -b 20M - k3s-riscv64.gz.
+</span></span></code></pre></div><p>在此 <a href=https://github.com/k3s-io/k3s/pull/7778>pull request</a> 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.</p><p>所以这篇文章中我们要做的是,弄明白它的构建过程,包括其 Makefile 与 Dockerfile.dapper</p><h2 id=makefile>Makefile<a hidden class=anchor aria-hidden=true href=#makefile>#</a></h2><h3 id=源码>源码<a hidden class=anchor aria-hidden=true href=#源码>#</a></h3><p>分段解释此 Makefile</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nv>TARGETS</span> <span class=o>:=</span> <span class=k>$(</span>shell ls scripts <span class=p>|</span> grep -v <span class=se>\\</span>.sh<span class=k>)</span> 
+</span></span><span class=line><span class=cl><span class=nv>GO_FILES</span> <span class=o>?=</span> <span class=nv>$$</span><span class=o>(</span>find . -name <span class=s1>&#39;*.go&#39;</span> <span class=p>|</span> grep -v generated<span class=o>)</span>
+</span></span></code></pre></div><ul><li>通过 shell 命令列出 scripts 目录下所有<strong>不以 <code>.sh</code> 结尾的文件</strong></li><li>查找项目中所有 <code>.go</code> 文件,排除 generated目录</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>.dapper</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@echo Downloading dapper
+</span></span><span class=line><span class=cl>	@curl -sL https://releases.rancher.com/dapper/v0.6.0/dapper-<span class=nv>$$</span><span class=o>(</span>uname -s<span class=o>)</span>-<span class=nv>$$</span><span class=o>(</span>uname -m<span class=o>)</span> &gt; .dapper.tmp
+</span></span><span class=line><span class=cl>	@@chmod +x .dapper.tmp
+</span></span><span class=line><span class=cl>	@./.dapper.tmp -v
+</span></span><span class=line><span class=cl>	@mv .dapper.tmp .dapper
+</span></span></code></pre></div><ul><li>下载 dapper 工具,根据系统类型下载对应版本</li><li>添加执行权限并验证版本</li><li>重命名为 <code>.dapper</code></li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>$(TARGETS)</span><span class=o>:</span> .<span class=n>dapper</span>
+</span></span><span class=line><span class=cl>	<span class=nv>DAPPER_DEBUG</span><span class=o>=</span><span class=m>1</span> <span class=nv>DAPPER_DOCKER_BUILD_ARGS</span><span class=o>=</span><span class=s2>&#34;--network host&#34;</span> ./.dapper <span class=nv>$@</span>
+</span></span></code></pre></div><ul><li>为上面不以 <code>.sh</code> 结尾的文件创建目标</li><li>每个目标依赖 <code>.dapper</code></li><li>执行时使用 dapper 运行脚本</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>deps</span>
+</span></span><span class=line><span class=cl><span class=nf>deps</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	go mod tidy
+</span></span></code></pre></div><ul><li>清理整理 go 依赖</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>release</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	./scripts/release.sh
+</span></span></code></pre></div><ul><li>执行发布脚本</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nv>.DEFAULT_GOAL</span> <span class=o>:=</span> ci
+</span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=k>$(</span><span class=nv>TARGETS</span><span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nf>build/data</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	mkdir -p <span class=nv>$@</span>
+</span></span></code></pre></div><ul><li>设置默认目标为 ci</li><li>声明伪目标</li><li>创建 build/data 目录</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>binary</span>-<span class=n>size</span>-<span class=n>check</span>
+</span></span><span class=line><span class=cl><span class=nf>binary-size-check</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	scripts/binary_size_check.sh
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>image</span>-<span class=n>scan</span>
+</span></span><span class=line><span class=cl><span class=nf>image-scan</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	scripts/image_scan.sh <span class=k>$(</span>IMAGE<span class=k>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>format</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	gofmt -s -l -w <span class=k>$(</span>GO_FILES<span class=k>)</span>
+</span></span><span class=line><span class=cl>	goimports -w <span class=k>$(</span>GO_FILES<span class=k>)</span>
+</span></span></code></pre></div><ul><li>检查二进制文件大小</li><li>扫描指定的镜像</li><li>格式化 Go 代码</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-makefile data-lang=makefile><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>local</span>
+</span></span><span class=line><span class=cl><span class=nf>local</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	<span class=nv>DOCKER_BUILDKIT</span><span class=o>=</span><span class=m>1</span> docker build <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>		--build-arg<span class=o>=</span><span class=s2>&#34;REPO TAG GITHUB_TOKEN GOLANG GOCOVER DEBUG&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>		-t k3s-local -f Dockerfile.local --output<span class=o>=</span>. .
+</span></span></code></pre></div><ul><li>使用Docker BuildKit 构建本地开发镜像</li></ul><p>可以发现,我们可以在 make 后跟<code>local,format,build/data,release</code>这些参数,执行不同的运行逻辑.</p><h3 id=执行过程>执行过程<a hidden class=anchor aria-hidden=true href=#执行过程>#</a></h3><p>当我们执行 make 时,默认执行 <code>make ci</code>,而 ci 是 Target 中的目标, 正是 script/ 下的一个文件,内容如下</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=nb>set</span> -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>SCRIPT_DIR</span><span class=o>=</span><span class=k>$(</span>dirname <span class=nv>$0</span><span class=k>)</span>
+</span></span><span class=line><span class=cl><span class=nb>pushd</span> <span class=nv>$SCRIPT_DIR</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>./download
+</span></span><span class=line><span class=cl>./validate
+</span></span><span class=line><span class=cl>./build
+</span></span><span class=line><span class=cl>./package
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>popd</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$SCRIPT_DIR</span>/binary_size_check.sh
+</span></span></code></pre></div><p>又因为 Target 依赖于 .dapper,故如果 <code>.dapper</code>不存在,它会执行 <code>.dapper</code> 的逻辑(下载dapper)</p><p>最终回到 <code>DAPPER_DEBUG=1 DAPPER_DOCKER_BUILD_ARGS="--network host" ./.dapper ci</code>, 关于dapper我们下面来讲.</p><h2 id=dockerfiledapper>Dockerfile.dapper<a hidden class=anchor aria-hidden=true href=#dockerfiledapper>#</a></h2><h3 id=什么是-dapper>什么是 dapper<a hidden class=anchor aria-hidden=true href=#什么是-dapper>#</a></h3><blockquote><p>Dapper is a tool to wrap any existing build tool in an consistent environment. This allows people to build your software from source or modify it without worrying about setting up a build environment. The approach is very simple and taken from a common pattern that has adopted by many open source projects. Create a file called Dockerfile.dapper in the root of your repository. Dapper will build that Dockerfile and then execute a container based off of the resulting image. Dapper will also copy in source files and copy out resulting artifacts or will use bind mounting if you choose.</p></blockquote><p>.dapper 是一个可执行的构建工具，它会运行一个构建容器，然后在容器里执行 <code>scripts/ci</code>;
+而看到上面 ci 文件中的内容会发现,其执行了 download、validate、build、package 这几个脚本.</p><p>这不就和之前我们在 <a href=https://github.com/k3s-io/k3s/issues/7151#issuecomment-2320863329>issue</a> 中看到的情况有点像,
+他直接自己本地执行的 download,build,package-cli</p><h3 id=dapper-源码>dapper 源码<a hidden class=anchor aria-hidden=true href=#dapper-源码>#</a></h3><p>分段解释一下 Dockerfile.dapper 的源码</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ARG <span class=nv>GOLANG</span><span class=o>=</span>golang:1.23.3-alpine3.20
+</span></span><span class=line><span class=cl>FROM <span class=si>${</span><span class=nv>GOLANG</span><span class=si>}</span>
+</span></span></code></pre></div><ul><li>基于此镜像作为基础镜像</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Set proxy environment variables</span>
+</span></span><span class=line><span class=cl>ARG http_proxy
+</span></span><span class=line><span class=cl>ARG https_proxy
+</span></span><span class=line><span class=cl>ARG no_proxy
+</span></span><span class=line><span class=cl>ENV <span class=nv>http_proxy</span><span class=o>=</span><span class=si>${</span><span class=nv>http_proxy</span><span class=si>}</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>https_proxy</span><span class=o>=</span><span class=si>${</span><span class=nv>https_proxy</span><span class=si>}</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>no_proxy</span><span class=o>=</span><span class=si>${</span><span class=nv>no_proxy</span><span class=si>}</span>
+</span></span></code></pre></div><ul><li>传递代理设置,这里可能会引发网络问题,除非你可以保证代理地址可以从容器内访问</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>RUN apk -U --no-cache add <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    bash git gcc musl-dev docker vim less file curl wget ca-certificates jq linux-headers <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    zlib-dev tar zip squashfs-tools npm coreutils python3 py3-pip openssl-dev libffi-dev libseccomp <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    libseccomp-dev libseccomp-static make libuv-static sqlite-dev sqlite-static libselinux <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    libselinux-dev zlib-dev zlib-static zstd pigz alpine-sdk binutils-gold btrfs-progs-dev <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    btrfs-progs-static gawk yq pipx <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=o>&amp;&amp;</span> <span class=o>[</span> <span class=s2>&#34;</span><span class=k>$(</span>go env GOARCH<span class=k>)</span><span class=s2>&#34;</span> <span class=o>=</span> <span class=s2>&#34;amd64&#34;</span> <span class=o>]</span> <span class=o>&amp;&amp;</span> apk -U --no-cache add mingw-w64-gcc <span class=o>||</span> <span class=nb>true</span>
+</span></span></code></pre></div><ul><li>安装编译和工具链所需的依赖</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ENV <span class=nv>TRIVY_VERSION</span><span class=o>=</span><span class=s2>&#34;0.56.2&#34;</span>
+</span></span><span class=line><span class=cl>RUN <span class=k>case</span> <span class=s2>&#34;</span><span class=k>$(</span>go env GOARCH<span class=k>)</span><span class=s2>&#34;</span> in <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    arm64<span class=o>)</span> <span class=nv>TRIVY_ARCH</span><span class=o>=</span><span class=s2>&#34;ARM64&#34;</span> <span class=p>;;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    amd64<span class=o>)</span> <span class=nv>TRIVY_ARCH</span><span class=o>=</span><span class=s2>&#34;64bit&#34;</span> <span class=p>;;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    s390x<span class=o>)</span> <span class=nv>TRIVY_ARCH</span><span class=o>=</span><span class=s2>&#34;s390x&#34;</span> <span class=p>;;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    *<span class=o>)</span> <span class=nv>TRIVY_ARCH</span><span class=o>=</span><span class=s2>&#34;&#34;</span> <span class=p>;;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=k>esac</span>
+</span></span><span class=line><span class=cl>RUN <span class=k>if</span> <span class=o>[</span> -n <span class=s2>&#34;</span><span class=si>${</span><span class=nv>TRIVY_ARCH</span><span class=si>}</span><span class=s2>&#34;</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span> <span class=se>\ </span>
+</span></span><span class=line><span class=cl>        wget --no-verbose <span class=s2>&#34;https://github.com/aquasecurity/trivy/releases/download/v</span><span class=si>${</span><span class=nv>TRIVY_VERSION</span><span class=si>}</span><span class=s2>/trivy_</span><span class=si>${</span><span class=nv>TRIVY_VERSION</span><span class=si>}</span><span class=s2>_Linux-</span><span class=si>${</span><span class=nv>TRIVY_ARCH</span><span class=si>}</span><span class=s2>.tar.gz&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        <span class=o>&amp;&amp;</span> tar -zxvf <span class=s2>&#34;trivy_</span><span class=si>${</span><span class=nv>TRIVY_VERSION</span><span class=si>}</span><span class=s2>_Linux-</span><span class=si>${</span><span class=nv>TRIVY_ARCH</span><span class=si>}</span><span class=s2>.tar.gz&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>        <span class=o>&amp;&amp;</span> mv trivy /usr/local/bin<span class=p>;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=k>fi</span>
+</span></span></code></pre></div><ul><li>安装 Trivy 安全扫描工具</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>RUN <span class=nv>GOPROXY</span><span class=o>=</span>https://goproxy.cn,direct go install golang.org/x/tools/cmd/goimports@latest
+</span></span><span class=line><span class=cl>RUN rm -rf /go/src /go/pkg
+</span></span><span class=line><span class=cl>RUN <span class=k>if</span> <span class=o>[</span> <span class=s2>&#34;</span><span class=k>$(</span>go env GOARCH<span class=k>)</span><span class=s2>&#34;</span> <span class=o>=</span> <span class=s2>&#34;amd64&#34;</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    curl -sL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh <span class=p>|</span> sh -s v1.55.2<span class=p>;</span>  <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=k>fi</span>
+</span></span><span class=line><span class=cl>ARG <span class=nv>SELINUX</span><span class=o>=</span><span class=nb>true</span>
+</span></span><span class=line><span class=cl>ENV <span class=nv>SELINUX</span><span class=o>=</span><span class=si>${</span><span class=nv>SELINUX</span><span class=si>}</span>
+</span></span></code></pre></div><ul><li>安装 goimports 工具</li><li>清理缓存</li><li>仅对于 amd64 进行静态分析</li><li>控制是否启用 SELinux</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ENV <span class=nv>DAPPER_RUN_ARGS</span><span class=o>=</span><span class=s2>&#34;--privileged -v k3s-cache:/go/src/github.com/k3s-io/k3s/.cache -v trivy-cache:/root/.cache/trivy&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>DAPPER_ENV</span><span class=o>=</span><span class=s2>&#34;REPO TAG DRONE_TAG IMAGE_NAME SKIP_VALIDATE SKIP_IMAGE SKIP_AIRGAP AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID GITHUB_TOKEN GOLANG GOCOVER DEBUG&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>DAPPER_SOURCE</span><span class=o>=</span><span class=s2>&#34;/go/src/github.com/k3s-io/k3s/&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>DAPPER_OUTPUT</span><span class=o>=</span><span class=s2>&#34;./bin ./dist ./build/out ./build/static ./pkg/static ./pkg/deploy&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>DAPPER_DOCKER_SOCKET</span><span class=o>=</span><span class=nb>true</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>CROSS</span><span class=o>=</span><span class=nb>true</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    <span class=nv>STATIC_BUILD</span><span class=o>=</span><span class=nb>true</span>
+</span></span></code></pre></div><ul><li>设置 Dapper 运行时配置</li></ul><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ENV <span class=nv>HOME</span><span class=o>=</span><span class=si>${</span><span class=nv>DAPPER_SOURCE</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>WORKDIR <span class=si>${</span><span class=nv>DAPPER_SOURCE</span><span class=si>}</span>
+</span></span><span class=line><span class=cl>ENTRYPOINT <span class=o>[</span><span class=s2>&#34;./scripts/entry.sh&#34;</span><span class=o>]</span>
+</span></span><span class=line><span class=cl>CMD <span class=o>[</span><span class=s2>&#34;ci&#34;</span><span class=o>]</span>
+</span></span></code></pre></div><ul><li>设置工作目录为源码中的路径</li><li>执行 <code>./scripts/entry.sh ci</code>,启动构建流程</li></ul><h3 id=entrysh>entry.sh<a hidden class=anchor aria-hidden=true href=#entrysh>#</a></h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=cp>#!/bin/bash
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=nb>set</span> -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>mkdir -p bin dist
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=o>[</span> -e ./scripts/<span class=nv>$1</span> <span class=o>]</span><span class=p>;</span> <span class=k>then</span>
+</span></span><span class=line><span class=cl>    ./scripts/<span class=s2>&#34;</span><span class=nv>$@</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span>
+</span></span><span class=line><span class=cl>    <span class=nb>exec</span> <span class=s2>&#34;</span><span class=nv>$@</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>fi</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>chown -R <span class=nv>$DAPPER_UID</span>:<span class=nv>$DAPPER_GID</span> .
+</span></span></code></pre></div><ul><li>如果 scripts/ci 存在，那就执行它(因为 $1 是传给 entry.sh 的第一个参数 ci)</li><li><code>$@</code> 是所有参数</li></ul><h2 id=总结>总结<a hidden class=anchor aria-hidden=true href=#总结>#</a></h2><p>所以当我们在终端按下<code>make</code> 的时候,发生的是:</p><ol><li>make ci</li><li>./.dapper ci</li><li>dapper <strong>启动一个 Docker 容器，挂载当前代码目录，并在容器中执行构建命令</strong>（如 ci）</li><li>容器内执行 <code>./scripts/entry.sh ci</code></li><li>容器内执行 <code>download,validate,build,package</code></li></ol><p>在开发板上构建的时候,因为下载 dapper 这个过程可能会遇到网络问题(我没找到怎么解决)</p><p>所以我们可以跳过 dapper 这个过程,直接在网络好的本机进行 download,然后将 download 得到的 build 目录传给开发板,在开发板上执行 build、package-cli 命令.
+又回到了之前<a href=https://www.bfsmlt.top/posts/023k3sep06%E4%BB%8Eissues%E4%B8%8A%E5%BE%97%E5%88%B0%E7%9A%84%E5%8F%AF%E8%83%BD%E5%B0%9D%E8%AF%95/>这篇文章</a>中说过的过程了,只是这次我们修改了内部的镜像并使用了私有镜像仓库.</p><p>在此之前我们 fork 出一个仓库上传到 gitee 然后在开发板上拉取源码进行构建.<code>git clone https://gitee.com/ltxworld/k3s-riscv64.git</code></p><p><strong>这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。</strong></p></div><footer class=post-footer><ul class=post-tags><li><a href=https://LTXWorld.github.io/tags/k3s/>K3s</a></li><li><a href=https://LTXWorld.github.io/tags/%E6%BA%90%E7%A0%81/>源码</a></li><li><a href=https://LTXWorld.github.io/tags/riscv/>RiscV</a></li></ul><nav class=paginav><a class=prev href=https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/><span class=title>« 上一页</span><br><span>K3sEP09——初始化开发板环境操作汇总</span>
+</a><a class=next href=https://LTXWorld.github.io/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/><span class=title>下一页 »</span><br><span>K3sEP07——配置私有镜像仓库准备构建跨架构镜像</span></a></nav></footer><div id=tw-comment></div><script>const getStoredTheme=()=>localStorage.getItem("pref-theme")==="light"?"light":"dark",setGiscusTheme=()=>{const e=e=>{const t=document.querySelector("iframe.giscus-frame");t&&t.contentWindow.postMessage({giscus:e},"https://giscus.app")};e({setConfig:{theme:getStoredTheme()}})};document.addEventListener("DOMContentLoaded",()=>{const s={src:"https://giscus.app/client.js","data-repo":"LTXWorld/LTXWorld.github.io","data-repo-id":"R_kgDONODUuA","data-category":"Announcements","data-category-id":"DIC_kwDONODUuM4CkMUw","data-mapping":"pathname","data-strict":"0","data-reactions-enabled":"1","data-emit-metadata":"0","data-input-position":"bottom","data-theme":getStoredTheme(),"data-lang":"zh-CN","data-loading":"lazy",crossorigin:"anonymous"},e=document.createElement("script");Object.entries(s).forEach(([t,n])=>e.setAttribute(t,n)),document.querySelector("#tw-comment").appendChild(e);const t=document.querySelector("#theme-toggle");t&&t.addEventListener("click",setGiscusTheme);const n=document.querySelector("#theme-toggle-float");n&&n.addEventListener("click",setGiscusTheme)})</script></article></main><footer class=footer><span><a href=https://LTXWorld.github.io/>©2025 LTX&rsquo;s Blog</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><div class=ltx-music-player id=ltx-music-player role=group aria-label=背景音乐播放器><audio id=ltx-music-audio preload=metadata></audio><div class=ltx-music-header><div class=ltx-music-visual><div class=ltx-disc data-role=disc aria-hidden=true><img data-role=cover alt loading=lazy decoding=async><div class=ltx-disc-center></div></div></div><div class=ltx-music-meta><span class=ltx-music-title data-role=title></span>
+<span class=ltx-music-artist data-role=artist></span></div></div><div class=ltx-music-progress data-role=progress aria-label=进度条 role=slider><div class=ltx-music-progress-fill data-role=progress-fill></div></div><div class=ltx-music-time><span data-role=current>0:00</span>
+<span data-role=total>--:--</span></div><div class=ltx-music-controls><button type=button data-action=prev aria-label=上一首>⏮</button>
+<button type=button data-action=toggle aria-label=播放或暂停>
+<span data-icon=play>▶</span>
+<span data-icon=pause>⏸</span>
+</button>
+<button type=button data-action=next aria-label=下一首>⏭</button>
+<button type=button data-action=mute aria-label=静音或取消静音>
+<span data-icon=unmuted>🔊</span>
+<span data-icon=muted>🔇</span></button></div><div class=ltx-autoplay-tip data-role=tip aria-live=polite></div></div><script>window.LTX_MUSIC_CONFIG={autoplay:!0,defaultCover:"",loopPlaylist:!0,startVolume:.6,tracks:[{artist:"王力宏",file:"/audio/02 - 依然爱你.mp3",title:"依然爱你"},{artist:"王力宏",file:"/audio/05 - 改变自己.mp3",title:"改变自己"},{artist:"王力宏",file:"/audio/11 - 爱错.mp3",title:"爱错"}]},function(){const s=window.LTX_MUSIC_CONFIG||{};if(!s.tracks||!s.tracks.length)return;const t=document.getElementById("ltx-music-player"),e=t.querySelector("audio"),w=t.querySelector('[data-role="title"]'),_=t.querySelector('[data-role="artist"]'),l=t.querySelector('[data-role="progress"]'),f=t.querySelector('[data-role="progress-fill"]'),y=t.querySelector('[data-role="current"]'),j=t.querySelector('[data-role="total"]'),o=t.querySelector('[data-role="tip"]'),i=t.querySelector('[data-role="cover"]'),b=t.querySelector('[data-action="toggle"]'),v=t.querySelector('[data-action="prev"]'),g=t.querySelector('[data-action="next"]'),p=t.querySelector('[data-action="mute"]'),u=(e,t,n)=>Math.min(Math.max(e,t),n),m=e=>{if(!Number.isFinite(e))return"--:--";const t=Math.floor(e/60),n=Math.floor(e%60);return`${String(t).padStart(1,"0")}:${String(n).padStart(2,"0")}`},n={index:0,tracks:s.tracks,autoplay:s.autoplay!==!1,loopPlaylist:s.loopPlaylist!==!1},c=()=>{const n=e.muted||e.volume===0;t.classList.toggle("ltx-muted",n)};e.volume=u(s.startVolume??.6,0,1),c();const r=()=>{const t=e.duration||0,n=e.currentTime||0,s=t?n/t*100:0;f.style.width=`${s}%`,y.textContent=m(n),j.textContent=m(t)},a=(a,c={})=>{const u=n.tracks.length;n.index=(a%u+u)%u;const l=n.tracks[n.index];if(!l||!l.file){console.warn("LTX music player: 音频文件缺失",l),o.textContent="音频文件缺失，请检查配置";return}const h=l.cover||s.defaultCover||"";i&&(h?(i.src=h,i.alt=l.title?`${l.title} 封面`:"音乐封面",t.classList.add("ltx-has-cover")):(i.removeAttribute("src"),i.alt="",t.classList.remove("ltx-has-cover"))),w.textContent=l.title||`Track ${n.index+1}`,_.textContent=l.artist||"",e.src=l.file,t.dataset.trackIndex=n.index,o.textContent="",t.classList.remove("ltx-autoplay-blocked"),r(),c.play&&d()},d=()=>{e.play().then(()=>{t.classList.remove("ltx-autoplay-blocked"),o.textContent=""}).catch(()=>{t.classList.add("ltx-autoplay-blocked"),o.textContent="浏览器阻止了自动播放，请点击播放按钮"})},h=(t=!1)=>{const o=!e.paused||t,s=n.index+1;if(s>=n.tracks.length&&!n.loopPlaylist){e.currentTime=e.duration||0,e.pause();return}a(s,{play:o})},O=()=>{const t=!e.paused;a(n.index-1,{play:t})};b.addEventListener("click",()=>{e.paused?d():e.pause()}),v.addEventListener("click",O),g.addEventListener("click",()=>h(!1)),p.addEventListener("click",()=>{e.muted=!e.muted,c()}),l.addEventListener("click",t=>{const n=l.getBoundingClientRect(),s=u((t.clientX-n.left)/n.width,0,1);Number.isFinite(e.duration)&&(e.currentTime=s*e.duration)}),e.addEventListener("timeupdate",r),e.addEventListener("loadedmetadata",r),e.addEventListener("play",()=>{t.classList.add("ltx-playing"),t.classList.remove("ltx-autoplay-blocked"),o.textContent=""}),e.addEventListener("pause",()=>{t.classList.remove("ltx-playing")}),e.addEventListener("ended",()=>{h(!0)}),e.addEventListener("volumechange",c),a(0,{play:n.autoplay})}()</script><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerHTML="复制";function s(){t.innerHTML="已复制！",setTimeout(()=>{t.innerHTML="复制"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
