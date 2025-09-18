@@ -5,6 +5,7 @@
 {{- $config := dict "autoplay" (default true $player.autoplay) "loopPlaylist" (default true $player.loopPlaylist) "startVolume" (default 0.6 $player.startVolume) "defaultCover" (default "" $player.defaultCover) "tracks" $tracks -}}
 <div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
   <audio id="ltx-music-audio" preload="metadata"></audio>
+  <div class="ltx-drag-handle" data-role="drag-handle" title="上下拖动调整位置"></div>
   <div class="ltx-music-header">
     <div class="ltx-music-visual">
       <div class="ltx-disc" data-role="disc" aria-hidden="true">
@@ -16,6 +17,7 @@
       <span class="ltx-music-title" data-role="title"></span>
       <span class="ltx-music-artist" data-role="artist"></span>
     </div>
+    <button type="button" class="ltx-music-hide" data-action="collapse" aria-label="隐藏播放器">&#215;</button>
   </div>
   <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
     <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
@@ -38,6 +40,7 @@
   </div>
   <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
 </div>
+<button type="button" class="ltx-music-fab" id="ltx-music-fab" aria-label="显示音乐播放器">&#9835;</button>
 <script>
   window.LTX_MUSIC_CONFIG = {{ $config | jsonify | safeJS }};
   (function () {
@@ -61,6 +64,9 @@
     const prevBtn = player.querySelector('[data-action="prev"]');
     const nextBtn = player.querySelector('[data-action="next"]');
     const muteBtn = player.querySelector('[data-action="mute"]');
+    const collapseBtn = player.querySelector('[data-action="collapse"]');
+    const dragHandle = player.querySelector('[data-role="drag-handle"]');
+    const fabButton = document.getElementById('ltx-music-fab');
 
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
     const formatTime = (seconds) => {
@@ -72,11 +78,46 @@
       return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
     };
 
+    const minOffset = -120;
+    const maxOffset = 220;
+    const hideThreshold = 180;
+    const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+
     const state = {
       index: 0,
       tracks: config.tracks,
       autoplay: config.autoplay !== false,
       loopPlaylist: config.loopPlaylist !== false,
+      offset: 0,
+      collapsed: false,
+    };
+
+    const setOffset = (value) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    };
+
+    const setCollapsed = (value) => {
+      const collapsed = Boolean(value);
+      state.collapsed = collapsed;
+      player.classList.toggle('ltx-collapsed', collapsed);
+      if (collapsed) {
+        player.classList.remove('ltx-dragging');
+        state.offset = 0;
+        player.style.removeProperty('--ltx-offset');
+        if (fabButton) {
+          fabButton.classList.add('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'false');
+          fabButton.tabIndex = 0;
+        }
+      } else {
+        setOffset(0);
+        if (fabButton) {
+          fabButton.classList.remove('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'true');
+          fabButton.tabIndex = -1;
+        }
+      }
     };
 
     const updateMuteClass = () => {
@@ -86,6 +127,7 @@
 
     audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
     updateMuteClass();
+    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -154,6 +196,77 @@
       const shouldPlay = !audio.paused;
       setTrack(state.index - 1, { play: shouldPlay });
     };
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', () => setCollapsed(true));
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', () => setCollapsed(false));
+      fabButton.setAttribute('aria-hidden', 'true');
+      fabButton.tabIndex = -1;
+    }
+
+    if (dragHandle) {
+      dragHandle.style.touchAction = 'none';
+      dragHandle.addEventListener('pointerdown', (event) => {
+        if (state.collapsed) {
+          return;
+        }
+        dragState.active = true;
+        dragState.pointerId = event.pointerId;
+        dragState.startY = event.clientY;
+        dragState.startOffset = state.offset;
+        if (dragHandle.setPointerCapture) {
+          try {
+            dragHandle.setPointerCapture(event.pointerId);
+          } catch (err) {
+            /* ignore */
+          }
+        }
+        player.classList.add('ltx-dragging');
+      });
+
+      dragHandle.addEventListener('pointermove', (event) => {
+        if (!dragState.active) {
+          return;
+        }
+        const delta = event.clientY - dragState.startY;
+        setOffset(dragState.startOffset + delta);
+      });
+
+      const finishDrag = () => {
+        if (!dragState.active) {
+          return;
+        }
+        if (dragState.pointerId !== null && dragHandle.releasePointerCapture) {
+          try {
+            dragHandle.releasePointerCapture(dragState.pointerId);
+          } catch (err) {
+            /* ignore */
+          }
+        }
+        dragState.active = false;
+        dragState.pointerId = null;
+        player.classList.remove('ltx-dragging');
+        if (state.offset > hideThreshold) {
+          setCollapsed(true);
+        } else {
+          setOffset(state.offset);
+        }
+      };
+
+      ['pointerup', 'pointercancel'].forEach((eventName) => {
+        dragHandle.addEventListener(eventName, finishDrag);
+      });
+
+      dragHandle.addEventListener('pointerleave', () => {
+        if (!dragState.active) {
+          return;
+        }
+        finishDrag();
+      });
+    }
 
     toggleBtn.addEventListener('click', () => {
       if (audio.paused) {
