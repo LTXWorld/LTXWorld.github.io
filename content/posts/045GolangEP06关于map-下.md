@@ -117,9 +117,35 @@ type hmap struct {
 
 总结一下就是 **map 的操作有很多小步骤，并不是原子性的，任何一个步骤都可能被其他 goroutine 打断插入**。
 
+### 如何处理并发问题
+
+最常见的两种方式是：加锁 or 分片处理降低锁的粒度。
+
+1. 分片
+
+- 将一个大的 Map 再进行哈希，分成一个个小的 map，不同的 key 会落在不同的小 map 中，从而减少大 Map 下的竞争
+- 对小 Map 同样需要使用`sync.RWutex`锁进行控制
+- 会增加锁的内存开销，但是竞争压力大大减少
+- 经典的`concurrent-map`,适用于常规读写混合场景。
+
+来自于 GPT 的举例：
+
+```go
+type shard[V any] struct {
+    mu sync.RWMutex
+    m  map[string]V
+}
+
+// ShardedMap: string 键的分片 map
+type ShardedMap[V any] struct {
+    shards []shard[V]
+    seed   maphash.Seed
+}
+```
+
 ### sync.Map
 
-这个包中的 map 结构可以通过读写分离来避免并发冲突。
+这个包中的 map 结构可以通过读写分离来避免并发冲突，适用于读多写少的场景。
 
 具体结构如下所示：
 
