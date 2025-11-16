@@ -100,3 +100,35 @@ body.dark .first-entry .social-icons a:hover svg {
     color: #ffffff;
     fill: #ffffff;
 }
+
+/* 归档页暗色模式背景与条目卡片，使其与首页风格一致 */
+body.dark.list {
+    background: linear-gradient(145deg, rgba(12, 14, 18, 0.96), rgba(20, 22, 28, 0.9));
+}
+
+body.dark .archive-year:not(:last-of-type),
+body.dark .archive-month:not(:last-of-type) {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.dark .archive-month-header {
+    color: rgba(224, 226, 235, 0.9);
+}
+
+body.dark .archive-entry {
+    background: rgba(18, 20, 26, 0.9);
+    border-radius: calc(var(--radius) * 1.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 18px 40px rgba(6, 8, 14, 0.35);
+    padding: 14px 16px;
+    margin: 14px 0;
+}
+
+body.dark .archive-entry-title {
+    color: #f5f7ff;
+}
+
+body.dark .archive-meta,
+body.dark .archive-count {
+    color: rgba(224, 226, 235, 0.85);
+}
