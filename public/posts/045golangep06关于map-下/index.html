@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -17,16 +17,16 @@ map 如何扩容
 map 的扩容机制
 本节还是需要用到上一篇文章中的底层 hmap 结构">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
 <noscript>
     <style>
         #theme-toggle,
@@ -104,7 +104,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="GolangEP06:关于map-下">
   <meta property="og:description" content="引子 上一篇文章中留下了两个问题没有解决
@@ -118,9 +118,9 @@ map 的扩容机制 本节还是需要用到上一篇文章中的底层 hmap 结
     <meta property="article:tag" content="Golang">
     <meta property="article:tag" content="源码">
     <meta property="article:tag" content="Map">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="GolangEP06:关于map-下">
 <meta name="twitter:description" content="引子
 上一篇文章中留下了两个问题没有解决
@@ -142,13 +142,13 @@ map 的扩容机制
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "GolangEP06:关于map-下",
-      "item": "http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/"
+      "item": "https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/"
     }
   ]
 }
@@ -163,10 +163,10 @@ map 的扩容机制
   "keywords": [
     "Golang", "源码", "Map"
   ],
-  "articleBody": "引子 上一篇文章中留下了两个问题没有解决\nmap 如何扩容 为什么原生的 map 线程不安全 其实这两个问题是有联系的，所以这篇文章来解决这两个问题。\nmap 的扩容机制 本节还是需要用到上一篇文章中的底层 hmap 结构\ntype hmap struct { count int // map 中存储的元素个数 B uint8 // 当前 bucket 的数量为 2^B 个 buckets unsafe.Pointer // 指向 bucket 数组 oldbuckets unsafe.Pointer // 指向旧的 buckets（在扩容时使用） ... } 为什么扩容 装载因子超限（主要条件） 像 Java 中的 ArrayList 等结构，都有一个装载因子来限制结构的长度，当超过某个限制时就会发生扩容，Go 也不例外。 Go 硬编码（默认）的装载因子是 6.5；当 map.count / (2^B) \u003e 6.5时，就会发生翻倍扩容。 举个例子，之前我们说一个 bucket默认存 8 个键值对，那么如果 map 此时已经存放了 14个键值对了，即14/2 \u003e 6.5，那么两个 bucket 就不够了，为了减少哈希冲突，需要进行扩容。 溢出桶过多(次要条件) 上一篇提到的*overflows指针，就是指向溢出桶，这里先讲讲什么是溢出桶。\n之前提到过一个 bucket 容量默认为 8，那么当这个 bucket满了，而下一个 key又要进入这个 bucket 时该怎么办？\n创建一个新的 bmap(buckect) 将原来的 bucket 的 overflows 指针指向新的溢出桶 最终形成了一个单向链表 这虽然可以在严重的哈希冲突下保证正确的数据读取，但是将 map 的性能降低了，最坏情况下退化到链表查询，复杂度接近 N\n好了，那么话说回来，溢出桶过多为什么导致扩容？\n因为此时 Go 会认为哈希冲突非常严重，对性能产生了很大的影响，需要重新整理数据，让 key 重新分布，减少溢出桶的使用。具体的扩容规则如下：\n当B 小于 15 时，溢出桶数量超过了 $2^B$，触发扩容 当B 大于 15 时，数量超过 $2^15$时，触发扩容 如何扩容 扩容的核心是数据迁移，将旧的数据迁移到新的 bucket 中,并且这个过程是渐进式的，不是一蹴而就的。\n翻倍扩容 创建新的bucket B++ 分配一个两倍于旧 bucket 数组大小的新 bucket 数组。例如图中长度为 2 的数组变为 4，底层就会有 4 个 bucket hmap 结构中指向 buckets 的指针也要发生变化 渐进式迁移 真正的迁移发生在后续的 map 写入或删除操作中 每当读写一次map，就会顺便迁移 1～2 个旧的 bucket 中的数据到新的 bucket 中 新位置需要 rehash 读操作每次都会去新的 bucket 中查找，找不到再去旧的。这样可以保证每次读到的都是正确的。 迁移完成后，最终oldbuckets指向 nil 等量扩容 创建等量的新桶 B 不变，map 会分配一个和旧 bucket 数组同样大小的新 bucket 数组 渐进式迁移 创建新的哈希种子 将之前高度冲突的 key 重新散列 rehash 扩容带来的问题 The number of bucktes in a map cannot shrink\n扩容不是一劳永逸的，想象这样一个场景：\n你用 map 存储最近一个小时的用户数据，促销开始时百万级用户量的涌入，map 会疯狂扩容；当促销结束后用户逐渐离线，map 中删除了数据但是 map 底层的结构不会被删除，其在堆上的内存不会被回收。\n为什么？Go 的运行时认为，一个曾经达到过如此规模的 map，未来很可能再次需要这么大的容量，因此保留这部分内存以避免未来再次扩容的开销。\n那么如何解决这种潮汐的流量模式带来的问题呢？我们需要主动打破 map 的生命周期，让 GC 可以回收它。\n定时重建 启动 goroutine，使用定时器周期性地用新的小的 map 来替换旧的 map 旧 map 没有引用后就可以被 GC 回收了 分片/分时 map 不要使用一个大 map 来存储数据，而用一个 map 切片来存，每个 map 负责存储一个时间段内的数据 根据数据时间戳来写入，定时清理 这样数据洪峰只会撑大其中几个分钟的 map，当洪峰过去后，这些 map 会被自动回收。 线程安全问题 最后，我们来回答本系列最开始的问题，为什么原生的 map 线程不安全。\n原生 map在设计之处就是为了追求性能，而忽略了并发环境的使用。如果在并发环境下使用会发生什么呢？\n原生 map 以我们上面的扩容过程举例，如果一个 goroutine触发了扩容，而另一个 goroutine正在读 map，那么可能会读到：\n旧 bucket 数据 新 bucket 数据 读操作访问内存被释放，触发 panic 当然，并发写导致的数据竞争就更显而易见了。\n总结一下就是 map 的操作有很多小步骤，并不是原子性的，任何一个步骤都可能被其他 goroutine 打断插入。\nsync.Map 这个包中的 map 结构可以通过读写分离来避免并发冲突。\n具体结构如下所示：\ntype Map struct { mu Mutex // 无锁，用于缓存，读取时先从read读；如果未命中再去dirty读 // 原子操作read read atomic.Pointer[readonly] // 带锁，写入时，键值对首先存在dirty中;所有新增，删除，修改操作 dirty map[any]*entry // 缓存未命中次数，当达到阈值，read缓存会被替换成dirty中的最新数据 misses int } // 存储可无锁访问的键值对 type readOnly struct { m map[any]*entry amended bool // true if the dirty map contains some key not in m. } 仔细看就像是 os 中的缓存系统。\n读操作 首先从只读的 read map 中查找，原子读取。 如果没有找到，加锁然后去 dirty map 中查找;找到后解锁，misses计数器+1 写操作 先尝试更新 read map ，但是 key 必须存在于read map 中 如果不满足，加锁去 dirty map 写入；解锁 数据同步 当 misses计数器达到一定的阈值时，说明read map 命中率过低 此时会进行一次升级（数据同步），将dirty map的内容提升为新的read map 与操作系统中的缓存操作有异曲同工之妙啊。\n总结 那么关于 map 的有关知识就到这里结束了，上下两篇，从底层结构到初始化再到扩容最后到并发安全问题。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
-  "wordCount" : "2069",
+  "articleBody": "引子 上一篇文章中留下了两个问题没有解决\nmap 如何扩容 为什么原生的 map 线程不安全 其实这两个问题是有联系的，所以这篇文章来解决这两个问题。\nmap 的扩容机制 本节还是需要用到上一篇文章中的底层 hmap 结构\ntype hmap struct { count int // map 中存储的元素个数 B uint8 // 当前 bucket 的数量为 2^B 个 buckets unsafe.Pointer // 指向 bucket 数组 oldbuckets unsafe.Pointer // 指向旧的 buckets（在扩容时使用） ... } 为什么扩容 装载因子超限（主要条件） 像 Java 中的 ArrayList 等结构，都有一个装载因子来限制结构的长度，当超过某个限制时就会发生扩容，Go 也不例外。 Go 硬编码（默认）的装载因子是 6.5；当 map.count / (2^B) \u003e 6.5时，就会发生翻倍扩容。 举个例子，之前我们说一个 bucket默认存 8 个键值对，那么如果 map 此时已经存放了 14个键值对了，即14/2 \u003e 6.5，那么两个 bucket 就不够了，为了减少哈希冲突，需要进行扩容。 溢出桶过多(次要条件) 上一篇提到的*overflows指针，就是指向溢出桶，这里先讲讲什么是溢出桶。\n之前提到过一个 bucket 容量默认为 8，那么当这个 bucket满了，而下一个 key又要进入这个 bucket 时该怎么办？\n创建一个新的 bmap(buckect) 将原来的 bucket 的 overflows 指针指向新的溢出桶 最终形成了一个单向链表 这虽然可以在严重的哈希冲突下保证正确的数据读取，但是将 map 的性能降低了，最坏情况下退化到链表查询，复杂度接近 N\n好了，那么话说回来，溢出桶过多为什么导致扩容？\n因为此时 Go 会认为哈希冲突非常严重，对性能产生了很大的影响，需要重新整理数据，让 key 重新分布，减少溢出桶的使用。具体的扩容规则如下：\n当B 小于 15 时，溢出桶数量超过了 $2^B$，触发扩容 当B 大于 15 时，数量超过 $2^15$时，触发扩容 如何扩容 扩容的核心是数据迁移，将旧的数据迁移到新的 bucket 中,并且这个过程是渐进式的，不是一蹴而就的。\n翻倍扩容 创建新的bucket B++ 分配一个两倍于旧 bucket 数组大小的新 bucket 数组。例如图中长度为 2 的数组变为 4，底层就会有 4 个 bucket hmap 结构中指向 buckets 的指针也要发生变化 渐进式迁移 真正的迁移发生在后续的 map 写入或删除操作中 每当读写一次map，就会顺便迁移 1～2 个旧的 bucket 中的数据到新的 bucket 中 新位置需要 rehash 读操作每次都会去新的 bucket 中查找，找不到再去旧的。这样可以保证每次读到的都是正确的。 迁移完成后，最终oldbuckets指向 nil 等量扩容 创建等量的新桶 B 不变，map 会分配一个和旧 bucket 数组同样大小的新 bucket 数组 渐进式迁移 创建新的哈希种子 将之前高度冲突的 key 重新散列 rehash 扩容带来的问题 The number of bucktes in a map cannot shrink\n扩容不是一劳永逸的，想象这样一个场景：\n你用 map 存储最近一个小时的用户数据，促销开始时百万级用户量的涌入，map 会疯狂扩容；当促销结束后用户逐渐离线，map 中删除了数据但是 map 底层的结构不会被删除，其在堆上的内存不会被回收。\n为什么？Go 的运行时认为，一个曾经达到过如此规模的 map，未来很可能再次需要这么大的容量，因此保留这部分内存以避免未来再次扩容的开销。\n那么如何解决这种潮汐的流量模式带来的问题呢？我们需要主动打破 map 的生命周期，让 GC 可以回收它。\n定时重建 启动 goroutine，使用定时器周期性地用新的小的 map 来替换旧的 map 旧 map 没有引用后就可以被 GC 回收了 分片/分时 map 不要使用一个大 map 来存储数据，而用一个 map 切片来存，每个 map 负责存储一个时间段内的数据 根据数据时间戳来写入，定时清理 这样数据洪峰只会撑大其中几个分钟的 map，当洪峰过去后，这些 map 会被自动回收。 线程安全问题 最后，我们来回答本系列最开始的问题，为什么原生的 map 线程不安全。\n原生 map在设计之处就是为了追求性能，而忽略了并发环境的使用。如果在并发环境下使用会发生什么呢？\n原生 map 以我们上面的扩容过程举例，如果一个 goroutine触发了扩容，而另一个 goroutine正在读 map，那么可能会读到：\n旧 bucket 数据 新 bucket 数据 读操作访问内存被释放，触发 panic 当然，并发写导致的数据竞争就更显而易见了。\n总结一下就是 map 的操作有很多小步骤，并不是原子性的，任何一个步骤都可能被其他 goroutine 打断插入。\n如何处理并发问题 最常见的两种方式是：加锁 or 分片处理降低锁的粒度。\n分片 将一个大的 Map 再进行哈希，分成一个个小的 map，不同的 key 会落在不同的小 map 中，从而减少大 Map 下的竞争 对小 Map 同样需要使用sync.RWutex锁进行控制 会增加锁的内存开销，但是竞争压力大大减少 经典的concurrent-map,适用于常规读写混合场景。 来自于 GPT 的举例：\ntype shard[V any] struct { mu sync.RWMutex m map[string]V } // ShardedMap: string 键的分片 map type ShardedMap[V any] struct { shards []shard[V] seed maphash.Seed } sync.Map 这个包中的 map 结构可以通过读写分离来避免并发冲突，适用于读多写少的场景。\n具体结构如下所示：\ntype Map struct { mu Mutex // 无锁，用于缓存，读取时先从read读；如果未命中再去dirty读 // 原子操作read read atomic.Pointer[readonly] // 带锁，写入时，键值对首先存在dirty中;所有新增，删除，修改操作 dirty map[any]*entry // 缓存未命中次数，当达到阈值，read缓存会被替换成dirty中的最新数据 misses int } // 存储可无锁访问的键值对 type readOnly struct { m map[any]*entry amended bool // true if the dirty map contains some key not in m. } 仔细看就像是 os 中的缓存系统。\n读操作 首先从只读的 read map 中查找，原子读取。 如果没有找到，加锁然后去 dirty map 中查找;找到后解锁，misses计数器+1 写操作 先尝试更新 read map ，但是 key 必须存在于read map 中 如果不满足，加锁去 dirty map 写入；解锁 数据同步 当 misses计数器达到一定的阈值时，说明read map 命中率过低 此时会进行一次升级（数据同步），将dirty map的内容提升为新的read map 与操作系统中的缓存操作有异曲同工之妙啊。\n总结 那么关于 map 的有关知识就到这里结束了，上下两篇，从底层结构到初始化再到扩容最后到并发安全问题。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
+  "wordCount" : "2272",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-07-16T14:44:11+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-07-16T14:44:11+08:00",
   "dateModified": "2025-07-16T14:44:11+08:00",
   "author":{
     "@type": "Person",
@@ -174,14 +174,14 @@ map 的扩容机制
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/"
+    "@id": "https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -199,7 +199,7 @@ map 的扩容机制
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -225,32 +225,32 @@ map 的扩容机制
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -292,6 +292,8 @@ map 的扩容机制
                         
                 <li>
                     <a href="#%e5%8e%9f%e7%94%9f-map" aria-label="原生 map">原生 map</a></li>
+                <li>
+                    <a href="#%e5%a6%82%e4%bd%95%e5%a4%84%e7%90%86%e5%b9%b6%e5%8f%91%e9%97%ae%e9%a2%98" aria-label="如何处理并发问题">如何处理并发问题</a></li>
                 <li>
                     <a href="#syncmap" aria-label="sync.Map">sync.Map</a></li></ul>
                 </li>
@@ -419,8 +421,30 @@ map 的扩容机制
 </ul>
 <p>当然，并发写导致的数据竞争就更显而易见了。</p>
 <p>总结一下就是 <strong>map 的操作有很多小步骤，并不是原子性的，任何一个步骤都可能被其他 goroutine 打断插入</strong>。</p>
-<h3 id="syncmap">sync.Map<a hidden class="anchor" aria-hidden="true" href="#syncmap">#</a></h3>
-<p>这个包中的 map 结构可以通过读写分离来避免并发冲突。</p>
+<h3 id="如何处理并发问题">如何处理并发问题<a hidden class="anchor" aria-hidden="true" href="#如何处理并发问题">#</a></h3>
+<p>最常见的两种方式是：加锁 or 分片处理降低锁的粒度。</p>
+<ol>
+<li>分片</li>
+</ol>
+<ul>
+<li>将一个大的 Map 再进行哈希，分成一个个小的 map，不同的 key 会落在不同的小 map 中，从而减少大 Map 下的竞争</li>
+<li>对小 Map 同样需要使用<code>sync.RWutex</code>锁进行控制</li>
+<li>会增加锁的内存开销，但是竞争压力大大减少</li>
+<li>经典的<code>concurrent-map</code>,适用于常规读写混合场景。</li>
+</ul>
+<p>来自于 GPT 的举例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">shard</span><span class="p">[</span><span class="nx">V</span> <span class="kt">any</span><span class="p">]</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">m</span>  <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">V</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// ShardedMap: string 键的分片 map</span>
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ShardedMap</span><span class="p">[</span><span class="nx">V</span> <span class="kt">any</span><span class="p">]</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">shards</span> <span class="p">[]</span><span class="nx">shard</span><span class="p">[</span><span class="nx">V</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">seed</span>   <span class="nx">maphash</span><span class="p">.</span><span class="nx">Seed</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="syncmap">sync.Map<a hidden class="anchor" aria-hidden="true" href="#syncmap">#</a></h3>
+<p>这个包中的 map 结构可以通过读写分离来避免并发冲突，适用于读多写少的场景。</p>
 <p>具体结构如下所示：</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Map</span> <span class="kd">struct</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="nx">mu</span> <span class="nx">Mutex</span>
@@ -472,17 +496,17 @@ map 的扩容机制
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/golang/">Golang</a></li>
-      <li><a href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
-      <li><a href="http://localhost:1313/tags/map/">Map</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/golang/">Golang</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/map/">Map</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/046golangep07-range%E9%81%8D%E5%8E%86/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/046golangep07-range%E9%81%8D%E5%8E%86/">
     <span class="title">« 上一页</span>
     <br>
     <span>GolangEP07-Range遍历(上)</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/">
+  <a class="next" href="https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/">
     <span class="title">下一页 »</span>
     <br>
     <span>GolangEP06:关于map-上</span>
@@ -678,6 +702,41 @@ map 的扩容机制
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -688,12 +747,56 @@ map 的扩容机制
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -714,6 +817,9 @@ map 的扩容机制
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -721,9 +827,13 @@ map 的扩容机制
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -732,6 +842,38 @@ map 的扩容机制
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -761,6 +903,11 @@ map 的扩容机制
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -783,6 +930,7 @@ map 的扩容机制
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -793,14 +941,26 @@ map 的扩容机制
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -885,29 +1045,56 @@ map 的扩容机制
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

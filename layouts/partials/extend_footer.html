@@ -82,6 +82,41 @@
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -92,12 +127,56 @@
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -118,6 +197,9 @@
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -125,9 +207,13 @@
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -136,6 +222,38 @@
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+          /* ignore */
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -165,6 +283,11 @@
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -187,6 +310,7 @@
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -197,14 +321,26 @@
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -289,29 +425,56 @@
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 {{- end -}}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -11,16 +11,16 @@
 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
 恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/041traefik/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/041traefik/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/041traefik/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/041traefik/">
 <noscript>
     <style>
         #theme-toggle,
@@ -98,7 +98,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/041traefik/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/041traefik/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="K3sEP13——遇到的Traedfik问题">
   <meta property="og:description" content="引子 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
@@ -111,9 +111,9 @@ code.has-jax {
     <meta property="article:tag" content="K3s">
     <meta property="article:tag" content="RiscV">
     <meta property="article:tag" content="Traefik">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="K3sEP13——遇到的Traedfik问题">
 <meta name="twitter:description" content="引子
 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。
@@ -129,13 +129,13 @@ code.has-jax {
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "K3sEP13——遇到的Traedfik问题",
-      "item": "http://localhost:1313/posts/041traefik/"
+      "item": "https://LTXWorld.github.io/posts/041traefik/"
     }
   ]
 }
@@ -153,7 +153,7 @@ code.has-jax {
   "articleBody": "引子 在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。\n恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。\n问题描述 集群环境是1 Server 2 Agent 的模式，运行了一个简单地 Nginx 应用，整体结构如下：\nDeployment 中配置3个 Replica Pod,容器是 Nginx，挂载了本地存储内容是一个简单的前端内容。 Deployment 前配置 Service,匹配上面 Pod 的标签，配置为 ClusterIP，暴露 Pod 给集群 Service 前配置 Ingress ，将特定路径映射到 Service，为流量提供路由。 IngressController 是这个结构最前面的部分，在 k3s 中默认是 Traefik 就当我访问 Ingress 中定义好的路径时，返回 404 Pag Not Found,显然这中间有地方出问题了。\n使用 ping 发现这个 url 的 IP 地址就是 Server 的地址且可以 ping 通，说明笔记本与节点的通信没问题。 检查 Deployment, Pod, Service, Ingress 的状态，都是正常运行，没有错误信息。 检查 Traefik 的日志，出现问题，于是检查这个问题。 问题所在 # 获取Traefik Pod 信息 sudo kubectl get pods -o wide -n kube-system -l app.kubernetes.io/name=traefik # 查看日志信息 sudo kubectl logs -n kube-system 查看日志才发现，错误就在这里。\nW0602 12:19:21.743160 1 reflector.go:561] k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243: failed to list *v1.ConfigMap: configmaps is forbidden: User \"system:serviceaccount:kube-system:traefik\" cannot list resource \"configmaps\" in API group \"\" at the cluster scope E0602 12:19:21.743322 1 reflector.go:158] \"Unhandled Error\" err=\"k8s.io/client-go@v0.31.1/tools/cache/reflector.go:243: Failed to watch *v1.ConfigMap: failed to list *v1.ConfigMap: configmaps is forbidden: User \\\"system:serviceaccount:kube-system:traefik\\\" cannot list resource \\\"configmaps\\\" in API group \\\"\\\" at the cluster scope\" logger=\"UnhandledError\" 经过一番 google，发现一个与我遇到相同问题的人,他对于此问题的描述是 traefik 的配置文件中关于某些组件的定义有缺失，需要补充 traefik 的配置文件。\n解决如下：sudo kubectl edit clusterrole traefik-kube-system 在其中添加 discovery.k8s.io,nodes,endpointslices,serverstransporttcps等字段，最终结果如下:\nrules: - apiGroups: - extensions - networking.k8s.io - discovery.k8s.io resources: - ingressclasses - ingresses - endpointslices verbs: - get - list - watch - apiGroups: - \"\" resources: - services - endpoints - secrets - configmaps - nodes verbs: - get - list - watch - apiGroups: - extensions - networking.k8s.io resources: - ingresses/status verbs: - update - apiGroups: - traefik.io resources: - ingressroutes - ingressroutetcps - ingressrouteudps - middlewares - middlewaretcps - tlsoptions - tlsstores - traefikservices - serverstransporttcps - serverstransports verbs: - get - list - watch 删除这个 Pod 之后它会自动重新生成，之后的结果就正常了，可以成功访问定义的路径。\n具体原因 从 forbidden 可以看出，这其实是一个 RABC (Role-Based Access Control) 权限问题.\nRole 会定义有关于资源的操作权限（可以对哪些资源执行哪些操作） RoleBinding 会将这个定义好的权限给某个或某组用户(要注意特定命名空间) ServiceAccount: 集群内部的进程(例如 Pod 中运行的应用) 报错日志告诉我们，User \\\"system:serviceaccount:kube-system:traefik\\\" cannot list resource \\\"configmaps\\\" in API group \\\"\\\" at the cluster scope\"即某个用户的对于某个资源的某个操作失败了。\n即我们的 Traefik 在读取某些资源的时候失败了，权限不够！这会造成什么后果呢，请继续往下看。\nTraefik 在 K8s/K3s 中的应用 Traefik 到底是做什么的呢？(类似于 Nginx,但是又有其特点)\n监视 (Watch) K8s/K3s 集群中的 Ingress、Service、EndpointSlice 等资源的变化 根据这些资源的信息，动态配置其内部的路由规则 将外部传入的流量路由到正确的后端 Service 和 Pod 在官网的这篇文档中可以看到 Traefik 在 K8s 中的应用。 值得一提的是，K3s 内置了 Traefik 作为 Ingress Controller,而 K8s 则是没有内置，默认维护 AWS,nginx 等 Controller，同时也可以采用第三方例如 Traefik.\n在 K8s 中使用 Traefik,我们需要进行以下操作:\n创建 role:ClusterRole 创建 ServiceAccount,将 role 绑定到 account 上； 部署 traefik deployment，设置 traefik 容器端口web 80,dashboard 8080 部署 traefik service,并在其中对应上面两个端口 而 K3s 中，观其源码可以发现，其在 /manifest 目录下定义了使用 Helm Controller 来管理例如 traefik 这样的预装组件，通过 Helm Chart 自动部署。\n接下来我们来验证一下 K3s 集群中的 Traefik 属性:\nrole \u0026 ServiceAccount\n# ServiceAccount,名称为 traefik sudo kubectl get serviceaccount -n kube-system traefik NAME SECRETS AGE traefik 0 18d # ClusterRole,名称为traefik-kube-system sudo kubectl get clusterrole | grep traefik traefik-kube-system 2025-05-15T06:59:41Z # 查看其 Role 信息： sudo kubectl get clusterrole traefik-kube-system -o yaml 这里查看到的信息就是我们上面修改好的“配置文件”,定义了 Traefik 可以访问哪些 apiGroups,groups 中的 resources,可以对这些 resources 进行哪些 verbs\nbinding\n# 查看 clusterrolebinding 绑定信息 sudo kubectl get clusterrolebinding | grep traefik helm-kube-system-traefik ClusterRole/cluster-admin 19d helm-kube-system-traefik-crd ClusterRole/cluster-admin 19d traefik-kube-system ClusterRole/traefik-kube-system 18d # 查看具体的绑定规则 sudo kubectl get clusterrolebinding traefik-kube-system -o yaml apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: annotations: meta.helm.sh/release-name: traefik meta.helm.sh/release-namespace: kube-system creationTimestamp: \"2025-05-15T06:59:41Z\" labels: app.kubernetes.io/instance: traefik-kube-system app.kubernetes.io/managed-by: Helm app.kubernetes.io/name: traefik helm.sh/chart: traefik-27.0.201_up27.0.2 name: traefik-kube-system resourceVersion: \"4041\" uid: 905de4bb-8aab-42c6-a84c-169252444073 roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: traefik-kube-system subjects: - kind: ServiceAccount name: traefik namespace: kube-system 在最后的部分可以发现就是把 traefik-kube-system 绑定到了 traefik 上，这与官网给出的示例几乎一致。\nDeployment \u0026 Service\n# Deployment sudo kubectl get deployment -n kube-system traefik NAME READY UP-TO-DATE AVAILABLE AGE traefik 1/1 1 1 18d # Deployment 内部 Port 信息 ports: - containerPort: 9100 name: metrics protocol: TCP - containerPort: 9000 name: traefik protocol: TCP - containerPort: 80 name: web protocol: TCP - containerPort: 8443 name: websecure protocol: TCP # Service sudo kubectl get service -n kube-system traefik NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE traefik LoadBalancer 10.43.144.33 192.168.31.70 80:32194/TCP,443:31405/TCP 18d # Service 内部 Port 信息，与上面 Deployment 要对应 ports: - name: web nodePort: 32194 port: 80 protocol: TCP targetPort: web - name: websecure nodePort: 31405 port: 443 protocol: TCP targetPort: websecure 其实从这里与之前的集群图片对照，可以看出 Traefik Deployment 作为 Ingress Controller,其 Service 在前面作为 LoadBalancer,让外部的流量可以到达 Traefik Deployment.\n与 Nginx 对比 从前面的介绍可以看出，Traefik 最大的卖点就是实时监测集群内的路由情况并自动进行服务发现并为其动态配置路由。\n而传统的 Nginx 想要完成这样的自动化是不可能的，需要手动更改 nginx.conf文件，向其中添加路由规则，所以其并不适合动态服务。其通常用作静态文件服务和反向代理。\n但是 Nginx 也像 Traefik 一样，提供了动态监听的 Ingress Controller: Nginx Ingress Controller,虽然 K3s 默认嵌入 Traefik,但如果你想，也可以替换成 Nginx.\n总结 Traefik 作为集群中的 Ingress Controller,需要调用集群中的资源来为我们后方 Deployment Pod 中的应用自动构建路由规则，将外部的请求转发过来。\n所以我们需要保证其有访问某些资源的权限，例如 nodes,endpointslices 等资源。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "2154",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-06-03T09:27:10+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-06-03T09:27:10+08:00",
   "dateModified": "2025-06-03T09:27:10+08:00",
   "author":{
     "@type": "Person",
@@ -161,14 +161,14 @@ code.has-jax {
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/041traefik/"
+    "@id": "https://LTXWorld.github.io/posts/041traefik/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -186,7 +186,7 @@ code.has-jax {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -212,32 +212,32 @@ code.has-jax {
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -484,17 +484,17 @@ code.has-jax {
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
-      <li><a href="http://localhost:1313/tags/traefik/">Traefik</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/k3s/">K3s</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/riscv/">RiscV</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/traefik/">Traefik</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
     <span class="title">« 上一页</span>
     <br>
     <span>Golang版本更新工具</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/039mit6.824lab1/">
+  <a class="next" href="https://LTXWorld.github.io/posts/039mit6.824lab1/">
     <span class="title">下一页 »</span>
     <br>
     <span>Mit6.824Lab1流程梳理</span>
@@ -690,6 +690,41 @@ code.has-jax {
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -700,12 +735,56 @@ code.has-jax {
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -726,6 +805,9 @@ code.has-jax {
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -733,9 +815,13 @@ code.has-jax {
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -744,6 +830,38 @@ code.has-jax {
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -773,6 +891,11 @@ code.has-jax {
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -795,6 +918,7 @@ code.has-jax {
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -805,14 +929,26 @@ code.has-jax {
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -897,29 +1033,56 @@ code.has-jax {
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

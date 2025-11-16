@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -18,16 +18,16 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
 
 这样的一个系统由三部分组成">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/039mit6.824lab1/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/039mit6.824lab1/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/039mit6.824lab1/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/039mit6.824lab1/">
 <noscript>
     <style>
         #theme-toggle,
@@ -105,7 +105,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/039mit6.824lab1/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/039mit6.824lab1/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="Mit6.824Lab1流程梳理">
   <meta property="og:description" content="引子 本文记录完成 Lab01 的过程,跟着 AI 照猫画虎.
@@ -119,9 +119,9 @@ Map:将一个大的问题分解为小问题,应用用户定义的 Map 函数,生
     <meta property="article:tag" content="Mit">
     <meta property="article:tag" content="Lab">
     <meta property="article:tag" content="分布式">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="Mit6.824Lab1流程梳理">
 <meta name="twitter:description" content="引子
 本文记录完成 Lab01 的过程,跟着 AI 照猫画虎.
@@ -144,13 +144,13 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Mit6.824Lab1流程梳理",
-      "item": "http://localhost:1313/posts/039mit6.824lab1/"
+      "item": "https://LTXWorld.github.io/posts/039mit6.824lab1/"
     }
   ]
 }
@@ -168,7 +168,7 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
   "articleBody": "引子 本文记录完成 Lab01 的过程,跟着 AI 照猫画虎.\nMapReduce 首先我们需要简单了解一下 MapReduce 这篇论文,其提出了分布式的思想,具体如下:\nMap:将一个大的问题分解为小问题,应用用户定义的 Map 函数,生成中间键值对——文本分割为单词,输出 {world, 1} 这样的键值对 Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生成最终输出——Reduce 对同一 key 进行计数求和 {word, count} 系统可以自动做到并行,任务调度,负载均衡,容错,让用户只需要开发 Map 和 Reduce 这两个函数 这样的一个系统由三部分组成\nMaster: 主节点,类似于 K3s 中的 server 节点 Worker: 类似于 K3s 中的 agent 节点 分布式文件系统,例如 GFS: 存储输入数据,中间结果和最终输出 工作流程如下:\n输入数据被分割成固定大小的分片 Master 将 Map 任务分配给 Worker，Worker 读取分片，执行 Map 函数，生成中间键值对，写入本地磁盘。 中间键值对按键分区（partitioned），传输到 Reduce Worker Reduce Worker 对键值对排序、分组，执行 Reduce 函数，生成最终输出，写入分布式文件系统 而本 lab 的目标就是实现一个简化的 MapReduce 系统,模拟 Master 和 Worker. 处理任务分配、并行执行和故障容错.\nLab 实现 在本 Lab 中,我们只需要编写 src/main/mr 下的三个代码即可.\nCoordinator.go 对于 Master 节点,我们需要让他来进行调度,如何确保 Worker 们按照我们想要的方式来执行任务.\nCoordinator 首先,我们先要定义 Coordiantor 本身\ntype Coordinator struct { // Your definitions here. mu sync.Mutex // 互斥锁 files []string // 输入文件列表 nReduce int // Reduce任务数 mapTasks []Task // Map任务列表,以taskID作为下标 reduceTasks []Task // Reduce任务列表 completedMaps int // 已完成的Map任务数量 completedReds int // 已完成的Reduce任务数量 } 我们作为控制者,要获取输入的文件集合,保存 Map 和 Reduce 两种不同任务,并统计二者的初始数量与已完成的数量——用来看某类任务是否已经全部完成.\n对于这些变量,为了防止数据冲突,自然要处理并发;在这里我们使用了 mutex 直接上锁,具体操作见后文.\nTask 其次,我们需要定义有关 Task 的信息,分别是 Type 结构体和任务类型 TaskType\ntype TaskType string type Task struct { TaskID int // 任务ID TaskType TaskType // 是Map还是Reduce InputFile string // 对Map来说输入文件 OutputFile string // 对Reduce来说最终的输出文件 NReduce int // Reduce任务数 NMap int StartTime time.Time // 用于计时,看是否超时 Completed bool // } const ( Map TaskType = \"Map\" Reduce TaskType = \"Reduce\" Wait TaskType = \"Wait\" Exit TaskType = \"Exit\" ) 同时,我们还定义了一些常量表示不同任务类型.\nMakeCoordinator 这是一个初始化方法,入参已经给定,我们来初始化 Coordinator,Task切片.\nfunc MakeCoordinator(files []string, nReduce int) *Coordinator { c := Coordinator{ files: files, nReduce: nReduce, mapTasks: make([]Task, len(files)), reduceTasks: make([]Task, nReduce), completedMaps: 0, completedReds: 0, } // 初始化Map任务 for i, file := range files { c.mapTasks[i] = Task{ TaskID: i, TaskType: Map, InputFile: file, NReduce: nReduce, NMap: len(files), } } // 初始化Reduce任务 for i := 0; i \u003c nReduce; i++ { c.reduceTasks[i] = Task{ TaskID: i, TaskType: Reduce, OutputFile: fmt.Sprintf(\"mr-out-%d\", i), NReduce: nReduce, NMap: len(files), } } c.server() return \u0026c } 最终启动了 server,server 是已经写好的代码,它用来作为 Coordinator 监听相关 RPC 请求的服务端.\nRPC方法 在调度框架中, Worker 会通过发送 RPC 请求向 Master 请求资源,例如请求任务,所以我们在 Master 端需要写相对应的请求任务的逻辑.\nRequestTask 优先分配未完成或者超时的 Map 任务,所有 Map 任务完成后分配 Reduce 任务(实现了 Reduce 对 Map 的依赖关系) 由于存在并发,所以我们一开始就用 mutex 保护共享状态.\nfunc (c *Coordinator) RequestTask(args *TaskArgs, reply *TaskReply) error { c.mu.Lock() defer c.mu.Unlock() // 优先分配Map for i := range c.mapTasks { // 如果任务未完成 if !c.mapTasks[i].Completed { // 检查任务是否超时 if !c.mapTasks[i].StartTime.IsZero() \u0026\u0026 time.Since(c.mapTasks[i].StartTime) \u003e 10*time.Second { // 若超时则重新分配 c.mapTasks[i].StartTime = time.Now() reply.Task = c.mapTasks[i] return nil } else if c.mapTasks[i].StartTime.IsZero() { // 任务未分配 c.mapTasks[i].StartTime = time.Now() reply.Task = c.mapTasks[i] return nil } } } // 如果所有Map任务都完成 if c.completedMaps == len(c.mapTasks) { // 分配Reduce 任务 for i := range c.reduceTasks { if !c.reduceTasks[i].Completed { if !c.reduceTasks[i].StartTime.IsZero() \u0026\u0026 time.Since(c.reduceTasks[i].StartTime) \u003e 10*time.Second { // 若超时则重新分配 c.reduceTasks[i].StartTime = time.Now() reply.Task = c.reduceTasks[i] return nil } else if c.reduceTasks[i].StartTime.IsZero() { // 任务未分配 c.reduceTasks[i].StartTime = time.Now() reply.Task = c.reduceTasks[i] return nil } } } // 所有 reduce 完成 if c.completedReds == len(c.reduceTasks) { reply.Task.TaskType = Exit reply.Finished = true return nil } } // 无可用任务, Wo 等待 reply.Task.TaskType = Wait return nil } TaskCompleted 同时, Worker 也要向 Master 发送对应的任务处理情况通知,为了让 Master 去管理全局状态,例如已经完成的任务数的更新.\nfunc (c *Coordinator) TaskCompleted(args *TaskCompletionArgs, reply *TaskCompletionArgs) error { c.mu.Lock() defer c.mu.Unlock() switch args.TaskType { case Map: if args.TaskID \u003c len(c.mapTasks) \u0026\u0026 !c.mapTasks[args.TaskID].Completed { c.mapTasks[args.TaskID].Completed = true // 在范围内且传回来未完成? c.completedMaps++ log.Printf(\"Map任务 %d 已完成\", args.TaskID) } case Reduce: if args.TaskID \u003c len(c.reduceTasks) \u0026\u0026 !c.reduceTasks[args.TaskID].Completed { c.reduceTasks[args.TaskID].Completed = true c.completedReds++ log.Printf(\"Reduce任务 %d 已完成\", args.TaskID) } } return nil } 如果报告的的是 Map 任务且状态为未完成,我们才会去更新任务状态为已完成.\n为了保证任务状态的幂等性——重复通知不改变任务状态,所以我们只有未完成才去更新(通知了一定是完成了) 之后的通知此任务状态为已完成,不会再更新 Done 最后,主函数需要调用 Done 来判断整个系统是否运行结束,我们根据已完成的任务数与预期的任务数对比来判断.\nfunc (c *Coordinator) Done() bool { //ret := false // Your code here. c.mu.Lock() defer c.mu.Unlock() return c.completedMaps == len(c.mapTasks) \u0026\u0026 c.completedReds == len(c.reduceTasks) } rpc.go 在 lab 中, Master 和 Worker 是通过套接字 socket 来通信的,在 rpc.go 中我们需要定义 RPC 通信的请求和响应结构,可以携带一些状态或信息.\n通常以请求和响应参数成对出现,从 Worker 请求到 Master,从 Master 响应到 Worker\n与任务的请求有关的:\ntype TaskArgs struct{} type TaskReply struct { Task Task Finished bool } 与任务完成情况有关的:\ntype TaskCompletionArgs struct { TaskID int TaskType TaskType } type TaskCompletionReply struct{} Worker 需要向 Master 传递 TaskID 等信息供后者使用. Master 无需向 Worker 传递什么信息. 值得注意的是,在 RPC 调用中,我们要保证 RPC 的参数类型在调用双方是匹配的,这里我们都用了之前声明的结构体,没有此问题.\n后续更新,其实有关 Task 的定义也该放在这里.\nworker.go 在 worker 中,我们就要实际进行 Map 和 Reduce 的相关操作了. 为了本文的连续性,我们先写有关于 RPC 的相关代码.\nRPC相关 我们需要一个 call 方法来调用 Master 中的方法,具体就是靠 rpc.DialHTTP 打开一个连接,Worker 作为客户端去调用 Call 方法\nfunc call(rpcname string, args interface{}, reply interface{}) bool { // c, err := rpc.DialHTTP(\"tcp\", \"127.0.0.1\"+\":1234\") sockname := coordinatorSock() c, err := rpc.DialHTTP(\"unix\", sockname) if err != nil { log.Fatal(\"dialing:\", err) } defer c.Close() err = c.Call(rpcname, args, reply) if err == nil { return true } fmt.Println(err) return false } 同时我们也要写与服务端,也就是 Master 中对应的 RPC 方法,本质上是通过上面的 call 方法调用服务端上的方法.\nrequestTask,请求任务.\nfunc requestTask() (Task, error) { // declare an argument structure. args := \u0026TaskArgs{} reply := \u0026TaskReply{} ok := call(\"Coordinator.RequestTask\", args, reply) if !ok { return Task{}, fmt.Errorf(\"RPC调用失败\") } // declare a reply structure. //reply := ExampleReply{} return reply.Task, nil } reportTaskCompletion,报告任务完成情况.\nfunc reportTaskCompletion(taskID int, taskType TaskType) { args := \u0026TaskCompletionArgs{ TaskID: taskID, TaskType: taskType, } var reply struct{} ok := call(\"Coordinator.TaskCompleted\", args, \u0026reply) if !ok { log.Printf(\"报告任务完成失败: TaskID=%d, Type=%s\", taskID, taskType) } } Worker本身 Worker 的主要的逻辑是请求任务,执行任务(如果没有任务则等待),所有任务执行完后退出.\nfunc Worker(mapf func(string, string) []KeyValue, reducef func(string, []string) string) { // Your worker implementation here. // 注册RPC客户端,连接Coordinator,持续请求任务直到收到退出信号 for { // 请求任务 task, err := requestTask() if err != nil { log.Printf(\"获取任务失败: %v\", err) time.Sleep(2 * time.Second) continue } // 执行任务 switch task.TaskType { case Map: log.Printf(\"开始处理Map任务: %d, 文件: %s\", task.TaskID, task.InputFile) executeMapTask(task, mapf) reportTaskCompletion(task.TaskID, task.TaskType) case Reduce: log.Printf(\"开始处理Reduce任务: %d\", task.TaskID) executeReduceTask(task, reducef) reportTaskCompletion(task.TaskID, task.TaskType) case Wait: log.Printf(\"没有可用任务,等待中...\") time.Sleep(2 * time.Second) case Exit: log.Println(\"所有任务已完成,Worker退出\") return } } } 请求任务失败的话暂停2秒继续请求 根据请求到的任务类型来进行指定的操作,具体的操作见下文. executeMapTask 用于处理 Map 任务\n读取输入文件,将其内容保存在 content 中 调用 mapf 方法处理内容,得到中间结果 kv pairs 将这些对根据 reduceID(即相同的 key 组成一个集合)保存在一个二维切片中 将这些 pairs 编码为 JSON 格式并存储在临时文件中 要注意对文件的命名符合实验要求 将上述操作放在一个 goroutine 中执行,并且保证不发生冲突 func executeMapTask(task Task, mapf func(string, string) []KeyValue) { // 读取输入文件 file, err := os.Open(task.InputFile) if err != nil { log.Fatalf(\"Cannot open %v\", task.InputFile) } defer file.Close() content, _ := io.ReadAll(file) // 调用Map kvs := mapf(task.InputFile, string(content)) // 按 Reduce 任务分区存储中间结果 nReduce := task.NReduce intermediate := make([][]KeyValue, nReduce) // reduceID -\u003e kv ? for _, kv := range kvs { reduceID := ihash(kv.Key) % nReduce intermediate[reduceID] = append(intermediate[reduceID], kv) } // 写入临时文件并原子重命名 var wg sync.WaitGroup for i := 0; i \u003c nReduce; i++ { wg.Add(1) go func(reduceID int, data []KeyValue) { defer wg.Done() tempFile, err := os.CreateTemp(\"\", fmt.Sprintf(\"mr-%d-%d.tmp\", task.TaskID, reduceID)) if err != nil { log.Fatalf(\"Can't create tempFile: %v\", err) } defer tempFile.Close() encoder := json.NewEncoder(tempFile) for _, kv := range data { if err := encoder.Encode(\u0026kv); err != nil { log.Fatalf(\"编码 JSON 失败: %v\", err) } } // 原子重命名为最终文件名 finalName := fmt.Sprintf(\"mr-%d-%d\", task.TaskID, reduceID) if err := os.Rename(tempFile.Name(), finalName); err != nil { log.Fatalf(\"重命名文件失败: %v\", err) } }(i, intermediate[i]) } wg.Wait() } executeReduceTask 几乎同理,我们处理刚才的 Map 过程产生的文件,读取其中信息并进行解码,最终保存在一个一维切片中.\n相同key作为一组调用 reducef 方法进行处理,处理完后的结果写入到输出文件中.\nfunc executeReduceTask(task Task, reducef func(string, []string) string) { // 收集所有Map任务的中间文件 var kvs []KeyValue for mapID := 0; mapID \u003c task.NMap; mapID++ { fileName := fmt.Sprintf(\"mr-%d-%d\", mapID, task.TaskID) file, err := os.Open(fileName) if err != nil { continue // 忽略未完成的 Map 任务文件 } decoder := json.NewDecoder(file) for { var kv KeyValue if err := decoder.Decode(\u0026kv); err != nil { break // 读完所有记录 } kvs = append(kvs, kv) } file.Close() } // 按 Key 排序 sort.Slice(kvs, func(i, j int) bool { return kvs[i].Key \u003c kvs[j].Key }) // 分组调用Reduce,找key相同的集合放到values中 var results []string i := 0 for i \u003c len(kvs) { j := i for j \u003c len(kvs) \u0026\u0026 kvs[j].Key == kvs[i].Key { j++ } keys := kvs[i].Key values := []string{} for k := i; k \u003c j; k++ { values = append(values, kvs[k].Value) } result := reducef(keys, values) results = append(results, fmt.Sprintf(\"%v %v\\n\", keys, result)) i = j } // 写入 Reduce 输出文件 tempFile, err := os.CreateTemp(\"\", fmt.Sprintf(\"mr-out-%d.tmp\", task.TaskID)) if err != nil { log.Fatalf(\"创建临时文件失败: %v\", err) } defer tempFile.Close() _, err = tempFile.WriteString(strings.Join(results, \"\")) if err != nil { log.Fatalf(\"写入文件失败: %v\", err) } finalName := fmt.Sprintf(\"mr-out-%d\", task.TaskID) if err := os.Rename(tempFile.Name(), finalName); err != nil { log.Fatalf(\"文件重命名失败: %v\", err) } } 至此, Worker.go 结束. 最后执行实验命令可以通过实验.\n总结 至此,就是我对于 lab1 的做法流程梳理,实现了一个小型的 MapReduce 分布式框架结构,这对于我自己目前在做的毕业设计项目也有很好的启发.\n特别是在 Task 如何定义,在 lab 中我们定义为了 go 中的 struct,在未来要写的分布式框架中我们对于不同的 Task 的定义是通过 json 文件进行定义,来确定其所占据的资源信息.\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n引用 https://pdos.csail.mit.edu/6.824/labs/lab-mr.html ",
   "wordCount" : "3706",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-05-19T17:22:07+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-05-19T17:22:07+08:00",
   "dateModified": "2025-05-19T17:22:07+08:00",
   "author":{
     "@type": "Person",
@@ -176,14 +176,14 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/039mit6.824lab1/"
+    "@id": "https://LTXWorld.github.io/posts/039mit6.824lab1/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -201,7 +201,7 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -227,32 +227,32 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -767,17 +767,17 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/mit/">Mit</a></li>
-      <li><a href="http://localhost:1313/tags/lab/">Lab</a></li>
-      <li><a href="http://localhost:1313/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/mit/">Mit</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/lab/">Lab</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/041traefik/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/041traefik/">
     <span class="title">« 上一页</span>
     <br>
     <span>K3sEP13——遇到的Traedfik问题</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/">
+  <a class="next" href="https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/">
     <span class="title">下一页 »</span>
     <br>
     <span>K3sEP12——监控集群的两种方式</span>
@@ -973,6 +973,41 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -983,12 +1018,56 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -1009,6 +1088,9 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -1016,9 +1098,13 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -1027,6 +1113,38 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -1056,6 +1174,11 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -1078,6 +1201,7 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -1088,14 +1212,26 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -1180,29 +1316,56 @@ Reduce: 将中间键值对按 key 分组,应用用户定义的 Reduce 函数,生
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

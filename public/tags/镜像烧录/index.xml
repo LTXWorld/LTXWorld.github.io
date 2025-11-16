@@ -2,23 +2,23 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>镜像烧录 on LTX&#39;s Blog</title>
-    <link>http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/</link>
+    <link>https://LTXWorld.github.io/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/</link>
     <description>Recent content in 镜像烧录 on LTX&#39;s Blog</description>
     <image>
       <title>LTX&#39;s Blog</title>
-      <url>http://localhost:1313/images/papermod-cover.png</url>
-      <link>http://localhost:1313/images/papermod-cover.png</link>
+      <url>https://LTXWorld.github.io/images/papermod-cover.png</url>
+      <link>https://LTXWorld.github.io/images/papermod-cover.png</link>
     </image>
     <generator>Hugo -- 0.145.0</generator>
     <language>zh</language>
     <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
     <lastBuildDate>Thu, 21 Nov 2024 14:42:19 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://LTXWorld.github.io/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>玩转RISCV开发板01-烧录OpenEuler国产镜像</title>
-      <link>http://localhost:1313/posts/003li_riscv01/</link>
+      <link>https://LTXWorld.github.io/posts/003li_riscv01/</link>
       <pubDate>Thu, 21 Nov 2024 14:42:19 +0800</pubDate>
-      <guid>http://localhost:1313/posts/003li_riscv01/</guid>
+      <guid>https://LTXWorld.github.io/posts/003li_riscv01/</guid>
       <description>&lt;h2 id=&#34;本次实验环境&#34;&gt;本次实验环境&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;宿主机:macbook air M2&lt;/li&gt;

@@ -2,23 +2,23 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>核心技术 on LTX&#39;s Blog</title>
-    <link>http://localhost:1313/categories/%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/</link>
+    <link>https://LTXWorld.github.io/categories/%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/</link>
     <description>Recent content in 核心技术 on LTX&#39;s Blog</description>
     <image>
       <title>LTX&#39;s Blog</title>
-      <url>http://localhost:1313/images/papermod-cover.png</url>
-      <link>http://localhost:1313/images/papermod-cover.png</link>
+      <url>https://LTXWorld.github.io/images/papermod-cover.png</url>
+      <link>https://LTXWorld.github.io/images/papermod-cover.png</link>
     </image>
     <generator>Hugo -- 0.145.0</generator>
     <language>zh</language>
     <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
     <lastBuildDate>Wed, 16 Jul 2025 14:44:11 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://LTXWorld.github.io/categories/%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GolangEP06:关于map-下</title>
-      <link>http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/</link>
+      <link>https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/</link>
       <pubDate>Wed, 16 Jul 2025 14:44:11 +0800</pubDate>
-      <guid>http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/</guid>
+      <guid>https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;上一篇文章中留下了两个问题没有解决&lt;/p&gt;
 &lt;ul&gt;
@@ -31,9 +31,9 @@
     </item>
     <item>
       <title>GolangEP06:关于map-上</title>
-      <link>http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/</link>
+      <link>https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/</link>
       <pubDate>Wed, 16 Jul 2025 09:52:36 +0800</pubDate>
-      <guid>http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/</guid>
+      <guid>https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;在做两数之和时，操作 map 遇到了问题，可以看我下面的代码。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;twoSum&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;nums&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;target&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
@@ -57,48 +57,48 @@
     </item>
     <item>
       <title>GolangEP05_Go中的并发</title>
-      <link>http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</link>
+      <link>https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</link>
       <pubDate>Sat, 03 May 2025 21:04:26 +0800</pubDate>
-      <guid>http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</guid>
+      <guid>https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;之前的两篇文章关于&lt;a href=&#34;https://www.bfsmlt.top/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/&#34;&gt;context&lt;/a&gt;和&lt;a href=&#34;https://www.bfsmlt.top/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/&#34;&gt;channel&lt;/a&gt;，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。&lt;/p&gt;
 &lt;p&gt;但是我并没有从宏观的角度上来阐述为什么我们需要并发？为什么要设计这两种结构来处理并发，本着做到&amp;quot;what-how-why&amp;quot;的态度，我们今天来深入讨论一下 Go 中的并发。&lt;/p&gt;</description>
     </item>
     <item>
       <title>GolangEP04_string底层原理及注意事项</title>
-      <link>http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
+      <link>https://LTXWorld.github.io/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
       <pubDate>Fri, 25 Apr 2025 13:49:43 +0800</pubDate>
-      <guid>http://localhost:1313/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
+      <guid>https://LTXWorld.github.io/posts/025golangep04_string%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;字符串操作在任何语言中的地位都十分重要，在上篇关于 Golang 中特殊的切片讲完之后，这一次我准备进入 Golang 中字符串的底层世界，包括引用总结自&amp;lt;100 Go Mistakes and How to Avoid Them (Teiva Harsanyi)&amp;gt; 书籍的注意事项。&lt;/p&gt;</description>
     </item>
     <item>
       <title>GolangEP03_slice底层原理及注意事项</title>
-      <link>http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
+      <link>https://LTXWorld.github.io/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
       <pubDate>Fri, 11 Apr 2025 09:44:17 +0800</pubDate>
-      <guid>http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
+      <guid>https://LTXWorld.github.io/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;在做力扣的题目时，特别是遇到递归问题，需要传入参数，遇到切片的时候经常遇到需要克隆切片的情况，而遇到普通的int类型的时候却不需要。&lt;/p&gt;
 &lt;p&gt;显而易见，这是一个值传递还是引用传递的问题，所以今天我来总结一下 Golang 中切片的底层原理，为什么在递归中需要克隆它。&lt;/p&gt;</description>
     </item>
     <item>
       <title>GolangEP02_并发中的Channel</title>
-      <link>http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</link>
+      <link>https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</link>
       <pubDate>Thu, 05 Dec 2024 15:40:56 +0800</pubDate>
-      <guid>http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</guid>
+      <guid>https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/</guid>
       <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
 &lt;p&gt;让我们看看关于 chan 有哪些常见的操作。&lt;/p&gt;
 &lt;h3 id=&#34;创建channel&#34;&gt;创建channel&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch2&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;chan&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际上调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#makechan%e5%87%bd%e6%95%b0&#34;&gt;makechan&lt;/a&gt;方法&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际上调用的是&lt;a href=&#34;https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#makechan%e5%87%bd%e6%95%b0&#34;&gt;makechan&lt;/a&gt;方法&lt;/p&gt;
 &lt;h3 id=&#34;发送数据到channel&#34;&gt;发送数据到channel&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0&#34;&gt;chansend1&lt;/a&gt;,而chansend1最终也是调用&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0&#34;&gt;chansend&lt;/a&gt;,将block参数设置为true——当前发送操作是&lt;strong&gt;阻塞的&lt;/strong&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际调用的是&lt;a href=&#34;https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0&#34;&gt;chansend1&lt;/a&gt;,而chansend1最终也是调用&lt;a href=&#34;https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chansend%e5%87%bd%e6%95%b0&#34;&gt;chansend&lt;/a&gt;,将block参数设置为true——当前发送操作是&lt;strong&gt;阻塞的&lt;/strong&gt;&lt;/p&gt;
 &lt;h3 id=&#34;从channel中读取数据&#34;&gt;从channel中读取数据&lt;/h3&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ok&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ch&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际调用的是&lt;a href=&#34;http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chanrecv%e5%87%bd%e6%95%b0&#34;&gt;chanrecv1&lt;/a&gt;和chanrecv2，最终都去调用了chanrecv。&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;底层实际调用的是&lt;a href=&#34;https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/#chanrecv%e5%87%bd%e6%95%b0&#34;&gt;chanrecv1&lt;/a&gt;和chanrecv2，最终都去调用了chanrecv。&lt;/p&gt;
 &lt;h2 id=&#34;源码&#34;&gt;源码&lt;/h2&gt;
 &lt;p&gt;接下来我们进入源码中一探究竟。&lt;/p&gt;
 &lt;h3 id=&#34;hchan结构体&#34;&gt;hchan结构体&lt;/h3&gt;
@@ -135,19 +135,19 @@
     </item>
     <item>
       <title>GolangEP01_并发之绕不过的context</title>
-      <link>http://localhost:1313/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/</link>
+      <link>https://LTXWorld.github.io/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/</link>
       <pubDate>Sun, 01 Dec 2024 12:00:57 +0800</pubDate>
-      <guid>http://localhost:1313/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/</guid>
+      <guid>https://LTXWorld.github.io/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;今天心血来潮，给自己梳理梳理golang中这个十分重要的东东——context，毕竟也是在面试中考察到，但是反问自己的时候却感觉一点也说不出来什么有价值的东西，所以今天我来一次刨根究底。&lt;/p&gt;</description>
     </item>
     <item>
       <title>玩转Docker系列——数据持久化</title>
-      <link>http://localhost:1313/posts/002docker_volume/</link>
+      <link>https://LTXWorld.github.io/posts/002docker_volume/</link>
       <pubDate>Mon, 18 Nov 2024 18:49:09 +0800</pubDate>
-      <guid>http://localhost:1313/posts/002docker_volume/</guid>
+      <guid>https://LTXWorld.github.io/posts/002docker_volume/</guid>
       <description>&lt;h1 id=&#34;docker_storage&#34;&gt;Docker_Storage&lt;/h1&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://LTXWorld.github.io/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg&#34;&gt;&lt;/p&gt;
 &lt;p&gt;大家好我是LTX，我猜在使用docker时你或多或少都会有疑问，我的数据被存到哪里去了？（什么?你不用docker?，滚出克😡）docker化之后为什么得到的镜像这么小，比我原始的程序要小这么多？特别是如果我将Mysql容器化，那它保存的记录都去哪里了？&lt;/p&gt;</description>
     </item>
   </channel>

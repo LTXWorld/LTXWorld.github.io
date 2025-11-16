@@ -2,41 +2,41 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>通用技术 on LTX&#39;s Blog</title>
-    <link>http://localhost:1313/categories/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/</link>
+    <link>https://LTXWorld.github.io/categories/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/</link>
     <description>Recent content in 通用技术 on LTX&#39;s Blog</description>
     <image>
       <title>LTX&#39;s Blog</title>
-      <url>http://localhost:1313/images/papermod-cover.png</url>
-      <link>http://localhost:1313/images/papermod-cover.png</link>
+      <url>https://LTXWorld.github.io/images/papermod-cover.png</url>
+      <link>https://LTXWorld.github.io/images/papermod-cover.png</link>
     </image>
     <generator>Hugo -- 0.145.0</generator>
     <language>zh</language>
     <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
     <lastBuildDate>Sun, 13 Jul 2025 18:50:18 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://LTXWorld.github.io/categories/%E9%80%9A%E7%94%A8%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git——真是让我欢喜让我忧</title>
-      <link>http://localhost:1313/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/</link>
+      <link>https://LTXWorld.github.io/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/</link>
       <pubDate>Sun, 13 Jul 2025 18:50:18 +0800</pubDate>
-      <guid>http://localhost:1313/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/</guid>
+      <guid>https://LTXWorld.github.io/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;说起 Git，正如标题所述，让我欢喜让我忧。回想起本科学材料写毕业论文的时候，根本没有版本控制的概念，改了之后不满意就 ctrl+z 或者再回来 ctrl+shift+z。&lt;/p&gt;
 &lt;p&gt;甚至大三的时候我连 github 都不知道怎么用，还问过别人怎么用，搜过 B 站的教程。现在看来，哈哈，成长的必经之路。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Golang版本更新工具</title>
-      <link>http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/</link>
+      <link>https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/</link>
       <pubDate>Fri, 11 Jul 2025 11:40:27 +0800</pubDate>
-      <guid>http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/</guid>
+      <guid>https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;在使用 Go 语言开发过程中，我发现经常会遇到想使用的项目的 Go 版本与当前本机的 Go 版本不一致的情况，通常是本地的版本较低。&lt;/p&gt;
 &lt;p&gt;所以每次都需要去手动更新版本，而手动更新的过程是比较繁琐的，需要下载新版本并替换旧版本（听起来也没什么是吧）但是 Go 版本的更新还算是比较频繁的，特别是各种小版本。&lt;/p&gt;</description>
     </item>
     <item>
       <title>DebugEP02——MacOs系统升级与Homebrew的关系</title>
-      <link>http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</link>
+      <link>https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</link>
       <pubDate>Thu, 03 Apr 2025 17:07:56 +0800</pubDate>
-      <guid>http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</guid>
+      <guid>https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/</guid>
       <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
 &lt;p&gt;某天我想要在我的macos上使用homebrew安装&lt;a href=&#34;https://github.com/riscv-software-src/homebrew-riscv/&#34;&gt;riscv编译工具链&lt;/a&gt;为了交叉编译一些镜像文件。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;brew tap riscv-software-src/riscv
@@ -45,17 +45,17 @@
     </item>
     <item>
       <title>DebugEP01——Postgresql</title>
-      <link>http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</link>
+      <link>https://LTXWorld.github.io/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</link>
       <pubDate>Sat, 07 Dec 2024 09:06:52 +0800</pubDate>
-      <guid>http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</guid>
+      <guid>https://LTXWorld.github.io/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</guid>
       <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
 &lt;p&gt;欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。&lt;/p&gt;</description>
     </item>
     <item>
       <title>My First Post</title>
-      <link>http://localhost:1313/posts/my-first-post/</link>
+      <link>https://LTXWorld.github.io/posts/my-first-post/</link>
       <pubDate>Tue, 12 Nov 2024 16:22:39 +0800</pubDate>
-      <guid>http://localhost:1313/posts/my-first-post/</guid>
+      <guid>https://LTXWorld.github.io/posts/my-first-post/</guid>
       <description>&lt;p&gt;这是测试&lt;/p&gt;
 &lt;p&gt;如何创建一个新的博客&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hugo new content content/posts/xxxx.md

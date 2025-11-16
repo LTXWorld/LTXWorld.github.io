@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -11,16 +11,16 @@
 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
 拿nginx镜像举例:">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
 <noscript>
     <style>
         #theme-toggle,
@@ -98,7 +98,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="K3sEP03——移植镜像到RiscV开发板">
   <meta property="og:description" content="引子 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。 拿nginx镜像举例:">
@@ -110,9 +110,9 @@ code.has-jax {
     <meta property="article:tag" content="Docker">
     <meta property="article:tag" content="Macos">
     <meta property="article:tag" content="RiscV">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="K3sEP03——移植镜像到RiscV开发板">
 <meta name="twitter:description" content="引子
 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
@@ -128,13 +128,13 @@ code.has-jax {
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "K3sEP03——移植镜像到RiscV开发板",
-      "item": "http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"
+      "item": "https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"
     }
   ]
 }
@@ -152,7 +152,7 @@ code.has-jax {
   "articleBody": "引子 了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如riscv64/nginx,riscv64/redis等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。 拿nginx镜像举例:\ndocker search riscv64/nginx\n检查是否有可用的镜像\nriscv64/nginx Official build of Nginx. 0 nginx/nginx-ingress NGINX and NGINX Plus Ingress Controllers fo… 102 nginx/nginx-prometheus-exporter NGINX Prometheus Exporter for NGINX and NGIN… 49 nginx/nginx-ingress-operator NGINX Ingress Operator for NGINX and NGINX P… 2 nginx/unit This repository is retired, use the Docker o… 65 nginx/nginx-quic-qns NGINX QUIC interop 1 nginxproxy/nginx-proxy Automated nginx proxy for Docker containers … 161 nginx Official build of Nginx. 20719 [OK] 可以发现riscv64/nginx的Stars数量为0，也不是官方镜像，所以拉取失败。（即使使用代理地址，开发板上也会遇到网络问题，因为代理地址中也没保存非官方的镜像）\n由此可见，自行构建合适的镜像迫在眉睫。\n私有镜像仓库 Docker为用户提供了一种构建私有镜像仓库的能力，利用其registry镜像，我们可以搭建一个私人的镜像仓库，由此我们可以不再依赖于远程拉取镜像，在搭建K3s集群时，可以选择一个节点作为数据存储节点，既存储各个Agent与Server的数据，也存储我们需要的专属镜像数据。\n由于registry这个镜像暂时也不适配RiscV架构（会出现经典的manifest问题）\n所以我们先在arm(macos)上尝试一下私有镜像如何搭建。\n私有镜像搭建实验 本次实验将Mac主机私有镜像库的物理机，一台RiscV开发板作为拉取镜像的机器。\n首先，在Mac上构建Registry容器。\n# 这里我选择6000端口作为本机端口（5000被系统占用，无法彻底杀死） docker run -d -p 6000:5000 --restart=always --name registry registry:2 构建成功后，如果你使用DockerDesktop可以在其中容器部分发现容器已经在正常运行了。我们再进行一下相关测试curl http://:6000/v2/,其会返回\"repository[]\"信息，证明成功。\n这时我们随便拉下来一个镜像进行测试docker pull busybox:latest 对这个镜像进行打标签，并推送到私有仓库中。(打标签操作本质上是复制一份镜像并为其改名)\n# 注意，将后续的macIP改为自己本机的IP地址 # 原本tag命令不需要IP，但是如果指向私有地址，则需要带上私有地址IP docker tag busybox:latest :6000/riscv64/busybox:1 # 将此镜像推送到私有仓库中 docker push :6000/riscv64/busybox:1 结果如下\nThe push refers to repository [192.168.173.76:6000/riscv64/busybox] be632cf9bbb6: Pushed 1: digest: sha256:c109a60479ed80d63b17808a6f993228b6ace6255064160ea82adfa01c36deba size: 527 同理可以使用上面的curl命令测试当前私有仓库中的镜像列表。\n**其次，本次实验为了方便暂时使用HTTP，没有使用HTTPS,即带有TLS的方式。**并且本次实验的主机与开发板连在同一个子网（热点）下，后续我们会探究使用https的方式。\n所以，我们需要在本机与开发板上的docker的配置文件中同时添加\n{ \"insecure-registries\": [\":6000\"] } 然后，重启Dockersudo systemctl restart docker\n最后，来到RiscV开发板上拉取镜像docker pull :6000/riscv64/busybox:1，使用docker images进行检查发现其存在。\n这样我们就做到了从私有仓库拉取了一个我们在开发板上拉取不到的镜像到开发板上，这对于我们日后的集群搭建工作起到了关键的作用。\n融入k3s 由于k3s的容器运行时采用containerd这个轻量化的原生工具而不建议使用docker，所以我们需要针对k3s的registries.yaml文件进行修改,将镜像地址全部修改为我们上面搭建的私有仓库地址。\nmirrors: docker.io: endpoint: - \"http://192.168.173.76:6000\" # 这里后续我们要思考如何将静态的IP地址写成动态或者如何面对IP变化的情况 - \"docker.1ms.run\" # 保险起见设置一个其他的镜像仓库 rewrite: \"^riscv64/(.*)\": \"riscv64/$1\" \"192.168.173.76:6000\": endpoint: - \"http://192.168.173.76:6000\" 之后再使用crictl命令进行拉取时就可以直接crictl pull \u003c镜像名称\u003e,注意，由于我们的镜像前面都是标有仓库地址的，所以在crictl pull时直接使用镜像名称即可。\n常用操作 检查私有仓库中有哪些镜像。\ncurl -X GET http://192.168.173.76:6000/v2/_catalog # 结果如下 {\"repositories\":[\"busybox\",\"mac_riscv64/alpine\",\"riscv64/busybox\"]} 多平台构建适配的镜像 首先我们先抛开k3s,使用docker来进行移植适配操作，毕竟二者没有太大的差异，而docker可以提供更强大的性能。操作流程来自于Docker官方文档中的使用QEMU进行多平台镜像构建方法，这是官方文档中三种方法之一，希望后面我们可以尝试另外两种方法。\n这次我们要适配的镜像是redis和nginx，操作的主机是Macbook M2,使用Docker Desktop方便操作。\n提前配置 根据文档中的说法，我们需要先从classic镜像模式转换为containerd镜像模式，这在Docker Desktop上很好操作。\n操作流程 1.新建目录保存redis等中间件的源码，为其编写的Dockerfile，以及可能自定义的配置文件等文件。\nmkdir -p multi-platform 2.为了防止容器内部下载速度过慢，提前下载好redis的源码文件并解压到本机。\nwget https://download.redis.io/releases/redis-7.2.4.tar.gz tar -xzvf redis-7.2.4.tar.gz 3.编写Dockerfile文件，这里要注意我们使用alpine:latest作为基础镜像，这个镜像是我尝试的几个基础镜像中适配riscv最好的；同时需要替换默认的apk包镜像源，否则会遇到could not connect server问题；为了设置密码等一些自定义配置，我们自行编写一个配置文件到当前目录中redis.conf\n# 允许所有 IP 连接（不要绑定 127.0.0.1） bind 0.0.0.0 # 关闭 protected mode，否则外部无法连接 protected-mode no # 设置访问密码 requirepass password # 设置持久化 RDB 保存策略 save 900 1 save 300 10 save 60 10000 # RDB 文件名 dbfilename dump.rdb # RDB 文件保存路径 dir ./ # 日志级别 loglevel notice # 日志输出到标准输出（容器中建议这样） logfile \"\" # 后台运行，容器中不能开启 daemonize no # 最大连接数（可选） maxclients 10000 # 设置内存上限（可选） # maxmemory 256mb # maxmemory-policy allkeys-lru 这是Dockerfile:\nFROM alpine:latest # 替换默认 apk 源为镜像源 RUN sed -i 's#https\\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装 Redis 构建依赖 RUN apk update \u0026\u0026 apk add --no-cache build-base jemalloc-dev linux-headers # 拷贝 Redis 源码（假设 redis-7.2.4 文件夹和 Dockerfile 同目录） COPY redis-7.2.4 /redis WORKDIR /redis # 编译 Redis RUN make # 拷贝配置文件 COPY redis.conf /etc/redis.conf # 设置默认启动命令 CMD [\"src/redis-server\", \"/etc/redis.conf\"] 4.构建跨平台镜像。这一步本质上用到了buildx和QEMU，但是Docker Desktop为我们把这些底层都封装了起来，所以如果你是用Docker Desktop启动的Docker就不用在意;构建的同时如果遇到网络问题，请在参数中添加--network host命令，这会将宿主机网络作为容器内部网络，绕过网络限制。这个解决思路来自于stackoverflow\n# 这里我们直接-t打好了标签，不用再tag了 docker build --network host --platform=linux/riscv64 -f Dockerfile.redis -t 192.168.173.76:6000/riscv64/redis:1.1 . 5.推送到本地私有镜像仓库中，再从RiscV开发板中拉取该镜像,这一步和上面私有镜像仓库构建相同。\ndocker push 192.168.173.76:6000/riscv64/redis:1.1 # riscv下 docker pull 192.168.173.76:6000/riscv64/redis:1.1 6.运行redis-server容器，并在主机上运行redis-cli来测试\ndocker run -d --name redis-test -p 6379:6379 192.168.173.76:6000/riscv64/redis:1.1 # 主机运行 redis-cli -h -p 6379 \u003e AUTH password \u003e set foo bar \u003e get foo 得到最终结果\"bar\",证明我们成功了！\n同理我们也可以测试一下nginx镜像，下面是其简单的dockerfile\nFROM alpine:latest # 替换源（可选，也可以用清华源） RUN sed -i 's#dl-cdn.alpinelinux.org#mirrors.aliyun.com#g' /etc/apk/repositories \\ \u0026\u0026 apk update \u0026\u0026 apk add --no-cache nginx # 拷贝配置文件和静态资源 COPY nginx.conf /etc/nginx/nginx.conf COPY html/ /usr/share/nginx/html/ # 暴露端口 EXPOSE 80 # 启动 Nginx CMD [\"nginx\", \"-g\", \"daemon off;\"] 其中的nginx.conf\nworker_processes 1; events { worker_connections 1024; } http { include mime.types; default_type application/octet-stream; sendfile on; keepalive_timeout 65; server { listen 80; server_name localhost; location / { root /usr/share/nginx/html; index index.html index.htm; } } } 对应的html文件内容:\n\u003c!DOCTYPE html\u003e \u003chtml lang=\"en\"\u003e \u003chead\u003e \u003cmeta charset=\"UTF-8\"\u003e \u003ctitle\u003eWelcome to RISC-V Nginx!\u003c/title\u003e \u003cstyle\u003e body { font-family: \"Segoe UI\", sans-serif; background-color: #f4f4f4; text-align: center; padding-top: 100px; } h1 { color: #333; } p { color: #777; } .tag { display: inline-block; margin-top: 20px; padding: 8px 16px; background-color: #007acc; color: white; border-radius: 4px; font-weight: bold; } \u003c/style\u003e \u003c/head\u003e \u003cbody\u003e \u003ch1\u003e🚀 Hello from RISC-V Nginx!\u003c/h1\u003e \u003cp\u003eYour nginx server is up and running.\u003c/p\u003e \u003cdiv class=\"tag\"\u003eriscv64 / alpine / nginx\u003c/div\u003e \u003c/body\u003e \u003c/html\u003e 同理打包推送拉取。运行容器后，在我的mac主机上访问http://:8080可以看到上述html文件的效果\n优化镜像 当前redis镜像大小为146MB\n(base) lutao@MagicTech multi-platform % docker images | grep redis 192.168.173.76:6000/riscv64/redis 1.1 e8e1336c3ccf 13 hours ago 146MB 我们可以采用多阶段构建以精简最终镜像，使其不包含构建工具和源代码。\n# ---------- 构建阶段 ---------- FROM alpine:latest AS builder # 使用阿里源加速 RUN sed -i 's#http.*/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装构建依赖 RUN apk update \u0026\u0026 apk add --no-cache build-base jemalloc-dev linux-headers # 拷贝源码 COPY redis-7.2.4 /redis WORKDIR /redis # 编译 Redis RUN make # ---------- 运行阶段 ---------- FROM alpine:latest # 使用阿里源（可选） RUN sed -i 's#http.*/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 安装运行所需的 jemalloc RUN apk add --no-cache jemalloc # 拷贝 redis-server 和 redis-cli（如果你需要 CLI 工具） COPY --from=builder /redis/src/redis-server /usr/local/bin/ COPY --from=builder /redis/src/redis-cli /usr/local/bin/ # 拷贝配置文件 COPY redis.conf /etc/redis.conf # 设置默认启动命令 CMD [\"redis-server\", \"/etc/redis.conf\"] 最终构建过程花费293.4s\n最终镜像大小只有10.2MB，相较于之前的146MB缩小了许多。\n同时我们也可以构建一个只有redis-cli的镜像，对于融合进k3s集群中或许可以在server节点上使用redis-server镜像，然后在其他agent节点的pod中部署redis-cli对其进行访问。\n总结 搭建了一个简易的私有镜像仓库和移植了redis-server镜像到RiscV机器上，算是迈出了不错的一步，后面的工作主要围绕着如何将其更深入地融入到k3s中以及深入探究docker的多平台构建其底层原理展开。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "3600",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-04-02T19:10:13+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-04-02T19:10:13+08:00",
   "dateModified": "2025-04-02T19:10:13+08:00",
   "author":{
     "@type": "Person",
@@ -160,14 +160,14 @@ code.has-jax {
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"
+    "@id": "https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -185,7 +185,7 @@ code.has-jax {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -211,32 +211,32 @@ code.has-jax {
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -569,17 +569,17 @@ maxclients 10000
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/docker/">Docker</a></li>
-      <li><a href="http://localhost:1313/tags/macos/">Macos</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/docker/">Docker</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/macos/">Macos</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/riscv/">RiscV</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/017macos%E7%B3%BB%E7%BB%9F%E5%8D%87%E7%BA%A7%E4%B8%8Ehomebrew%E7%9A%84%E5%85%B3%E7%B3%BB/">
     <span class="title">« 上一页</span>
     <br>
     <span>DebugEP02——MacOs系统升级与Homebrew的关系</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/">
+  <a class="next" href="https://LTXWorld.github.io/posts/015tmux%E7%BB%88%E7%AB%AF%E7%BC%96%E8%BE%91%E5%99%A8/">
     <span class="title">下一页 »</span>
     <br>
     <span>Tmux终端窗口器</span>
@@ -775,6 +775,41 @@ maxclients 10000
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -785,12 +820,56 @@ maxclients 10000
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -811,6 +890,9 @@ maxclients 10000
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -818,9 +900,13 @@ maxclients 10000
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -829,6 +915,38 @@ maxclients 10000
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -858,6 +976,11 @@ maxclients 10000
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -880,6 +1003,7 @@ maxclients 10000
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -890,14 +1014,26 @@ maxclients 10000
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -982,29 +1118,56 @@ maxclients 10000
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -20,16 +20,16 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
 可以发现在 kube-system 命名空间下的这些 Pod 还是处于 ImagePullBackOff 阶段，只有我们上次解决的 CoreDNS 是 Running，
 只是还存在网络问题没有解决,所以并没有 Ready.">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/">
 <noscript>
     <style>
         #theme-toggle,
@@ -107,7 +107,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="K3sEP05——开发板上k3s存在的问题02_local-path-provisioner">
   <meta property="og:description" content="引子 接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。
@@ -120,9 +120,9 @@ kubectl get pods -A -o wide NAMESPACE NAME READY STATUS RESTARTS AGE IP NODE NOM
     <meta property="article:tag" content="K3s">
     <meta property="article:tag" content="Local-Storage">
     <meta property="article:tag" content="RiscV">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="K3sEP05——开发板上k3s存在的问题02_local-path-provisioner">
 <meta name="twitter:description" content="引子
 接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。
@@ -147,13 +147,13 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "K3sEP05——开发板上k3s存在的问题02_local-path-provisioner",
-      "item": "http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/"
+      "item": "https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/"
     }
   ]
 }
@@ -171,7 +171,7 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
   "articleBody": "引子 接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。\nkubectl get pods -A -o wide NAMESPACE NAME READY STATUS RESTARTS AGE IP NODE NOMINATED NODE READINESS GATES default redis-696579c6c8-v2wns 1/1 Running 4 (4m10s ago) 7d6h 10.42.0.17 openeuler-riscv64 kube-system helm-install-traefik-pv4hv 0/1 ImagePullBackOff 0 14d 10.42.0.20 openeuler-riscv64 kube-system local-path-provisioner-7b7dc8d6f5-48jjf 0/1 ImagePullBackOff 0 14d 10.42.0.19 openeuler-riscv64 kube-system helm-install-traefik-crd-ktfth 0/1 ImagePullBackOff 0 14d 10.42.0.21 openeuler-riscv64 kube-system metrics-server-668d979685-jthzj 0/1 ImagePullBackOff 0 14d 10.42.0.22 openeuler-riscv64 kube-system coredns-5f8bb7cf9f-5h5kj 0/1 Running 0 11s 10.42.0.36 openeuler-riscv64 可以发现在 kube-system 命名空间下的这些 Pod 还是处于 ImagePullBackOff 阶段，只有我们上次解决的 CoreDNS 是 Running， 只是还存在网络问题没有解决,所以并没有 Ready.\n所以这次我们来解决其他 local-path-provisioner 的问题。\n什么是local-path-provisioner 官方的介绍是:Dynamically provisioning persistent local storage with Kubernetes\n众所周知，如果我们起一个 Pod，里面的容器一定是需要挂载外部的存储目录的，否则容器一旦销毁那么相关的数据也不在了，无法做到持久化存储，而挂载外部存储目录本质上要求 PVC——持久化卷声明，举例说明：\nvolumeMounts: - mountPath: /data name: redis-storage volumes: - name: redis-storage persistentVolumeClaim: claimName: redis-data 这里我们声明了具体的 pvc persistentVolumeClaim:claimName: redis-data,这是一个真正的磁盘路径，见下方 PVC 的声明写法。\napiVersion: v1 kind: PersistentVolumeClaim metadata: name: redis-data spec: accessModes: - ReadWriteOnce resources: requests: storage: 1Gi 一旦写了 PVC，local-path-provisioner 就会起作用：它自动为你的 PVC 创建一个目录, 如 /opt/local-path-provisioner/pvc-xxx/,将此目录映射给容器作为持久化的目录。 所以，这个镜像的修复是至关重要的一步，没有它我们就无法进行数据的持久化。\n修复问题 与CoreDNS不同的是，这次在官方的 release 界面并没有发现其针对于riscv架构的二进制文件，所以我们得尝试自己构建了。\n(后续更新,发现其已经支持了 RiscV 架构,只是没有跑通流水线部署,但是代码中已经 Commit 了,所以可以直接使用了)\n拉取到其源代码之后在我的 mac 本机进行构建\n1.构建自定义镜像 git clone git@github.com:rancher/local-path-provisioner.git cd local-path-provisioner GOOS=linux GOARCH=riscv64 CGO_ENABLED=0 go build -o local-path-provisioner 构建成功，这证明其中并没有不适配riscv的地方（例如coredns中构建时出现过的syscall不支持问题）得到一个local-path-provisioner的二进制文件，我们可以将这个二进制文件封装在一个Dockerfile中构建其自定义的镜像来代替默认的镜像。\ndockerfile如下:注意拷贝的路径选择为/usr/bin\nFROM alpine:latest # 使用阿里源（可选） RUN sed -i 's#https\\?://dl-cdn.alpinelinux.org/alpine#http://mirrors.aliyun.com/alpine#g' /etc/apk/repositories # 拷贝编译好的可执行文件 COPY local-path-provisioner-riscv64 /usr/bin/local-path-provisioner # 启动命令 ENTRYPOINT [\"local-path-provisioner\"] 如果不使用/usr/bin的话会遇到问题:\nEvents: Type Reason Age From Message ---- ------ ---- ---- ------- Normal Scheduled 79s default-scheduler Successfully assigned kube-system/local-path-provisioner-5cdfcc7d9c-hpqnm to openeuler-riscv64 Normal Pulled 35s (x4 over 79s) kubelet Container image \"ltx/local-path-provisioner:v0.0.21\" already present on machine Normal Created 35s (x4 over 79s) kubelet Created container local-path-provisioner Warning Failed 35s (x4 over 79s) kubelet Error: failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: exec: \"local-path-provisioner\": executable file not found in $PATH: unknown Warning BackOff 9s (x7 over 78s) kubelet Back-off restarting failed container 构建镜像并推送至本地的私有镜像仓库。\ndocker build --network host --platform=linux/riscv64 -f Dockerfile.local-path-provisioner-riscv64 -t 192.168.173.76:6000/riscv64/local-path-provisioner:1.1 . docker push 192.168.173.76:6000/riscv64/local-path-provisioner:1.1 2.拉取镜像修改配置文件 在 riscv 开发板进行拉取镜像并打标签至默认 local-storage 中指明的镜像名称。\ncrictl pull riscv64/local-path-provisioner:1.1 ctr -n k8s.io images tag docker.io/riscv64/local-path-provisioner:1.1 docker.io/rancher/local-path-provisioner:v.0.0.21 可以使用 kubectl -n kube-system edit deployment local-path-provisioner 检查其Deployment文件;\n或者与coreDNS相同,进入 /var/lib/rancher/k3s/server/manifests 目录下查看其 local-storage.yaml 文件. 这是local-path-provisioner的部署文件。\n如果未能识别到本地镜像，根据这个回答，我们只要修改前缀不是rancher的就可以识别到本地的镜像\n接下来与 coreDNS 相同，这是系统级别的镜像，为了防止每次重启都被覆盖，需要在k3s启动命令中添加--disable标签. 因为我们使用systemctl来管理k3s，所以需要修改/etc/systemd/system/k3s.service\n在此之前我们要先拷贝一份manifests目录下的yaml文件，修改为我们自定义的custom-local-storage.yaml文件，让之后的k3s识别到这个文件进行容器的构建。\ncp local-storage.yaml custom-local-storage.yaml 由于我们之前已经把标签打成了与默认 yaml 文件中相同名称的镜像，所以这个 custom 文件中不需要修改什么东西。\n回到刚才，继续修改启动命令。\nvi /etc/systemd/system/k3s.service # 在ExecStart中添加 --disable ExecStart=/usr/local/bin/k3s \\ server \\ --disable=local-storage,coredns \\ 这一方法来源于官方文档，或者这篇文章，加上这个标签会使k3s在启动时选择我们设定的自定义yaml文件并且删除默认的yaml文件与构建的容器。\n你还可以选择文章中的方法二，在manifests目录下添加 local-storage.yaml.skip 文件，这样会让k3s跳过某个容器的构建，但我没有测试其是否会去选择我们自定义的配置文件。\n接下来进行删除，检测。最好重启一下k3s,systemctl restart k3s\nkubectl delete pod -n kube-system -l app=local-path-provisioner kubectl get pods -n kube-system -l app=local-path-provisioner kubectl describe pod -n kube-system 总结 经历了 coreDNS 和 local-path-provisioner 这两个系统级别的镜像之后，我开始反思整个适配过程，我觉得应该先去看看如何从头适配，即使 OREV 的兴趣小组先进行了一个基础适配，使得我们可以先下载到 k3s。\ngoogle 后发现在官方的ISSUE中有这个适配问题,其中提到一个巨大挑战是rancher-mirrored 镜像中缺乏对 riscv 平台的支持。\n这也正是我们之前处理的那些镜像，默认是拉取的 rancher 官方维护的镜像副本 rancher-mirrored,我们也对这些镜像做了适配。(后来知道可以修改默认镜像仓库,在启动命令时加上私有的仓库即可)\nWhile we could simply add this to the arch list, this would change the multi-arch digest for any tags that we currently mirror that have this platform available.\n下面也提到虽然可以简单地将 riscv 添加到镜像的架构列表中，但会导致当前镜像的多架构 digest 发生变化。\n镜像的 digest 是镜像的唯一标识，一个哈希值 sha256:xxx 我们平时用的镜像名称，其实就是 tag，指向的是一个多架构的manifest,这个 manifest 会列出所有对应架构的镜像(见下方图像) manifest list 本身是一个 JSON 文件,他也有 digest 标识;如果添加一个 riscv 字段进去，整个 JSON 内容变化导致 digest 变化 很多生产系统,CI/CD 都依赖这个稳定可验证的 digest,这就导致牵一发而动全身, 会重新拉取镜像，打破缓存；某些系统会误以为内容被篡改或更新了，造成意外后果;不利于镜像的同步和管理 更愿意的做法是:不改变现有版本(及之前版本)的镜像 manifest,在新的版本中添加对新架构的支持. We should figure out how to add this platform to only new tags, in a way that is minimally disruptive to the list maintenance process, and can be reused when adding new platforms in the future.\n这是他们提出的解决方法，只将 RISC-V 平台添加到**新标签（新的 manifest,新的镜像）**中，这样对镜像列表的维护干扰最小。\n为了保证镜像的稳定性，K3s 团队不修改已有镜像的多架构配置，而是只给新添加的镜像构建 RISC-V 版本，靠 git blame + 时间区间控制，确保 digest 不变且流程可复用。\n但是后续的讨论就围绕着该如何支持新的架构，官方开发者更倾向于对新的镜像加入新的架构而不去改动老的镜像，这是很好理解的策略。\n接下来我们将探索其他系统级别镜像,例如 Helm,Traefik\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n后续更新 可以发现 rancher 官方提供了关于 local-path-provisioner 在 riscv 上的镜像.\n所以大佬在 commit 中只是修改了其版本到29.\n故我们只需要将其拉取到本地并推送到私有镜像仓库即可.\n",
   "wordCount" : "2675",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-04-15T16:14:08+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-04-15T16:14:08+08:00",
   "dateModified": "2025-04-15T16:14:08+08:00",
   "author":{
     "@type": "Person",
@@ -179,14 +179,14 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/"
+    "@id": "https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -204,7 +204,7 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -230,32 +230,32 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -429,17 +429,17 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
-      <li><a href="http://localhost:1313/tags/local-storage/">Local-Storage</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/k3s/">K3s</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/local-storage/">Local-Storage</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/riscv/">RiscV</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/021%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep02%E6%B6%88%E8%B4%B9%E8%A7%82%E4%B8%8E%E9%98%85%E8%AF%BB/">
     <span class="title">« 上一页</span>
     <br>
     <span>LT的奇思乱想EP02精气神——消费观与阅读</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
+  <a class="next" href="https://LTXWorld.github.io/posts/019golangep03_slice%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86%E5%8F%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">
     <span class="title">下一页 »</span>
     <br>
     <span>GolangEP03_slice底层原理及注意事项</span>
@@ -635,6 +635,41 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -645,12 +680,56 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -671,6 +750,9 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -678,9 +760,13 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -689,6 +775,38 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -718,6 +836,11 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -740,6 +863,7 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -750,14 +874,26 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -842,29 +978,56 @@ kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running         
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -11,16 +11,16 @@
 在使用 Go 语言开发过程中，我发现经常会遇到想使用的项目的 Go 版本与当前本机的 Go 版本不一致的情况，通常是本地的版本较低。
 所以每次都需要去手动更新版本，而手动更新的过程是比较繁琐的，需要下载新版本并替换旧版本（听起来也没什么是吧）但是 Go 版本的更新还算是比较频繁的，特别是各种小版本。">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
 <noscript>
     <style>
         #theme-toggle,
@@ -98,7 +98,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="Golang版本更新工具">
   <meta property="og:description" content="引子 在使用 Go 语言开发过程中，我发现经常会遇到想使用的项目的 Go 版本与当前本机的 Go 版本不一致的情况，通常是本地的版本较低。
@@ -110,9 +110,9 @@ code.has-jax {
     <meta property="article:modified_time" content="2025-07-11T11:40:27+08:00">
     <meta property="article:tag" content="Golang">
     <meta property="article:tag" content="版本管理">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="Golang版本更新工具">
 <meta name="twitter:description" content="引子
 在使用 Go 语言开发过程中，我发现经常会遇到想使用的项目的 Go 版本与当前本机的 Go 版本不一致的情况，通常是本地的版本较低。
@@ -128,13 +128,13 @@ code.has-jax {
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "Golang版本更新工具",
-      "item": "http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/"
+      "item": "https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/"
     }
   ]
 }
@@ -152,7 +152,7 @@ code.has-jax {
   "articleBody": "引子 在使用 Go 语言开发过程中，我发现经常会遇到想使用的项目的 Go 版本与当前本机的 Go 版本不一致的情况，通常是本地的版本较低。\n所以每次都需要去手动更新版本，而手动更新的过程是比较繁琐的，需要下载新版本并替换旧版本（听起来也没什么是吧）但是 Go 版本的更新还算是比较频繁的，特别是各种小版本。\n所以我寻思着一定有什么自动化的更新或者可以管理本地的 Go 版本的工具吧，于是在浏览 Reddit 的过程中找到了 gvm 和 g 这两个 Go 版本工具。\n在进入 gvm 之前，我想了想，自己的 Go 是怎么安装的呢？使用命令 go env | grep GOROOT 查看路径发现我是通过 Homebrew 安装的。\n所以执行 brew upgrade go应该是可行的，但是怎么说呢，速度感人啊,一共花了 41s\n故之后的 gvm 测试我决定拿到开发板上进行测试，之前我们在开发板环境搭建中不就遇到了 Golang 版本的切换问题吗？🧐\ngvm 听名字有点像 Java 中的 jvm 不是吗？Anyway,我使用开发板进行这个测试。\n安装\n# 安装bison sudo apt-get install bison # 安装gvm bash \u003c \u003c(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer) Cloning from https://github.com/moovweb/gvm.git to /home/debian/.gvm Created profile for existing install of Go at /usr/local/go Installed GVM v1.0.22 Please restart your terminal session or to get started right away run `source /home/debian/.gvm/scripts/gvm` 测试命令\ngvm list all # 安装1.24.5 gvm install 1.24.5 额，发现其下载速度感人，最后下载还显示错误ERROR: Unrecognized Go version\ng 安装时就遇到问题，我发现其在 riscv64 架构上并不适配。\ncurl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash [1/3] Downloading https://github.com/voidint/g/releases/download/v1.8.0/g1.8.0.linux-.tar.gz 可以看到 linux- 后面缺了一块，在其 release 中也发现暂未支持 RiscV 架构，但是用 Go 写的，那自己编译试试呗。\n手动编译适配 其实对于 Golang 项目，其对于 RiscV 架构的适配是比较简单的，一方面因为 RiscV 架构比较新，没人用啊，哈哈；另一方面 Go 本身是适配 RiscV 架构的，所以这并不是一件难事。\n先手动编译一下\ngit clone https://github.com/voidint/g.git cd g GOOS=linux GOARCH=riscv64 go build 这会编译出一个 g 二进制文件，接下来将其移动到 bin 中\nmkdir -p ~/.g/bin mv g ~/.g/bin/g export PATH=\"$HOME/.g/bin:$PATH\" source ~/.bashrc 测试使用，注意使用之前先卸载掉之前已经安装好的 Go,或者修改 bashrc 中关于 Go 的路径设置。\ng ls-remote g install 1.24.5 Oh,居然没有遇到架构问题？damn，成功了，看来这两个 Go 系统管理系统在安装逻辑这里有区别哦。\ng install 1.24.5 Downloading 100% [===============] (76/76 MB, 9.0 MB/s) Computing checksum with SHA256 Checksums matched Now using go1.24.5 linux/riscv64 可以发现 go 文件夹安装到了 ~/.g 路径下,所以我们来修改 bashrc 中的路径。\n# g: Go 版本管理器 export PATH=\"$HOME/.g/bin:$PATH\" # 设置 g 当前版本的 GOROOT 和 PATH export GOROOT=\"$HOME/.g/go\" export PATH=\"$GOROOT/bin:$PATH\" # 设置 GOPATH（你的 go mod 或 go install 会安装到这里） export GOPATH=\"$HOME/go\" export PATH=\"$GOPATH/bin:$PATH\" 至此 g 可以在开发板上顺利切换版本。\n# 列出当前已安装的版本 g ls * 1.24.2 1.24.5 # 使用某个已经安装的具体版本 g use 1.24.5 Now using go1.24.5 linux/riscv64 不同点 g install 流程 首先来到 g 的源码中关于 install 的部分，大致梳理一遍下载流程。\n获取要下载的版本名称 构建 NewCollector 根据 url 选择构建何种的 Collector 将 url 预解析为 pURL,内容更加丰富，带有 Host,Path 等字段 对 url 发送 Get 请求，使用 goquery 读取响应的 HTML 获取所有的版本信息保存在 items 中 根据版本名称，os，arch 信息找到 items 中对应的信息 拼凑出将要安装到 g 的路径,例如 /Users/lutao/.g/versions/1.22.5，并检查其是否已存在 从 items中找到符合 ArchiveKind, os, arch 的包文件(可能不止一个) checkSum 拼接 fileName 作为要从远程下载的文件名称 /Users/lutao/.g/downloads/go1.22.5.darwin-arm64.tar.gz 下载return httppkg.Download(pkg.URL, dst, os.O_CREATE|os.O_WRONLY, 0644, true) 解压下载的文件 切换版本 最终在~/.g的目录下会有\ndownloads：不同版本的 go 源文件 versions:解压源文件得到的文件 go：软链接，指向versions中的某个版本的文件 gvm install 流程 与 g 不同的是，gvm 是以一个完全的 shell 脚本运行的，但是底层逻辑差不多都是从官方仓库拉取源码进行安装，设置路径，文件目录等。\n在download_binary的部分对架构和 os 进行了判断，显然其中没有 RiscV 架构，所以我们之前安装失败。\n向g项目学习 因为自己做的毕设可能也要开发命令行工具，所以 g 项目对我而言吸引力还是蛮大的。\n我顺便看了看 ls,ls_remote 等功能是如何实现的，下面简单谈谈吧。\nls 本质是os.ReadDir()方法的运用，读出的文件夹格式如下\nparent name typ info 接着利用 name 构造 version 结构体：namej,sv,pkgs,并按升序排序。\nVersion represents a Go language distribution version.\n调用 render，根据传来的版本信息打印出结果。值得学习的是，color.New().Fprintf()这样的着色式打印信息。\n做出适配贡献 着眼于 Makefile,打开后发现其对于 linux 的构建规则中没有 riscv64，所以我们进行添加\nbuild-linux: build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x build-linux-riscv64 build-linux-riscv64: GOOS=linux GOARCH=riscv64 $(GO) build $(GO_FLAGS) -o bin/linux-riscv64/g 同时，看到其安装方式是通过安装install.sh脚本实现，所以也要修改这个脚本。\n原本脚本中是这样的，没有 riscv 架构，所以会出现最开始那种情况 linux- 缺了一块关于架构的。\nfunction get_arch() { a=$(uname -m) case ${a} in \"x86_64\" | \"amd64\") echo \"amd64\" ;; \"i386\" | \"i486\" | \"i586\") echo \"386\" ;; \"aarch64\" | \"arm64\") echo \"arm64\" ;; \"armv6l\" | \"armv7l\") echo \"arm\" ;; \"s390x\") echo \"s390x\" ;; *) echo ${NIL} ;; esac } 添加关于 riscv64 的字段即可。\n最后我们将其汇总为一个 Pull Request 提交到了仓库中。\n总结 Golang 的版本更新需要一个管理工具，反观 Java，在学习的时候好像很少有人提到其版本的更新，听到最多的是 Java 使用的版本要不然是 Java8 要不然就是 17，选一个很稳定的一直用。\nJava 的版本工具最常用的是 SDKMAN（AI 回答）。\n最终我们选择了 g 这个命令行项目作为我在 RiscV 开发板上的 Go 版本管理工具，并且这个项目有很多关于写命令行操作中值得学习的地方，最后我们提出了相应的 PR 🫡\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "2020",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-07-11T11:40:27+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-07-11T11:40:27+08:00",
   "dateModified": "2025-07-11T11:40:27+08:00",
   "author":{
     "@type": "Person",
@@ -160,14 +160,14 @@ code.has-jax {
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/"
+    "@id": "https://LTXWorld.github.io/posts/042golang%E7%89%88%E6%9C%AC%E6%9B%B4%E6%96%B0/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -185,7 +185,7 @@ code.has-jax {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -211,32 +211,32 @@ code.has-jax {
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -453,16 +453,16 @@ code.has-jax {
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/golang/">Golang</a></li>
-      <li><a href="http://localhost:1313/tags/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/">版本管理</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/golang/">Golang</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86/">版本管理</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/">
     <span class="title">« 上一页</span>
     <br>
     <span>Git——真是让我欢喜让我忧</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/041traefik/">
+  <a class="next" href="https://LTXWorld.github.io/posts/041traefik/">
     <span class="title">下一页 »</span>
     <br>
     <span>K3sEP13——遇到的Traedfik问题</span>
@@ -658,6 +658,41 @@ code.has-jax {
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -668,12 +703,56 @@ code.has-jax {
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -694,6 +773,9 @@ code.has-jax {
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -701,9 +783,13 @@ code.has-jax {
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -712,6 +798,38 @@ code.has-jax {
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -741,6 +859,11 @@ code.has-jax {
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -763,6 +886,7 @@ code.has-jax {
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -773,14 +897,26 @@ code.has-jax {
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -865,29 +1001,56 @@ code.has-jax {
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

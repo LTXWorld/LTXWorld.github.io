@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -12,16 +12,16 @@
 本机: macos M2
 虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
 <noscript>
     <style>
         #theme-toggle,
@@ -99,7 +99,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="K3sEP01——模拟Kine集群部署">
   <meta property="og:description" content="本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）
@@ -111,9 +111,9 @@ code.has-jax {
     <meta property="article:modified_time" content="2025-03-26T18:51:27+08:00">
     <meta property="article:tag" content="RiscV">
     <meta property="article:tag" content="实验">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="K3sEP01——模拟Kine集群部署">
 <meta name="twitter:description" content="本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）
 实验环境
@@ -130,13 +130,13 @@ code.has-jax {
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "K3sEP01——模拟Kine集群部署",
-      "item": "http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"
+      "item": "https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"
     }
   ]
 }
@@ -154,7 +154,7 @@ code.has-jax {
   "articleBody": "本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）\n实验环境 本机: macos M2 虚拟机: 采用Multipass这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。\n一台虚拟机Agent01作为数据库的后端服务器 1G/8G 一台虚拟机Server作为Server 2G/8G 一台虚拟机Agent02作为Agent 1G/4G 操作系统: Ubuntu22.04\n由于是实验环境，我们全部的操作直接在root权限下进行，如果接下来某些操作遇到权限问题请添加 sudo。\n那让我们直接摇滚进来吧！\n部署 以下步骤来自于AI的指导并成功部署运行。\nMYSQL节点 由于k3s的轻量化要求，使用了kine作为存储方案，旨在可以不使用etcd进行集群管理，可以外置其他数据库，例如,sqlLite,mysql,postgresql等。\n数据库里面存放了原本etcd会存放的信息，例如各个节点的信息。\napt update apt install mysql-server -y mysql -u root -p 配置数据库\ncreate database k3s; create user 'k3s' @ '%' identified by 'yourpassword'; # 替换为自己设置的密码 grant all privileges on k3s.* to 'k3s@'%''; flush privileges; 修改Mysql配置文件允许远程连接\nsed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/mysql.conf.d/mysqld.cnf systemctl restart mysql 最后，使用hostname -I记录一下这台虚拟机的IP地址，方便后续连接操作。\n使用kine部署k3s server 使用--datastore-endpoint参数指定外接数据库的地址。\ncurl -sfL https://get.k3s.io | sh -s - server \\ --datastore-endpoint=\"mysql://k3s:yourpassword@tcp(yourMysqlIP:3306)/k3s\" # 替换为自己的密码和上一步的IP地址 ps:这个方法可能会遇到网络问题，我们还可以采用离线的方式安装k3s，详情请见另一篇文章\n检查Server的状态\nsystemctl status k3s kubectl get nodes 同时可以回到数据库节点检查表信息。\nuse k3s; show tables; select * from kine limit5 /G; 可以发现有kine这个表。\n部署Agent节点 首先从Server中获取Token，cat /var/lib/rancher/k3s/server/node-token\n将agent加入集群中由Server管理\ncurl -sfL https://get.k3s.io | K3S_URL=\"https://yourServ erIP:6443\" K3S_TOKEN=\"K10eb92a0a28e01cdcb43aebadf54e4c647274509bb903266f8b5753acce221234d::server:ecda1824570feac881c9b27b98584c76\" sh - 验证集群功能 在Server上执行\nkubectl get nodes -o wide 可以看到Server和Agent节点都存在。\n到这里就初步部署成功。\n添加镜像代理 如果我们使用registry模式，即从docker.io,dockerhub上拉取镜像， 我们需要同时在Server和Agent上添加 /etc/rancher/k3s/registries.yaml文件\n在其中添加如下配置，以使代理的方式拉取镜像。其中镜像地址填入 endpoint 下方，目前可用的镜像地址\nmirrors: docker.io: endpoint: - \"https://docker.1ms.run\" 可能出现的问题 在运行过程中如果你的本机IP地址变化，可能会出现数据库Mysql的IP封禁问题\n使用下面命令查看问题所在\nsudo journalctl -u k3s --no-pager --lines=50 可以发现Error 1129: Host '192.168.64.2' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'\"，由于太多次连接Mysql失败触发Mysql的安全机制，封禁了k3s Server的IP地址。\n所以我们需要从数据库层面解禁。\nmysql\u003e FLUSH HOSTS; Query OK, 0 rows affected, 1 warning (0.03 sec) mysql\u003e SELECT host FROM performance_schema.host_cache WHERE host='192.168.64.2'; Empty set (0.06 sec) 之后便可以正常运行了。\n总结 后续文章准备探索离线安装k3s以及在open-Rv这个组合上一系列的k3s适配工作流程展示。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "1249",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-03-26T18:51:27+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-03-26T18:51:27+08:00",
   "dateModified": "2025-03-26T18:51:27+08:00",
   "author":{
     "@type": "Person",
@@ -162,14 +162,14 @@ code.has-jax {
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"
+    "@id": "https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -187,7 +187,7 @@ code.has-jax {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -213,32 +213,32 @@ code.has-jax {
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -375,16 +375,16 @@ code.has-jax {
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
-      <li><a href="http://localhost:1313/tags/%E5%AE%9E%E9%AA%8C/">实验</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/riscv/">RiscV</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E5%AE%9E%E9%AA%8C/">实验</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/">
     <span class="title">« 上一页</span>
     <br>
     <span>K3sEP02——解决RiscV开发板镜像无法拉取问题</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/">
+  <a class="next" href="https://LTXWorld.github.io/posts/012%E5%A5%87%E6%80%9D%E4%B9%B1%E6%83%B3ep01/">
     <span class="title">下一页 »</span>
     <br>
     <span>LT的奇思乱想Ep01</span>
@@ -580,6 +580,41 @@ code.has-jax {
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -590,12 +625,56 @@ code.has-jax {
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -616,6 +695,9 @@ code.has-jax {
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -623,9 +705,13 @@ code.has-jax {
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -634,6 +720,38 @@ code.has-jax {
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -663,6 +781,11 @@ code.has-jax {
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -685,6 +808,7 @@ code.has-jax {
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -695,14 +819,26 @@ code.has-jax {
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -787,29 +923,56 @@ code.has-jax {
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -19,16 +19,16 @@ cd dist/artifacts
 gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
 <noscript>
     <style>
         #theme-toggle,
@@ -106,7 +106,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="K3sEP08——make后会发生什么?从源码解析构建过程">
   <meta property="og:description" content="引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令
@@ -119,9 +119,9 @@ code.has-jax {
     <meta property="article:tag" content="K3s">
     <meta property="article:tag" content="源码">
     <meta property="article:tag" content="RiscV">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="K3sEP08——make后会发生什么?从源码解析构建过程">
 <meta name="twitter:description" content="引子
 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库.
@@ -145,13 +145,13 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "K3sEP08——make后会发生什么?从源码解析构建过程",
-      "item": "http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"
+      "item": "https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"
     }
   ]
 }
@@ -169,7 +169,7 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
   "articleBody": "引子 从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此仓库. 发现其构建 riscv 采用了以下命令\n# Build rm -rf bin dist build ARCH=riscv64 SKIP_IMAGE=true SKIP_VALIDATE=true SKIP_AIRGAP=true make # Split cd dist/artifacts gzip \u003c k3s-riscv64 | split -b 20M - k3s-riscv64.gz. 在此 pull request 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.\n所以这篇文章中我们要做的是,弄明白它的构建过程,包括其 Makefile 与 Dockerfile.dapper\nMakefile 源码 分段解释此 Makefile\nTARGETS := $(shell ls scripts | grep -v \\\\.sh) GO_FILES ?= $$(find . -name '*.go' | grep -v generated) 通过 shell 命令列出 scripts 目录下所有不以 .sh 结尾的文件 查找项目中所有 .go 文件,排除 generated目录 .dapper: @echo Downloading dapper @curl -sL https://releases.rancher.com/dapper/v0.6.0/dapper-$$(uname -s)-$$(uname -m) \u003e .dapper.tmp @@chmod +x .dapper.tmp @./.dapper.tmp -v @mv .dapper.tmp .dapper 下载 dapper 工具,根据系统类型下载对应版本 添加执行权限并验证版本 重命名为 .dapper $(TARGETS): .dapper DAPPER_DEBUG=1 DAPPER_DOCKER_BUILD_ARGS=\"--network host\" ./.dapper $@ 为上面不以 .sh 结尾的文件创建目标 每个目标依赖 .dapper 执行时使用 dapper 运行脚本 .PHONY: deps deps: go mod tidy 清理整理 go 依赖 release: ./scripts/release.sh 执行发布脚本 .DEFAULT_GOAL := ci .PHONY: $(TARGETS) build/data: mkdir -p $@ 设置默认目标为 ci 声明伪目标 创建 build/data 目录 .PHONY: binary-size-check binary-size-check: scripts/binary_size_check.sh .PHONY: image-scan image-scan: scripts/image_scan.sh $(IMAGE) format: gofmt -s -l -w $(GO_FILES) goimports -w $(GO_FILES) 检查二进制文件大小 扫描指定的镜像 格式化 Go 代码 .PHONY: local local: DOCKER_BUILDKIT=1 docker build \\ --build-arg=\"REPO TAG GITHUB_TOKEN GOLANG GOCOVER DEBUG\" \\ -t k3s-local -f Dockerfile.local --output=. . 使用Docker BuildKit 构建本地开发镜像 可以发现,我们可以在 make 后跟local,format,build/data,release这些参数,执行不同的运行逻辑.\n执行过程 当我们执行 make 时,默认执行 make ci,而 ci 是 Target 中的目标, 正是 script/ 下的一个文件,内容如下\n#!/bin/bash set -e SCRIPT_DIR=$(dirname $0) pushd $SCRIPT_DIR ./download ./validate ./build ./package popd $SCRIPT_DIR/binary_size_check.sh 又因为 Target 依赖于 .dapper,故如果 .dapper不存在,它会执行 .dapper 的逻辑(下载dapper)\n最终回到 DAPPER_DEBUG=1 DAPPER_DOCKER_BUILD_ARGS=\"--network host\" ./.dapper ci, 关于dapper我们下面来讲.\nDockerfile.dapper 什么是 dapper Dapper is a tool to wrap any existing build tool in an consistent environment. This allows people to build your software from source or modify it without worrying about setting up a build environment. The approach is very simple and taken from a common pattern that has adopted by many open source projects. Create a file called Dockerfile.dapper in the root of your repository. Dapper will build that Dockerfile and then execute a container based off of the resulting image. Dapper will also copy in source files and copy out resulting artifacts or will use bind mounting if you choose.\n.dapper 是一个可执行的构建工具，它会运行一个构建容器，然后在容器里执行 scripts/ci; 而看到上面 ci 文件中的内容会发现,其执行了 download、validate、build、package 这几个脚本.\n这不就和之前我们在 issue 中看到的情况有点像, 他直接自己本地执行的 download,build,package-cli\ndapper 源码 分段解释一下 Dockerfile.dapper 的源码\nARG GOLANG=golang:1.23.3-alpine3.20 FROM ${GOLANG} 基于此镜像作为基础镜像 # Set proxy environment variables ARG http_proxy ARG https_proxy ARG no_proxy ENV http_proxy=${http_proxy} \\ https_proxy=${https_proxy} \\ no_proxy=${no_proxy} 传递代理设置,这里可能会引发网络问题,除非你可以保证代理地址可以从容器内访问 RUN apk -U --no-cache add \\ bash git gcc musl-dev docker vim less file curl wget ca-certificates jq linux-headers \\ zlib-dev tar zip squashfs-tools npm coreutils python3 py3-pip openssl-dev libffi-dev libseccomp \\ libseccomp-dev libseccomp-static make libuv-static sqlite-dev sqlite-static libselinux \\ libselinux-dev zlib-dev zlib-static zstd pigz alpine-sdk binutils-gold btrfs-progs-dev \\ btrfs-progs-static gawk yq pipx \\ \u0026\u0026 [ \"$(go env GOARCH)\" = \"amd64\" ] \u0026\u0026 apk -U --no-cache add mingw-w64-gcc || true 安装编译和工具链所需的依赖 ENV TRIVY_VERSION=\"0.56.2\" RUN case \"$(go env GOARCH)\" in \\ arm64) TRIVY_ARCH=\"ARM64\" ;; \\ amd64) TRIVY_ARCH=\"64bit\" ;; \\ s390x) TRIVY_ARCH=\"s390x\" ;; \\ *) TRIVY_ARCH=\"\" ;; \\ esac RUN if [ -n \"${TRIVY_ARCH}\" ]; then \\ wget --no-verbose \"https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz\" \\ \u0026\u0026 tar -zxvf \"trivy_${TRIVY_VERSION}_Linux-${TRIVY_ARCH}.tar.gz\" \\ \u0026\u0026 mv trivy /usr/local/bin; \\ fi 安装 Trivy 安全扫描工具 RUN GOPROXY=https://goproxy.cn,direct go install golang.org/x/tools/cmd/goimports@latest RUN rm -rf /go/src /go/pkg RUN if [ \"$(go env GOARCH)\" = \"amd64\" ]; then \\ curl -sL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.55.2; \\ fi ARG SELINUX=true ENV SELINUX=${SELINUX} 安装 goimports 工具 清理缓存 仅对于 amd64 进行静态分析 控制是否启用 SELinux ENV DAPPER_RUN_ARGS=\"--privileged -v k3s-cache:/go/src/github.com/k3s-io/k3s/.cache -v trivy-cache:/root/.cache/trivy\" \\ DAPPER_ENV=\"REPO TAG DRONE_TAG IMAGE_NAME SKIP_VALIDATE SKIP_IMAGE SKIP_AIRGAP AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID GITHUB_TOKEN GOLANG GOCOVER DEBUG\" \\ DAPPER_SOURCE=\"/go/src/github.com/k3s-io/k3s/\" \\ DAPPER_OUTPUT=\"./bin ./dist ./build/out ./build/static ./pkg/static ./pkg/deploy\" \\ DAPPER_DOCKER_SOCKET=true \\ CROSS=true \\ STATIC_BUILD=true 设置 Dapper 运行时配置 ENV HOME=${DAPPER_SOURCE} WORKDIR ${DAPPER_SOURCE} ENTRYPOINT [\"./scripts/entry.sh\"] CMD [\"ci\"] 设置工作目录为源码中的路径 执行 ./scripts/entry.sh ci,启动构建流程 entry.sh #!/bin/bash set -e mkdir -p bin dist if [ -e ./scripts/$1 ]; then ./scripts/\"$@\" else exec \"$@\" fi chown -R $DAPPER_UID:$DAPPER_GID . 如果 scripts/ci 存在，那就执行它(因为 $1 是传给 entry.sh 的第一个参数 ci) $@ 是所有参数 总结 所以当我们在终端按下make 的时候,发生的是:\nmake ci ./.dapper ci dapper 启动一个 Docker 容器，挂载当前代码目录，并在容器中执行构建命令（如 ci） 容器内执行 ./scripts/entry.sh ci 容器内执行 download,validate,build,package 在开发板上构建的时候,因为下载 dapper 这个过程可能会遇到网络问题(我没找到怎么解决)\n所以我们可以跳过 dapper 这个过程,直接在网络好的本机进行 download,然后将 download 得到的 build 目录传给开发板,在开发板上执行 build、package-cli 命令. 又回到了之前这篇文章中说过的过程了,只是这次我们修改了内部的镜像并使用了私有镜像仓库.\n在此之前我们 fork 出一个仓库上传到 gitee 然后在开发板上拉取源码进行构建.git clone https://gitee.com/ltxworld/k3s-riscv64.git\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "1584",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-05-13T13:55:39+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-05-13T13:55:39+08:00",
   "dateModified": "2025-05-13T13:55:39+08:00",
   "author":{
     "@type": "Person",
@@ -177,14 +177,14 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"
+    "@id": "https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -202,7 +202,7 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -228,32 +228,32 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -525,17 +525,17 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
-      <li><a href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/k3s/">K3s</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/riscv/">RiscV</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/">
     <span class="title">« 上一页</span>
     <br>
     <span>K3sEP09——初始化开发板环境操作汇总</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">
+  <a class="next" href="https://LTXWorld.github.io/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">
     <span class="title">下一页 »</span>
     <br>
     <span>K3sEP07——配置私有镜像仓库准备构建跨架构镜像</span>
@@ -731,6 +731,41 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -741,12 +776,56 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -767,6 +846,9 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -774,9 +856,13 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -785,6 +871,38 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -814,6 +932,11 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -836,6 +959,7 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -846,14 +970,26 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -938,29 +1074,56 @@ gzip &lt; k3s-riscv64 | split -b 20M - k3s-riscv64.gz.
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

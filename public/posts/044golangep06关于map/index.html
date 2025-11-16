@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -28,16 +28,16 @@ func twoSum(nums []int, target int) []int {
 }
 像极了一个 golang 新手的操作，特别是在判断 key 是否存在于哈希表中时，用值（下标）是否大于 0 来判断。（当然前面的哈希表的定义也有问题）">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/">
 <noscript>
     <style>
         #theme-toggle,
@@ -115,7 +115,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="GolangEP06:关于map-上">
   <meta property="og:description" content="引子 在做两数之和时，操作 map 遇到了问题，可以看我下面的代码。
@@ -128,9 +128,9 @@ func twoSum(nums []int, target int) []int { sMap := make(map[int]int) for i, x :
     <meta property="article:tag" content="Golang">
     <meta property="article:tag" content="源码">
     <meta property="article:tag" content="Map">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="GolangEP06:关于map-上">
 <meta name="twitter:description" content="引子
 在做两数之和时，操作 map 遇到了问题，可以看我下面的代码。
@@ -163,13 +163,13 @@ func twoSum(nums []int, target int) []int {
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "GolangEP06:关于map-上",
-      "item": "http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/"
+      "item": "https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/"
     }
   ]
 }
@@ -187,7 +187,7 @@ func twoSum(nums []int, target int) []int {
   "articleBody": "引子 在做两数之和时，操作 map 遇到了问题，可以看我下面的代码。\nfunc twoSum(nums []int, target int) []int { sMap := make(map[int]int) for i, x := range nums { sMap[x] = i } var ans []int for i, y := range nums { // 如果另一个值在 map 中存在的话即下标大于等于 0;且要保证不能使用两次相同的元素 p := sMap[target-y] if p \u003e= 0 \u0026\u0026 p != i { ans = append(ans, i) ans = append(ans, p) break } } return ans } 像极了一个 golang 新手的操作，特别是在判断 key 是否存在于哈希表中时，用值（下标）是否大于 0 来判断。（当然前面的哈希表的定义也有问题）\n而 go 中判断某 key 是否存在于哈希表中使用的是如下语法\nif val, ok := map[key]; ok { ... } 用这个 ok 来判断是否存在。\n还有一点是，就拿我上面错误的判断方法来说，我进行 debug 时发现：为什么不在 map 中的 key 它们的值都返回的是 0 呢？0在题目中的含义可是下标 0啊。\n这就又牵扯到了 go 中 map 的原理了，直接访问一个不存在的 key 会返回该值类型的零值，对于 int 来说就是 0 了。\nMap底层原理 使用 go 时，一开始刷到的八股就是 map 类型线程不安全，多个 goroutine 不能同时安全读写同一个 map。\n但是 why？老规矩，先从其底层结构看起吧。\n底层结构 type hmap struct { count int // map 中存储的元素个数 B uint8 // 当前 bucket 的数量为 2^B 个 buckets unsafe.Pointer // 指向 bucket 数组 oldbuckets unsafe.Pointer // 指向旧的 buckets（在扩容时使用） ... } 看了这些结构内容后，很明显，bucket 数组很重要(其实就是 hash table),这是我们剖析 map 的核心。\n下面这张图可以粗略地展示 bucket数组以及其指向的的 bucket空间。\n可以看到 bucket数组中存放的是指针，指向底层的 bucket 空间，而 bucket 空间由四部分组成\ntopHash存储哈希值的高八位,用于快速查找——不会立即比较key，而是先根据 topHash 进行快速比较，因为字符串比较十分昂贵 keys，要求类型必须是可比较的，有哪些不能比较呢：切片，函数等类型 values 没有特殊要求 *overflows指向溢出桶 初始化 默认一个 bucket 最多可以存储 8 个键值对。与 slice 类似，其初始化也分为不带初始容量和带初始容量。\nmap1 := make(map[string]int) map2 := make(map[string]int, 10) 面对不带容量的，go 会对其进行懒加载，要用的时候才去分配 bucket 对于带容量的，go 会根据容量来计算出一个合适的 B 值（上面提到过的 $2^B$ 桶数量） 显然，带有初始容量会更高效，减少扩容次数（这一点在 slice 中多次提到）。\n最后需要注意一点，如果不用 make 进行初始化而是 var，则会遇到问题\nvar map3 map[string]int map3[\"l\"]=20 这里会发生 panic，因为这是一个 nil map，不能直接存入键值对。为什么呢？\n在 slice 文章中我们提到过 nil slice 和 empty slice 的区别——nil slice 等于 nil，而empty 是长度为 0 的。nil 是 empty 的子集。\n同样的 nil Map 和 empty Map。我们将二者进行输出，看看结果如何。\nfunc main() { map1 := make(map[string]int) var map3 map[string]int println(map1) println(map3) } // 结果如下 0x14000052708 0x0 nil 输出为0x0，意味着 go 未分配任何底层内存结构给它，只是一个 nil 变量 empty 输出了具体地址，已经分配了 hmap 结构的内存。 所以我们对 nil 进行写入数据会引发 panic。\n总结 那么关于 Map 的剖析上篇就到这里结束了，我们着重分析了其底层结构 hmap 的内容、初始化的方式以及可能出现的问题。\n下一篇文章我们进入底层的扩容机制以及回答开始的问题，为什么 map 并发不安全。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "1239",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-07-16T09:52:36+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-07-16T09:52:36+08:00",
   "dateModified": "2025-07-16T09:52:36+08:00",
   "author":{
     "@type": "Person",
@@ -195,14 +195,14 @@ func twoSum(nums []int, target int) []int {
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/044golangep06%E5%85%B3%E4%BA%8Emap/"
+    "@id": "https://LTXWorld.github.io/posts/044golangep06%E5%85%B3%E4%BA%8Emap/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -220,7 +220,7 @@ func twoSum(nums []int, target int) []int {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -246,32 +246,32 @@ func twoSum(nums []int, target int) []int {
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -401,17 +401,17 @@ func twoSum(nums []int, target int) []int {
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/golang/">Golang</a></li>
-      <li><a href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
-      <li><a href="http://localhost:1313/tags/map/">Map</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/golang/">Golang</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/map/">Map</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/045golangep06%E5%85%B3%E4%BA%8Emap-%E4%B8%8B/">
     <span class="title">« 上一页</span>
     <br>
     <span>GolangEP06:关于map-下</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/">
+  <a class="next" href="https://LTXWorld.github.io/posts/043git-%E8%AE%A9%E6%88%91%E6%AC%A2%E5%96%9C%E8%AE%A9%E6%88%91%E5%BF%A7/">
     <span class="title">下一页 »</span>
     <br>
     <span>Git——真是让我欢喜让我忧</span>
@@ -607,6 +607,41 @@ func twoSum(nums []int, target int) []int {
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -617,12 +652,56 @@ func twoSum(nums []int, target int) []int {
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -643,6 +722,9 @@ func twoSum(nums []int, target int) []int {
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -650,9 +732,13 @@ func twoSum(nums []int, target int) []int {
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -661,6 +747,38 @@ func twoSum(nums []int, target int) []int {
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -690,6 +808,11 @@ func twoSum(nums []int, target int) []int {
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -712,6 +835,7 @@ func twoSum(nums []int, target int) []int {
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -722,14 +846,26 @@ func twoSum(nums []int, target int) []int {
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -814,29 +950,56 @@ func twoSum(nums []int, target int) []int {
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

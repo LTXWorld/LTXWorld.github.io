@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -11,16 +11,16 @@
 为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 metric-server;
 在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/">
 <noscript>
     <style>
         #theme-toggle,
@@ -98,7 +98,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="K3sEP12——监控集群的两种方式">
   <meta property="og:description" content="引子 为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 metric-server; 在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.">
@@ -110,9 +110,9 @@ code.has-jax {
     <meta property="article:tag" content="K3s">
     <meta property="article:tag" content="RiscV">
     <meta property="article:tag" content="监控">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="K3sEP12——监控集群的两种方式">
 <meta name="twitter:description" content="引子
 为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 metric-server;
@@ -128,13 +128,13 @@ code.has-jax {
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "K3sEP12——监控集群的两种方式",
-      "item": "http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/"
+      "item": "https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/"
     }
   ]
 }
@@ -152,7 +152,7 @@ code.has-jax {
   "articleBody": "引子 为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 metric-server; 在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.\nmetric-server 什么是 metric-server Metrics Server collects resource metrics from Kubelets and exposes them in Kubernetes apiserver through Metrics API for use by Horizontal Pod Autoscaler and Vertical Pod Autoscaler. Metrics API can also be accessed by kubectl top, making it easier to debug autoscaling pipelines.\n它会去与 kubelet 交互,作为 apiserver 的外部 api,向 kubelet 的 /metrics/resource 发起 HTTPS 请求;同时其还支持 HPA 自动扩缩容\n可以使用 kubectl get apiservices 查看其 api 状态\nNAME SERVICE AVAILABLE AGE v1beta1.metrics.k8s.io kube-system/metrics-server False (MissingEndpoints) 3d22h 具体操作 首先,metric-server 在其 release 版本中并没有 riscv 的版本,所以我们先要进行适配工作. 不过好在之前的那位大佬也做了相关的支持,所以我们直接使用它的镜像作为我们的私有仓库镜像.\n之后写一个 yaml文件 用来部署 metric-server 到 server 上\n# metrics-server.yaml apiVersion: v1 kind: Namespace metadata: name: kube-system --- apiVersion: apps/v1 kind: Deployment metadata: name: metrics-server namespace: kube-system labels: k8s-app: metrics-server spec: replicas: 1 selector: matchLabels: k8s-app: metrics-server template: metadata: labels: k8s-app: metrics-server spec: containers: - name: metrics-server image: jimlt.bfsmlt.top/metrics-server:v0.7.2 # 私有镜像 imagePullPolicy: IfNotPresent args: - --cert-dir=/tmp - --secure-port=4443 - --kubelet-insecure-tls - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname ports: - containerPort: 4443 protocol: TCP --- apiVersion: v1 kind: Service metadata: name: metrics-server namespace: kube-system labels: k8s-app: metrics-server spec: selector: k8s-app: metrics-server ports: - port: 443 targetPort: 4443 这里包括了 Deployment 和对应的 Service,并且我们作为测试没有用到 tls --kubelet-insecure-tls\n写好之后进行部署 kubectl apply -f xxx.yaml\n部署结束后,我们进行测试 kubectl top nodes,发现此服务并没有启动成功.\n排查问题 我们自然地去查看容器的状态,即 kubectl describe,发现问题所在\nReadiness probe failed: Get \"https://10.42.0.58:10250/readyz\": dial tcp 10.42.0.58:10250: connect: connection refused 这是个什么地址呢?我们先来看看之前 yaml 文件中的这段代码 --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname\nInternalIP: 节点 Node 在集群内部网络中的地址 ExternalIP: 公网 IP,供集群外部访问 Hostname: 节点的计算机名称 这些与 PodIP 不同,PodIP 是集群使用 CNI 分配的,关于 CNI 在 k3s 中的知识,请看这篇文章.\n所以,这个请求其实是发往了我的 server 节点上的一个 Pod,所以这个就很奇怪了,按道理来说应该发往 InternalIP 即192.168.1.198 才对\n执行 kubectl get apiservices 可以发现 MissingEndpoints\nv1beta1.metrics.k8s.io kube-system/metrics-server False (MissingEndpoints) 3d22h 相关的 issue 可以找到些解决办法,最多的还是添加 - --kubelet-insecure-tls,但是我们已经有了不是吗?\n如果现在遇到同样问题的你找到了其他更好的相关问题或者解决方法,请在评论区告知.\n官方文档中的问题 stackoverflow上有关问题 我们在 yaml 配置中添加 HostNetwork\nspec: hostNetwork: true # ✅ 添加 hostNetwork，避免 CNI 中 10250 访问失败 dnsPolicy: ClusterFirstWithHostNet # ✅ 搭配 hostNetwork 使用 之后再次查看容器的运行状态:\nReadiness probe failed: HTTP probe failed with statuscode: 404 通过查看日志发现:\nsudo kubectl logs -n kube-system metrics-server-6b8f575f5d-56jm8 I0518 11:31:43.086131 1 serving.go:374] Generated self-signed cert (/tmp/apiserver.crt, /tmp/apiserver.key) I0518 11:31:45.510186 1 handler.go:275] Adding GroupVersion metrics.k8s.io v1beta1 to ResourceManager I0518 11:31:45.658709 1 requestheader_controller.go:169] Starting RequestHeaderAuthRequestController I0518 11:31:45.658803 1 shared_informer.go:311] Waiting for caches to sync for RequestHeaderAuthRequestController I0518 11:31:45.659011 1 configmap_cafile_content.go:202] \"Starting controller\" name=\"client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file\" I0518 11:31:45.659138 1 shared_informer.go:311] Waiting for caches to sync for client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file I0518 11:31:45.659169 1 configmap_cafile_content.go:202] \"Starting controller\" name=\"client-ca::kube-system::extension-apiserver-authentication::client-ca-file\" I0518 11:31:45.659247 1 shared_informer.go:311] Waiting for caches to sync for client-ca::kube-system::extension-apiserver-authentication::client-ca-file I0518 11:31:45.660929 1 dynamic_serving_content.go:132] \"Starting controller\" name=\"serving-cert::/tmp/apiserver.crt::/tmp/apiserver.key\" I0518 11:31:45.662143 1 secure_serving.go:213] Serving securely on [::]:4443 I0518 11:31:45.662329 1 tlsconfig.go:240] \"Starting DynamicServingCertificateController\" I0518 11:31:45.759559 1 shared_informer.go:318] Caches are synced for client-ca::kube-system::extension-apiserver-authentication::client-ca-file I0518 11:31:45.759641 1 shared_informer.go:318] Caches are synced for client-ca::kube-system::extension-apiserver-authentication::requestheader-client-ca-file I0518 11:31:45.759584 1 shared_informer.go:318] Caches are synced for RequestHeaderAuthRequestController 其并没有直接显示一些访问地址失败的信息.\n接着我们尝试 kubectl edit deployment -n kube-system metrics-server修改配置 将 livenessProbe 和 readinessProbe 及其有关配置删除 相关解决方案来自 CSDN\nreadinessProbe: httpGet: path: /readyz port: 4443 scheme: HTTPS initialDelaySeconds: 20 periodSeconds: 10 再来看看 Pod 结果如何\nkube-system metrics-server-6c8f74f4c4-fktpw 1/1 Running 居然成功了,查看集群信息:\nsudo kubectl top no NAME CPU(cores) CPU% MEMORY(bytes) MEMORY% agent197 40m 1% 774Mi 9% revyos-lpi4a 136m 3% 1502Mi 9% 所以最终我们只需要去掉 readinessProbe即可,不用添加 NetWork 等字段在配置文件中. 这对整体的运行时没有影响的,只是去掉了存活探针检测机制.\nProbe及可能原因 这些 Probe 是来自于 k3s 的系统探针\nReadiness Probe:检测某个容器是否就绪(就是我们常见的 Ready 字段),是否可以接受流量,如果没有就不能加入到 Service Liveness Probe:判断容器是否“健康”，未通过探针 → 被重启容器。 Startup Probe:判断容器启动是否完成，配合前两者避免“启动未完成就被探测失败”。 所以结合之前的两种失败报错, https://10.42.0.58:10250/readyz,是 metric-server 访问 kubelet 容器,因为 metrics-server 默认会通过 kubelet API 获取节点、容器、Pod 的资源指标数据\n后来返回404:\n可能metrics-server 镜像中并没有暴露 /readyz 这个 HTTP 路径 某些版本只支持 /healthz 或 / 路径 prometheus prometheus 在 k8s 的集群监控中也是十分常见的工具,可抓取 所有组件、应用、Exporter 的细粒度指标,并且可以做到报警,可视化,长期持久化等功能.\n所以我们测试一下在我们的集群中使用情况.\n操作流程 与 metric-server 不同的是,prometheus 支持 riscv 架构,所以我们可以直接使用.\n在官网下载好安装包传到开发板 server 节点上,进行解压,并将可执行文件和配置文件都放到对应目录中\nsudo cp ~/prometheus-2.53.4.linux-riscv64/prometheus /usr/local/bin/prometheus sudo cp ~/prometheus-2.53.4.linux-riscv64/prometheus.yml /etc/prometheus/prometheus.yml 为其编写 service 文件,交由 systemd 管理\n[Unit] Description=Prometheus Monitoring Wants=network-online.target After=network-online.target [Service] User=debian ExecStart=/usr/local/bin/prometheus \\ --config.file=/etc/prometheus/prometheus.yml \\ --storage.tsdb.path=/var/lib/prometheus \\ --web.listen-address=0.0.0.0:9090 \\ --web.enable-lifecycle Restart=on-failure [Install] WantedBy=multi-user.target 这里的 User 可以选择为 prometheus 独立创建一个用户;数据存储在 /var/lib/prometheus 下\n同时创建对应的目录并为其赋予对应权限.\nsudo mkdir -p /etc/prometheus /var/lib/prometheus sudo chown -R jimlt:jimlt /etc/prometheus /var/lib/prometheus 重新加载 systemd 并启动\nsudo systemctl daemon-reexec sudo systemctl daemon-reload sudo systemctl enable prometheus sudo systemctl start prometheus 验证其状态:\nsudo systemctl status prometheus # prometheus.service - Prometheus Monitoring Loaded: loaded (/etc/systemd/system/prometheus.service; enabled; preset: enabled) Active: active (running) since Sun 2025-05-18 20:59:08 CST; 12min ago Invocation: a99f1274a13a4ae89ecb9726ece102a4 Main PID: 5337 (prometheus) Tasks: 10 (limit: 18020) Memory: 41.2M (peak: 41.9M) CPU: 5.667s CGroup: /system.slice/prometheus.service └─5337 /usr/local/bin/prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/var/lib/prometheus --web.listen-address=0.0.0.0:9090 --web.enable-\u003e 此时我们就可以去浏览器中输入 localhost:9000 访问其监控页面.\n关于其安装部署流程就告一段落了,后续我们可以在其配置文件中添加 job,让其监控集群中的数据,关于其后续的更深入操作,见以后的文章吧!\n总结 本文尝试了 k3s 集群中两种监控方案的实现,并解决了 metric-server 运行过程中的探针问题.为后续集群的监控奠定了基础.\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "2008",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-05-18T18:29:58+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-05-18T18:29:58+08:00",
   "dateModified": "2025-05-18T18:29:58+08:00",
   "author":{
     "@type": "Person",
@@ -160,14 +160,14 @@ code.has-jax {
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/"
+    "@id": "https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -185,7 +185,7 @@ code.has-jax {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -211,32 +211,32 @@ code.has-jax {
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -488,17 +488,17 @@ code.has-jax {
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
-      <li><a href="http://localhost:1313/tags/riscv/">RiscV</a></li>
-      <li><a href="http://localhost:1313/tags/%E7%9B%91%E6%8E%A7/">监控</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/k3s/">K3s</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/riscv/">RiscV</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E7%9B%91%E6%8E%A7/">监控</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/039mit6.824lab1/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/039mit6.824lab1/">
     <span class="title">« 上一页</span>
     <br>
     <span>Mit6.824Lab1流程梳理</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/">
+  <a class="next" href="https://LTXWorld.github.io/posts/037%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9Cping%E5%91%BD%E4%BB%A4/">
     <span class="title">下一页 »</span>
     <br>
     <span>兴趣八股之计算机网络EP03——Ping命令</span>
@@ -694,6 +694,41 @@ code.has-jax {
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -704,12 +739,56 @@ code.has-jax {
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -730,6 +809,9 @@ code.has-jax {
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -737,9 +819,13 @@ code.has-jax {
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -748,6 +834,38 @@ code.has-jax {
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -777,6 +895,11 @@ code.has-jax {
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -799,6 +922,7 @@ code.has-jax {
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -809,14 +933,26 @@ code.has-jax {
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -901,29 +1037,56 @@ code.has-jax {
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -17,16 +17,16 @@ LicheePi4A,16&#43;128
 基础配置
 如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/004risc-v_deployment/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/004risc-v_deployment/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/004risc-v_deployment/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/004risc-v_deployment/">
 <noscript>
     <style>
         #theme-toggle,
@@ -104,7 +104,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/004risc-v_deployment/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/004risc-v_deployment/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="玩转RISCV开发板02-配置好容器化环境">
   <meta property="og:description" content="前言 这里照例列出所用设备配置
@@ -119,9 +119,9 @@ macbookair LicheePi4A,16&#43;128 基础配置 如果你看完了上篇文章，�
     <meta property="article:tag" content="Docker">
     <meta property="article:tag" content="Git">
     <meta property="article:tag" content="K3s">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="玩转RISCV开发板02-配置好容器化环境">
 <meta name="twitter:description" content="前言
 这里照例列出所用设备配置
@@ -143,13 +143,13 @@ LicheePi4A,16&#43;128
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "玩转RISCV开发板02-配置好容器化环境",
-      "item": "http://localhost:1313/posts/004risc-v_deployment/"
+      "item": "https://LTXWorld.github.io/posts/004risc-v_deployment/"
     }
   ]
 }
@@ -167,7 +167,7 @@ LicheePi4A,16&#43;128
   "articleBody": "前言 这里照例列出所用设备配置\nmacbookair LicheePi4A,16+128 基础配置 如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）\n先打开开发板，并连接显示器，按照上一节的做法查看wifi是否连接，如果使用的nmcli这个命令它会自动连接的。接着使用hostname -I查看当前IP地址。拿着这个IP地址使用ssh去连接开发板。\n# 将IP换为具体的ip地址 ssh openeuler@IP 接下来，我们开始设置最基础的配置，例如密码，镜像源，以及一些小工具等等。\n密码与换源 首先，更改这个复杂的初始密码openEuler12#$,输入passwd，修改当前用户的密码（注意需要至少3个不同的字符类型）\n其次，关于包管理软件，使用dnf和yum都可以，但是推荐使用dnf，毕竟是yum的上游版本；关于是否需要换源，可以先去/etc/yum.repos.d/openEuler.repo这个文件中查看自己当前使用的源地址，其实里面的内容就是我们在01中下载镜像的地址。这是兴趣小组维护的一个很棒的地址，所以我认为没必要更换源。\n如果你想更换，这是openEuler官网所列出的镜像源,可以选择并替换掉上述文件中的链接内容。\n安装git 这个不用赘述sudo dnf install git\n如果遇到从开发板下载github上的东西特别慢的情况，可以使用这个网站https://doget.nocsdn.com/#/托管的国内地址来下载，速度不错。\n也可以使用这个代理地址git config --global url.\"https://gh-proxy.com/github.com/\" .insteadOf \"https://github.com/\"\n得到结果如下:\ncat .gitconfig [url \"https://gh-proxy.com/github.com/\"] insteadOf = https://github.com/ tmux分屏 这个软件如果你是一个linux或者macos的“老玩家”，相信你并不陌生。有了他我们就可以不再打开一个又一个的终端窗口，而是优雅的进行分屏操作。\n惊喜的是，软件源中居然存在这个软件，向兴趣小组的成员致敬。🫡\nsudo dnf install tmux 下载成功。 简单地试用一下，关于tmux的个性化配置，请参考我的这篇文章。\ntmux new -s \"riscv\" 输入CTRL+b作为前导键，再按下c新建一个窗口，会得到这样的效果 其实我现在在macos使用ssh的情况下已经是tmux套tmux的情况了😁\n其他的操作请参考[这篇文章]。\nDNS配置 sudo vi /etc/resolv.conf #结果如下 # Generated by NetworkManager nameserver 192.168.1.1 可以发现这是由NetworkManager自动根据我们所连接的wifi生成的 DNS 地址,推荐修改为8.8.8.8\n配置Golang环境 首先，来到Golang的官网release界面找到能够适配RISC-V的Golang版本，这里我使用的是go1.22.9.linux-riscv64.tar.gz,可以看到其支持的操作系统为Linux,架构为riscv64。\n为什么不选择最新的go1.23?因为还没有适配riscv的包。（更新一下，现在有了）\n# 使用该命令下载对应压缩包 curl -O https://go.dev/dl/go1.22.9.linux-riscv64.tar.gz # 如果遇到下载文件的错误，比如意外地下载为了其他格式，建议使用以下命令 curl -L -O https://go.dev/dl/go1.22.9.linux-riscv64.tar.gz #下载成功后，可以用以下命令检查文件格式 file go1.22.9.linux-riscv64.tar.gz # 对软件包进行解压 tar -zxvf go1.22.9.linux-riscv64.tar.gz # 配置golang的系统环境 vi ~/.bashrc # 在其中加入下面这两行之一 export PATH=$PATH:~/go/bin export PATH=$PATH:$HOME/go/bin # 或者你可以聪明地一步到位 echo 'export PATH=$PATH:~/go/bin' \u003e\u003e ~/.bashrc # 重新加载 source ~/.bashrc # 检查是否成功 go env 如果成功看到一系列的go的环境变量，就说明我们就将golang环境配置好了。\n接下来可以编写一个简单的main.go文件进行测试\npackage main import \"fmt\" func main() { fmt.Println(\"Hello, RV64\") } go run main.go\nps:如果在执行上面的代码过程中遇到warning: GOPATH set to GOROOT (/home/openeuler/go) has no effect这个问题，意味着他在提醒你使用module进行管理项目的依赖关系，我们这里只是简单的测试一下，后期遇到的golang项目会使用mod进行管理。\nGOPATH must be set to get, build and install packages outside the standard Go tree.\n具体原因在于GOPATH是工作目录，用于存放Go项目的源代码、依赖包；而GOROOT是Go语言的安装目录，二者当然最好要不一样的路径。来自于Stackoverflow的解释\n配置docker 首先，下载docker engine,可以发现，官网中的列表中是没有Openeuler下的riscv64架构的适配的。\n所以我们直接采用dnf包管理的方式下载，(在这里对于为Openeuler-riscv64架构进行docker适配的人致以深刻的敬意，这也许就是真正的伟大的程序员吧）\nsudo dnf update sudo dnf install -y docker # 检查docker的运行状态 sudo systemctl status docker # 如果没有运行，需要启动 sudo systemctl start docker 接下来去sudo化配置，见官方文档\n接下来进行最重要的换源，否则镜像也无法拉取成功。目前国内还可以使用的Docker镜像见此链接\n# 修改 vi /etc/docker/daemon.json # 如果没有这个文件，自己手动新建（我当时只有一个key.json文件） # 将下面内容复制进去 { \"registry-mirrors\": [ \"https://dockerpull.org\", \"https://docker.1ms.run\", \"https://docker.linkedbus.com\" ] } # 加载配置并重启 sudo systemctl daemon-reload sudo systemctl restart docker # 尝试拉取镜像 docker pull busybox docker run hello-world 看到\"Hello from Docker\"意味着拉取镜像成功。你也许会疑惑，为什么可以成功？镜像也应该与架构相关啊，使得，hello-world这个镜像正是适配了riscv64架构，不过其他的镜像就没有那么好运了。关于某个镜像是否支持某个架构可以在dockerhub中的具体镜像页面内查看。\n比如我们尝试一下nginx这个镜像docker pull nginx，可以发现他没有通过上面设置的仓库而是去官方找镜像，原因由chatgpt给出:\n由于您是在 RISC-V 环境（openEuler-riscv64）下运行，可能镜像加速器的缓存中并没有 RISC-V 架构的 nginx 镜像。因此 Docker 会从官方仓库拉取适配的镜像。\n就算是你强制使用换源后的仓库docker pull dockerpull.org/nginx，也会提示你no matching manifest for unknown in the manifest list entries意味着在镜像仓库中并没有合适的资源。\n目前在dockerhub中有关于riscv的镜像一共有官方的35个仓库,这里看到了redis，让我们试一试docker pull riscv64/redis，很遗憾，好像还是因为镜像站中没有收录。\n最后再尝试一个alpine，其支持riscv64docker pull alpine\n最后，关于镜像适配问题，这也是未来的工作方向之一吧，可真是任重而道远啊——总不能让我给每个镜像都来一遍riscv架构的适配吧？这是我这种鼠鼠能做的？\n配置K3s 来到k3s的官网使用 curl -sfL https://get.k3s.io | sh -官方命令安装会显示[ERROR] Unsupported architecture riscv64可以得知官方还并没有真正支持riscv架构。那么怎么办？\n谷歌了一圈发现这里的内容值得一看，专门在说k8s和k3s向riscv适配的，里面也给出了具体的操作指南。这里我们先试试SIG（兴趣小组）的源中是否存在k3s。\n其实原理上来讲，与docker一样源代码都是完全由golang编写的，而golang的官方正如我们上面所说，已经支持了riscv，所以迁移是一定可以实现的（但愿）。🧐\nsudo dnf install k3s 嘿，您猜怎么着，还真有！再次respect！让我们看看这次都下载了什么\ncontainer-selinux提供了通用的容器安全策略，而k3s-selinux提供了针对k3s的特定安全策略，确保k3s在运行时的安全性\n那么下载过后如何执行呢？按道理来说，得systemctl status k3s这样的命令（与docker类似）来操作，但是你直接操作时会发现报错unit k3s service not found并不存在。这该怎么办呢？\n在我Google了一圈发现这位大佬的适配工作后，我发现刚才下载的k3s是不是在/usr/local/bin/k3s这个路径下啊？\n于是去这个路径寻找，果然找到了，./k3执行这个文件，执行成功了。\n关于k3s的具体操作我们以后的文章再说。\n卸载k3s /usr/local/bin/k3s-uninstall.sh 总结与展望 没什么好总结的了，下一章进行k3s在riscv架构上的初步尝试，写几个golang小程序部署成节点试着管理一下。\n可真是Life’s struggle啊。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "3146",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2024-11-29T21:07:21+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2024-11-29T21:07:21+08:00",
   "dateModified": "2024-11-29T21:07:21+08:00",
   "author":{
     "@type": "Person",
@@ -175,14 +175,14 @@ LicheePi4A,16&#43;128
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/004risc-v_deployment/"
+    "@id": "https://LTXWorld.github.io/posts/004risc-v_deployment/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -200,7 +200,7 @@ LicheePi4A,16&#43;128
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -226,32 +226,32 @@ LicheePi4A,16&#43;128
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -457,19 +457,19 @@ LicheePi4A,16&#43;128
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/risc-v/">RISC-V</a></li>
-      <li><a href="http://localhost:1313/tags/%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83/">设置环境</a></li>
-      <li><a href="http://localhost:1313/tags/docker/">Docker</a></li>
-      <li><a href="http://localhost:1313/tags/git/">Git</a></li>
-      <li><a href="http://localhost:1313/tags/k3s/">K3s</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/risc-v/">RISC-V</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83/">设置环境</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/docker/">Docker</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/git/">Git</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/k3s/">K3s</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/">
     <span class="title">« 上一页</span>
     <br>
     <span>GolangEP01_并发之绕不过的context</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/003li_riscv01/">
+  <a class="next" href="https://LTXWorld.github.io/posts/003li_riscv01/">
     <span class="title">下一页 »</span>
     <br>
     <span>玩转RISCV开发板01-烧录OpenEuler国产镜像</span>
@@ -665,6 +665,41 @@ LicheePi4A,16&#43;128
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -675,12 +710,56 @@ LicheePi4A,16&#43;128
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -701,6 +780,9 @@ LicheePi4A,16&#43;128
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -708,9 +790,13 @@ LicheePi4A,16&#43;128
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -719,6 +805,38 @@ LicheePi4A,16&#43;128
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -748,6 +866,11 @@ LicheePi4A,16&#43;128
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -770,6 +893,7 @@ LicheePi4A,16&#43;128
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -780,14 +904,26 @@ LicheePi4A,16&#43;128
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -872,29 +1008,56 @@ LicheePi4A,16&#43;128
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

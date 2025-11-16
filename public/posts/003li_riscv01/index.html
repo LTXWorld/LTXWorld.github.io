@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -19,16 +19,16 @@ LiCheePi开发板，配置为16&#43;128
 1.下载fastboot
 这里使用homebrew快捷安装">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/003li_riscv01/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/003li_riscv01/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/003li_riscv01/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/003li_riscv01/">
 <noscript>
     <style>
         #theme-toggle,
@@ -106,7 +106,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/003li_riscv01/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/003li_riscv01/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="玩转RISCV开发板01-烧录OpenEuler国产镜像">
   <meta property="og:description" content="本次实验环境 宿主机:macbook air M2 LiCheePi开发板，配置为16&#43;128 一根USB-C线 一个拓展坞，键鼠，显示器 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/ 实验步骤 1.下载fastboot 这里使用homebrew快捷安装">
@@ -118,9 +118,9 @@ code.has-jax {
     <meta property="article:tag" content="RISC-V">
     <meta property="article:tag" content="OpenEuler">
     <meta property="article:tag" content="镜像烧录">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="玩转RISCV开发板01-烧录OpenEuler国产镜像">
 <meta name="twitter:description" content="本次实验环境
 
@@ -144,13 +144,13 @@ LiCheePi开发板，配置为16&#43;128
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "玩转RISCV开发板01-烧录OpenEuler国产镜像",
-      "item": "http://localhost:1313/posts/003li_riscv01/"
+      "item": "https://LTXWorld.github.io/posts/003li_riscv01/"
     }
   ]
 }
@@ -168,7 +168,7 @@ LiCheePi开发板，配置为16&#43;128
   "articleBody": "本次实验环境 宿主机:macbook air M2 LiCheePi开发板，配置为16+128 一根USB-C线 一个拓展坞，键鼠，显示器 烧录镜像为openEuler/embedded_img/riscv64/lpi4a/ 实验步骤 1.下载fastboot 这里使用homebrew快捷安装\nbrew install android-platform-tools 2.连接开发板与宿主机 先长按开发板上的BOOT按钮，再将USB线插入到宿主机上（拓展坞上），注意这里的先后次序。这一步是为了让开发板进入USB烧录模式。\n进入终端，运行命令检查fastboot是否识别到了当前连接的开发板\nfastboot devices 注意是devices不是device,结果如下\n这里我也没弄清楚为什么是一堆问号，不过只要能够检测到设备就好。（注意本教程目前只测试了Macos下的操作）\n3.下载所需的镜像文件 来到镜像下载网站选择以下三种文件进行下载：\nu-boot文件用于引导加载程序——系统会先启动一个小型的引导加载程序（SPL），它负责加载完整的 U-Boot 镜像 base-boot.ext4.zst文件用于作为系统的启动分区——包括启动所需的文件，比如 Linux 内核、初始 RAM 磁盘（initramfs）、设备树（device tree） base-root.ext4.zst文件用于作为根文件系统——提供操作系统所需的文件 如果你安装过实打实的Linux系统（比如在windows下的双系统）的话你就会对这几个文件很熟悉。\n值得注意的是，其使用Zst格式压缩，所以在真正使用的时候需要提前进行解压，如果忘了解压，直接操作你就会遇到这个问题\n哈哈，文件格式不对当然无法成功了。\n故我们需要对zst格式结尾的文件进行解压\nzstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst zstd -d openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst 4.进行烧录 首先进入上一步下载镜像所在的目录下\nfastboot flash ram u-boot-with-spl-lpi4a-16g.bin fastboot reboot # wait five seconds fastboot flash uboot u-boot-with-spl-lpi4a-16g.bin fastboot flash boot openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4 fastboot flash root openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4 最终如果成功你会得到一堆OKAY，这里放一张我的运行截图\n5.验证 将开发板与宿主机的连接断开，将其连接到准备好的显示器上并准备好键鼠，等待其成功运行。 好的，成功发现一个神奇的问题，鼠标键盘也亮了，风扇也转起来了，结果显示器不亮？不亮？不亮？为什么！！！\n好，我先去google，来到官方文档烧录镜像的评论区发现一个遇到和我同样问题的朋友\n解决显示器不亮的问题 遇到这种问题，google并不能得到很相关的解决方案，这也是我在日常工作时觉得需要使用AI的场景之一。所以我得去询问ChatGPT让他针对于我这种问题给出解决思路。\n即使镜像烧录是成功的，为了保险起见，我们先去利用官网的SHA256文件验证一下文件是否损坏。\nsha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-boot.ext4.zst.sha256sum sha256sum -c openEuler-24.03-LTS-riscv64-lpi4a-base-root.ext4.zst.sha256sum 结果都显示OK,那么镜像文件是对的。\n在检查ChatGPT给出的思路之前，我认为还是先来一遍对照实验，因为在烧录镜像之前自带的Debian是能够成功点亮显示器的，所以我们换一下镜像的版本来进行对照。\n对照实验1-换镜像版本 换成兴趣小组的镜像文件23.03再来一遍\n命令与上面相同，其中u-boot-with-spl-lpi4a-16g.bin这个文件是可以复用的。\n嘿，您猜怎么着，还是点不亮！\n那再换成preview版本的23.09再来一遍，这次点亮了！并且给出了一个图形化的界面！正当我准备大展拳脚，以为自己终于找到了问题的所在时，又出差错了！\n没有wifi界面，无法连接wifi，使用nmcli命令查看网络状态\nnmcli general status nmcli device status 显示WIFI是enabled,==WIFI-HW是missing的==，意味着WIFI硬件似乎没有被正确识别；只有本地环回地址连接成功了，其他都处于unmanaged状态。\n我在其他的地方也找不到连接wifi的界面，所以这又是什么问题呢？（个人目前猜测还是镜像不稳定，因为Debian操作系统可以连接wifi）\n最终，我去镜像文件中的devel部分找到23.09的镜像进行测试，结果成功了！\n成功解决 如上面所说，找到链接中的镜像后进行再次烧录,终于可以点亮屏幕（如果遇到键鼠没反应重启开发板即可），进入了一个黑色的命令行界面，接着我们要进行登录。\n用户名:openeuler 密码:openEuler12#$ 登录后我们首先需要连网，使用以下命令。\n# 检查网络状态，去报WIFI-HW,WIFI是enabled nmcli general status # 查看端口和网络，确保有wlan端口 ip a # 显示可用的wifi nmcli dev wifi # 连接具体wifi，其中SSID替换为wifi名，PASSWORD替换为密码 sudo nmcli dev wifi connect SSID password PASSWORD # 连接成功后再检查STATE是否为connected nmcli general status 至此，成功连接wifi，烧录镜像这一步骤到此结束。\n后续问题 看到这里，还有惊喜！还没完！我重启了一次开发板之后，发现wifi又没了，瞬间尴尬在原地，到底是镜像和网卡你两谁的问题!?\n又经历了两次重启，wifi又好了，所以，请看下面总结。\n总结与反思 这里总结一下为LicheePI烧录OpenEuler镜像遇到的问题。\n镜像or网卡问题 在还没烧录的时候，板子自带的Debian操作系统一切正常。接着烧录Openeuler for riscv镜像时出现了一系列的问题：\n先遇到官方最新的24.03LTS版本的专门为LiCheePI准备的镜像烧录后无法打开显示器的问题。 在SIG兴趣小组提供的链接中，preview下的镜像23.03还是没有点亮显示器。 同样，preview下的23.09虽然点亮了显示器，但是无法识别网卡，连接不了wifi 于是去develp下的23.09镜像点亮了显示器也连接到了wifi，但是存在偶尔的抽风问题——重启后wifi又没了，得不断重启尝试。 所以，综上所述，是谁的问题？\n我觉得八成原因在镜像，因为换了镜像后问题得到解决，不过如果细心的读者会发现我们对于23.03镜像并没有进行多次重启来检测是不是网卡的问题（其实我也重启了两次不过都没成功），所以还有两成原因在于WIFI网卡——看的这里你是否觉得这也太不“技术”了，一个技术博客怎么能够有点玄学成分了。\n哈哈，你的批评是对的，在这里我确实不严谨了，没有程序员深挖精神了，私密马赛！\n反思 最后的最后，我不禁想问自己一个问题：操作系统镜像和架构有关系吗？\n那这个问题答案也很简单，一定是有关系的，操作系统镜像必须与CPU指令集兼容，这也是为什么操作系统镜像页面有专门为RISC-V所设计的镜像页面。\n那么关于如何烧录OpenEuler for RISCV镜像到LiCheePi上这一主题就告一段落了，还是有点流水账了，anyway，博客永远是给自己看的。\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "2633",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2024-11-21T14:42:19+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2024-11-21T14:42:19+08:00",
   "dateModified": "2024-11-21T14:42:19+08:00",
   "author":{
     "@type": "Person",
@@ -176,14 +176,14 @@ LiCheePi开发板，配置为16&#43;128
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/003li_riscv01/"
+    "@id": "https://LTXWorld.github.io/posts/003li_riscv01/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -201,7 +201,7 @@ LiCheePi开发板，配置为16&#43;128
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -227,32 +227,32 @@ LiCheePi开发板，配置为16&#43;128
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -430,17 +430,17 @@ LiCheePi开发板，配置为16&#43;128
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/risc-v/">RISC-V</a></li>
-      <li><a href="http://localhost:1313/tags/openeuler/">OpenEuler</a></li>
-      <li><a href="http://localhost:1313/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/">镜像烧录</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/risc-v/">RISC-V</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/openeuler/">OpenEuler</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E9%95%9C%E5%83%8F%E7%83%A7%E5%BD%95/">镜像烧录</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/004risc-v_deployment/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/004risc-v_deployment/">
     <span class="title">« 上一页</span>
     <br>
     <span>玩转RISCV开发板02-配置好容器化环境</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/002docker_volume/">
+  <a class="next" href="https://LTXWorld.github.io/posts/002docker_volume/">
     <span class="title">下一页 »</span>
     <br>
     <span>玩转Docker系列——数据持久化</span>
@@ -636,6 +636,41 @@ LiCheePi开发板，配置为16&#43;128
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -646,12 +681,56 @@ LiCheePi开发板，配置为16&#43;128
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -672,6 +751,9 @@ LiCheePi开发板，配置为16&#43;128
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -679,9 +761,13 @@ LiCheePi开发板，配置为16&#43;128
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -690,6 +776,38 @@ LiCheePi开发板，配置为16&#43;128
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -719,6 +837,11 @@ LiCheePi开发板，配置为16&#43;128
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -741,6 +864,7 @@ LiCheePi开发板，配置为16&#43;128
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -751,14 +875,26 @@ LiCheePi开发板，配置为16&#43;128
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -843,29 +979,56 @@ LiCheePi开发板，配置为16&#43;128
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

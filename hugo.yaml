@@ -1,4 +1,4 @@
-baseURL: "https://LTXWorld.github.io/" # 主站的 URL
+baseURL: "https://blog.bfsmlt.top/" # 主站的 URL
 title: LTX's Blog # 站点标题
 copyright: "[©2025 LTX's Blog](https://LTXWorld.github.io/)" # 网站的版权声明，通常显示在页脚
 theme: PaperMod # 主题

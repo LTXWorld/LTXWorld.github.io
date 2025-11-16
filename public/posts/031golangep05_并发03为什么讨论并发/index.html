@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -11,16 +11,16 @@
 之前的两篇文章关于context和channel，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。
 但是我并没有从宏观的角度上来阐述为什么我们需要并发？为什么要设计这两种结构来处理并发，本着做到&quot;what-how-why&quot;的态度，我们今天来深入讨论一下 Go 中的并发。">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/">
 <noscript>
     <style>
         #theme-toggle,
@@ -98,7 +98,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="GolangEP05_Go中的并发">
   <meta property="og:description" content="引子 之前的两篇文章关于context和channel，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。
@@ -111,9 +111,9 @@ code.has-jax {
     <meta property="article:tag" content="Golang">
     <meta property="article:tag" content="源码">
     <meta property="article:tag" content="并发">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="GolangEP05_Go中的并发">
 <meta name="twitter:description" content="引子
 之前的两篇文章关于context和channel，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。
@@ -129,13 +129,13 @@ code.has-jax {
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "GolangEP05_Go中的并发",
-      "item": "http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/"
+      "item": "https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/"
     }
   ]
 }
@@ -153,7 +153,7 @@ code.has-jax {
   "articleBody": "引子 之前的两篇文章关于context和channel，我们都从源码的角度去讨论了其各自的底层原理以及使用方法。\n但是我并没有从宏观的角度上来阐述为什么我们需要并发？为什么要设计这两种结构来处理并发，本着做到\"what-how-why\"的态度，我们今天来深入讨论一下 Go 中的并发。\n区分并行和并发 这个已经被说烂的话题为什么我还要拿出来说呢？（因为书里写了，bushi）因为自己对其的理解还不够深刻。英文中并行通常是 Parallelism,并发是 Concurrency.\nConcurrency is about dealing with lots of things at once. Parallelism is about doing lots of things at once.\n从这句名言可以看出，并发是一种组织结构上的概念，而并行是一种执行上的概念。（这个思想很重要）\n同时我们抛出一个问题：同样的程序，并发就一定并行要快吗？\n在回答这个问题之前，我们应该先了解 Go 中关于并发和并行的常见概念，也就是 goroutine 与 GMP 调度模型。\ngoroutine 在我们学的操作系统课程中，通常用线程thread 描述并发，进程描述并行；但是作为 Go 程序员，我们通常用 goroutine 描述并发，thread描述操作系统线程。\ngoroutine 可以被视作应用级别的 threads，所以这是一种来自于用户态的调度 相当于又把 thread 往里“剥”了一层 那为什么要搞一个 goroutine 出来呢？\nthread 直接由 OS 管理，占用空间大，系统调用和线程调度过程中上下文切换资源消耗大，并且受到 CPU 资源限制，同步问题处理复杂 goroutine 由 Go runtime 管理，占用空间极小（2KB）；运行时的调度器可以将N个 goroutine 映射到 M 个 thread 上，消耗小；Go 提供 context,channel机制处理同步问题容易 GMP模型 上面提到了调度器的作用，其实就是 Go 的调度模型 GMP（这里简单提及，后续会出文章深究）\nG-Goroutine M-OS thread P-CPU core 形象的理解就是 M 作为服务员，通过 P 来服务许多的顾客 G，而管理员就是 Goruntime.\n每个 goroutine 都有三个状态（类似于 thread 的几个状态,但比其简单）\nExecuting Runnable Waiting 还有一个重要概念，这里简单提一嘴：GOMAXPROCS——代表着默认M的数量，同时也是最多有多少 goroutine 同时处于 Executing 状态。\nGOMAX-PROCS is by default equal to the number of available CPU cores；GOMAX-PROCS can be changed and can be less than the number of CPU cores\n最后再简单说说 GoRuntime 是怎么调度以保证并发效率的。\n采用队列保存 goroutine,有本地队列也有全局队列。 遇到自身没有 goroutine 的时候会进行 work stealing,从其他的队列偷一半过来保证并发效率。\n并发一定快吗？ 好了，补充了这么多了，希望大家没有忘记上面提出的问题，并发的写法一定比顺序的快吗？\n以书中的例子——归并排序举例。 因为归并排序每次将元素分为长度相同的两半，直到无法分，然后又对分出的这些内容进行排序，最后组合在一起（形成了一个树形结构）\n如果我们用 goroutine，大概是这样的。\nfunc MergesortV1(s []int) { if len(s) \u003c= 1 { return } middle := len(s) / 2 var wg sync.WaitGroup wg.Add(2) go func() { defer wg.Done() MergesortV1(s[:middle]) }() go func() { defer wg.Done() MergesortV1(s[middle:]) }() wg.Wait() merge(s, middle) } 结果发现，并发反而要比顺序要慢，这是为什么呢？\n还记得我们一开始就说过，并发是一种组织结构，是需要调度的，调度是需要开销的。 尽管我们已经用了 goroutine 这样一个开销较小的结构，但是对于归并排序，每次把元素划分地太小了，导致每一个任务的开销甚至不如调度的开销，所以并发更加耗时。 如何解决这个问题？很明显是 workload 的缘故，所以我们可以设置一个 workload 的 threshhold,不够这个门槛的顺序执行，超过的并发执行。\n并发引起的数据竞争 在上面我们引入了 goroutine 并讨论了 golang 中的并发与并行。接下来讨论常见的数据竞争问题。\n首先要明确一点：goroutine 虽然已经创建，但不一定立刻调度运行（Go 的调度器不保证立即运行）也就是我们写的代码的顺序并不是真正的执行顺序。\n众所周知，数据竞争一直是并发问题下绕不开的话题。Go 中使用 goroutine 这种更小的结构更应该讨论如何面对数据竞争。 同时 Go 也为我们提供了一个运行时参数-race来检查我们的代码中是否有数据竞争问题。\n那我们就来看看 Go 是如何避免数据竞争的。 Go的标准库 sync 下就有一些准备好的方法。\natomic 从单词意思就可以看出来，原子化——不能被打断的操作。atomic.AddInt64(\u0026i, 1) 需要注意的是，其只能作用于具体类型，不能用于像 slices,maps,structs这样的结构。（并且还得指明bit位数）\nmutex 这就类似于操作系统课程中的锁，mutex可以主动给数据区上锁打造临界区，这样自然可以处理数据冲突问题。mutex.Lock()\n但是可能会发生死锁问题——死锁发生的根本原因是所有 goroutine 都被阻塞，没有任何一个能推进程序的执行。 特别是 main 中的被阻塞，而其他的 goroutine还没来得及启动时，那一定会都堵在那里。\nchannel 同时，我们也可以用 channel处理数据竞争，关于其底层原理，见我的文章.\n这里我们使用的是无缓冲的 channel，因为无缓冲型有一个特点是其必须存在一对接收方与发送方，如果少了其中之一，这个通道就会阻塞。 所以无缓冲的通道具有很强的同步一致性。\n有缓冲也可以，但是需要我们进行额外设计。\n区分mutex与channel 区分mutex与channel,二者最本质的区别是前者强调上锁形成一个临界区，而后者强调不同 goroutine 之间的通信协作。\nmu.Lock(),mu.Unlock()保护共享的内存 ch \u003c-1, \u003c-ch发送给通道，通道接收 在 Golang 中有一个原则是：不要通过共享内存来通信，而应该通过通信来共享内存\n区分data race和race condition 解决了数据竞争程序就可以一定按照我们想要的顺序执行吗？不一定。例如\ni := 0 mutex := sync.Mutex{} go func() { mutex.Lock() defer mutex.Unlock() i = 1 }() go func() { mutex.Lock() defer mutex.Unlock() i = 2 }() 很明显，没有数据竞争问题，但是最终结果会是1还是2？得看两个协程的运行先后顺序了。\nA data race occurs when multiple goroutines simultaneously access the same memory location and at least one of them is writing. An application can be free of data races but still have behavior that depends on uncontrolled events (such as goroutine execution, how fast a message is published to a channel, or how long a call to a data-base lasts); this is a race condition.\n可见 mutex 无法解决执行顺序问题，但是 channel 可以，它的核心思想一直是通过通信来共享数据，而不是通过共享数据来通信。 所以我们可以通过channel解决，第二个操作需要等待第一个操作完成（对其阻塞）\ni := 0 done1 := make(chan struct{}) // 用于通知第一个 goroutine 已完成 done2 := make(chan struct{}) // 用于通知第二个 goroutine 已完成 go func() { i = 1 close(done1) // 通知第一个操作已完成 }() go func() { \u003c-done1 // 等待第一个操作完成 i = 2 close(done2) // 通知第二个操作已完成 }() \u003c-done2 // 等待所有操作完成 fmt.Println(i) // 保证输出 2 具体原理简单解释一下：如果 done1 通道阻塞了，第二个 goroutine会被挂起并加入到接收等待队列，调度器会将其移出可运行队列，并切换其他协程，直到被唤醒。\nGo内存模型 上面的执行顺序问题其实在 Go 的内存模型中就已经定义过了。称为多 goroutine 并发操作时的执行顺序规则。 关键在于 happens-before 关系。规定哪些操作必须发生在另一些操作之前。\n1.channel 的发送操作在接收完成之前 1.底层用锁和等待队列实现。 2.close 先于所有“因关闭而返回”的接收操作 1.这样就不会出现关闭后仍能接收的情况 3.无缓冲的 channel 接收操作先于发送完成（这一点有些难理解） 1.就是我们说的接收和发送是一对操作，如果没有准备好的发送，接收就会阻塞\ngoroutine泄漏问题 Context在并发中也是十分重要的一环，用于控制生命周期，具体见这篇文章.最后我们来说一下一个常见问题: goroutine的泄漏——某些 goroutine 在预期之外长期运行或阻塞，无法被回收，导致内存和 CPU 资源浪费，甚至程序崩溃（其实阻塞有时就是死锁）。\n无缓冲 channel 阻塞：我们之前一直强调 channel 要是成对出现的，如果永久阻塞就会泄漏 未关闭 channel 导致接收者阻塞 无限循环的：增加退出条件，例如 ctx.Done() 未处理的 select 分支:最终原因也是堵塞 为了解决堵塞，我们推荐使用有缓冲的 channel，确保关闭通道，使用 context 来控制生命周期，使用 select（case）+default分支结构。\n区分 I/O密集型和CPU密集型任务 I/O 密集型任务：网络请求，文件操作，数据库访问。 CPU 密集型任务：数学计算，图像处理等。\n由于 Go 的调度依赖运行时，之前我们提到他是在用户态的调度，所以上下文的切换成本比 thread 要低得多。于是可以创建数十万级别的 goroutine. 如果有10000个HTTP请求，他就可以开10000个 goroutine，而由于调度器的存在（GMP模型）实际上只需要少量的 OS thread。 其通信模型 channel 也十分适合这类型的任务。\n但是到了 CPU 密集型任务，就得靠 GOMAXPROCS 这个参数了，它是实打实的表征着正在运行的 thread数量，Gol 对于这类任务并没有体现出更优的性能，C/C++ 也许更为合适。\n总结 Go 依靠其独特的 goroutine、channel、context结构，展现出优异的并发能力（特别是在I/O密集型任务上） Go 的核心理念是：不要通过共享内存来通信，而是通过通信来共享内存\n这里是LTX，感谢您阅读这篇博客，人生海海，和自己对话，像只蝴蝶纵横四海。\n",
   "wordCount" : "3455",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2025-05-03T21:04:26+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2025-05-03T21:04:26+08:00",
   "dateModified": "2025-05-03T21:04:26+08:00",
   "author":{
     "@type": "Person",
@@ -161,14 +161,14 @@ code.has-jax {
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/"
+    "@id": "https://LTXWorld.github.io/posts/031golangep05_%E5%B9%B6%E5%8F%9103%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%A8%E8%AE%BA%E5%B9%B6%E5%8F%91/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -186,7 +186,7 @@ code.has-jax {
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -212,32 +212,32 @@ code.has-jax {
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -476,17 +476,17 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/golang/">Golang</a></li>
-      <li><a href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
-      <li><a href="http://localhost:1313/tags/%E5%B9%B6%E5%8F%91/">并发</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/golang/">Golang</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E5%B9%B6%E5%8F%91/">并发</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/">
     <span class="title">« 上一页</span>
     <br>
     <span>K3sEP07——配置私有镜像仓库准备构建跨架构镜像</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/029%E6%AF%8F%E6%9C%88%E6%94%B6%E6%94%AF%E5%9B%9E%E9%A1%BEep01-25_04/">
+  <a class="next" href="https://LTXWorld.github.io/posts/029%E6%AF%8F%E6%9C%88%E6%94%B6%E6%94%AF%E5%9B%9E%E9%A1%BEep01-25_04/">
     <span class="title">下一页 »</span>
     <br>
     <span>每月收支回顾EP01_25年</span>
@@ -682,6 +682,41 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -692,12 +727,56 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -718,6 +797,9 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -725,9 +807,13 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -736,6 +822,38 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -765,6 +883,11 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -787,6 +910,7 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -797,14 +921,26 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -889,29 +1025,56 @@ Go 的核心理念是：<strong>不要通过共享内存来通信，而是通过
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

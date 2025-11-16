@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -54,16 +54,16 @@ recvq,sendq:等待队列
 
 可以发现，hchan 使用环形队列表示缓冲区并且采用 lock 确保并发访问的安全性。">
 <meta name="author" content="LTX">
-<link rel="canonical" href="http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.6e3972293bbf4a9f6dd4b21687bb346e044b6210fc163c93db81a72185d1f6d5.css" integrity="sha256-bjlyKTu/Sp9t1LIWh7s0bgRLYhD8FjyT24GnIYXR9tU=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/favicon.png">
-<link rel="mask-icon" href="http://localhost:1313/favicon.png">
+<link rel="canonical" href="https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.dddcf8236b9dfa07cf7fc41c31965e89e4a220be850d3a2a97c6101480c078a9.css" integrity="sha256-3dz4I2ud&#43;gfPf8QcMZZeieSiIL6FDToql8YQFIDAeKk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://LTXWorld.github.io/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://LTXWorld.github.io/favicon.png">
+<link rel="apple-touch-icon" href="https://LTXWorld.github.io/favicon.png">
+<link rel="mask-icon" href="https://LTXWorld.github.io/favicon.png">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">
+<link rel="alternate" hreflang="zh" href="https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">
 <noscript>
     <style>
         #theme-toggle,
@@ -141,7 +141,7 @@ code.has-jax {
 
 }
 
-</style><meta property="og:url" content="http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">
+</style><meta property="og:url" content="https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/">
   <meta property="og:site_name" content="LTX&#39;s Blog">
   <meta property="og:title" content="GolangEP02_并发中的Channel">
   <meta property="og:description" content="前言 让我们看看关于 chan 有哪些常见的操作。
@@ -158,9 +158,9 @@ hchan结构体 type hchan struct { qcount uint // total data in the queue dataqs
     <meta property="article:tag" content="Golang">
     <meta property="article:tag" content="源码">
     <meta property="article:tag" content="Chan">
-      <meta property="og:image" content="http://localhost:1313/images/papermod-cover.png">
+      <meta property="og:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://localhost:1313/images/papermod-cover.png">
+<meta name="twitter:image" content="https://LTXWorld.github.io/images/papermod-cover.png">
 <meta name="twitter:title" content="GolangEP02_并发中的Channel">
 <meta name="twitter:description" content="前言
 让我们看看关于 chan 有哪些常见的操作。
@@ -219,13 +219,13 @@ recvq,sendq:等待队列
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "http://localhost:1313/posts/"
+      "item": "https://LTXWorld.github.io/posts/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "GolangEP02_并发中的Channel",
-      "item": "http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/"
+      "item": "https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/"
     }
   ]
 }
@@ -243,7 +243,7 @@ recvq,sendq:等待队列
   "articleBody": "前言 让我们看看关于 chan 有哪些常见的操作。\n创建channel ch1 := make(chan int) ch2 := make(chan int, 2) 底层实际上调用的是makechan方法\n发送数据到channel ch \u003c- 1 底层实际调用的是chansend1,而chansend1最终也是调用chansend,将block参数设置为true——当前发送操作是阻塞的\n从channel中读取数据 i \u003c- ch i, ok \u003c- ch 底层实际调用的是chanrecv1和chanrecv2，最终都去调用了chanrecv。\n源码 接下来我们进入源码中一探究竟。\nhchan结构体 type hchan struct { qcount uint // total data in the queue dataqsiz uint // size of the circular queue buf unsafe.Pointer // points to an array of dataqsiz elements elemsize uint16 synctest bool // true if created in a synctest bubble closed uint32 timer *timer // timer feeding this chan elemtype *_type // element type sendx uint // send index recvx uint // receive index recvq waitq // list of recv waiters sendq waitq // list of send waiters // lock protects all fields in hchan, as well as several // fields in sudogs blocked on this channel. // // Do not change another G's status while holding this lock // (in particular, do not ready a G), as this can deadlock // with stack shrinking. lock mutex } qcount:通道中存储的数据元素总数 dataqsiz:环形队列大小 buf:执行环形队列的内存缓冲区，存放实际数据——环形缓存区域，本质上是一个带有头尾指针的固定长度的数组 sendx,recvx:发收操作的队列位置 recvq,sendq:等待队列 可以发现，hchan 使用环形队列表示缓冲区并且采用 lock 确保并发访问的安全性。\nwaitq队列 type waitq struct { first *sudog last *sudog } 管理等待发送或接受的 goroutine 队列——存储阻塞在通道上的 goroutine 信息。 可以实现快速插入last和删除first，如果通道阻塞，goroutine会封装为 sudog 并挂入 waitq 队列中。\nsudog结构体 type sudog struct { g *g next *sudog prev *sudog elem unsafe.Pointer // data element (may point to stack) acquiretime int64 releasetime int64 ticket uint32 isSelect bool success bool waiters uint16 parent *sudog // semaRoot binary tree waitlink *sudog // g.waiting list or semaRoot waittail *sudog // semaRoot c *hchan // channel } 用于管理 Goroutine 在通道操作时的阻塞与唤醒操作,sudog 充当连接 Goroutine 和通道的桥梁\nc *hchan:表示当前阻塞的通道 elem:指向与通道操作相关的元素，例如保存发送数据 next,prev:waitq 的双向链表中的 sudog 节点 waitlink,waittail:用于 semaRoot（信号量队列）的队列链接。 parent:用于 semaRoot 的二叉树链接 g:当前阻塞的 Goroutine 对象 isSelect:当前 sudog 是否参与了 select 操作，可能存在唤醒竞争问题 success:当前通道操作是否完成 acquiretime,releasetime:sudog 被加入的时间和被唤醒的时间 可以发现有一些是跟信号量有关的操作semaRoot，是同步操作，与本节关系不太大。\n至此我们可以得知，hchan管理通道的核心状态，waitq双向链表作为等待队列连接多个阻塞的Goroutine,这些Goroutine由sudog记录，专门用于在 Goroutine 被挂起时保存其状态，并将其与特定资源（例如通道、锁或其他同步原语）关联起来。\n作为发送方，检查缓冲区是否未满，如果没满就写入缓冲；如果满了就阻塞到waitq中；如果由接收方等待，则唤醒接收方 作为接收方，检查缓冲区是否非空，如果非空直接读取数据，如果为空阻塞waitq；如果有发送者，唤醒发送方。 enqueue func (q *waitq) enqueue(sgp *sudog) { sgp.next = nil x := q.last if x == nil { sgp.prev = nil q.first = sgp q.last = sgp return } sgp.prev = x x.next = sgp q.last = sgp } 入队操作，将一个 sudog（阻塞的 goroutine 结构）添加到 waitq 队列中——通道在运行时实现发送和接受阻塞的核心机制：\n获取当前队列尾节点，如果为空意味着队列为空，将sudog作为第一个节点同时也是最后一个节点 如果队列非空，改变prev为当前尾节点并将sudog作为新的队尾。 dequeue func (q *waitq) dequeue() *sudog { for { sgp := q.first if sgp == nil { return nil } y := sgp.next if y == nil { q.first = nil q.last = nil } else { y.prev = nil q.first = y sgp.next = nil // mark as removed (see dequeueSudoG) } if sgp.isSelect { if !sgp.g.selectDone.CompareAndSwap(0, 1) { // We lost the race to wake this goroutine. continue } } return sgp } } 出队操作，返回被移除的 sudog\n如果队列头为空，意味着队列为空 如果只有一个结点，移除后队列设置为空 如果有多个节点，移除头结点并更新队列（这里的核心逻辑都是找到第二个节点） 如果该 goroutine 是由于select放入队列，则需要检查是否有竞争条件——看是否有其他的 goroutine 先一步唤醒了该 sgp，如果是则不能将其移除，继续尝试出队下一个结点。 makechan()函数 func makechan(t *chantype, size int) *hchan { elem := t.Elem // compiler checks this but be safe. if elem.Size_ \u003e= 1\u003c\u003c16 { throw(\"makechan: invalid channel element type\") } // 检查通道结构体是否正确对齐，保证运行时安全性 if hchanSize%maxAlign != 0 || elem.Align_ \u003e maxAlign { throw(\"makechan: bad alignment\") } mem, overflow := math.MulUintptr(elem.Size_, uintptr(size)) if overflow || mem \u003e maxAlloc-hchanSize || size \u003c 0 { panic(plainError(\"makechan: size out of range\")) } var c *hchan switch { case mem == 0: // Queue or element size is zero. c = (*hchan)(mallocgc(hchanSize, nil, true)) c.buf = c.raceaddr() case !elem.Pointers(): c = (*hchan)(mallocgc(hchanSize+mem, nil, true)) c.buf = add(unsafe.Pointer(c), hchanSize) default: // Elements contain pointers. c = new(hchan) c.buf = mallocgc(mem, elem, true) } c.elemsize = uint16(elem.Size_) c.elemtype = elem c.dataqsiz = uint(size) if getg().syncGroup != nil { c.synctest = true } lockInit(\u0026c.lock, lockRankHchan) if debugChan { print(\"makechan: chan=\", c, \"; elemsize=\", elem.Size_, \"; dataqsiz=\", size, \"\\n\") } return c } 根据给定的通道类型和大小，初始化一个通道的底层结构体 hchan 并分配必要的内存.\n1 验证通道中的元素类型和通道对齐 2 计算缓冲区大小:元素大小 × 容量，检查是否溢出或超出允许的最大分配值 3 分配内存并初始化: 如果缓冲区为0只分配hchan的结构体内存； 如果存储元素不包含指针，将hchan和缓冲区内存一次性分配在一起； 如果存储元素包含指针，分开分配，保证垃圾回收器能够正确追踪指针（详情见垃圾回收博文） 4 初始化通道，设置元素大小，类型，通道容量，初始化锁 5 最终返回通道hchan指针 send()函数 func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) { if c.synctest \u0026\u0026 sg.g.syncGroup != getg().syncGroup { unlockf() panic(plainError(\"send on synctest channel from outside bubble\")) } if raceenabled { if c.dataqsiz == 0 { racesync(c, sg) } else { // Pretend we go through the buffer, even though // we copy directly. Note that we need to increment // the head/tail locations only when raceenabled. racenotify(c, c.recvx, nil) racenotify(c, c.recvx, sg) c.recvx++ if c.recvx == c.dataqsiz { c.recvx = 0 } c.sendx = c.recvx // c.sendx = (c.sendx+1) % c.dataqsiz } } if sg.elem != nil { sendDirect(c.elemtype, sg, ep) sg.elem = nil } gp := sg.g unlockf() gp.param = unsafe.Pointer(sg) sg.success = true if sg.releasetime != 0 { sg.releasetime = cputicks() } goready(gp, skip+1) } 处理数据从发送端到接收端的实际传输\n1 进行调试和同步测试，确保通道的发送和接收在相同的同步组中 2 触发数据竞争检测:如果无缓冲，调用racesync同步收发；如果有缓冲，通过racenotify模拟数据传输和缓冲区索引更新 3 调用sendDirect将发送者sudog的数据直接复制到接收者Gorontine的sudog结构中 4 标记发送成功，记录性能追踪的释放时间，调用goready唤醒接收者Goroutine chansend()函数 func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool { if c == nil { if !block { return false } gopark(nil, nil, waitReasonChanSendNilChan, traceBlockForever, 2) throw(\"unreachable\") } if debugChan { print(\"chansend: chan=\", c, \"\\n\") } if raceenabled { racereadpc(c.raceaddr(), callerpc, abi.FuncPCABIInternal(chansend)) } if c.synctest \u0026\u0026 getg().syncGroup == nil { panic(plainError(\"send on synctest channel from outside bubble\")) } if !block \u0026\u0026 c.closed == 0 \u0026\u0026 full(c) { return false } var t0 int64 if blockprofilerate \u003e 0 { t0 = cputicks() } lock(\u0026c.lock) if c.closed != 0 { unlock(\u0026c.lock) panic(plainError(\"send on closed channel\")) } if sg := c.recvq.dequeue(); sg != nil { // Found a waiting receiver. We pass the value we want to send // directly to the receiver, bypassing the channel buffer (if any). send(c, sg, ep, func() { unlock(\u0026c.lock) }, 3) return true } if c.qcount \u003c c.dataqsiz { // Space is available in the channel buffer. Enqueue the element to send. qp := chanbuf(c, c.sendx) if raceenabled { racenotify(c, c.sendx, nil) } typedmemmove(c.elemtype, qp, ep) c.sendx++ if c.sendx == c.dataqsiz { c.sendx = 0 } c.qcount++ unlock(\u0026c.lock) return true } if !block { unlock(\u0026c.lock) return false } // Block on the channel. Some receiver will complete our operation for us. gp := getg() mysg := acquireSudog() mysg.releasetime = 0 if t0 != 0 { mysg.releasetime = -1 } // No stack splits between assigning elem and enqueuing mysg // on gp.waiting where copystack can find it. mysg.elem = ep mysg.waitlink = nil mysg.g = gp mysg.isSelect = false mysg.c = c gp.waiting = mysg gp.param = nil c.sendq.enqueue(mysg) gp.parkingOnChan.Store(true) reason := waitReasonChanSend if c.synctest { reason = waitReasonSynctestChanSend } gopark(chanparkcommit, unsafe.Pointer(\u0026c.lock), reason, traceBlockChanSend, 2) KeepAlive(ep) // someone woke us up. if mysg != gp.waiting { throw(\"G waiting list is corrupted\") } gp.waiting = nil gp.activeStackChans = false closed := !mysg.success gp.param = nil if mysg.releasetime \u003e 0 { blockevent(mysg.releasetime-t0, 2) } mysg.c = nil releaseSudog(mysg) if closed { if c.closed == 0 { throw(\"chansend: spurious wakeup\") } panic(plainError(\"send on closed channel\")) } return true } 本方法向c目标通道发送数据ep，并标志是否采用阻塞方式，记录调用方的pc。返回发送成功或者失败\n1 通道为nil的处理 2 竞态检测 3 通道未关闭且已满 4 获取通道互斥锁，如果通道已关闭立即解锁并抛出panic 5 优先处理接收处理:如果有Goroutine正在等待接收，直接调用send发送——会绕过缓冲区 6 如果缓冲区未满，将数据写入缓冲区 7 如果是阻塞模式（没有等待的接收者且缓存区已满或无缓存），那么当前Goroutine会阻塞，创建一个sudog结构体mysg记录发送者的信息，直到接收者处理当前发送操作。 8 如果发送者被唤醒，验证状态正常后进行资源的清理释放上面的sudog避免内存泄漏；并进行性能统计记录阻塞时间。 总结来看，一共分为三种可能的发送方式\n同步发送（有正在等待的） 异步发送（写入缓存） 阻塞发送（放入wait队列中） chanrecv()函数 异常检查 func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool) { if debugChan { print(\"chanrecv: chan=\", c, \"\\n\") } if c == nil { if !block { return } gopark(nil, nil, waitReasonChanReceiveNilChan, traceBlockForever, 2) throw(\"unreachable\") } if c.synctest \u0026\u0026 getg().syncGroup == nil { panic(plainError(\"receive on synctest channel from outside bubble\")) } if c.timer != nil { c.timer.maybeRunChan() } if !block \u0026\u0026 empty(c) { if atomic.Load(\u0026c.closed) == 0 { return } if empty(c) { // The channel is irreversibly closed and empty. if raceenabled { raceacquire(c.raceaddr()) } if ep != nil { typedmemclr(c.elemtype, ep) } return true, false } } ....... } 如果通道为空且不阻塞，立即返回；如果通道为空且阻塞，不能从空的通道接收会直接挂起 同步组校验与定时器检查 进行快速路径检查（这里有些模糊） 同步接收 var t0 int64 if blockprofilerate \u003e 0 { t0 = cputicks() } lock(\u0026c.lock) if c.closed != 0 { if c.qcount == 0 { if raceenabled { raceacquire(c.raceaddr()) } unlock(\u0026c.lock) if ep != nil { typedmemclr(c.elemtype, ep) } return true, false } } else { if sg := c.sendq.dequeue(); sg != nil { recv(c, sg, ep, func() { unlock(\u0026c.lock) }, 3) return true, true } } 对通道加锁 如果通道关闭且缓冲区为空，如不符合接收recv请求的状态，直接返回。 如果sendq中有sudog等待的发送者，调用recv函数完成同步接收 异步接收 if c.qcount \u003e 0 { // Receive directly from queue qp := chanbuf(c, c.recvx) if raceenabled { racenotify(c, c.recvx, nil) } if ep != nil { typedmemmove(c.elemtype, ep, qp) } typedmemclr(c.elemtype, qp) c.recvx++ if c.recvx == c.dataqsiz { c.recvx = 0 } c.qcount-- unlock(\u0026c.lock) return true, true } 如果缓冲区有数据，从缓冲区根据recvx索引读取 更新通道的信息（索引，缓冲区数据数量） 返回true，表示接收成功 阻塞接收 if !block { unlock(\u0026c.lock) return false, false } gp := getg() mysg := acquireSudog() mysg.releasetime = 0 if t0 != 0 { mysg.releasetime = -1 } mysg.elem = ep mysg.waitlink = nil gp.waiting = mysg mysg.g = gp mysg.isSelect = false mysg.c = c gp.param = nil c.recvq.enqueue(mysg) if c.timer != nil { blockTimerChan(c) } gp.parkingOnChan.Store(true) reason := waitReasonChanReceive if c.synctest { reason = waitReasonSynctestChanReceive } gopark(chanparkcommit, unsafe.Pointer(\u0026c.lock), reason, traceBlockChanRecv, 2) 如果sendq中没有待发送的goroutine且缓冲区为空，即上面那两个if都不满足，则进入阻塞阶段。 与chansend中逻辑相似，将当前goroutine休眠并创建一个新的sudog保存被挂起的goroutine当前状态。 // someone woke us up if mysg != gp.waiting { throw(\"G waiting list is corrupted\") } if c.timer != nil { unblockTimerChan(c) } gp.waiting = nil gp.activeStackChans = false if mysg.releasetime \u003e 0 { blockevent(mysg.releasetime-t0, 2) } success := mysg.success gp.param = nil mysg.c = nil releaseSudog(mysg) return true, success 被调度器唤醒后完成阻塞接收，进行参数检查，解除通道的绑定并释放创建的这个sudog。\n总结 参考资料 https://github.com/golang/go/blob/master/src/runtime/chan.go#L176 https://juejin.cn/post/7125610595801530376#heading-4 ",
   "wordCount" : "3751",
   "inLanguage": "zh",
-  "image": "http://localhost:1313/images/papermod-cover.png","datePublished": "2024-12-05T15:40:56+08:00",
+  "image": "https://LTXWorld.github.io/images/papermod-cover.png","datePublished": "2024-12-05T15:40:56+08:00",
   "dateModified": "2024-12-05T15:40:56+08:00",
   "author":{
     "@type": "Person",
@@ -251,14 +251,14 @@ recvq,sendq:等待队列
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "http://localhost:1313/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/"
+    "@id": "https://LTXWorld.github.io/posts/007golangep02_%E5%B9%B6%E5%8F%9102chan/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "LTX's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "http://localhost:1313/favicon.png"
+      "url": "https://LTXWorld.github.io/favicon.png"
     }
   }
 }
@@ -276,7 +276,7 @@ recvq,sendq:等待队列
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
+            <a href="https://LTXWorld.github.io/" accesskey="h" title="LTX&#39;s Blog (Alt + H)">LTX&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -302,32 +302,32 @@ recvq,sendq:等待队列
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/" title="LTX&#39;s Blog">
+                <a href="https://LTXWorld.github.io/" title="LTX&#39;s Blog">
                     <span>首页</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/archives/" title="归档">
+                <a href="https://LTXWorld.github.io/archives/" title="归档">
                     <span>归档</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
+                <a href="https://LTXWorld.github.io/categories/" title="Categories">
                     <span>分类</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/tags/" title="Tags">
+                <a href="https://LTXWorld.github.io/tags/" title="Tags">
                     <span>标签</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/search/" title="搜索">
+                <a href="https://LTXWorld.github.io/search/" title="搜索">
                     <span>搜索</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="后花园">
+                <a href="https://LTXWorld.github.io/about/" title="后花园">
                     <span>关于</span>
                 </a>
             </li>
@@ -954,17 +954,17 @@ recvq,sendq:等待队列
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="http://localhost:1313/tags/golang/">Golang</a></li>
-      <li><a href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
-      <li><a href="http://localhost:1313/tags/chan/">Chan</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/golang/">Golang</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/%E6%BA%90%E7%A0%81/">源码</a></li>
+      <li><a href="https://LTXWorld.github.io/tags/chan/">Chan</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/">
+  <a class="prev" href="https://LTXWorld.github.io/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/">
     <span class="title">« 上一页</span>
     <br>
     <span>DebugEP01——Postgresql</span>
   </a>
-  <a class="next" href="http://localhost:1313/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/">
+  <a class="next" href="https://LTXWorld.github.io/posts/005golangep01_%E5%B9%B6%E5%8F%9101_context/">
     <span class="title">下一页 »</span>
     <br>
     <span>GolangEP01_并发之绕不过的context</span>
@@ -1160,6 +1160,41 @@ recvq,sendq:等待队列
     const maxOffset = 220;
     const hideThreshold = 180;
     const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
 
     const state = {
       index: 0,
@@ -1170,12 +1205,56 @@ recvq,sendq:等待队列
       collapsed: false,
     };
 
-    const setOffset = (value) => {
-      state.offset = clamp(value, minOffset, maxOffset);
-      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
     };
 
-    const setCollapsed = (value) => {
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
       const collapsed = Boolean(value);
       state.collapsed = collapsed;
       player.classList.toggle('ltx-collapsed', collapsed);
@@ -1196,6 +1275,9 @@ recvq,sendq:等待队列
           fabButton.tabIndex = -1;
         }
       }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -1203,9 +1285,13 @@ recvq,sendq:等待队列
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
-    setCollapsed(false);
 
     const updateProgress = () => {
       const duration = audio.duration || 0;
@@ -1214,6 +1300,38 @@ recvq,sendq:等待队列
       progressFillEl.style.width = `${percentage}%`;
       currentTimeEl.textContent = formatTime(current);
       totalTimeEl.textContent = formatTime(duration);
+    };
+
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
     };
 
     const setTrack = (nextIndex, options = {}) => {
@@ -1243,6 +1361,11 @@ recvq,sendq:等待队列
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -1265,6 +1388,7 @@ recvq,sendq:等待队列
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -1275,14 +1399,26 @@ recvq,sendq:等待队列
       setTrack(state.index - 1, { play: shouldPlay });
     };
 
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
     if (collapseBtn) {
       collapseBtn.addEventListener('click', () => setCollapsed(true));
     }
 
     if (fabButton) {
       fabButton.addEventListener('click', () => setCollapsed(false));
-      fabButton.setAttribute('aria-hidden', 'true');
-      fabButton.tabIndex = -1;
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
     }
 
     if (dragHandle) {
@@ -1367,29 +1503,56 @@ recvq,sendq:等待队列
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 
