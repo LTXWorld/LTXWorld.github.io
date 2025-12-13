@@ -166,6 +166,9 @@ params:
       - title: "爱错"
         artist: "王力宏"
         file: "/audio/11 - 爱错.mp3"
+      - title: "Last Night"
+        artist: "Morgan Wallen"
+        file: "/audio/Last Night - Morgan Wallen.mp3"
 
   giscus:
     repo: "LTXWorld/LTXWorld.github.io"
