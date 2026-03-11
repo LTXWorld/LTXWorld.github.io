@@ -1,155 +1,54 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
-  <channel>
-    <title>云计算 on LTX&#39;s Blog</title>
-    <link>https://LTXWorld.github.io/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/</link>
-    <description>Recent content in 云计算 on LTX&#39;s Blog</description>
-    <image>
-      <title>LTX&#39;s Blog</title>
-      <url>https://LTXWorld.github.io/images/papermod-cover.png</url>
-      <link>https://LTXWorld.github.io/images/papermod-cover.png</link>
-    </image>
-    <generator>Hugo -- 0.145.0</generator>
-    <language>zh</language>
-    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
-    <lastBuildDate>Tue, 03 Jun 2025 09:27:10 +0800</lastBuildDate>
-    <atom:link href="https://LTXWorld.github.io/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>K3sEP13——遇到的Traedfik问题</title>
-      <link>https://LTXWorld.github.io/posts/041traefik/</link>
-      <pubDate>Tue, 03 Jun 2025 09:27:10 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/041traefik/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。&lt;/p&gt;
-&lt;p&gt;恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP12——监控集群的两种方式</title>
-      <link>https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</link>
-      <pubDate>Sun, 18 May 2025 18:29:58 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 &lt;a href=&#34;https://github.com/kubernetes-sigs/metrics-server&#34;&gt;metric-server&lt;/a&gt;;
-在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP11——加入agent节点进行集群测试</title>
-      <link>https://LTXWorld.github.io/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/</link>
-      <pubDate>Fri, 16 May 2025 14:08:23 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;继上一篇文章中我们成功迁移了 k3s 到 riscv64 上之后,我们使用另外一个 riscv 开发板作为 agent 节点进行集群化测试.&lt;/p&gt;
-&lt;h2 id=&#34;环境初始化&#34;&gt;环境初始化&lt;/h2&gt;
-&lt;p&gt;仍然按照 EP09 中的步骤进行环境的初始化.&lt;/p&gt;
-&lt;p&gt;执行到安装时,请按照下面的步骤进行,因为 agent 与 server 的步骤略有不同.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP10——迁移k3s至riscv64开发板的过程记录</title>
-      <link>https://LTXWorld.github.io/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link>
-      <pubDate>Thu, 15 May 2025 13:43:20 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;系统级别的重要镜像进行适配并可以成功拉取到开发板&lt;/li&gt;
-&lt;li&gt;执行 make 或者 download,build,package-cli 脚本&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP09——初始化开发板环境操作汇总</title>
-      <link>https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</link>
-      <pubDate>Wed, 14 May 2025 09:37:37 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</guid>
-      <description>&lt;h2 id=&#34;前瞻&#34;&gt;前瞻&lt;/h2&gt;
-&lt;p&gt;本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.&lt;/p&gt;
-&lt;h2 id=&#34;烧录镜像&#34;&gt;烧录镜像&lt;/h2&gt;
-&lt;p&gt;关于烧录操作,无需多言,请关注这篇&lt;a href=&#34;https://www.bfsmlt.top/posts/003li_riscv01/&#34;&gt;文章&lt;/a&gt;.本文主要说一下镜像问题.&lt;/p&gt;
-&lt;p&gt;在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
-甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP08——make后会发生什么?从源码解析构建过程</title>
-      <link>https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/</link>
-      <pubDate>Tue, 13 May 2025 13:55:39 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此&lt;a href=&#34;https://github.com/CARV-ICS-FORTH/kubernetes-riscv64&#34;&gt;仓库&lt;/a&gt;.
-发现其构建 riscv 采用了以下命令&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Build&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;rm -rf bin dist build
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;ARCH&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;riscv64 &lt;span class=&#34;nv&#34;&gt;SKIP_IMAGE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;SKIP_VALIDATE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;SKIP_AIRGAP&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;true&lt;/span&gt; make
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Split&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; dist/artifacts
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;gzip &amp;lt; k3s-riscv64 &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; split -b 20M - k3s-riscv64.gz.
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在此 &lt;a href=&#34;https://github.com/k3s-io/k3s/pull/7778&#34;&gt;pull request&lt;/a&gt; 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP07——配置私有镜像仓库准备构建跨架构镜像</title>
-      <link>https://LTXWorld.github.io/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/</link>
-      <pubDate>Fri, 09 May 2025 16:04:29 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.&lt;/p&gt;
-&lt;p&gt;之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持.
-跟随他的足迹,我找到了他已经做出了的&lt;a href=&#34;https://github.com/CARV-ICS-FORTH/kubernetes-riscv64&#34;&gt;适配工作&lt;/a&gt;.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP05——开发板上k3s存在的问题02_local-path-provisioner</title>
-      <link>https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</link>
-      <pubDate>Tue, 15 Apr 2025 16:14:08 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kubectl get pods -A -o wide
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;NAMESPACE     NAME                                      READY   STATUS             RESTARTS        AGE    IP           NODE                NOMINATED NODE   READINESS GATES
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;default       redis-696579c6c8-v2wns                    1/1     Running            &lt;span class=&#34;m&#34;&gt;4&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;4m10s ago&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;   7d6h   10.42.0.17   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   helm-install-traefik-pv4hv                0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.20   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   local-path-provisioner-7b7dc8d6f5-48jjf   0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.19   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   helm-install-traefik-crd-ktfth            0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.21   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   metrics-server-668d979685-jthzj           0/1     ImagePullBackOff   &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               14d    10.42.0.22   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;kube-system   coredns-5f8bb7cf9f-5h5kj                  0/1     Running            &lt;span class=&#34;m&#34;&gt;0&lt;/span&gt;               11s    10.42.0.36   openeuler-riscv64   &amp;lt;none&amp;gt;           &amp;lt;none&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以发现在 kube-system 命名空间下的这些 Pod 还是处于 ImagePullBackOff 阶段，只有我们上次解决的 CoreDNS 是 Running，
-只是还存在网络问题没有解决,所以并没有 Ready.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像</title>
-      <link>https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</link>
-      <pubDate>Wed, 09 Apr 2025 16:01:58 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;解决一些目前k3s在RiscV开发板上存在的问题。&lt;/p&gt;
-&lt;h2 id=&#34;kubectlcrictl&#34;&gt;kubectl&amp;amp;crictl&lt;/h2&gt;
-&lt;p&gt;kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP03——移植镜像到RiscV开发板</title>
-      <link>https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</link>
-      <pubDate>Wed, 02 Apr 2025 19:10:13 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如&lt;code&gt;riscv64/nginx,riscv64/redis&lt;/code&gt;等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
-拿nginx镜像举例:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP02——解决RiscV开发板镜像无法拉取问题</title>
-      <link>https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/</link>
-      <pubDate>Fri, 28 Mar 2025 14:19:09 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。&lt;/p&gt;
-&lt;p&gt;值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP01——模拟Kine集群部署</title>
-      <link>https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</link>
-      <pubDate>Wed, 26 Mar 2025 18:51:27 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</guid>
-      <description>&lt;p&gt;本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）&lt;/p&gt;
-&lt;h2 id=&#34;实验环境&#34;&gt;实验环境&lt;/h2&gt;
-&lt;p&gt;本机: macos M2
-虚拟机: 采用&lt;a href=&#34;https://canonical.com/multipass&#34;&gt;Multipass&lt;/a&gt;这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>云计算 on LTX's Blog</title><link>https://blog.bfsmlt.top/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/</link><description>Recent content in 云计算 on LTX's Blog</description><image><title>LTX's Blog</title><url>https://blog.bfsmlt.top/images/papermod-cover.png</url><link>https://blog.bfsmlt.top/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Tue, 03 Jun 2025 09:27:10 +0800</lastBuildDate><atom:link href="https://blog.bfsmlt.top/categories/%E4%BA%91%E8%AE%A1%E7%AE%97/index.xml" rel="self" type="application/rss+xml"/><item><title>K3sEP13——遇到的Traedfik问题</title><link>https://blog.bfsmlt.top/posts/041traefik/</link><pubDate>Tue, 03 Jun 2025 09:27:10 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/041traefik/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在进行 k3s 的适配过程中，Traefik 作为系统组件镜像之一，我们最终使用了大佬构建好的镜像作为私有镜像，并没有进行深究。&lt;/p>
+&lt;p>恰好在昨天的一个集群测试中网络出现了问题，随着这个问题，我觉得我非常有必要去掌握 Traefik 这个组件。&lt;/p></description></item><item><title>K3sEP12——监控集群的两种方式</title><link>https://blog.bfsmlt.top/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</link><pubDate>Sun, 18 May 2025 18:29:58 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/038k3sep12%E7%9B%91%E6%8E%A7%E9%9B%86%E7%BE%A4/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>为了更好地管理集群,我们打算使用工具监控集群, k8s 首推的是 &lt;a href="https://github.com/kubernetes-sigs/metrics-server">metric-server&lt;/a>;
+在其他书籍中我看到的使用 prometheus(普罗米修斯),所以我们对二者都进行一个测试.&lt;/p></description></item><item><title>K3sEP11——加入agent节点进行集群测试</title><link>https://blog.bfsmlt.top/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/</link><pubDate>Fri, 16 May 2025 14:08:23 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/036k3sep11%E5%8A%A0%E5%85%A5agent%E8%8A%82%E7%82%B9%E8%BF%9B%E8%A1%8C%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>继上一篇文章中我们成功迁移了 k3s 到 riscv64 上之后,我们使用另外一个 riscv 开发板作为 agent 节点进行集群化测试.&lt;/p>
+&lt;h2 id="环境初始化">环境初始化&lt;/h2>
+&lt;p>仍然按照 EP09 中的步骤进行环境的初始化.&lt;/p>
+&lt;p>执行到安装时,请按照下面的步骤进行,因为 agent 与 server 的步骤略有不同.&lt;/p></description></item><item><title>K3sEP10——迁移k3s至riscv64开发板的过程记录</title><link>https://blog.bfsmlt.top/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</link><pubDate>Thu, 15 May 2025 13:43:20 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/035k3sep10%E6%88%90%E5%8A%9F%E8%BF%81%E7%A7%BBk3s%E8%87%B3riscv64%E5%BC%80%E5%8F%91%E6%9D%BF%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在前面的一系列文章中,我们知道了要想在 riscv 开发板上适配 k3s,我们要做以下两件事&lt;/p>
+&lt;ul>
+&lt;li>系统级别的重要镜像进行适配并可以成功拉取到开发板&lt;/li>
+&lt;li>执行 make 或者 download,build,package-cli 脚本&lt;/li>
+&lt;/ul>
+&lt;p>对于第一件事,已经有人做过了,我们只需要使用他做好的镜像,并将其推送到我们的私有仓库.&lt;/p></description></item><item><title>K3sEP09——初始化开发板环境操作汇总</title><link>https://blog.bfsmlt.top/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</link><pubDate>Wed, 14 May 2025 09:37:37 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</guid><description>&lt;h2 id="前瞻">前瞻&lt;/h2>
+&lt;p>本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.&lt;/p>
+&lt;h2 id="烧录镜像">烧录镜像&lt;/h2>
+&lt;p>关于烧录操作,无需多言,请关注这篇&lt;a href="https://www.bfsmlt.top/posts/003li_riscv01/">文章&lt;/a>.本文主要说一下镜像问题.&lt;/p>
+&lt;p>在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
+甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇&lt;/p></description></item><item><title>K3sEP08——make后会发生什么?从源码解析构建过程</title><link>https://blog.bfsmlt.top/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/</link><pubDate>Tue, 13 May 2025 13:55:39 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/033k3sep08%E6%BA%90%E7%A0%81%E6%9E%84%E5%BB%BA%E8%A7%A3%E6%9E%90/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>从 EP 07 中,我们可以看到已经有了成功的 riscv 移植工作,见此&lt;a href="https://github.com/CARV-ICS-FORTH/kubernetes-riscv64">仓库&lt;/a>.
+发现其构建 riscv 采用了以下命令&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Build&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">rm -rf bin dist build
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">ARCH&lt;/span>&lt;span class="o">=&lt;/span>riscv64 &lt;span class="nv">SKIP_IMAGE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nb">true&lt;/span> &lt;span class="nv">SKIP_VALIDATE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nb">true&lt;/span> &lt;span class="nv">SKIP_AIRGAP&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="nb">true&lt;/span> make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Split&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> dist/artifacts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">gzip &amp;lt; k3s-riscv64 &lt;span class="p">|&lt;/span> split -b 20M - k3s-riscv64.gz.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>在此 &lt;a href="https://github.com/k3s-io/k3s/pull/7778">pull request&lt;/a> 中他也提到了这一路上的适配工作过程:开始他是使用qemu模拟,之后在硬件上测试并适配我们之前提到过的各种镜像.&lt;/p></description></item><item><title>K3sEP07——配置私有镜像仓库准备构建跨架构镜像</title><link>https://blog.bfsmlt.top/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/</link><pubDate>Fri, 09 May 2025 16:04:29 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/032k3sep07%E9%85%8D%E7%BD%AE%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E5%87%86%E5%A4%87%E6%9E%84%E5%BB%BA%E8%B7%A8%E6%9E%B6%E6%9E%84%E9%95%9C%E5%83%8F/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>根据前面几篇 k3s 相关的文章,我们得到了一个结论——k3s 在上的适配首先要适配几个系统镜像.&lt;/p>
+&lt;p>之前在 issues 中看到一位大佬为 k3s-root 提供了 riscv 的支持.
+跟随他的足迹,我找到了他已经做出了的&lt;a href="https://github.com/CARV-ICS-FORTH/kubernetes-riscv64">适配工作&lt;/a>.&lt;/p></description></item><item><title>K3sEP05——开发板上k3s存在的问题02_local-path-provisioner</title><link>https://blog.bfsmlt.top/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</link><pubDate>Tue, 15 Apr 2025 16:14:08 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/020k3sep05%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8Ak3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%9802/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>接着上一篇文章，我们继续解决开发板上的k3s集群遇到的问题，回顾一下之前遇到的问题，使用命令查看当前所有 Pods。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">kubectl get pods -A -o wide
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">NAMESPACE NAME READY STATUS RESTARTS AGE IP NODE NOMINATED NODE READINESS GATES
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">default redis-696579c6c8-v2wns 1/1 Running &lt;span class="m">4&lt;/span> &lt;span class="o">(&lt;/span>4m10s ago&lt;span class="o">)&lt;/span> 7d6h 10.42.0.17 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system helm-install-traefik-pv4hv 0/1 ImagePullBackOff &lt;span class="m">0&lt;/span> 14d 10.42.0.20 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system local-path-provisioner-7b7dc8d6f5-48jjf 0/1 ImagePullBackOff &lt;span class="m">0&lt;/span> 14d 10.42.0.19 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system helm-install-traefik-crd-ktfth 0/1 ImagePullBackOff &lt;span class="m">0&lt;/span> 14d 10.42.0.21 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system metrics-server-668d979685-jthzj 0/1 ImagePullBackOff &lt;span class="m">0&lt;/span> 14d 10.42.0.22 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">kube-system coredns-5f8bb7cf9f-5h5kj 0/1 Running &lt;span class="m">0&lt;/span> 11s 10.42.0.36 openeuler-riscv64 &amp;lt;none&amp;gt; &amp;lt;none&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>可以发现在 kube-system 命名空间下的这些 Pod 还是处于 ImagePullBackOff 阶段，只有我们上次解决的 CoreDNS 是 Running，
+只是还存在网络问题没有解决,所以并没有 Ready.&lt;/p></description></item><item><title>K3sEP04——开发板上的k3s存在的问题01之CoreDNS镜像</title><link>https://blog.bfsmlt.top/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</link><pubDate>Wed, 09 Apr 2025 16:01:58 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/018k3sep04%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E7%9A%84k3s%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>解决一些目前k3s在RiscV开发板上存在的问题。&lt;/p>
+&lt;h2 id="kubectlcrictl">kubectl&amp;amp;crictl&lt;/h2>
+&lt;p>kubectl和crictl都是k3sCommandAPI中的命令，但是二者的运行结果却有所差异，我们可以从其差异中找到二者在使用上的异同。&lt;/p></description></item><item><title>K3sEP03——移植镜像到RiscV开发板</title><link>https://blog.bfsmlt.top/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</link><pubDate>Wed, 02 Apr 2025 19:10:13 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如&lt;code>riscv64/nginx,riscv64/redis&lt;/code>等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
+拿nginx镜像举例:&lt;/p></description></item><item><title>K3sEP02——解决RiscV开发板镜像无法拉取问题</title><link>https://blog.bfsmlt.top/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/</link><pubDate>Fri, 28 Mar 2025 14:19:09 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/014k3sep02%E8%A7%A3%E5%86%B3riscv%E5%BC%80%E5%8F%91%E6%9D%BF%E9%95%9C%E5%83%8F%E6%97%A0%E6%B3%95%E6%8B%89%E5%8F%96%E9%97%AE%E9%A2%98/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>继上次我们验证K3s在虚拟机上的集群部署，我们这次直接在RiscV开发板上实验部署K3s。&lt;/p>
+&lt;p>值得注意的是，k3s官方支持的架构里面是没有RiscV的，所以有了我们即将开展的适配工作，同时k3s的底层源码大部分都是由Golang构成，而Golang是适配RiscV的，所以我们针对RiscV的K3s移植工作是有可行性的。&lt;/p></description></item><item><title>K3sEP01——模拟Kine集群部署</title><link>https://blog.bfsmlt.top/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</link><pubDate>Wed, 26 Mar 2025 18:51:27 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/013k3sep01%E6%A8%A1%E6%8B%9Fkine%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2/</guid><description>&lt;p>本篇文章用来记录自己在虚拟机上搭建k3s集群的整个过程，并且使用了kine这个k3s专属的数据存储方法（代替了k8s中的etcd存储方式）&lt;/p>
+&lt;h2 id="实验环境">实验环境&lt;/h2>
+&lt;p>本机: macos M2
+虚拟机: 采用&lt;a href="https://canonical.com/multipass">Multipass&lt;/a>这个虚拟机软件，专门为Ubuntu而制作的虚拟化软件，可以很轻松地在macos上使用。&lt;/p></description></item></channel></rss>

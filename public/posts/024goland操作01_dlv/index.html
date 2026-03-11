@@ -13,7 +13,7 @@
 解决方法:下载最新的delve，替换掉Goland之前携带的delve">
 <meta name="author" content="LTX">
 <link rel="canonical" href="http://localhost:1313/posts/024goland%E6%93%8D%E4%BD%9C01_dlv/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.87ea10c5eb6cdf9fcc27aa5665a12ed25ef08a46de7d411927d891915eb7ca57.css" integrity="sha256-h&#43;oQxets35/MJ6pWZaEu0l7wikbefUEZJ9iRkV63ylc=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.efd63c840dd3112ace701320cb319a37c7052ee9c2cb677cc7e53020a26d91ca.css" integrity="sha256-79Y8hA3TESrOcBMgyzGaN8cFLunCy2d8x&#43;UwIKJtkco=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.png">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon.png">
@@ -420,9 +420,19 @@ code.has-jax {
     </svg>
 </a><div class="ltx-music-player" id="ltx-music-player" role="group" aria-label="背景音乐播放器">
   <audio id="ltx-music-audio" preload="metadata"></audio>
-  <div class="ltx-music-meta">
-    <span class="ltx-music-title" data-role="title"></span>
-    <span class="ltx-music-artist" data-role="artist"></span>
+  <div class="ltx-drag-handle" data-role="drag-handle" title="上下拖动调整位置"></div>
+  <div class="ltx-music-header">
+    <div class="ltx-music-visual">
+      <div class="ltx-disc" data-role="disc" aria-hidden="true">
+        <img data-role="cover" alt="" loading="lazy" decoding="async">
+        <div class="ltx-disc-center"></div>
+      </div>
+    </div>
+    <div class="ltx-music-meta">
+      <span class="ltx-music-title" data-role="title"></span>
+      <span class="ltx-music-artist" data-role="artist"></span>
+    </div>
+    <button type="button" class="ltx-music-hide" data-action="collapse" aria-label="隐藏播放器">&#215;</button>
   </div>
   <div class="ltx-music-progress" data-role="progress" aria-label="进度条" role="slider">
     <div class="ltx-music-progress-fill" data-role="progress-fill"></div>
@@ -445,8 +455,9 @@ code.has-jax {
   </div>
   <div class="ltx-autoplay-tip" data-role="tip" aria-live="polite"></div>
 </div>
+<button type="button" class="ltx-music-fab" id="ltx-music-fab" aria-label="显示音乐播放器">&#9835;</button>
 <script>
-  window.LTX_MUSIC_CONFIG = {"autoplay":true,"loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"}]};
+  window.LTX_MUSIC_CONFIG = {"autoplay":true,"defaultCover":"","loopPlaylist":true,"startVolume":0.6,"tracks":[{"artist":"王力宏","file":"/audio/02 - 依然爱你.mp3","title":"依然爱你"},{"artist":"王力宏","file":"/audio/05 - 改变自己.mp3","title":"改变自己"},{"artist":"王力宏","file":"/audio/11 - 爱错.mp3","title":"爱错"},{"artist":"Morgan Wallen","file":"/audio/Last Night - Morgan Wallen.mp3","title":"Last Night"}]};
   (function () {
     const config = window.LTX_MUSIC_CONFIG || {};
     if (!config.tracks || !config.tracks.length) {
@@ -462,11 +473,15 @@ code.has-jax {
     const currentTimeEl = player.querySelector('[data-role="current"]');
     const totalTimeEl = player.querySelector('[data-role="total"]');
     const tipEl = player.querySelector('[data-role="tip"]');
+    const coverEl = player.querySelector('[data-role="cover"]');
 
     const toggleBtn = player.querySelector('[data-action="toggle"]');
     const prevBtn = player.querySelector('[data-action="prev"]');
     const nextBtn = player.querySelector('[data-action="next"]');
     const muteBtn = player.querySelector('[data-action="mute"]');
+    const collapseBtn = player.querySelector('[data-action="collapse"]');
+    const dragHandle = player.querySelector('[data-role="drag-handle"]');
+    const fabButton = document.getElementById('ltx-music-fab');
 
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
     const formatTime = (seconds) => {
@@ -478,11 +493,128 @@ code.has-jax {
       return `${String(mins).padStart(1, '0')}:${String(secs).padStart(2, '0')}`;
     };
 
+    const minOffset = -120;
+    const maxOffset = 220;
+    const hideThreshold = 180;
+    const dragState = { active: false, startY: 0, startOffset: 0, pointerId: null };
+    const storageKey = 'ltx-music-player-state';
+
+    const safeStorage = (() => {
+      try {
+        const probeKey = '__ltx_music_probe__';
+        window.localStorage.setItem(probeKey, probeKey);
+        window.localStorage.removeItem(probeKey);
+        return window.localStorage;
+      } catch (err) {
+        console.warn('LTX music player: localStorage 不可用', err);
+        return null;
+      }
+    })();
+
+    const loadPersistedState = () => {
+      if (!safeStorage) {
+        return null;
+      }
+      try {
+        const raw = safeStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch (err) {
+        console.warn('LTX music player: 读取历史播放状态失败', err);
+        return null;
+      }
+    };
+
+    const normalizeIndex = (index, total) => {
+      if (!Number.isInteger(index) || !total) {
+        return 0;
+      }
+      return ((index % total) + total) % total;
+    };
+
+    const savedState = loadPersistedState();
+
     const state = {
       index: 0,
       tracks: config.tracks,
       autoplay: config.autoplay !== false,
       loopPlaylist: config.loopPlaylist !== false,
+      offset: 0,
+      collapsed: false,
+    };
+
+    if (savedState) {
+      if (state.tracks.length && Number.isInteger(savedState.trackIndex)) {
+        state.index = normalizeIndex(savedState.trackIndex, state.tracks.length);
+      }
+      if (Number.isFinite(savedState.offset)) {
+        state.offset = clamp(savedState.offset, minOffset, maxOffset);
+      }
+      if (typeof savedState.collapsed === 'boolean') {
+        state.collapsed = savedState.collapsed;
+      }
+    }
+
+    let lastPersistAt = 0;
+    const persistState = (overrides = {}, immediate = false) => {
+      if (!safeStorage) {
+        return;
+      }
+      const snapshot = {
+        trackIndex: state.index,
+        currentTime: audio.currentTime || 0,
+        isPlaying: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        collapsed: state.collapsed,
+        offset: state.offset,
+        ...overrides,
+      };
+      const now = Date.now();
+      if (!immediate && now - lastPersistAt < 800) {
+        return;
+      }
+      lastPersistAt = now;
+      try {
+        safeStorage.setItem(storageKey, JSON.stringify(snapshot));
+      } catch (err) {
+        console.warn('LTX music player: 保存播放状态失败', err);
+      }
+    };
+
+    const flushState = (overrides = {}) => persistState(overrides, true);
+
+    const setOffset = (value, options = {}) => {
+      state.offset = clamp(value, minOffset, maxOffset);
+      player.style.setProperty('--ltx-offset', `${state.offset}px`);
+      if (!options.silent) {
+        persistState({ offset: state.offset });
+      }
+    };
+
+    const setCollapsed = (value, options = {}) => {
+      const collapsed = Boolean(value);
+      state.collapsed = collapsed;
+      player.classList.toggle('ltx-collapsed', collapsed);
+      if (collapsed) {
+        player.classList.remove('ltx-dragging');
+        state.offset = 0;
+        player.style.removeProperty('--ltx-offset');
+        if (fabButton) {
+          fabButton.classList.add('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'false');
+          fabButton.tabIndex = 0;
+        }
+      } else {
+        setOffset(0);
+        if (fabButton) {
+          fabButton.classList.remove('ltx-visible');
+          fabButton.setAttribute('aria-hidden', 'true');
+          fabButton.tabIndex = -1;
+        }
+      }
+      if (!options.silent) {
+        persistState({ collapsed }, true);
+      }
     };
 
     const updateMuteClass = () => {
@@ -490,7 +622,12 @@ code.has-jax {
       player.classList.toggle('ltx-muted', muted);
     };
 
-    audio.volume = clamp(config.startVolume ?? 0.6, 0, 1);
+    const hasSavedVolume = savedState && Number.isFinite(savedState.volume);
+    const initialVolume = hasSavedVolume ? clamp(savedState.volume, 0, 1) : clamp(config.startVolume ?? 0.6, 0, 1);
+    audio.volume = initialVolume;
+    if (savedState && typeof savedState.muted === 'boolean') {
+      audio.muted = savedState.muted;
+    }
     updateMuteClass();
 
     const updateProgress = () => {
@@ -502,6 +639,38 @@ code.has-jax {
       totalTimeEl.textContent = formatTime(duration);
     };
 
+    const seekWhenReady = (time) => {
+      const target = Number.isFinite(time) ? Math.max(0, time) : 0;
+      if (!target) {
+        audio.currentTime = 0;
+        flushState({ currentTime: 0 });
+        updateProgress();
+        return;
+      }
+      const assign = () => {
+        const duration = audio.duration;
+        const upper = Number.isFinite(duration) && duration > 0 ? Math.min(target, duration) : target;
+        try {
+          audio.currentTime = upper;
+          updateProgress();
+          flushState({ currentTime: upper });
+        } catch (err) {
+           
+        }
+      };
+      if (audio.readyState >= 1) {
+        assign();
+      } else {
+        const handler = () => {
+          assign();
+          audio.removeEventListener('loadedmetadata', handler);
+          audio.removeEventListener('canplay', handler);
+        };
+        audio.addEventListener('loadedmetadata', handler);
+        audio.addEventListener('canplay', handler);
+      }
+    };
+
     const setTrack = (nextIndex, options = {}) => {
       const total = state.tracks.length;
       state.index = ((nextIndex % total) + total) % total;
@@ -511,12 +680,29 @@ code.has-jax {
         tipEl.textContent = '音频文件缺失，请检查配置';
         return;
       }
+      const cover = track.cover || config.defaultCover || '';
+      if (coverEl) {
+        if (cover) {
+          coverEl.src = cover;
+          coverEl.alt = track.title ? `${track.title} 封面` : '音乐封面';
+          player.classList.add('ltx-has-cover');
+        } else {
+          coverEl.removeAttribute('src');
+          coverEl.alt = '';
+          player.classList.remove('ltx-has-cover');
+        }
+      }
       titleEl.textContent = track.title || `Track ${state.index + 1}`;
       artistEl.textContent = track.artist || '';
       audio.src = track.file;
       player.dataset.trackIndex = state.index;
       tipEl.textContent = '';
       player.classList.remove('ltx-autoplay-blocked');
+      seekWhenReady(options.resumeTime);
+      flushState({
+        trackIndex: state.index,
+        currentTime: Number.isFinite(options.resumeTime) ? Math.max(0, options.resumeTime) : 0,
+      });
       updateProgress();
       if (options.play) {
         attemptPlay();
@@ -539,6 +725,7 @@ code.has-jax {
       if (nextIndex >= state.tracks.length && !state.loopPlaylist) {
         audio.currentTime = audio.duration || 0;
         audio.pause();
+        flushState();
         return;
       }
       setTrack(nextIndex, { play: shouldPlay });
@@ -548,6 +735,89 @@ code.has-jax {
       const shouldPlay = !audio.paused;
       setTrack(state.index - 1, { play: shouldPlay });
     };
+
+    if (state.collapsed) {
+      setCollapsed(true, { silent: true });
+    } else {
+      setOffset(state.offset, { silent: true });
+    }
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', () => setCollapsed(true));
+    }
+
+    if (fabButton) {
+      fabButton.addEventListener('click', () => setCollapsed(false));
+      if (state.collapsed) {
+        fabButton.classList.add('ltx-visible');
+        fabButton.setAttribute('aria-hidden', 'false');
+        fabButton.tabIndex = 0;
+      } else {
+        fabButton.setAttribute('aria-hidden', 'true');
+        fabButton.tabIndex = -1;
+      }
+    }
+
+    if (dragHandle) {
+      dragHandle.style.touchAction = 'none';
+      dragHandle.addEventListener('pointerdown', (event) => {
+        if (state.collapsed) {
+          return;
+        }
+        dragState.active = true;
+        dragState.pointerId = event.pointerId;
+        dragState.startY = event.clientY;
+        dragState.startOffset = state.offset;
+        if (dragHandle.setPointerCapture) {
+          try {
+            dragHandle.setPointerCapture(event.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        player.classList.add('ltx-dragging');
+      });
+
+      dragHandle.addEventListener('pointermove', (event) => {
+        if (!dragState.active) {
+          return;
+        }
+        const delta = event.clientY - dragState.startY;
+        setOffset(dragState.startOffset + delta);
+      });
+
+      const finishDrag = () => {
+        if (!dragState.active) {
+          return;
+        }
+        if (dragState.pointerId !== null && dragHandle.releasePointerCapture) {
+          try {
+            dragHandle.releasePointerCapture(dragState.pointerId);
+          } catch (err) {
+             
+          }
+        }
+        dragState.active = false;
+        dragState.pointerId = null;
+        player.classList.remove('ltx-dragging');
+        if (state.offset > hideThreshold) {
+          setCollapsed(true);
+        } else {
+          setOffset(state.offset);
+        }
+      };
+
+      ['pointerup', 'pointercancel'].forEach((eventName) => {
+        dragHandle.addEventListener(eventName, finishDrag);
+      });
+
+      dragHandle.addEventListener('pointerleave', () => {
+        if (!dragState.active) {
+          return;
+        }
+        finishDrag();
+      });
+    }
 
     toggleBtn.addEventListener('click', () => {
       if (audio.paused) {
@@ -570,29 +840,56 @@ code.has-jax {
       const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
       if (Number.isFinite(audio.duration)) {
         audio.currentTime = ratio * audio.duration;
+        flushState();
       }
     });
 
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('loadedmetadata', updateProgress);
+    audio.addEventListener('timeupdate', () => {
+      updateProgress();
+      persistState();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateProgress();
+      persistState();
+    });
 
     audio.addEventListener('play', () => {
       player.classList.add('ltx-playing');
       player.classList.remove('ltx-autoplay-blocked');
       tipEl.textContent = '';
+      flushState();
     });
 
     audio.addEventListener('pause', () => {
       player.classList.remove('ltx-playing');
+      flushState();
     });
 
     audio.addEventListener('ended', () => {
       playNext(true);
     });
 
-    audio.addEventListener('volumechange', updateMuteClass);
+    audio.addEventListener('volumechange', () => {
+      updateMuteClass();
+      flushState();
+    });
+    audio.addEventListener('seeked', () => {
+      flushState();
+    });
 
-    setTrack(0, { play: state.autoplay });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushState();
+      }
+    };
+
+    window.addEventListener('pagehide', () => flushState());
+    window.addEventListener('beforeunload', () => flushState());
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const initialResumeTime = savedState && Number.isFinite(savedState.currentTime) ? Math.max(0, savedState.currentTime) : 0;
+    const initialShouldPlay = savedState ? savedState.isPlaying === true : state.autoplay;
+    setTrack(state.index, { play: initialShouldPlay, resumeTime: initialResumeTime });
   })();
 </script>
 

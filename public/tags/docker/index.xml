@@ -1,68 +1,16 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
-  <channel>
-    <title>Docker on LTX&#39;s Blog</title>
-    <link>https://LTXWorld.github.io/tags/docker/</link>
-    <description>Recent content in Docker on LTX&#39;s Blog</description>
-    <image>
-      <title>LTX&#39;s Blog</title>
-      <url>https://LTXWorld.github.io/images/papermod-cover.png</url>
-      <link>https://LTXWorld.github.io/images/papermod-cover.png</link>
-    </image>
-    <generator>Hugo -- 0.145.0</generator>
-    <language>zh</language>
-    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
-    <lastBuildDate>Mon, 21 Jul 2025 19:08:15 +0800</lastBuildDate>
-    <atom:link href="https://LTXWorld.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>DebugEP02_私有镜像出问题啦</title>
-      <link>https://LTXWorld.github.io/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</link>
-      <pubDate>Mon, 21 Jul 2025 19:08:15 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;在使用私有镜像仓库时突然出现了认证问题，跟着 AI 来回改，在此记录一下改的过程。&lt;/p&gt;
-&lt;p&gt;首先回顾一下之前的那篇构建私有镜像仓库的文章,我们建立了两个容器，&lt;code&gt;registry&lt;/code&gt;用来存放镜像,&lt;code&gt;registry-UI&lt;/code&gt;用来给前端显示。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>K3sEP03——移植镜像到RiscV开发板</title>
-      <link>https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</link>
-      <pubDate>Wed, 02 Apr 2025 19:10:13 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</guid>
-      <description>&lt;h2 id=&#34;引子&#34;&gt;引子&lt;/h2&gt;
-&lt;p&gt;了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如&lt;code&gt;riscv64/nginx,riscv64/redis&lt;/code&gt;等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
-拿nginx镜像举例:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>DebugEP01——Postgresql</title>
-      <link>https://LTXWorld.github.io/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</link>
-      <pubDate>Sat, 07 Dec 2024 09:06:52 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</guid>
-      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
-&lt;p&gt;欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>玩转RISCV开发板02-配置好容器化环境</title>
-      <link>https://LTXWorld.github.io/posts/004risc-v_deployment/</link>
-      <pubDate>Fri, 29 Nov 2024 21:07:21 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/004risc-v_deployment/</guid>
-      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
-&lt;p&gt;这里照例列出所用设备配置&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;macbookair&lt;/li&gt;
-&lt;li&gt;LicheePi4A,16+128&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://LTXWorld.github.io/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;基础配置&#34;&gt;基础配置&lt;/h2&gt;
-&lt;p&gt;如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>玩转Docker系列——数据持久化</title>
-      <link>https://LTXWorld.github.io/posts/002docker_volume/</link>
-      <pubDate>Mon, 18 Nov 2024 18:49:09 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/002docker_volume/</guid>
-      <description>&lt;h1 id=&#34;docker_storage&#34;&gt;Docker_Storage&lt;/h1&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://LTXWorld.github.io/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg&#34;&gt;&lt;/p&gt;
-&lt;p&gt;大家好我是LTX，我猜在使用docker时你或多或少都会有疑问，我的数据被存到哪里去了？（什么?你不用docker?，滚出克😡）docker化之后为什么得到的镜像这么小，比我原始的程序要小这么多？特别是如果我将Mysql容器化，那它保存的记录都去哪里了？&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Docker on LTX's Blog</title><link>https://blog.bfsmlt.top/tags/docker/</link><description>Recent content in Docker on LTX's Blog</description><image><title>LTX's Blog</title><url>https://blog.bfsmlt.top/images/papermod-cover.png</url><link>https://blog.bfsmlt.top/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Mon, 21 Jul 2025 19:08:15 +0800</lastBuildDate><atom:link href="https://blog.bfsmlt.top/tags/docker/index.xml" rel="self" type="application/rss+xml"/><item><title>DebugEP02_私有镜像出问题啦</title><link>https://blog.bfsmlt.top/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</link><pubDate>Mon, 21 Jul 2025 19:08:15 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/047%E7%A7%81%E6%9C%89%E9%95%9C%E5%83%8F%E5%87%BA%E9%97%AE%E9%A2%98%E5%95%A6/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>在使用私有镜像仓库时突然出现了认证问题，跟着 AI 来回改，在此记录一下改的过程。&lt;/p>
+&lt;p>首先回顾一下之前的那篇构建私有镜像仓库的文章,我们建立了两个容器，&lt;code>registry&lt;/code>用来存放镜像,&lt;code>registry-UI&lt;/code>用来给前端显示。&lt;/p></description></item><item><title>K3sEP03——移植镜像到RiscV开发板</title><link>https://blog.bfsmlt.top/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</link><pubDate>Wed, 02 Apr 2025 19:10:13 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/016k3sep03%E7%A7%BB%E6%A4%8D%E9%95%9C%E5%83%8F%E5%88%B0riscv%E5%BC%80%E5%8F%91%E6%9D%BF/</guid><description>&lt;h2 id="引子">引子&lt;/h2>
+&lt;p>了解K3s的都知道，Pod，容器，镜像在K3s中的重要作用，所以我们首先要克服的难点正是如何让镜像们适配RiscV架构。通常，我们拉取镜像都来自于dockerhub,里面搜索确实有一些RiscV镜像，例如&lt;code>riscv64/nginx,riscv64/redis&lt;/code>等，但是经检查，其实它并不是官方认证的镜像，也几乎没有被维护或者使用，所以我们需要自己去进行镜像的适配。
+拿nginx镜像举例:&lt;/p></description></item><item><title>DebugEP01——Postgresql</title><link>https://blog.bfsmlt.top/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</link><pubDate>Sat, 07 Dec 2024 09:06:52 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/008debug%E7%B3%BB%E5%88%9701-postgresql/</guid><description>&lt;h1 id="前言">前言&lt;/h1>
+&lt;p>欢迎来到我的Debug系列第一集，我目前还没有完全想好这个系列该怎么去组织规划，但是我想记录下来遇到的大大小小的bug以及debug的过程应该于我自己而言是一件蛮有意思的事情。&lt;/p></description></item><item><title>玩转RISCV开发板02-配置好容器化环境</title><link>https://blog.bfsmlt.top/posts/004risc-v_deployment/</link><pubDate>Fri, 29 Nov 2024 21:07:21 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/004risc-v_deployment/</guid><description>&lt;h2 id="前言">前言&lt;/h2>
+&lt;p>这里照例列出所用设备配置&lt;/p>
+&lt;ul>
+&lt;li>macbookair&lt;/li>
+&lt;li>LicheePi4A,16+128&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img loading="lazy" src="https://blog.bfsmlt.top/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg">&lt;/p>
+&lt;h2 id="基础配置">基础配置&lt;/h2>
+&lt;p>如果你看完了上篇文章，那么一定成功连接到了wifi，那么我们就先用ssh从主机的终端连接到开发板（毕竟我只有一个显示器，开发板你不配）&lt;/p></description></item><item><title>玩转Docker系列——数据持久化</title><link>https://blog.bfsmlt.top/posts/002docker_volume/</link><pubDate>Mon, 18 Nov 2024 18:49:09 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/002docker_volume/</guid><description>&lt;h1 id="docker_storage">Docker_Storage&lt;/h1>
+&lt;p>&lt;img loading="lazy" src="https://blog.bfsmlt.top/img/ys/%E6%99%9A%E4%B8%8A%E5%A5%BD%E5%85%84%E5%BC%9F%E4%BB%AC.jpg">&lt;/p>
+&lt;p>大家好我是LTX，我猜在使用docker时你或多或少都会有疑问，我的数据被存到哪里去了？（什么?你不用docker?，滚出克😡）docker化之后为什么得到的镜像这么小，比我原始的程序要小这么多？特别是如果我将Mysql容器化，那它保存的记录都去哪里了？&lt;/p></description></item></channel></rss>

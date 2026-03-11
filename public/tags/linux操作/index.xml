@@ -1,30 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
-  <channel>
-    <title>Linux操作 on LTX&#39;s Blog</title>
-    <link>https://LTXWorld.github.io/tags/linux%E6%93%8D%E4%BD%9C/</link>
-    <description>Recent content in Linux操作 on LTX&#39;s Blog</description>
-    <image>
-      <title>LTX&#39;s Blog</title>
-      <url>https://LTXWorld.github.io/images/papermod-cover.png</url>
-      <link>https://LTXWorld.github.io/images/papermod-cover.png</link>
-    </image>
-    <generator>Hugo -- 0.145.0</generator>
-    <language>zh</language>
-    <copyright>©2025 LTX&amp;rsquo;s Blog</copyright>
-    <lastBuildDate>Wed, 14 May 2025 09:37:37 +0800</lastBuildDate>
-    <atom:link href="https://LTXWorld.github.io/tags/linux%E6%93%8D%E4%BD%9C/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>K3sEP09——初始化开发板环境操作汇总</title>
-      <link>https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</link>
-      <pubDate>Wed, 14 May 2025 09:37:37 +0800</pubDate>
-      <guid>https://LTXWorld.github.io/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</guid>
-      <description>&lt;h2 id=&#34;前瞻&#34;&gt;前瞻&lt;/h2&gt;
-&lt;p&gt;本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.&lt;/p&gt;
-&lt;h2 id=&#34;烧录镜像&#34;&gt;烧录镜像&lt;/h2&gt;
-&lt;p&gt;关于烧录操作,无需多言,请关注这篇&lt;a href=&#34;https://www.bfsmlt.top/posts/003li_riscv01/&#34;&gt;文章&lt;/a&gt;.本文主要说一下镜像问题.&lt;/p&gt;
-&lt;p&gt;在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
-甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux操作 on LTX's Blog</title><link>https://blog.bfsmlt.top/tags/linux%E6%93%8D%E4%BD%9C/</link><description>Recent content in Linux操作 on LTX's Blog</description><image><title>LTX's Blog</title><url>https://blog.bfsmlt.top/images/papermod-cover.png</url><link>https://blog.bfsmlt.top/images/papermod-cover.png</link></image><generator>Hugo -- 0.145.0</generator><language>zh</language><copyright>©2025 LTX&amp;rsquo;s Blog</copyright><lastBuildDate>Wed, 14 May 2025 09:37:37 +0800</lastBuildDate><atom:link href="https://blog.bfsmlt.top/tags/linux%E6%93%8D%E4%BD%9C/index.xml" rel="self" type="application/rss+xml"/><item><title>K3sEP09——初始化开发板环境操作汇总</title><link>https://blog.bfsmlt.top/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</link><pubDate>Wed, 14 May 2025 09:37:37 +0800</pubDate><guid>https://blog.bfsmlt.top/posts/034k3sep09%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%80%E4%B8%AA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83%E6%B1%87%E6%80%BB/</guid><description>&lt;h2 id="前瞻">前瞻&lt;/h2>
+&lt;p>本文为了总结在拿到一个新的开发板后具体该如何操作,包括烧录镜像,配置 k3s 所需环境等操作.&lt;/p>
+&lt;h2 id="烧录镜像">烧录镜像&lt;/h2>
+&lt;p>关于烧录操作,无需多言,请关注这篇&lt;a href="https://www.bfsmlt.top/posts/003li_riscv01/">文章&lt;/a>.本文主要说一下镜像问题.&lt;/p>
+&lt;p>在选择 OS 镜像的时候,由于 riscv 的实验性,往往在阿里云、清华源等知名镜像源并没有提供,通常是中科院自己的镜像源,而有时有些镜像并没有进行稳定的维护;
+甚至有的镜像质量并不好,例如 openEuler24 LTS 竟然不提供 wifi 模块.😇&lt;/p></description></item></channel></rss>

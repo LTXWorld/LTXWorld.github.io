@@ -132,3 +132,8 @@ body.dark .archive-meta,
 body.dark .archive-count {
     color: rgba(224, 226, 235, 0.85);
 }
+
+/* 暗色模式下分页按钮文字使用可见深色，避免继承到透明 --theme */
+body.dark .pagination a {
+    color: rgb(22, 24, 30);
+}
